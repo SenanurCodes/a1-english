@@ -13,7 +13,8 @@ const DEFAULT_FIREBASE_CONFIG = {
   storageBucket: "a1-english-91fff.firebasestorage.app",
   messagingSenderId: "808229244489",
   appId: "1:808229244489:web:c0cefe8fb7cf9bd88cf998",
-  measurementId: "G-66B2H7SHQL"
+  measurementId: "G-66B2H7SHQL",
+  databaseURL: "https://a1-english-91fff-default-rtdb.firebaseio.com"
 };
 
 class AuthService {

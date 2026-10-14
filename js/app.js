@@ -130,7 +130,7 @@ function renderNav(active) {
       ${NAV_MOBILE.map(([id, icon, label]) => {
         if (id === 'more') {
           return `
-            <button type="button" class="nav-link ${isMoreActive ? 'active' : ''}" id="moreNavBtn">
+            <button type="button" class="nav-link ${isMoreActive ? 'active' : ''}" id="moreNavBtn" aria-label="Daha fazla menüsü">
               <span class="nav-icon">${icon}</span>
               <span class="nav-label">${label}</span>
             </button>
@@ -617,7 +617,7 @@ function screenLogic() {
       <!-- Kategori Filtre Butonları -->
       <div class="logic-tabs-bar">
         ${LOGIC_CATEGORIES.map(c => `
-          <button class="logic-tab-pill ${currentLogicTab === c.id ? 'active' : ''}" data-cat="${c.id}">
+          <button class="logic-tab-pill ${currentLogicTab === c.id ? 'active' : ''}" data-cat="${c.id}" aria-label="${c.label} kategorisi">
             ${c.label}
           </button>
         `).join('')}
@@ -634,7 +634,7 @@ function screenLogic() {
             </div>
             <div class="loco-nav-btns">
               ${LOKOMOTIF_EXAMPLES.map((ex, idx) => `
-                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}">Örnek ${idx + 1}</button>
+                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}" aria-label="Lokomotif örnek ${idx + 1}">Örnek ${idx + 1}</button>
               `).join('')}
             </div>
           </div>
@@ -664,7 +664,7 @@ function screenLogic() {
               <div class="loco-result-text">
                 <b>🇬🇧 İngilizce Sıralama:</b> <span class="loco-en-full">${activeLoco.fullEn}</span>
               </div>
-              <button class="btn btn-primary sm" data-say="${esc(activeLoco.fullEn)}">🔊 Sesli Dinle</button>
+              <button class="btn btn-primary sm" data-say="${esc(activeLoco.fullEn)}" aria-label="Cümleyi sesli dinle">🔊 Sesli Dinle</button>
             </div>
 
             <div class="loco-tip">
@@ -1038,7 +1038,7 @@ function screenLearn() {
           const offset = Math.round(Math.sin(i * 0.9) * 110);
           return `
             <div class="path-row" style="--x:${offset}px">
-              <button class="node ${unlocked ? '' : 'locked'} ${s.done ? 'done' : ''} ${nextUnit()?.id === u.id ? 'current' : ''}" data-id="${u.id}" style="--c:${u.color}">
+              <button class="node ${unlocked ? '' : 'locked'} ${s.done ? 'done' : ''} ${nextUnit()?.id === u.id ? 'current' : ''}" data-id="${u.id}" style="--c:${u.color}" aria-label="${esc(u.title)} ünitesi (${unlocked ? (s.done ? 'tamamlandı' : 'açık') : 'kilitli'})">
                 <span class="node-emoji">${unlocked ? u.emoji : '🔒'}</span>
                 ${s.done ? `<span class="node-star">⭐</span>` : ''}
               </button>
@@ -1243,7 +1243,7 @@ function screenCards(id) {
     view().innerHTML = `
       <div class="page cards-page" style="--c:${u.color}">
         <header class="page-head"><div><a href="#/cards" class="back">← Konular</a><h1>${u.emoji} ${esc(u.title)}</h1></div>
-          <button class="btn btn-ghost" id="shuf">🔀 Karıştır</button></header>
+          <button class="btn btn-ghost" id="shuf" aria-label="Kelimeleri karıştır">🔀 Karıştır</button></header>
         <div class="flash-wrap">
           <div class="flash" id="flash">
             <div class="flash-face front"><div class="flash-emoji">${w.emoji}</div><div class="flash-en">${esc(w.en)}</div><div class="muted small">çevirmek için tıkla</div></div>
@@ -1252,9 +1252,9 @@ function screenCards(id) {
         </div>
         <!-- Akıcı ve Dengeli Kart Kontrolleri -->
         <div class="flash-modern-ctrl" style="display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0 10px;">
-          <button class="flash-pill-btn" id="prev" style="min-width:105px;">← Önceki</button>
-          <button class="flash-pill-btn" id="spk" style="background:var(--primary);color:#fff;border-color:var(--primary-d);padding:12px 20px;" title="Telaffuzu Dinle">🔊 Dinle</button>
-          <button class="flash-pill-btn" id="next" style="min-width:105px;">Sonraki →</button>
+          <button class="flash-pill-btn" id="prev" style="min-width:105px;" aria-label="Önceki kelime kartı">← Önceki</button>
+          <button class="flash-pill-btn" id="spk" style="background:var(--primary);color:#fff;border-color:var(--primary-d);padding:12px 20px;" title="Telaffuzu Dinle" aria-label="Kelime telaffuzunu dinle">🔊 Dinle</button>
+          <button class="flash-pill-btn" id="next" style="min-width:105px;" aria-label="Sonraki kelime kartı">Sonraki →</button>
         </div>
 
         <div style="text-align:center;margin:6px 0 18px;font-weight:800;color:var(--muted);font-size:0.95rem;">
@@ -1281,7 +1281,7 @@ function screenCards(id) {
                     <div class="muted small">${esc(x.tr)}</div>
                   </div>
                 </div>
-                <button class="speak-btn sm list-speak-btn" data-en="${esc(x.en)}" aria-label="Dinle" title="Dinle">🔊</button>
+                <button class="speak-btn sm list-speak-btn" data-en="${esc(x.en)}" aria-label="${esc(x.en)} telaffuzunu dinle" title="Dinle">🔊</button>
               </div>
             `).join('')}
           </div>
@@ -1865,4 +1865,15 @@ function openAuthModal() {
       toast(err.message);
     }
   };
+}
+
+/* ---------- Service Worker Kaydı (Çevrim Dışı Destek) ---------- */
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('A1 English Service Worker aktif:', reg.scope);
+    }).catch(err => {
+      console.warn('Service Worker kaydı atlandı:', err.message);
+    });
+  });
 }

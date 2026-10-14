@@ -114,7 +114,7 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
   view.innerHTML = `
     <div class="lesson" style="--accent:${color}">
       <div class="lesson-top">
-        <button class="icon-btn" id="quit" title="Çık">✕</button>
+        <button class="icon-btn" id="quit" aria-label="Dersten çık" title="Çık">✕</button>
         <div class="progress"><div class="bar" id="pbar"></div></div>
         <div class="lesson-count" id="lcount"></div>
       </div>
@@ -333,7 +333,7 @@ const RENDERERS = {
         <div class="card speak-hero-card">
           <div class="speak-target-row">
             <span class="target-word">${esc(q.target)}</span>
-            <button class="speak-btn sm" id="listenTargetBtn" title="Doğru telaffuzu dinle" aria-label="Dinle">🔊</button>
+            <button class="speak-btn sm" id="listenTargetBtn" title="Doğru telaffuzu dinle" aria-label="Doğru telaffuzu dinle">🔊</button>
           </div>
           <div class="speak-tr-text">${esc(q.tr)}</div>
 
@@ -350,8 +350,8 @@ const RENDERERS = {
 
         <!-- Alternatifler: Yazarak Cevapla veya Geç -->
         <div class="speak-alt-options">
-          <button class="btn btn-ghost sm" id="switchToTypeBtn" title="Yazarak tam puan al">⌨️ Yazarak Cevapla</button>
-          <button class="btn btn-ghost sm" id="skipVoiceBtn" title="Geç ve puanını al">⏩ Geç (+10 XP Kazan)</button>
+          <button class="btn btn-ghost sm" id="switchToTypeBtn" aria-label="Yazarak cevapla" title="Yazarak tam puan al">⌨️ Yazarak Cevapla</button>
+          <button class="btn btn-ghost sm" id="skipVoiceBtn" aria-label="Bu soruyu atla" title="Bu soruyu atla">⏩ Bu Soruyu Atla</button>
         </div>
 
         <!-- Yazarak Cevaplama Paneli -->
@@ -359,7 +359,7 @@ const RENDERERS = {
           <div class="muted small" style="margin-bottom:8px;font-weight:700;">⌨️ Kelimeyi yazarak tam puanını al:</div>
           <div class="type-row">
             <input id="speakFallbackIn" class="type-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="İngilizce karşılığını yaz..." />
-            <button class="btn btn-primary" id="checkFallbackBtn">Kontrol Et</button>
+            <button class="btn btn-primary" id="checkFallbackBtn" aria-label="Yazılı cevabı kontrol et">Kontrol Et</button>
           </div>
           <div id="fallbackWarn" class="type-warn-msg" style="display:none;"></div>
         </div>
@@ -374,12 +374,12 @@ const RENDERERS = {
     let isListening = false;
     let answered = false;
 
-    // GEÇ BUTONU: Kullanıcıyı mağdur etmez, puanını ekler!
+    // GEÇ BUTONU: Soru doğru sayılmaz (puan eklenmez), doğru telaffuz gösterilir
     $('#skipVoiceBtn').onclick = () => {
       if (answered) return;
       answered = true;
       stopListening();
-      done(true, { given: '(Geçildi)', correct: q.target, skipped: true });
+      done(false, { given: '(Geçildi)', correct: q.target, skipped: true });
     };
 
     // YAZARAK CEVAPLAMA BUTONU:
