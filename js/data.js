@@ -46,21 +46,37 @@ const RAW_UNITS = [
   {
     id: 'numbers_0_50', type: 'vocab', title: 'Sayılar: 0 - 50', en: 'Numbers: 0 to 50', emoji: '1️⃣',
     words: [
-      ['zero', 'sıfır', '0️⃣'], ['one', 'bir', '1️⃣'], ['two', 'iki', '2️⃣'], ['three', 'üç', '3️⃣'], ['four', 'dört', '4️⃣'],
-      ['five', 'beş', '5️⃣'], ['six', 'altı', '6️⃣'], ['seven', 'yedi', '7️⃣'], ['eight', 'sekiz', '8️⃣'], ['nine', 'dokuz', '9️⃣'],
-      ['ten', 'on', '🔟'], ['eleven', 'on bir', '11'], ['twelve', 'on iki', '12'], ['thirteen', 'on üç', '13'],
-      ['fourteen', 'on dört', '14'], ['fifteen', 'on beş', '15'], ['sixteen', 'on altı', '16'], ['twenty', 'yirmi', '20'],
-      ['twenty-five', 'yirmi beş', '25'], ['thirty', 'otuz', '30'], ['forty', 'kırk', '40'], ['fifty', 'elli', '50']
+      ['zero','sıfır','0️⃣'], ['one','bir','1️⃣'], ['two','iki','2️⃣'], ['three','üç','3️⃣'],
+      ['four','dört','4️⃣'], ['five','beş','5️⃣'], ['six','altı','6️⃣'], ['seven','yedi','7️⃣'],
+      ['eight','sekiz','8️⃣'], ['nine','dokuz','9️⃣'], ['ten','on','🔟'], ['eleven','on bir','11'],
+      ['twelve','on iki','12'], ['thirteen','on üç','13'], ['fourteen','on dört','14'], ['fifteen','on beş','15'],
+      ['sixteen','on altı','16'], ['seventeen','on yedi','17'], ['eighteen','on sekiz','18'], ['nineteen','on dokuz','19'],
+      ['twenty','yirmi','20'], ['twenty-one','yirmi bir','21'], ['twenty-two','yirmi iki','22'], ['twenty-three','yirmi üç','23'],
+      ['twenty-four','yirmi dört','24'], ['twenty-five','yirmi beş','25'], ['twenty-six','yirmi altı','26'], ['twenty-seven','yirmi yedi','27'],
+      ['twenty-eight','yirmi sekiz','28'], ['twenty-nine','yirmi dokuz','29'], ['thirty','otuz','30'], ['thirty-one','otuz bir','31'],
+      ['thirty-two','otuz iki','32'], ['thirty-three','otuz üç','33'], ['thirty-four','otuz dört','34'], ['thirty-five','otuz beş','35'],
+      ['thirty-six','otuz altı','36'], ['thirty-seven','otuz yedi','37'], ['thirty-eight','otuz sekiz','38'], ['thirty-nine','otuz dokuz','39'],
+      ['forty','kırk','40'], ['forty-one','kırk bir','41'], ['forty-two','kırk iki','42'], ['forty-three','kırk üç','43'],
+      ['forty-four','kırk dört','44'], ['forty-five','kırk beş','45'], ['forty-six','kırk altı','46'], ['forty-seven','kırk yedi','47'],
+      ['forty-eight','kırk sekiz','48'], ['forty-nine','kırk dokuz','49'], ['fifty','elli','50']
     ]
   },
   {
     id: 'numbers_50_100', type: 'vocab', title: 'Sayılar: 50 - 100', en: 'Numbers: 50 to 100', emoji: '💯',
     words: [
-      ['fifty', 'elli', '50'], ['fifty-five', 'elli beş', '55'], ['sixty', 'altmış', '60'], ['sixty-four', 'altmış dört', '64'],
-      ['seventy', 'yetmiş', '70'], ['seventy-five', 'yetmiş beş', '75'], ['eighty', 'seksen', '80'], ['eighty-eight', 'seksen sekiz', '88'],
-      ['ninety', 'doksan', '90'], ['ninety-nine', 'doksan dokuz', '99'], ['one hundred', 'yüz', '💯'],
-      ['number', 'sayı / numara', '🔢'], ['how many', 'kaç tane', '❓'], ['how much', 'ne kadar / fiyat', '🏷️'],
-      ['first', 'birinci', '🥇'], ['second', 'ikinci', '🥈'], ['third', 'üçüncü', '🥉']
+      ['fifty','elli','50'], ['fifty-one','elli bir','51'], ['fifty-two','elli iki','52'], ['fifty-three','elli üç','53'],
+      ['fifty-four','elli dört','54'], ['fifty-five','elli beş','55'], ['fifty-six','elli altı','56'], ['fifty-seven','elli yedi','57'],
+      ['fifty-eight','elli sekiz','58'], ['fifty-nine','elli dokuz','59'], ['sixty','altmış','60'], ['sixty-one','altmış bir','61'],
+      ['sixty-two','altmış iki','62'], ['sixty-three','altmış üç','63'], ['sixty-four','altmış dört','64'], ['sixty-five','altmış beş','65'],
+      ['sixty-six','altmış altı','66'], ['sixty-seven','altmış yedi','67'], ['sixty-eight','altmış sekiz','68'], ['sixty-nine','altmış dokuz','69'],
+      ['seventy','yetmiş','70'], ['seventy-one','yetmiş bir','71'], ['seventy-two','yetmiş iki','72'], ['seventy-three','yetmiş üç','73'],
+      ['seventy-four','yetmiş dört','74'], ['seventy-five','yetmiş beş','75'], ['seventy-six','yetmiş altı','76'], ['seventy-seven','yetmiş yedi','77'],
+      ['seventy-eight','yetmiş sekiz','78'], ['seventy-nine','yetmiş dokuz','79'], ['eighty','seksen','80'], ['eighty-one','seksen bir','81'],
+      ['eighty-two','seksen iki','82'], ['eighty-three','seksen üç','83'], ['eighty-four','seksen dört','84'], ['eighty-five','seksen beş','85'],
+      ['eighty-six','seksen altı','86'], ['eighty-seven','seksen yedi','87'], ['eighty-eight','seksen sekiz','88'], ['eighty-nine','seksen dokuz','89'],
+      ['ninety','doksan','90'], ['ninety-one','doksan bir','91'], ['ninety-two','doksan iki','92'], ['ninety-three','doksan üç','93'],
+      ['ninety-four','doksan dört','94'], ['ninety-five','doksan beş','95'], ['ninety-six','doksan altı','96'], ['ninety-seven','doksan yedi','97'],
+      ['ninety-eight','doksan sekiz','98'], ['ninety-nine','doksan dokuz','99'], ['one hundred','yüz','💯']
     ]
   },
   {
