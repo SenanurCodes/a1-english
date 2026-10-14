@@ -154,22 +154,22 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
       recordMistake({ q: q.rawQ || stripTags(q.prompt || q.tr || q.speak || ''), given, correct, unit: q.unit || title });
     }
     if (skipped) {
-      tone([440], 0.08);
+      sfx.good();
     } else {
       ok ? sfx.good() : sfx.bad();
     }
-    if (q.speakAfter && !skipped) setTimeout(() => speak(q.speakAfter), 250);
+    if (q.speakAfter) setTimeout(() => speak(q.speakAfter), 250);
 
     const fb = $('#feedback');
-    fb.className = `feedback show ${skipped ? 'neutral' : (ok ? 'ok' : 'bad')}`;
+    fb.className = `feedback show ${ok ? 'ok' : 'bad'}`;
     fb.innerHTML = `
       <div class="fb-inner">
         <div class="fb-text">
-          <div class="fb-title">${skipped ? 'Atlandı ⏩' : (ok ? pickOne(['Harika! 🎉', 'Süper! ⭐', 'Doğru! ✅', 'Mükemmel! 🌟', 'Aferin! 👏']) : 'Olmadı 😕')}</div>
-          ${skipped ? `<div class="muted small" style="font-weight:700;margin-top:2px;">Mikrofon kullanılmadığı için puanlama yapılmadı. Doğrusu: <b>${esc(correct)}</b></div>` : (!ok && correct ? `<div class="fb-correct">Doğru cevap: <b>${esc(correct)}</b></div>` : '')}
+          <div class="fb-title">${skipped ? 'Tamamlandı (+10 XP) ⏩' : (ok ? pickOne(['Harika! 🎉', 'Süper! ⭐', 'Doğru! ✅', 'Mükemmel! 🌟', 'Aferin! 👏']) : 'Olmadı 😕')}</div>
+          ${skipped ? `<div class="muted small" style="font-weight:700;margin-top:2px;">Mikrofon pas geçildi, tam puanın eklendi! Doğrusu: <b>${esc(correct)}</b></div>` : (!ok && correct ? `<div class="fb-correct">Doğru cevap: <b>${esc(correct)}</b></div>` : '')}
           ${q.explain ? `<div class="fb-explain">💡 ${esc(q.explain)}</div>` : ''}
         </div>
-        <button class="btn btn-big ${skipped ? 'btn-ghost' : (ok ? 'btn-green' : 'btn-red')}" id="nextBtn">Devam →</button>
+        <button class="btn btn-big ${ok ? 'btn-green' : 'btn-red'}" id="nextBtn">Devam →</button>
       </div>`;
     const next = () => { idx++; idx < questions.length ? show() : end(); };
     $('#nextBtn').onclick = next;
@@ -181,8 +181,7 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
     lessonKeyHandler = null;
     saveState();
     const correct = results.filter(r => r.ok).length;
-    const scored = results.filter(r => !r.skipped);
-    const totalCount = scored.length || results.length;
+    const totalCount = results.length;
     const pct = Math.round((correct / totalCount) * 100);
     const out = onFinish ? onFinish(results, { correct, total: totalCount, pct }) || {} : {};
     const xp = out.xp ?? 0;
@@ -194,7 +193,7 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         <h1>${pct === 100 ? 'Kusursuz!' : pct >= 70 ? 'Ders tamamlandı!' : 'Biraz daha pratik!'}</h1>
         ${out.message ? `<p class="end-msg">${out.message}</p>` : ''}
         <div class="end-stats">
-          <div class="stat-pill" style="--c:#51CF66"><span>Doğru</span><b>${correct}/${scored.length}</b></div>
+          <div class="stat-pill" style="--c:#51CF66"><span>Doğru</span><b>${correct}/${totalCount}</b></div>
           <div class="stat-pill" style="--c:#339AF0"><span>Başarı</span><b>%${pct}</b></div>
           <div class="stat-pill" style="--c:#FCC419"><span>XP</span><b>+${xp}</b></div>
         </div>
@@ -257,47 +256,117 @@ const RENDERERS = {
         <input id="typeIn" class="type-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Buraya yaz..." />
         <button class="btn btn-primary" id="checkBtn">Kontrol Et</button>
       </div>
-      <button class="hint-btn" id="hintBtn">💡 İpucu</button>`;
+      <div class="type-actions-row">
+        <button type="button" class="hint-btn" id="hintBtn">💡 İpucu Al</button>
+        <button type="button" class="btn btn-ghost sm" id="dontKnowBtn">❓ Bilmiyorum (Cevabı Gör)</button>
+      </div>
+      <div id="hintBox" class="hint-box" style="display:none;"></div>
+      <div id="typeWarn" class="type-warn-msg" style="display:none;"></div>`;
+
     const inp = $('#typeIn');
     inp.focus();
     let answered = false;
+    let hintLevel = 0;
+    const hintBtn = $('#hintBtn');
+    const hintBox = $('#hintBox');
+    const warnBox = $('#typeWarn');
+
     const check = () => {
-      if (answered || !inp.value.trim()) return;
+      if (answered) return;
+      const val = inp.value.trim();
+      if (!val) {
+        // BOŞ BIRAKILDIĞINDA KULLANICIYI BİLGİLENDİR & TİTRE:
+        inp.classList.remove('shake');
+        void inp.offsetWidth;
+        inp.classList.add('shake');
+        inp.focus();
+        warnBox.style.display = 'flex';
+        warnBox.innerHTML = `⚠️ <b>Henüz bir şey yazmadın!</b> Bilmiyorsan 💡 İpucu alabilir veya <b>"Bilmiyorum"</b> butonuna basabilirsin.`;
+        return;
+      }
       answered = true;
-      const ok = same(inp.value, q.answer);
+      const ok = same(val, q.answer);
       inp.classList.add(ok ? 'ok' : 'bad');
       inp.disabled = true;
-      done(ok, { given: inp.value.trim(), correct: q.answer });
+      done(ok, { given: val, correct: q.answer });
     };
+
     $('#checkBtn').onclick = check;
-    $('#hintBtn').onclick = () => { inp.placeholder = q.answer[0] + ' ' + '_ '.repeat(q.answer.length - 1); inp.focus(); };
+    inp.oninput = () => { warnBox.style.display = 'none'; };
+
+    $('#dontKnowBtn').onclick = () => {
+      if (answered) return;
+      answered = true;
+      inp.classList.add('bad');
+      inp.disabled = true;
+      done(false, { given: '(Bilmiyorum)', correct: q.answer });
+    };
+
+    hintBtn.onclick = () => {
+      hintLevel++;
+      hintBox.style.display = 'block';
+      warnBox.style.display = 'none';
+      if (hintLevel === 1) {
+        hintBox.innerHTML = `💡 <b>İpucu 1:</b> Kelime "<b>${q.answer[0].toUpperCase()}</b>" harfiyle başlıyor (${q.answer.length} harf)`;
+        inp.placeholder = q.answer[0] + ' ' + '_ '.repeat(q.answer.length - 1);
+      } else if (hintLevel === 2) {
+        const half = Math.ceil(q.answer.length / 2);
+        hintBox.innerHTML = `💡 <b>İpucu 2:</b> İlk harfleri: "<b>${q.answer.slice(0, half)}...</b>" (${q.answer.length} harf)`;
+        inp.placeholder = q.answer.slice(0, half) + ' ' + '_ '.repeat(q.answer.length - half);
+      } else {
+        hintBox.innerHTML = `💡 <b>İpucu 3:</b> Doğru cevap: "<b>${esc(q.answer)}</b>"`;
+      }
+      inp.focus();
+    };
+
     lessonKeyHandler = e => { if (e.key === 'Enter') { e.preventDefault(); check(); } };
   },
 
   speak(q, area, done) {
     area.innerHTML = `
-      <div class="q-head">
-        ${q.emoji ? `<div class="q-emoji">${q.emoji}</div>` : ''}
-        <div class="q-prompt">Şunu sesli oku 🎙️</div>
-        <div class="speak-target">
-          <span class="target-word">${esc(q.target)}</span>
-          <button class="speak-btn sm" id="listenTargetBtn" title="Dinle" aria-label="Dinle">🔊</button>
+      <div class="speak-hero-container">
+        <div class="q-head">
+          ${q.emoji ? `<div class="q-emoji">${q.emoji}</div>` : ''}
+          <div class="q-prompt">Telaffuz Pratiği 🎙️</div>
         </div>
-        <div class="muted small">${esc(q.tr)}</div>
-      </div>
-      <div class="voice-center">
-        <button class="mic-btn" id="micBtn" aria-label="Mikrofonu aç ve seslendir">
-          <span class="mic-icon">🎙️</span>
-          <span class="mic-pulse"></span>
-        </button>
-        <div class="voice-status muted" id="voiceStatus">Mikrofona bas ve konuş</div>
-        <div class="heard-text" id="heardText"></div>
-      </div>
-      <div class="center" style="margin-top:16px;">
-        <button class="btn btn-ghost sm" id="skipVoiceBtn">Geç (Mikrofonum Yok)</button>
+
+        <div class="card speak-hero-card">
+          <div class="speak-target-row">
+            <span class="target-word">${esc(q.target)}</span>
+            <button class="speak-btn sm" id="listenTargetBtn" title="Doğru telaffuzu dinle" aria-label="Dinle">🔊</button>
+          </div>
+          <div class="speak-tr-text">${esc(q.tr)}</div>
+
+          <!-- Ergonomik Mikrofon Alanı -->
+          <div class="voice-action-zone">
+            <button class="mic-pill-btn" id="micBtn" aria-label="Mikrofonu aç ve seslendir">
+              <span class="mic-pill-icon">🎙️</span>
+              <span class="mic-pill-label" id="micBtnLabel">Mikrofona Bas ve Konuş</span>
+            </button>
+            <div class="voice-status-text" id="voiceStatus">Kelimeyi sesli söyle, telaffuzunu kontrol edelim</div>
+            <div class="heard-text-box" id="heardText"></div>
+          </div>
+        </div>
+
+        <!-- Alternatifler: Yazarak Cevapla veya Geç -->
+        <div class="speak-alt-options">
+          <button class="btn btn-ghost sm" id="switchToTypeBtn" title="Yazarak tam puan al">⌨️ Yazarak Cevapla</button>
+          <button class="btn btn-ghost sm" id="skipVoiceBtn" title="Geç ve puanını al">⏩ Geç (+10 XP Kazan)</button>
+        </div>
+
+        <!-- Yazarak Cevaplama Paneli -->
+        <div class="card speak-type-fallback" id="speakTypeFallback" style="display:none;margin-top:14px;">
+          <div class="muted small" style="margin-bottom:8px;font-weight:700;">⌨️ Kelimeyi yazarak tam puanını al:</div>
+          <div class="type-row">
+            <input id="speakFallbackIn" class="type-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="İngilizce karşılığını yaz..." />
+            <button class="btn btn-primary" id="checkFallbackBtn">Kontrol Et</button>
+          </div>
+          <div id="fallbackWarn" class="type-warn-msg" style="display:none;"></div>
+        </div>
       </div>`;
 
     const mic = $('#micBtn');
+    const micLabel = $('#micBtnLabel');
     const status = $('#voiceStatus');
     const heard = $('#heardText');
     $('#listenTargetBtn').onclick = () => speak(q.target);
@@ -305,18 +374,56 @@ const RENDERERS = {
     let isListening = false;
     let answered = false;
 
+    // GEÇ BUTONU: Kullanıcıyı mağdur etmez, puanını ekler!
     $('#skipVoiceBtn').onclick = () => {
       if (answered) return;
       answered = true;
       stopListening();
-      done(false, { given: '(Atlandı)', correct: q.target, skipped: true });
+      done(true, { given: '(Geçildi)', correct: q.target, skipped: true });
     };
 
+    // YAZARAK CEVAPLAMA BUTONU:
+    const fallbackBox = $('#speakTypeFallback');
+    const fallbackIn = $('#speakFallbackIn');
+    const fallbackBtn = $('#checkFallbackBtn');
+    const fallbackWarn = $('#fallbackWarn');
+
+    $('#switchToTypeBtn').onclick = () => {
+      fallbackBox.style.display = fallbackBox.style.display === 'none' ? 'block' : 'none';
+      if (fallbackBox.style.display === 'block') {
+        fallbackIn.focus();
+      }
+    };
+
+    const checkFallback = () => {
+      if (answered) return;
+      const val = fallbackIn.value.trim();
+      if (!val) {
+        fallbackIn.classList.remove('shake');
+        void fallbackIn.offsetWidth;
+        fallbackIn.classList.add('shake');
+        fallbackIn.focus();
+        fallbackWarn.style.display = 'flex';
+        fallbackWarn.innerHTML = '⚠️ Lütfen kelimenin İngilizcesini yazın!';
+        return;
+      }
+      answered = true;
+      const ok = same(val, q.target);
+      fallbackIn.classList.add(ok ? 'ok' : 'bad');
+      fallbackIn.disabled = true;
+      done(ok, { given: val, correct: q.target });
+    };
+    fallbackBtn.onclick = checkFallback;
+    fallbackIn.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); checkFallback(); } };
+    fallbackIn.oninput = () => { fallbackWarn.style.display = 'none'; };
+
+    // MİKROFON BUTONU:
     mic.onclick = () => {
       if (answered) return;
       if (isListening) {
         stopListening();
         mic.classList.remove('listening');
+        micLabel.textContent = 'Mikrofona Bas ve Konuş';
         status.textContent = 'Durduruldu. Tekrar dene.';
         isListening = false;
         return;
@@ -324,7 +431,8 @@ const RENDERERS = {
 
       isListening = true;
       mic.classList.add('listening');
-      status.textContent = 'Dinleniyor... Konuşabilirsin 🎧';
+      micLabel.textContent = 'Dinleniyor... Konuşabilirsin 🎧';
+      status.textContent = 'Telaffuzunu bekliyoruz...';
       heard.textContent = '';
 
       listenSpeech({
@@ -332,6 +440,7 @@ const RENDERERS = {
         onResult: (text) => {
           isListening = false;
           mic.classList.remove('listening');
+          micLabel.textContent = 'Tamamlandı ✅';
           heard.textContent = `Duyulan: "${text}"`;
           const ok = same(text, q.target) || normalize(text).includes(normalize(q.target));
           answered = true;
@@ -340,12 +449,14 @@ const RENDERERS = {
         onError: (err) => {
           isListening = false;
           mic.classList.remove('listening');
-          status.textContent = err;
+          micLabel.textContent = 'Mikrofona Bas ve Konuş';
+          status.textContent = err || 'Ses algılanamadı, tekrar deneyebilir veya "Geç" diyebilirsin.';
         },
         onEnd: () => {
           if (!answered) {
             isListening = false;
             mic.classList.remove('listening');
+            micLabel.textContent = 'Mikrofona Bas ve Konuş';
             status.textContent = 'Ses kesildi. Tekrar basarak dene.';
           }
         }

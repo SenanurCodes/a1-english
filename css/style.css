@@ -619,22 +619,179 @@ p { line-height: 1.6; }
 .speak-btn.sm { width: 36px; height: 36px; font-size: 1rem; box-shadow: 0 3px 0 #3B5BDB; }
 .listen-audio-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 8px 0; }
 
-/* Mikrofon & Telaffuz Stilleri */
-.voice-center { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 24px 0; }
+/* ---------- Telaffuz & Mikrofon Yeniden Tasarımı ---------- */
+.speak-hero-container {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.speak-hero-card {
+  background: var(--card-bg, #fff);
+  border: 2px solid var(--line);
+  border-radius: 24px;
+  padding: 22px 20px;
+  text-align: center;
+  margin: 16px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+.speak-target-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.target-word {
+  font-size: 2.3rem;
+  font-weight: 900;
+  color: var(--primary);
+  line-height: 1.2;
+}
+.speak-tr-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.voice-action-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1.5px dashed var(--line);
+}
+.mic-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #FF6B6B, #FA5252);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 13px 26px;
+  font-family: inherit;
+  font-size: 1.02rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(250, 82, 82, 0.3), 0 3px 0 #C92A2A;
+  transition: transform .1s, box-shadow .15s, background .2s;
+  user-select: none;
+}
+.mic-pill-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #C92A2A;
+}
+.mic-pill-btn.listening {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4), 0 3px 0 #047857;
+  animation: micPulse 1.2s infinite;
+}
+.mic-pill-icon {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+.voice-status-text {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.heard-text-box {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--text);
+  min-height: 24px;
+}
+.speak-alt-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.speak-type-fallback {
+  background: var(--card-bg, #fff);
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  text-align: left;
+}
+
+/* Geriye Dönük Uyumluluk */
+.voice-center { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 20px 0; }
 .mic-btn {
-  width: 90px; height: 90px; border-radius: 50%; border: none; cursor: pointer;
+  width: 80px; height: 80px; border-radius: 50%; border: none; cursor: pointer;
   background: linear-gradient(135deg, #FF6B6B, #FA5252); color: #fff;
-  box-shadow: 0 8px 24px rgba(250, 82, 82, .35), 0 4px 0 #C92A2A;
+  box-shadow: 0 6px 20px rgba(250, 82, 82, .3), 0 3px 0 #C92A2A;
   position: relative; transition: .15s; display: grid; place-items: center;
 }
-.mic-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #C92A2A; }
-.mic-btn.listening { background: linear-gradient(135deg, #40C057, #2F9E44); box-shadow: 0 8px 24px rgba(64, 192, 87, .4), 0 4px 0 #237032; animation: micPulse 1.2s infinite; }
-.mic-icon { font-size: 2.6rem; }
-@keyframes micPulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.mic-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #C92A2A; }
+.mic-btn.listening { background: linear-gradient(135deg, #10B981, #059669); box-shadow: 0 6px 20px rgba(16, 185, 129, .4), 0 3px 0 #047857; animation: micPulse 1.2s infinite; }
+.mic-icon { font-size: 2.2rem; }
+@keyframes micPulse { 0% { transform: scale(1); } 50% { transform: scale(1.06); } 100% { transform: scale(1); } }
 .speak-target { display: flex; align-items: center; gap: 12px; justify-content: center; margin: 6px 0; }
-.target-word { font-size: 2.2rem; font-weight: 900; color: var(--primary-d); }
 .voice-status { font-weight: 800; font-size: .95rem; }
-.heard-text { font-size: 1.1rem; font-weight: 900; color: #2B2D42; min-height: 28px; }
+.heard-text { font-size: 1.1rem; font-weight: 900; color: var(--text); min-height: 28px; }
+
+/* ---------- Yazma Alıştırması Uyarı ve İpucu Stilleri ---------- */
+.type-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.hint-btn {
+  background: color-mix(in srgb, #FCC419 18%, var(--card-bg, #fff));
+  border: 1.5px solid color-mix(in srgb, #FCC419 50%, transparent);
+  color: #D97706;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.88rem;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform .1s, background .15s;
+}
+.hint-btn:active {
+  transform: translateY(2px);
+}
+.hint-box {
+  background: color-mix(in srgb, #FCC419 12%, var(--card-bg, #fff));
+  border: 1.5px dashed #FCC419;
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.4;
+  animation: popIn .2s ease;
+}
+.type-warn-msg {
+  background: color-mix(in srgb, #FA5252 12%, var(--card-bg, #fff));
+  border: 1.5px solid color-mix(in srgb, #FA5252 40%, transparent);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #E03131;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  animation: shake .4s ease;
+}
+@keyframes popIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
 /* Formlar */
 .lbl { display: block; font-weight: 800; margin: 12px 0 6px; }
