@@ -1,0 +1,16 @@
+{
+  "name": "A1 English - Rengarenk İngilizce",
+  "short_name": "A1 English",
+  "description": "A1 seviye İngilizceyi rengarenk derslerle ve yapay zeka öğretmenle öğren.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌈</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
