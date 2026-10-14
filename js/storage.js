@@ -220,6 +220,7 @@ class ThemeService {
 }
 
 const themeService = new ThemeService(store);
+themeService.init();
 
 /* ============================================================
    OOP: MascotService (Yoldaş Hayvan Yönetimi)

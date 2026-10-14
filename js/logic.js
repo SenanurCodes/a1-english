@@ -1,5 +1,5 @@
 /* ============================================================
-   Türkçe Mantık & Günlük Hayat Rehberi (Duolingo Tarzı Değil!)
+   Türkçe Mantık & Günlük Hayat Rehberi 
    - Türk beyni İngilizceye nasıl geçer?
    - Formül ezberletmeyen samimi püf noktaları
    - Lokomotif Cümle Kuralı (Özne -> Eylem -> Detay)
