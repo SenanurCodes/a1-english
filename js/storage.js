@@ -150,7 +150,13 @@ class AppStore {
     }
     this.save();
     this._notify('GAIN_XP', { amount, total: this._state.xp });
-    if (this._state.leagueRoomId && typeof syncCloudLeague === 'function') {
+    if (typeof syncManager !== 'undefined') {
+      if (!navigator.onLine) {
+        syncManager.markPending();
+      } else {
+        syncManager.syncNow(false);
+      }
+    } else if (this._state.leagueRoomId && typeof syncCloudLeague === 'function') {
       syncCloudLeague().catch(() => {});
     }
   }
@@ -187,7 +193,9 @@ class ThemeService {
 
     const root = document.documentElement;
     root.setAttribute('data-theme', palette.id);
+    root.setAttribute('data-mode', palette.isDark ? 'dark' : 'light');
     root.style.setProperty('--bg', palette.colors.bg);
+    root.style.setProperty('--card', palette.colors.cardBg);
     root.style.setProperty('--card-bg', palette.colors.cardBg);
     root.style.setProperty('--text', palette.colors.text);
     root.style.setProperty('--muted', palette.colors.muted);
@@ -196,6 +204,9 @@ class ThemeService {
     root.style.setProperty('--accent-d', palette.colors.accentD);
     root.style.setProperty('--primary', palette.colors.primary);
     root.style.setProperty('--primary-d', palette.colors.primaryD);
+
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute('content', palette.colors.bg);
 
     if (this.store.state.theme !== palette.id) {
       this.store.setTheme(palette.id);
@@ -259,6 +270,13 @@ const progressionManager = new ProgressionManager(store);
 function saveState() {
   store.save();
   state = store.state;
+  if (typeof syncManager !== 'undefined') {
+    if (!navigator.onLine) {
+      syncManager.markPending();
+    } else {
+      syncManager.syncNow(false);
+    }
+  }
 }
 
 function resetState() {
@@ -598,3 +616,78 @@ async function leaveCloudLeague() {
   state.leagueMembers = {};
   saveState();
 }
+
+/* ============================================================
+   OOP: OfflineSyncManager (Çevrimdışı Çalışma & Otomatik Bulut Senkronizasyonu)
+   ============================================================ */
+class OfflineSyncManager {
+  constructor(appStore) {
+    this.store = appStore;
+    this.hasPendingOfflineChanges = false;
+    this.init();
+  }
+
+  init() {
+    window.addEventListener('online', () => {
+      this.syncNow(true);
+    });
+    window.addEventListener('offline', () => {
+      if (typeof toast === 'function') {
+        toast('📡 Çevrimdışı mod: Tüm ilerlemelerin cihazında güvenle saklanır.');
+      }
+    });
+
+    if (navigator.onLine) {
+      setTimeout(() => this.syncNow(false), 2000);
+    }
+  }
+
+  markPending() {
+    this.hasPendingOfflineChanges = true;
+  }
+
+  async syncNow(showToastOnSuccess = false) {
+    if (!navigator.onLine) {
+      this.hasPendingOfflineChanges = true;
+      return;
+    }
+
+    let didSync = false;
+    const curState = this.store.getState();
+
+    // 1. Canlı Bulut Ligi senkronizasyonu
+    if (curState.leagueRoomId && typeof syncCloudLeague === 'function') {
+      try {
+        await syncCloudLeague();
+        didSync = true;
+      } catch (e) {}
+    }
+
+    // 2. Firebase Realtime Database senkronizasyonu
+    if (window.firebase && firebase.apps && firebase.apps.length && curState.auth && curState.auth.uid) {
+      try {
+        const db = firebase.database();
+        const done = typeof doneCount === 'function' ? doneCount() : 0;
+        await db.ref('users/' + curState.auth.uid).update({
+          name: curState.name || 'Öğrenci',
+          xp: curState.xp || 0,
+          streak: curState.streak || { count: 0 },
+          unitsDone: done,
+          mascot: curState.mascot || 'cat',
+          lastSync: Date.now()
+        });
+        didSync = true;
+      } catch (e) {}
+    }
+
+    if ((didSync || this.hasPendingOfflineChanges) && showToastOnSuccess) {
+      this.hasPendingOfflineChanges = false;
+      if (typeof toast === 'function') {
+        toast('⚡ İnternet bağlantısı sağlandı. Çevrimdışı kazandığın XP ve ilerlemeler başarıyla senkronize edildi! ☁️');
+      }
+    }
+  }
+}
+
+const syncManager = new OfflineSyncManager(store);
+

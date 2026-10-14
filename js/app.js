@@ -508,18 +508,84 @@ function screenHome() {
 /* ============================================================
    Dil Mantığı & Türkçe Rehber (Duolingo Tarzı Değil!)
    ============================================================ */
+let currentLogicTab = 'all';
+let currentLocoIdx = 0;
+
 function screenLogic() {
+  const isAll = currentLogicTab === 'all';
+  const filtered = isAll ? LOGIC_GUIDES : LOGIC_GUIDES.filter(g => g.category === currentLogicTab);
+  const activeLoco = (typeof LOKOMOTIF_EXAMPLES !== 'undefined' && LOKOMOTIF_EXAMPLES[currentLocoIdx]) || (typeof LOKOMOTIF_EXAMPLES !== 'undefined' ? LOKOMOTIF_EXAMPLES[0] : null);
+
   view().innerHTML = `
     <div class="page">
       <header class="page-head">
         <div>
-          <h1>💡 Dil Mantığı & Türkçe Rehber</h1>
+          <h1>💡 Dil Mantığı & Türkçe Düşünce Rehberi</h1>
           <p class="muted">Ezber kurallar değil; Türk beyninin İngilizceyi doğal kavramasını sağlayan mantık ve tüyolar.</p>
         </div>
       </header>
 
+      <!-- Kategori Filtre Butonları -->
+      <div class="logic-tabs-bar">
+        ${LOGIC_CATEGORIES.map(c => `
+          <button class="logic-tab-pill ${currentLogicTab === c.id ? 'active' : ''}" data-cat="${c.id}">
+            ${c.label}
+          </button>
+        `).join('')}
+      </div>
+
+      <!-- İnteraktif Lokomotif Cümle Simülatörü -->
+      ${(isAll || currentLogicTab === 'mindset') && activeLoco ? `
+        <div class="card loco-simulator-card">
+          <div class="loco-head">
+            <div>
+              <span class="badge-loco">⚡ İNTERAKTİF SİMÜLATÖR</span>
+              <h2 style="margin:8px 0 4px;">🚂 İngilizce Cümle Lokomotifi</h2>
+              <p class="muted small" style="margin:0;">İngilizce tren gibi düz gider: Özne ve Eylem hemen öne bağlanır, yer ve zaman vagonları arkaya dizilir!</p>
+            </div>
+            <div class="loco-nav-btns">
+              ${LOKOMOTIF_EXAMPLES.map((ex, idx) => `
+                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}">Örnek ${idx + 1}</button>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="loco-box">
+            <div class="loco-tr-row">
+              <span class="loco-tr-label">🇹🇷 Türkçe Cümle:</span>
+              <span class="loco-tr-text">"${activeLoco.tr}"</span>
+            </div>
+
+            <!-- Lokomotif Vagonları -->
+            <div class="loco-train-track">
+              ${activeLoco.cars.map((car, i) => `
+                <div class="loco-wagon" style="--c:${car.color};">
+                  <div class="wagon-tag">${car.role}</div>
+                  <div class="wagon-en">${car.en}</div>
+                  <div class="wagon-tr">${car.tr}</div>
+                  ${i < activeLoco.cars.length - 1 ? '<div class="wagon-coupler">🔗</div>' : ''}
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Sonuç ve Sesli Dinleme -->
+            <div class="loco-result-row">
+              <div class="loco-result-text">
+                <b>🇬🇧 İngilizce Sıralama:</b> <span class="loco-en-full">${activeLoco.fullEn}</span>
+              </div>
+              <button class="btn btn-primary sm" data-say="${esc(activeLoco.fullEn)}">🔊 Sesli Dinle</button>
+            </div>
+
+            <div class="loco-tip">
+              💡 <b>Püf Noktası:</b> ${activeLoco.explanation}
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Kategori Rehber Kartları -->
       <div class="logic-grid">
-        ${LOGIC_GUIDES.map(g => `
+        ${filtered.map(g => `
           <div class="card logic-card" style="--c:${g.color}">
             <div class="logic-header">
               <span class="logic-emoji">${g.emoji}</span>
@@ -551,9 +617,12 @@ function screenLogic() {
               <div class="trap-list">
                 ${g.traps.map(t => `
                   <div class="trap-box">
-                    <div class="trap-wrong">❌ <s>${esc(t.wrong)}</s></div>
-                    <div class="trap-right">✅ <b>${esc(t.right)}</b> <button class="speak-btn sm" data-say="${esc(t.right)}" aria-label="Doğru kullanımı dinle" title="Dinle">🔊</button></div>
-                    <div class="trap-why muted small">${esc(t.why)}</div>
+                    <div class="trap-wrong"><span class="trap-badge-wrong">❌ Türkçe Düşünüş</span> <s>${esc(t.wrong)}</s></div>
+                    <div class="trap-right">
+                      <div><span class="trap-badge-right">✅ Doğru Mantık</span> <b>${esc(t.right)}</b></div>
+                      <button class="speak-btn sm" data-say="${esc(t.right)}" aria-label="Doğru kullanımı dinle" title="Dinle">🔊</button>
+                    </div>
+                    <div class="trap-why">${esc(t.why)}</div>
                   </div>
                 `).join('')}
               </div>
@@ -563,8 +632,26 @@ function screenLogic() {
       </div>
     </div>`;
 
+  // Kategori Butonları
+  $$('.logic-tab-pill').forEach(btn => {
+    btn.onclick = () => {
+      currentLogicTab = btn.dataset.cat;
+      screenLogic();
+    };
+  });
+
+  // Lokomotif Örnek Seçici
+  $$('.loco-sel-btn').forEach(btn => {
+    btn.onclick = () => {
+      currentLocoIdx = parseInt(btn.dataset.lidx, 10) || 0;
+      screenLogic();
+    };
+  });
+
+  // Sesli Telaffuz Butonları
   $$('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
 }
+
 function screenLeaderboard() {
   if (state.leagueRoomId) {
     syncCloudLeague().then(() => {
@@ -595,6 +682,16 @@ function renderLeaderboardView() {
           </div>
         ` : ''}
       </header>
+
+      <!-- Otomatik Senkronizasyon Durum Çubuğu -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+        <div>
+          ${navigator.onLine 
+            ? '<span class="status-pill online">🟢 İnternete Bağlı (Otomatik Bulut Senkronizasyonu Aktif)</span>' 
+            : '<span class="status-pill offline">📡 Çevrimdışı Mod (İnternete bağlanınca otomatik aktarılır)</span>'}
+        </div>
+        ${isCloud ? `<span class="badge" style="background:#51CF66;color:#fff;font-weight:800;">Lig Odası: #${esc(state.leagueRoomId.slice(0, 8))}</span>` : ''}
+      </div>
 
       <!-- Canlı Lig Durumu veya Oluşturma Kartı -->
       ${isCloud ? `
@@ -653,8 +750,12 @@ function renderLeaderboardView() {
         </div>
 
         <details class="card share-card" style="margin-top:14px;cursor:pointer;">
-          <summary style="font-weight:800;color:var(--muted);padding:4px 0;outline:none;">📦 Çevrimdışı Kod ile Yarış (Eski Manuel Seçenek - Tıkla ve Aç)</summary>
-          <p class="muted small" style="margin-top:10px;">İnternetsiz ortamlar için tek seferlik puan kopyalama yöntemi.</p>
+          <summary style="font-weight:800;color:var(--text);padding:4px 0;outline:none;">📦 Çevrimdışı Arkadaş Kodu Paylaşımı (Tıkla ve Aç)</summary>
+          <p class="muted small" style="margin-top:10px;">İnternetsiz ortamlarda arkadaşınla kod paylaşarak skorunu listeye ekleyebilirsin.</p>
+
+          <div class="offline-sync-notice" style="margin:10px 0 14px;padding:12px 14px;background:color-mix(in srgb, var(--primary) 10%, var(--card-bg, #fff));border-radius:14px;border:1px solid var(--line);font-size:0.85rem;color:var(--text);line-height:1.45;">
+            💡 <b>Otomatik Senkronizasyon:</b> Çevrimdışı çalıştığında tüm XP ve ünitelerin cihazında saklanır. Cihazın internete bağlandığı anda puanların otomatik olarak buluta ve canlı lige aktarılır.
+          </div>
 
           <div class="code-box">
             <label class="lbl">Senin Tek Seferlik Kodun (Anlık Skor):</label>
@@ -662,7 +763,6 @@ function renderLeaderboardView() {
               <input id="myShareCode" class="text-input" value="${myCode}" readonly />
               <button class="btn btn-purple" id="copyCodeBtn">📋 Kopyala</button>
             </div>
-            <p class="muted small">⚠️ Bu kod o anki puanının tek seferlik fotoğrafıdır, otomatik güncellenmez. Canlı yarış için yukarıdaki <b>Canlı Lig</b>'i kullanmalısın.</p>
           </div>
 
           <hr class="divider" />

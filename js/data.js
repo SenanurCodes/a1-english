@@ -440,9 +440,44 @@ const MASCOT_BY_ID = Object.fromEntries(MASCOTS.map(m => [m.id, m]));
 /* ---------- Özel Renk Paletleri (Themes) ---------- */
 const PALETTES = [
   {
+    id: 'cyber',
+    name: 'Cyber Indigo',
+    desc: 'Odaklanmayı artıran modern koyu neon ve lila',
+    isDark: true,
+    colors: {
+      bg: '#0B0F19',
+      cardBg: '#161F33',
+      text: '#F8FAFC',
+      muted: '#94A3B8',
+      line: '#28354D',
+      accent: '#818CF8',
+      accentD: '#6366F1',
+      primary: '#6366F1',
+      primaryD: '#818CF8'
+    }
+  },
+  {
+    id: 'midnight',
+    name: 'Midnight Emerald',
+    desc: 'Ultra koyu siyah ve canlı zümrüt neonu',
+    isDark: true,
+    colors: {
+      bg: '#0A0C10',
+      cardBg: '#141A24',
+      text: '#F0FDF4',
+      muted: '#8B9BAE',
+      line: '#222D3E',
+      accent: '#34D399',
+      accentD: '#10B981',
+      primary: '#10B981',
+      primaryD: '#34D399'
+    }
+  },
+  {
     id: 'nordic',
     name: 'Nordic Sage',
     desc: 'Sakinleştirici adaçayı yeşili ve taş tonları',
+    isDark: false,
     colors: {
       bg: '#F4F7F5',
       cardBg: '#FFFFFF',
@@ -456,25 +491,10 @@ const PALETTES = [
     }
   },
   {
-    id: 'cyber',
-    name: 'Cyber Indigo',
-    desc: 'Odaklanmayı artıran koyu neon & lila',
-    colors: {
-      bg: '#0F172A',
-      cardBg: '#1E293B',
-      text: '#F8FAFC',
-      muted: '#94A3B8',
-      line: '#334155',
-      accent: '#818CF8',
-      accentD: '#6366F1',
-      primary: '#6366F1',
-      primaryD: '#4F46E5'
-    }
-  },
-  {
     id: 'sunset',
     name: 'Sunset Warmth',
     desc: 'Sıcak mercan, bal sarısı ve şeftali enerjisi',
+    isDark: false,
     colors: {
       bg: '#FFF8F4',
       cardBg: '#FFFFFF',
@@ -491,6 +511,7 @@ const PALETTES = [
     id: 'ocean',
     name: 'Deep Ocean',
     desc: 'Berrak turkuaz, ferah okyanus ve nane ferahlığı',
+    isDark: false,
     colors: {
       bg: '#F0F9FF',
       cardBg: '#FFFFFF',

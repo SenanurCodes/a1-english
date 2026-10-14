@@ -2,16 +2,64 @@
    Türkçe Mantık & Günlük Hayat Rehberi (Duolingo Tarzı Değil!)
    - Türk beyni İngilizceye nasıl geçer?
    - Formül ezberletmeyen samimi püf noktaları
+   - Lokomotif Cümle Kuralı (Özne -> Eylem -> Detay)
    - Hayatta kalma kalıpları (Survival English)
    - Türklerin en çok düştüğü komik ve kritik tuzaklar
    ============================================================ */
 
+const LOKOMOTIF_EXAMPLES = [
+  {
+    tr: 'Ben dün kafede arkadaşlarımla kahve içtim.',
+    explanation: 'Türkçede fiil (içtim) en sondadır. İngilizcede ise sabırsızdır, hemen özneden sonra söylenir!',
+    cars: [
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'I', tr: 'Ben', color: '#FF6B6B' },
+      { role: '⚡ 2. EYLEM (Ne yaptı?)', en: 'drank', tr: 'İçtim', color: '#FCC419' },
+      { role: '📦 3. NESNE (Neyi?)', en: 'coffee', tr: 'Kahve', color: '#51CF66' },
+      { role: '👥 4. KİMLE (Kiminle?)', en: 'with my friends', tr: 'Arkadaşlarımla', color: '#20C997' },
+      { role: '📍 5. YER (Nerede?)', en: 'at a cafe', tr: 'Kafede', color: '#339AF0' },
+      { role: '⏰ 6. ZAMAN (Ne zaman?)', en: 'yesterday', tr: 'Dün', color: '#845EF7' }
+    ],
+    fullEn: 'I drank coffee with my friends at a cafe yesterday.'
+  },
+  {
+    tr: 'Biz her sabah parkta koşarız.',
+    explanation: 'Özne ve eylem yapışıktır (We run). Nerede ve ne zaman detayları arkaya sıralanır.',
+    cars: [
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'We', tr: 'Biz', color: '#FF6B6B' },
+      { role: '⚡ 2. EYLEM (Ne yapar?)', en: 'run', tr: 'Koşarız', color: '#FCC419' },
+      { role: '📍 3. YER (Nerede?)', en: 'in the park', tr: 'Parkta', color: '#339AF0' },
+      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'every morning', tr: 'Her sabah', color: '#845EF7' }
+    ],
+    fullEn: 'We run in the park every morning.'
+  },
+  {
+    tr: 'Sarah yarın Londra\'ya uçacak.',
+    explanation: 'Zaman zarfları (tomorrow, yesterday) lokomotifin en son vagonudur!',
+    cars: [
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'Sarah', tr: 'Sarah', color: '#FF6B6B' },
+      { role: '⚡ 2. EYLEM (Ne yapacak?)', en: 'will fly', tr: 'Uçacak', color: '#FCC419' },
+      { role: '📍 3. YER (Nereye?)', en: 'to London', tr: 'Londra\'ya', color: '#339AF0' },
+      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'tomorrow', tr: 'Yarın', color: '#845EF7' }
+    ],
+    fullEn: 'Sarah will fly to London tomorrow.'
+  }
+];
+
+const LOGIC_CATEGORIES = [
+  { id: 'all', label: '🌟 Tümü' },
+  { id: 'mindset', label: '🚂 Cümle Lokomotifi' },
+  { id: 'traps', label: '⚠️ Türk Tuzakları' },
+  { id: 'survival', label: '🛡️ Hayatta Kalma' },
+  { id: 'culture', label: '🤝 Nezaket & Kültür' }
+];
+
 const LOGIC_GUIDES = [
   {
     id: 'mindset',
-    title: '🧠 Cümle Kurma Mantığı',
+    category: 'mindset',
+    title: '🧠 Cümle Kurma Mantığı: Lokomotif Kuralı',
     sub: 'Türkçe vs İngilizce Düşünce Farkı',
-    emoji: '🧩',
+    emoji: '🚂',
     color: '#FF6B6B',
     summary: 'Türkçe cümle tersten gelir, İngilizce ise tren lokomotifi gibi düz gider!',
     content: `
@@ -28,38 +76,23 @@ const LOGIC_GUIDES = [
     `
   },
   {
-    id: 'survival',
-    title: '🛡️ Hayatta Kalma Kalıpları',
-    sub: 'Yurt Dışında / İnternette En Çok Kurtaranlar',
-    emoji: '✈️',
-    color: '#20C997',
-    summary: 'Gramer düşünmeden doğrudan ağızdan çıkması gereken refleks kalıplar.',
-    phrases: [
-      { en: 'Could I get a coffee, please?', tr: 'Bir kahve alabilir miyim lütfen?', tip: 'Restoranda/kafede en kibar ve doğal isteme yolu.' },
-      { en: 'How much is this?', tr: 'Bu ne kadar / Kaç para?', tip: 'Fiyat sorarken doğrudan ve net.' },
-      { en: 'Where is the restroom?', tr: 'Tuvalet nerede?', tip: 'En acil durum sorusu! (toilet yerine restroom daha kibardır).' },
-      { en: 'Could you say that again, please?', tr: 'Tekrar söyleyebilir misiniz lütfen?', tip: 'Anlamadığında çekinmeden kullanacağın kalıp.' },
-      { en: 'I didn\'t catch that.', tr: 'Tam duyamadım / yakalayamadım.', tip: 'Çok doğal bir "anlamadım" deme şekli.' },
-      { en: 'Never mind!', tr: 'Boşver / Önemli değil!', tip: 'Konuyu kapatmak veya dert değil demek için.' },
-      { en: 'It\'s up to you.', tr: 'Sana bağlı / Sen bilirsin.', tip: 'Kararı karşı tarafa bırakırken kullanılır.' }
-    ]
-  },
-  {
     id: 'traps',
-    title: '⚠️ Türk Tuzakları',
+    category: 'traps',
+    title: '⚠️ Türklerin Düştüğü Kritik Tuzaklar',
     sub: 'Türkçeden Birebir Çevirince Komik Olan Hatalar',
     emoji: '🚨',
     color: '#FCC419',
+    summary: 'Kelimeleri birebir Türkçe düşünerek İngilizceye çevirdiğinde bu tuzaklara düşersin.',
     traps: [
       {
         wrong: 'I am agree with you.',
         right: 'I agree with you.',
-        why: 'Türkçede "katılıyorum" diyoruz diye "am" koyma eğilimi olur. "Agree" zaten kendi başına bir fiildir, to be (am/is/are) istemez!'
+        why: 'Türkçede "katılıyorum" diyoruz diye "am" koyma eğilimi olur. "Agree" zaten kendi başına bir fiildir, "am/is/are" istemez!'
       },
       {
         wrong: 'I have 20 years old.',
         right: 'I am 20 years old.',
-        why: 'Türkçede "20 yaşım var / yaşındayım" deriz. İngilizler ise yaşı bir sahiplik değil, bir durum olarak görür: "Ben 20 yaşındayım (I am 20)".'
+        why: 'Türkçede "20 yaşım var" deriz. İngilizler ise yaşı bir eşya gibi sahiplik değil, bir durum olarak görür: "Ben 20 yaşındayım (I am 20)".'
       },
       {
         wrong: 'Close the light!',
@@ -69,20 +102,50 @@ const LOGIC_GUIDES = [
       {
         wrong: 'I am coming from Turkey.',
         right: 'I am from Turkey. / I come from Turkey.',
-        why: '"Coming" dersen şu anda yoldayım uçakla geliyorum gibi anlaşılır. Memleketini söylerken "I am from..." denir.'
+        why: '"Coming" dersen şu anda uçakla yoldayım gibi anlaşılır. Memleketini söylerken "I am from..." kalıbı kullanılır.'
+      },
+      {
+        wrong: 'I am boring.',
+        right: 'I am bored.',
+        why: '"I am boring" dersen "Ben çok sıkıcı bir insanım" demiş olursun! Canın sıkıldığında "I am bored" demelisin.'
+      },
+      {
+        wrong: 'How does it look like?',
+        right: 'What does it look like?',
+        why: 'Türkçede "Nasıl görünüyor?" deriz ama İngilizler "O neye benziyor? (What ... like?)" diye sorar.'
       }
     ]
   },
   {
+    id: 'survival',
+    category: 'survival',
+    title: '🛡️ Hayatta Kalma Kalıpları (Refleks Kalıplar)',
+    sub: 'Yurt Dışında / İnternette En Çok Kurtaranlar',
+    emoji: '✈️',
+    color: '#20C997',
+    summary: 'Gramer formülü düşünmeden doğrudan ağzından çıkması gereken hayat kurtarıcı refleksler.',
+    phrases: [
+      { en: 'Could I get a coffee, please?', tr: 'Bir kahve alabilir miyim lütfen?', tip: 'Restoranda/kafede en kibar ve doğal sipariş isteme yolu.' },
+      { en: 'How much is this?', tr: 'Bu ne kadar / Kaç para?', tip: 'Fiyat sorarken doğrudan ve net kalıp.' },
+      { en: 'Where is the restroom?', tr: 'Tuvalet nerede?', tip: 'En acil durum sorusu! ("toilet" yerine "restroom" daha kibardır).' },
+      { en: 'Could you say that again, please?', tr: 'Tekrar söyleyebilir misiniz lütfen?', tip: 'Anlamadığında çekinmeden kullanacağın kalıp.' },
+      { en: 'I didn\'t catch that.', tr: 'Tam duyamadım / yakalayamadım.', tip: 'Çok doğal ve samimi bir "anlamadım" deme şekli.' },
+      { en: 'Never mind!', tr: 'Boşver / Önemli değil!', tip: 'Konuyu kapatmak veya dert değil demek için kullanılır.' },
+      { en: 'It\'s up to you.', tr: 'Sana bağlı / Sen bilirsin.', tip: 'Kararı karşı tarafa bırakırken kullanılan şık ifade.' },
+      { en: 'Keep the change!', tr: 'Üstü kalsın!', tip: 'Taksi veya bahşiş bırakırken en çok kullanılan havalı kalıp.' }
+    ]
+  },
+  {
     id: 'culture',
+    category: 'culture',
     title: '🤝 Nezaket ve İletişim İncelikleri',
     sub: 'Kaba Görünmeden Konuşmanın Sırrı',
     emoji: '🎩',
     color: '#339AF0',
-    summary: 'İngilizler ve Amerikalılar doğrudan emir kiplerini kaba bulurlar.',
+    summary: 'İngilizler ve Amerikalılar doğrudan emir kiplerini kaba bulurlar. İşte sihirli yumuşatıcılar:',
     content: `
       <h4>1. "Give me water" deme!</h4>
-      <p>Türkçede restoranda <i>"Bana bir su ver"</i> veya <i>"Bir su baksana"</i> demek samimi gelebilir. Ama İngilizcede <b>"Give me water"</b> dersen emir vermiş olursun ve çok kaba kaçar.</p>
+      <p>Türkçede restoranda <i>"Bana bir su ver"</i> veya <i>"Bir su baksana"</i> demek samimi gelebilir. Ama İngilizcede <b>"Give me water"</b> dersen sert bir emir vermiş olursun ve garsonu kırabilirsin.</p>
       <p>Bunun yerine sihirli kelimeleri kullan:</p>
       <ul>
         <li><b>"Can I have a water, please?"</b> (Su alabilir miyim lütfen?)</li>
@@ -94,3 +157,4 @@ const LOGIC_GUIDES = [
     `
   }
 ];
+
