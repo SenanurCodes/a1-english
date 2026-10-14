@@ -386,6 +386,8 @@ function screenHome() {
   const curMascot = mascotService.getActive();
   const encouragements = mascotService.getEncouragements();
   const curEncouragement = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
+  const enQuote = typeof curEncouragement === 'object' ? curEncouragement.en : curEncouragement;
+  const trQuote = typeof curEncouragement === 'object' ? curEncouragement.tr : '';
   const isGuest = state.auth ? state.auth.isGuest : true;
 
   view().innerHTML = `
@@ -416,10 +418,11 @@ function screenHome() {
         <div class="companion-speech-bubble" id="mascotBubbleEl">
           <div class="companion-bubble-header">
             <span class="companion-name-badge">${curMascot.icon} ${esc(curMascot.name)} · <span class="muted small">${esc(curMascot.animal)}</span></span>
-            <button class="speak-btn sm" id="mascotSpeakBtn" title="Dinle" aria-label="Yoldaşı Dinle">🔊</button>
+            <button class="speak-btn sm" id="mascotSpeakBtn" title="İngilizce Dinle" aria-label="Yoldaşını İngilizce Dinle">🔊</button>
           </div>
-          <div class="companion-speech-text" id="mascotSpeechText">"${esc(curEncouragement)}"</div>
-          <div class="companion-bubble-hint">💡 Yoldaşına tıkla: sana özel motivasyon ve ipucu versin!</div>
+          <div class="companion-speech-en" id="mascotSpeechEn" style="font-weight:800;font-size:1.02rem;color:var(--text);margin-bottom:4px;line-height:1.4;">"${esc(enQuote)}"</div>
+          ${trQuote ? `<div class="companion-speech-tr muted small" id="mascotSpeechTr" style="font-weight:600;color:color-mix(in srgb, var(--text) 72%, transparent);">${esc(trQuote)}</div>` : ''}
+          <div class="companion-bubble-hint">💡 Yoldaşına tıkla: sana özel yeni motivasyon versin!</div>
         </div>
         <a class="btn btn-ghost sm companion-switch-btn" href="#/settings" title="Yoldaşı Değiştir">🔄 Değiştir</a>
       </div>
@@ -566,28 +569,36 @@ function screenHome() {
   // Yoldaş İnteraktif Tıklama ve Konuşma
   const mascotAvatar = $('#mascotAvatarWrap');
   const mascotIcon = $('#mascotIconEl');
-  const mascotText = $('#mascotSpeechText');
+  const mascotEnEl = $('#mascotSpeechEn');
+  const mascotTrEl = $('#mascotSpeechTr');
   const mascotSpeak = $('#mascotSpeakBtn');
 
-  const triggerCompanionReaction = () => {
+  const triggerCompanionReaction = (andSpeak = false) => {
     companionEncouragementIdx++;
     const nextMsg = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
-    if (mascotText) mascotText.textContent = `"${nextMsg}"`;
+    const nextEn = typeof nextMsg === 'object' ? nextMsg.en : nextMsg;
+    const nextTr = typeof nextMsg === 'object' ? nextMsg.tr : '';
+    if (mascotEnEl) mascotEnEl.textContent = `"${nextEn}"`;
+    if (mascotTrEl) mascotTrEl.textContent = nextTr;
     if (mascotIcon) {
       mascotIcon.classList.remove('cheer');
       void mascotIcon.offsetWidth; // reflow
       mascotIcon.classList.add('cheer');
     }
+    if (andSpeak) {
+      speak(nextEn, 'en');
+    }
   };
 
   if (mascotAvatar) {
-    mascotAvatar.onclick = triggerCompanionReaction;
+    mascotAvatar.onclick = () => triggerCompanionReaction(true);
   }
   if (mascotSpeak) {
     mascotSpeak.onclick = (e) => {
       e.stopPropagation();
-      const currentText = mascotText ? mascotText.textContent.replace(/^"|"$/g, '') : curMascot.motto;
-      speak(currentText);
+      const currentMsg = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
+      const say = typeof currentMsg === 'object' ? currentMsg.en : (mascotEnEl ? mascotEnEl.textContent.replace(/^"|"$/g, '') : curMascot.motto);
+      speak(say, 'en');
     };
   }
 

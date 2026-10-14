@@ -25,25 +25,57 @@ function normalize(s) {
 
 /* ---------- Seslendirme (Web Speech API) ---------- */
 let enVoice = null;
+let trVoice = null;
+
 function pickVoice() {
+  if (!('speechSynthesis' in window)) return;
   const voices = speechSynthesis.getVoices();
-  enVoice = voices.find(v => /en[-_]US/i.test(v.lang) && /Google|Natural|Online/i.test(v.name))
+  
+  // İngilizce için en doğal ses (Google US, Natural Online, en-US / en-GB)
+  enVoice = voices.find(v => /en[-_]US/i.test(v.lang) && /Google|Natural|Online|Neural/i.test(v.name))
     || voices.find(v => /en[-_]US/i.test(v.lang))
     || voices.find(v => /en[-_]GB/i.test(v.lang))
     || voices.find(v => /^en/i.test(v.lang)) || null;
+
+  // Türkçe için en doğal ses (Google Türkçe, Microsoft Tolga/Emel, Apple Yelda)
+  trVoice = voices.find(v => /tr[-_]TR/i.test(v.lang) && /Google|Natural|Online|Neural/i.test(v.name))
+    || voices.find(v => /tr[-_]TR/i.test(v.lang))
+    || voices.find(v => /^tr/i.test(v.lang)) || null;
 }
+
 if ('speechSynthesis' in window) {
   pickVoice();
   speechSynthesis.onvoiceschanged = pickVoice;
 }
 
-function speak(text) {
-  if (!('speechSynthesis' in window)) return;
+function speak(text, forceLang) {
+  if (!('speechSynthesis' in window) || !text) return;
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  if (enVoice) u.voice = enVoice;
-  u.rate = state.settings.rate || 0.9;
+  
+  // Emojileri temizle (TTS emojileri saçma sapan okumasın veya dili şaşırtmasın)
+  const clean = String(text)
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1FA70}-\u{1FAFF}]/gu, '')
+    .replace(/^["'“”«»]+|["'“”«»]+$/g, '')
+    .trim();
+  if (!clean) return;
+
+  const u = new SpeechSynthesisUtterance(clean);
+
+  // Dil Tespiti: Türkçe mi, İngilizce mi?
+  const isTr = forceLang === 'tr' || (!forceLang && (
+    /[çğıöşüÇĞİÖŞÜ]/.test(clean) ||
+    /\b(miyav|hav|merhaba|hata|hadi|asla|öğren|ders|günlük|yoldaş|fındık|bambu|pamuk|bilge|dost|adım|başarı|güveniyorum)\b/i.test(clean)
+  ));
+
+  if (isTr) {
+    u.lang = 'tr-TR';
+    if (trVoice) u.voice = trVoice;
+  } else {
+    u.lang = 'en-US';
+    if (enVoice) u.voice = enVoice;
+  }
+
+  u.rate = (state.settings && state.settings.rate) || 0.92;
   speechSynthesis.speak(u);
 }
 

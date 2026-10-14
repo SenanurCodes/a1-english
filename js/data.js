@@ -453,10 +453,10 @@ const MASCOTS = [
     motto: 'Çevik, meraklı ve hızla öğrenir!',
     perk: 'Hızlı seri avantajı',
     encouragements: [
-      "Miyav! Hata yapmaktan asla korkma, keşfederek öğren! 🐾",
-      "Bugün yeni bir kelime yakaladın mı? Hadi başlayalım! 🐱",
-      "Her gün 5 dakikalık pratik seni dev adımlarla öne taşır! ✨",
-      "Küçük adımlar büyük başarılar getirir, sana güveniyorum! 🌟"
+      { en: "Never be afraid of making mistakes, learn by exploring! 🐾", tr: "Miyav! Hata yapmaktan asla korkma, keşfederek öğren!" },
+      { en: "Did you catch a new word today? Let's start! 🐱", tr: "Bugün yeni bir kelime yakaladın mı? Hadi başlayalım!" },
+      { en: "Five minutes of practice every day moves you forward! ✨", tr: "Her gün 5 dakikalık pratik seni dev adımlarla öne taşır!" },
+      { en: "Small steps bring great success, I believe in you! 🌟", tr: "Küçük adımlar büyük başarılar getirir, sana güveniyorum!" }
     ]
   },
   {
@@ -467,10 +467,10 @@ const MASCOTS = [
     motto: 'Sadık, enerjik ve asla pes etmez!',
     perk: 'Günlük tekrar gücü',
     encouragements: [
-      "Asla pes etmek yok! Yanındayım, hadi başlayalım! 🐶",
-      "Enerjimiz tavan! Bugünkü hedefini birlikte tamamlayalım! ⚡",
-      "Harika gidiyorsun! Bugünkü dersimizi yapıp seriyi koruyalım! 🎾",
-      "Seninle çalışmak çok keyifli, arkandayım! 🚀"
+      { en: "Never give up! I am right beside you, let's go! 🐶", tr: "Asla pes etmek yok! Yanındayım, hadi başlayalım!" },
+      { en: "Our energy is high! Let's reach our goal together! ⚡", tr: "Enerjimiz tavan! Bugünkü hedefini birlikte tamamlayalım!" },
+      { en: "You are doing great! Let's protect our streak today! 🎾", tr: "Harika gidiyorsun! Bugünkü dersimizi yapıp seriyi koruyalım!" },
+      { en: "Learning with you is so much fun, keep it up! 🚀", tr: "Seninle çalışmak çok keyifli, arkandayım!" }
     ]
   },
   {
@@ -481,10 +481,10 @@ const MASCOTS = [
     motto: 'Kusursuz hafıza ve gramer ustası!',
     perk: 'Doğruluk katsayısı',
     encouragements: [
-      "Her ders bir bilgi damlası, yakında derya olacak! 🦉",
-      "Gramer mantığını kavradığında her şey çorap söküğü gibi gelir! 💡",
-      "Derin bir nefes al, odaklan ve yapabileceğine inan! 📚",
-      "İngilizce bir yetenek değil, keyifli bir pratik meselesidir! 🎯"
+      { en: "Practice makes perfect! Every single lesson counts! 🦉", tr: "Her ders bir bilgi damlası, yakında derya olacak!" },
+      { en: "Once you catch the grammar logic, everything becomes easy! 💡", tr: "Gramer mantığını kavradığında her şey çorap söküğü gibi gelir!" },
+      { en: "Take a deep breath, focus, and believe in yourself! 📚", tr: "Derin bir nefes al, odaklan ve yapabileceğine inan!" },
+      { en: "English is not just talent, it is joyful practice! 🎯", tr: "İngilizce bir yetenek değil, keyifli bir pratik meselesidir!" }
     ]
   },
   {
@@ -495,10 +495,10 @@ const MASCOTS = [
     motto: 'Sakin, dengeli ve istikrarlı ritim!',
     perk: 'Stressiz öğrenme',
     encouragements: [
-      "Acele yok! Sakin ve dengeli adımlar kalıcı öğrenme sağlar! 🎋",
-      "Bugün biraz çalışıp zihnini taze tutmaya ne dersin? 🐼",
-      "Her kelime yeni bir dünya açar, rahat ol ve öğren! 🌸",
-      "İstikrar en büyük süper gücün! Adım adım zirveye! 🌟"
+      { en: "No rush! Calm and steady steps bring real mastery! 🎋", tr: "Acele yok! Sakin ve dengeli adımlar kalıcı öğrenme sağlar!" },
+      { en: "How about a quick lesson to refresh your mind today? 🐼", tr: "Bugün biraz çalışıp zihnini taze tutmaya ne dersin?" },
+      { en: "Every new word opens a new world, relax and enjoy! 🌸", tr: "Her kelime yeni bir dünya açar, rahat ol ve öğren!" },
+      { en: "Consistency is your superpower! Step by step to the top! 🌟", tr: "İstikrar en büyük süper gücün! Adım adım zirveye!" }
     ]
   },
   {
@@ -509,11 +509,11 @@ const MASCOTS = [
     motto: 'Hızlı kelime toplayıcı, pratik zeka!',
     perk: 'Kelime sandığı',
     encouragements: [
-      "Fındık hazır! Hadi bugün 1 ders yapıp fındıkları toplayalım! 🌰",
-      "Pratik zeka pratik yaparak parlar! Sen harikasın! ⚡",
-      "İngilizce her gün sadece 5 dakikayla akıcı hale gelir! 🚀",
-      "Bugünkü hedefini tamamlamak için harika bir an! 🎯",
-      "Birlikte her gün yeni kelimeleri cebe atıyoruz! 🐿️"
+      { en: "Ready to collect new words today? Let's go! 🌰", tr: "Fındık hazır! Hadi bugün 1 ders yapıp fındıkları toplayalım!" },
+      { en: "Quick thinking shines with daily practice! You rock! ⚡", tr: "Pratik zeka pratik yaparak parlar! Sen harikasın!" },
+      { en: "English becomes fluent with just five minutes a day! 🚀", tr: "İngilizce her gün sadece 5 dakikayla akıcı hale gelir!" },
+      { en: "This is a great moment to complete your daily goal! 🎯", tr: "Bugünkü hedefini tamamlamak için harika bir an!" },
+      { en: "Together we add new words into our treasure chest! 🐿️", tr: "Birlikte her gün yeni kelimeleri cebe atıyoruz!" }
     ]
   }
 ];
