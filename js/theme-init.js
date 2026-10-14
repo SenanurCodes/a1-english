@@ -10,4 +10,12 @@
       document.documentElement.setAttribute('data-mode', 'light');
     }
   } catch(e) {}
+
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(function(reg) {
+        console.log('A1 English SW active:', reg.scope);
+      }).catch(function() {});
+    });
+  }
 })();

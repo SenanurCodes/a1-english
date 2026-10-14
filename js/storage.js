@@ -500,7 +500,7 @@ function getLeaderboardList() {
   return [me, ...(state.friends || [])].sort((a, b) => b.xp - a.xp);
 }
 
-// Bulut Ligi Servis Fonksiyonları (Firebase Realtime Database & Fallback)
+// Bulut Ligi Servis Fonksiyonları (Firebase Realtime Database)
 function getFirebaseDatabase() {
   try {
     if (window.firebase && firebase.apps && firebase.apps.length && typeof firebase.database === 'function') {
@@ -510,53 +510,24 @@ function getFirebaseDatabase() {
   return null;
 }
 
-const CLOUD_API = 'https://api.restful-api.dev/objects';
-
 async function createCloudLeague() {
   const me = myLeagueProfile();
   const db = getFirebaseDatabase();
-  if (db) {
-    try {
-      const roomId = 'room_' + Math.random().toString(36).slice(2, 8);
-      await db.ref('leagues/' + roomId).set({
-        createdAt: Date.now(),
-        members: {
-          [state.userId]: me
-        }
-      });
-      state.leagueRoomId = roomId;
-      state.leagueMembers = { [state.userId]: me };
-      saveState();
-      return roomId;
-    } catch (err) {
-      console.warn('Firebase create fallback:', err.message);
-    }
+  if (!db) {
+    throw new Error('Canlı lig kurmak için Firebase bağlantısı gereklidir. Lütfen internet bağlantını veya Firebase ayarlarını kontrol et.');
   }
 
-  const res = await fetch(CLOUD_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: 'A1_LEAGUE_' + (state.name || 'Room'),
-      data: {
-        createdAt: Date.now(),
-        members: {
-          [state.userId]: me
-        }
-      }
-    })
-  });
-  if (!res.ok) {
-    if (res.status === 405 || res.status === 429) {
-      throw new Error('Ücretsiz demo sunucunun günlük istek limiti doldu. Firebase kurulumu ile kalıcı çözüme geçilecek.');
+  const roomId = 'room_' + Math.random().toString(36).slice(2, 8);
+  await db.ref('leagues/' + roomId).set({
+    createdAt: Date.now(),
+    members: {
+      [state.userId]: me
     }
-    throw new Error('Bulut ligi oluşturulamadı.');
-  }
-  const obj = await res.json();
-  state.leagueRoomId = obj.id;
+  });
+  state.leagueRoomId = roomId;
   state.leagueMembers = { [state.userId]: me };
   saveState();
-  return obj.id;
+  return roomId;
 }
 
 async function joinCloudLeague(roomId) {
@@ -565,40 +536,18 @@ async function joinCloudLeague(roomId) {
   const me = myLeagueProfile();
   const db = getFirebaseDatabase();
 
-  if (db) {
-    try {
-      const snap = await db.ref('leagues/' + id).once('value');
-      const val = snap.val();
-      if (!val) throw new Error('Lig odası bulunamadı. Kodu kontrol et.');
-      await db.ref('leagues/' + id + '/members/' + state.userId).set(me);
-      state.leagueRoomId = id;
-      state.leagueMembers = { ...(val.members || {}), [state.userId]: me };
-      saveState();
-      return Object.values(state.leagueMembers);
-    } catch (err) {
-      if (err.message && err.message.includes('bulunamadı')) throw err;
-      console.warn('Firebase join fallback:', err.message);
-    }
+  if (!db) {
+    throw new Error('Canlı lige katılmak için Firebase bağlantısı gereklidir.');
   }
 
-  const res = await fetch(CLOUD_API + '/' + id);
-  if (!res.ok) throw new Error('Lig odası bulunamadı. Kodu kontrol et.');
-  const obj = await res.json();
-  if (!obj.data || !obj.data.members) throw new Error('Geçersiz lig verisi.');
-  
-  obj.data.members[state.userId] = me;
-  obj.data.updatedAt = Date.now();
-
-  await fetch(CLOUD_API + '/' + id, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: obj.name || 'A1_LEAGUE', data: obj.data })
-  });
-
+  const snap = await db.ref('leagues/' + id).once('value');
+  const val = snap.val();
+  if (!val) throw new Error('Lig odası bulunamadı. Kodu kontrol et.');
+  await db.ref('leagues/' + id + '/members/' + state.userId).set(me);
   state.leagueRoomId = id;
-  state.leagueMembers = obj.data.members;
+  state.leagueMembers = { ...(val.members || {}), [state.userId]: me };
   saveState();
-  return Object.values(obj.data.members);
+  return Object.values(state.leagueMembers);
 }
 
 let isSyncInProgress = false;
@@ -609,18 +558,7 @@ async function syncCloudLeague() {
   const me = myLeagueProfile();
   const db = getFirebaseDatabase();
 
-  if (db) {
-    try {
-      await db.ref('leagues/' + state.leagueRoomId + '/members/' + state.userId).set(me);
-      const snap = await db.ref('leagues/' + state.leagueRoomId + '/members').once('value');
-      const members = snap.val() || { [state.userId]: me };
-      state.leagueMembers = members;
-      saveState();
-      return Object.values(members);
-    } catch (e) {
-      console.warn('Firebase sync fallback:', e.message);
-    }
-  }
+  if (!db) return Object.values(state.leagueMembers || {});
 
   if (isSyncInProgress) {
     pendingSyncAgain = true;
@@ -628,36 +566,15 @@ async function syncCloudLeague() {
   }
   isSyncInProgress = true;
   try {
-    const res = await fetch(CLOUD_API + '/' + state.leagueRoomId);
-    if (!res.ok) return null;
-    const obj = await res.json();
-    if (!obj.data || !obj.data.members) return null;
-
-    const mergedMembers = { ...obj.data.members };
-    Object.keys(state.leagueMembers || {}).forEach(uid => {
-      if (uid !== state.userId && state.leagueMembers[uid]) {
-        const localM = state.leagueMembers[uid];
-        const serverM = mergedMembers[uid];
-        if (!serverM || (localM.lastActive && localM.lastActive > (serverM.lastActive || 0))) {
-          mergedMembers[uid] = localM;
-        }
-      }
-    });
-    mergedMembers[state.userId] = me;
-    obj.data.members = mergedMembers;
-    obj.data.updatedAt = Date.now();
-
-    await fetch(CLOUD_API + '/' + state.leagueRoomId, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: obj.name || 'A1_LEAGUE', data: obj.data })
-    });
-
-    state.leagueMembers = mergedMembers;
+    await db.ref('leagues/' + state.leagueRoomId + '/members/' + state.userId).set(me);
+    const snap = await db.ref('leagues/' + state.leagueRoomId + '/members').once('value');
+    const members = snap.val() || { [state.userId]: me };
+    state.leagueMembers = members;
     saveState();
-    return Object.values(mergedMembers);
+    return Object.values(members);
   } catch (e) {
-    return null;
+    console.warn('Firebase sync notice:', e.message);
+    return Object.values(state.leagueMembers || {});
   } finally {
     isSyncInProgress = false;
     if (pendingSyncAgain) {
@@ -673,21 +590,6 @@ async function leaveCloudLeague() {
     if (db) {
       try {
         await db.ref('leagues/' + state.leagueRoomId + '/members/' + state.userId).remove();
-      } catch (e) {}
-    } else {
-      try {
-        const res = await fetch(CLOUD_API + '/' + state.leagueRoomId);
-        if (res.ok) {
-          const obj = await res.json();
-          if (obj.data && obj.data.members) {
-            delete obj.data.members[state.userId];
-            fetch(CLOUD_API + '/' + state.leagueRoomId, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: obj.name, data: obj.data })
-            }).catch(() => {});
-          }
-        }
       } catch (e) {}
     }
   }
