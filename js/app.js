@@ -829,7 +829,7 @@ function renderLeaderboardView() {
                     <span class="lb-uname">${esc(u.name)}</span>
                     ${u.isMe ? '<span class="tag-me">SEN</span>' : ''}
                   </div>
-                  <div class="lb-sub muted small">🔥 ${u.streak || 0} gün seri · 🏅 ${u.unitsDone || 0} ünite</div>
+                  <div class="lb-sub muted small">🔥 ${u.streak || 0} gün · 🏅 ${u.unitsDone || 0} ünite</div>
                 </div>
                 <div class="lb-xp"><b>${u.xp}</b> <span>XP</span></div>
                 ${!u.isMe && !isCloud ? `<button class="btn btn-ghost sm delete-friend-btn" data-name="${esc(u.name)}" title="Arkadaşı Kaldır">✕</button>` : ''}
