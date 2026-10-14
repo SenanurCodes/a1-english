@@ -371,6 +371,8 @@ function screenPlacement() {
 /* ============================================================
    Ana sayfa
    ============================================================ */
+let companionEncouragementIdx = 0;
+
 function screenHome() {
   const lvl = levelInfo();
   const xl = xpLevel();
@@ -382,14 +384,16 @@ function screenHome() {
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
   const curMascot = mascotService.getActive();
+  const encouragements = mascotService.getEncouragements();
+  const curEncouragement = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
   const isGuest = state.auth ? state.auth.isGuest : true;
 
   view().innerHTML = `
     <div class="page">
-      <header class="page-head">
+      <header class="page-head" style="margin-bottom:16px;">
         <div>
           <h1>${greet}, ${esc(state.name)}! 👋</h1>
-          <p class="muted">Bugün ${todayXP} XP kazandın. ${todayXP >= 50 ? 'Günlük hedefin tamamlandı! 🎯' : `Günlük hedefe ${50 - todayXP} XP kaldı.`}</p>
+          <p class="muted">Bugün <b>${todayXP} XP</b> kazandın. ${todayXP >= 50 ? '🎉 Günlük hedefin tamamlandı!' : `Günlük hedefe <b>${50 - todayXP} XP</b> kaldı.`}</p>
         </div>
       </header>
 
@@ -403,21 +407,102 @@ function screenHome() {
         </div>
       ` : ''}
 
-      <div class="card companion-banner" style="display:flex;align-items:center;gap:14px;background:color-mix(in srgb, var(--primary) 8%, var(--card-bg));border:2px solid var(--line);border-radius:20px;padding:16px 20px;margin-bottom:16px;">
-        <div style="font-size:2.8rem;line-height:1;">${curMascot.icon}</div>
-        <div style="flex:1;">
-          <div style="font-weight:900;font-size:1.05rem;color:var(--text);">${esc(curMascot.name)} · <span style="color:var(--muted);font-weight:600;font-size:0.85rem;">${esc(curMascot.animal)}</span></div>
-          <div style="font-size:0.88rem;color:var(--text);margin-top:3px;line-height:1.4;">"${esc(curMascot.motto)}"</div>
+      <!-- İnteraktif Yoldaş Alanı -->
+      <div class="card companion-hero-card" id="mascotHeroCard">
+        <div class="companion-avatar-wrap" id="mascotAvatarWrap" title="${esc(curMascot.name)}'a dokun, moral versin!">
+          <div class="companion-avatar-icon" id="mascotIconEl">${curMascot.icon}</div>
+          <span class="companion-status-dot" title="Aktif ve Hazır"></span>
         </div>
-        <a class="btn btn-ghost sm" href="#/settings" title="Yoldaşı Değiştir">🔄 Yoldaş</a>
+        <div class="companion-speech-bubble" id="mascotBubbleEl">
+          <div class="companion-bubble-header">
+            <span class="companion-name-badge">${curMascot.icon} ${esc(curMascot.name)} · <span class="muted small">${esc(curMascot.animal)}</span></span>
+            <button class="speak-btn sm" id="mascotSpeakBtn" title="Dinle" aria-label="Yoldaşı Dinle">🔊</button>
+          </div>
+          <div class="companion-speech-text" id="mascotSpeechText">"${esc(curEncouragement)}"</div>
+          <div class="companion-bubble-hint">💡 Yoldaşına tıkla: sana özel motivasyon ve ipucu versin!</div>
+        </div>
+        <a class="btn btn-ghost sm companion-switch-btn" href="#/settings" title="Yoldaşı Değiştir">🔄 Değiştir</a>
       </div>
 
-      <div class="grid-3 stats-row">
-        <div class="stat-card grad-1"><div class="sc-icon">🔥</div><div class="sc-val">${currentStreak()}</div><div class="sc-lbl">günlük seri</div></div>
-        <div class="stat-card grad-2"><div class="sc-icon">⭐</div><div class="sc-val">${state.xp}</div><div class="sc-lbl">toplam XP · Lv ${xl.level}</div></div>
-        <div class="stat-card grad-3"><div class="sc-icon">🏅</div><div class="sc-val">${lvl.done}/${UNITS.length}</div><div class="sc-lbl">ünite tamamlandı</div></div>
+      <!-- Kompakt Metrik Şeridi (Modern haplar) -->
+      <div class="metrics-strip">
+        <div class="metric-pill">
+          <div class="mp-icon">🔥</div>
+          <div class="mp-content">
+            <div class="mp-val">${currentStreak()} <span class="mp-unit">Gün</span></div>
+            <div class="mp-lbl">Günlük Seri</div>
+          </div>
+        </div>
+        <div class="metric-pill">
+          <div class="mp-icon">⭐</div>
+          <div class="mp-content">
+            <div class="mp-val">${state.xp} <span class="mp-unit">XP</span></div>
+            <div class="mp-lbl">Toplam Puan · Lv ${xl.level}</div>
+          </div>
+        </div>
+        <div class="metric-pill">
+          <div class="mp-icon">🏅</div>
+          <div class="mp-content">
+            <div class="mp-val">${lvl.done}/${UNITS.length} <span class="mp-unit">(%${lvl.pct})</span></div>
+            <div class="mp-lbl">Ünite Tamamlandı</div>
+          </div>
+        </div>
       </div>
 
+      <!-- Birleşik Odak & Görev Kartı (Ders + Günlük Hedef Tek Odakta) -->
+      <div class="card mission-card">
+        <div class="mission-top">
+          <div class="mission-top-header">
+            <div class="mission-badge">🎯 BUGÜNKÜ ODAK GÖREVİN</div>
+            <div class="mission-level-badge">${lvl.label} · %${lvl.pct} Tamamlandı</div>
+          </div>
+          
+          <div class="mission-goal-bar-wrap">
+            <div class="mission-goal-info">
+              <span class="mgi-title">Hedef İlerlemesi: <b>${Math.min(todayXP, 50)} / 50 XP</b></span>
+              <span class="mgi-sub muted small">${todayXP >= 50 ? '🎉 Günlük Hedef Tamamlandı!' : `${50 - todayXP} XP kaldı`}</span>
+            </div>
+            <div class="progress thick"><div class="bar rainbow" style="width:${Math.min(100, (todayXP / 50) * 100)}%;"></div></div>
+          </div>
+        </div>
+
+        <div class="mission-divider"></div>
+
+        ${nu ? `
+          <div class="mission-unit-row" style="--c:${nu.color}">
+            <div class="mission-unit-left">
+              <div class="mission-unit-avatar">${nu.emoji}</div>
+              <div class="mission-unit-text">
+                <div class="mission-step-tag">Sıradaki Ünite · ${nu.type === 'vocab' ? 'Kelime Dünyası' : 'Gramer Mantığı'}</div>
+                <h2 class="mission-unit-name">${esc(nu.title)}</h2>
+                <div class="mission-unit-desc">${esc(nu.desc || 'Konuyu pekiştir, yeni kelimeler öğren ve XP topla!')}</div>
+              </div>
+            </div>
+            <div class="mission-unit-btns">
+              ${nu.type === 'grammar' 
+                ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu Özeti</a>` 
+                : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kelimeler</a>`}
+              <a class="btn btn-primary mission-play-btn" href="#/lesson/${nu.id}">▶ Derse Başla (+15 XP)</a>
+            </div>
+          </div>
+        ` : `
+          <div class="mission-unit-row" style="--c:#10B981">
+            <div class="mission-unit-left">
+              <div class="mission-unit-avatar">🎓</div>
+              <div class="mission-unit-text">
+                <div class="mission-step-tag">A1 Başarısı</div>
+                <h2 class="mission-unit-name">Tüm A1 Üniteleri Tamamlandı!</h2>
+                <div class="mission-unit-desc">${state.a1BossPassed ? 'Tebrikler! A1 Seviye Sınavını geçtin.' : 'Haritadaki Final Sınavına girerek A2 seviyesini açabilirsin!'}</div>
+              </div>
+            </div>
+            <div class="mission-unit-btns">
+              <a class="btn btn-primary mission-play-btn" href="#/learn">🗺️ Macera Haritasına Git</a>
+            </div>
+          </div>
+        `}
+      </div>
+
+      <!-- İkincil Eylemler Grid (Rekabet, Akıllı Tekrar, Günün Kelimesi, AI) -->
       ${(() => {
         const list = getLeaderboardList();
         const rivals = list.filter(u => !u.isMe);
@@ -430,7 +515,7 @@ function screenHome() {
           ? `⚡ <b>${esc(topRival.name)}</b> <b>${Math.abs(diff)} XP</b> ile önünde! Hemen bir ders yapıp yetiş!` 
           : `🤝 <b>${esc(topRival.name)}</b> ile kafa kafayasınız! (İkiniz de ${state.xp} XP)`;
         return `
-        <div class="card rivalry-card">
+        <div class="card rivalry-card" style="margin-bottom:20px;">
           <div class="rivalry-head">
             <div class="rivalry-avatar">${topRival.avatar || '🧑'}</div>
             <div class="rivalry-info">
@@ -442,66 +527,70 @@ function screenHome() {
         </div>`;
       })()}
 
-      <div class="card level-card">
-        <div class="level-top">
-          <div>
-            <div class="muted small">Mevcut Seviye · Dünya 1</div>
-            <div class="level-label">${lvl.label}</div>
-            <div class="muted">${lvl.desc}</div>
-            ${state.a1BossPassed ? '<div style="margin-top:4px;"><span class="badge" style="background:#51CF66;color:#fff;padding:3px 10px;border-radius:99px;font-size:0.75rem;font-weight:800;">👑 A1 Mezuniyet Rozeti Aktif · A2 Dünyası Açık</span></div>' : ''}
-          </div>
-          <div class="ring" style="--p:${lvl.pct}"><span>%${lvl.pct}</span></div>
-        </div>
-        <div class="progress thick"><div class="bar rainbow" style="width:${lvl.pct}%"></div></div>
-        <div class="daily-goal"><span>Günlük hedef</span><div class="progress"><div class="bar" style="width:${Math.min(100, todayXP * 2)}%;background:#51CF66"></div></div><span>${Math.min(todayXP, 50)}/50</span></div>
-      </div>
-
       <div class="grid-2">
-        ${nu ? `
-        <div class="card action-card" style="--c:${nu.color}">
-          <div class="ac-emoji">${nu.emoji}</div>
-          <div class="ac-body">
-            <div class="muted small">Sıradaki ünite · ${nu.type === 'vocab' ? 'Kelime' : 'Gramer'}</div>
-            <h3>${esc(nu.title)}</h3>
-            <div class="ac-actions">
-              ${nu.type === 'grammar' ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu</a>` : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kartlar</a>`}
-              <a class="btn btn-primary" href="#/lesson/${nu.id}">▶ Derse Başla</a>
-            </div>
-          </div>
-        </div>` : `
-        <div class="card action-card" style="--c:#FCC419"><div class="ac-emoji">🎓</div><div class="ac-body"><h3>Tüm A1 üniteleri tamam!</h3><p class="muted">${state.a1BossPassed ? 'A1 Final Sınavı tamamlandı! Tekrar yaparak bilgini pekiştirebilirsin.' : 'Şimdi haritadaki A1 Seviye Final Sınavı\'na girerek A2 seviyesini açabilirsin!'}</p><div class="ac-actions"><a class="btn btn-primary" href="#/learn">🗺️ Haritaya Git</a></div></div></div>`}
-
         <div class="card action-card" style="--c:#20C997">
           <div class="ac-emoji">🔁</div>
           <div class="ac-body">
-            <div class="muted small">Akıllı tekrar</div>
+            <div class="muted small">Akıllı Aralıklı Tekrar</div>
             <h3>${due ? `${due} kelime tekrar bekliyor` : 'Tekrar edilecek kelime yok'}</h3>
-            <div class="ac-actions"><a class="btn ${due ? 'btn-primary' : 'btn-ghost'}" href="#/review">Tekrar Et</a></div>
+            <p class="muted small">${due ? 'Unutma eğrisine giren kelimeleri taze tut!' : 'Tüm kelimelerin hafızanda taze! Harika gidiyorsun.'}</p>
+            <div class="ac-actions" style="margin-top:10px;"><a class="btn ${due ? 'btn-primary' : 'btn-ghost'}" href="#/review">🔁 Tekrar Et</a></div>
           </div>
         </div>
-      </div>
 
-      <div class="grid-2">
         <div class="card wotd" style="--c:${UNIT_BY_ID[wotd.unitId].color}">
           <div class="muted small">✨ Günün kelimesi</div>
           <div class="wotd-row">
             <div class="wotd-emoji">${wotd.emoji}</div>
-            <div><div class="wotd-en">${esc(wotd.en)}</div><div class="muted">${esc(wotd.tr)}</div></div>
+            <div>
+              <div class="wotd-en">${esc(wotd.en)}</div>
+              <div class="muted">${esc(wotd.tr)}</div>
+            </div>
             <button class="speak-btn" data-say="${esc(wotd.en)}" aria-label="Günün kelimesini dinle" title="Dinle">🔊</button>
           </div>
         </div>
-        <div class="card ai-teaser">
-          <div class="muted small">🤖 AI Öğretmen</div>
-          <h3>${hasAI() ? 'Seviyeni analiz etmemi ister misin?' : 'Yapay zeka öğretmenini etkinleştir'}</h3>
-          <p class="muted">${hasAI() ? 'Hatalarına bakıp sana özel plan ve alıştırma hazırlarım.' : 'Ücretsiz bir Gemini anahtarıyla sana özel analiz, alıştırma ve sohbet pratiği.'}</p>
-          <a class="btn btn-purple" href="#/ai">${hasAI() ? 'AI Öğretmene Git' : 'Nasıl yapılır?'}</a>
-        </div>
+      </div>
+
+      <div class="card ai-teaser" style="margin-top:20px;">
+        <div class="muted small">🤖 AI Öğretmen & Kişisel Rehber</div>
+        <h3>${hasAI() ? 'Seviyeni analiz etmemi ister misin?' : 'Yapay zeka öğretmenini etkinleştir'}</h3>
+        <p class="muted">${hasAI() ? 'Hatalarına bakıp sana özel plan ve alıştırma hazırlarım.' : 'Ücretsiz bir Gemini anahtarıyla sana özel analiz, alıştırma ve sohbet pratiği.'}</p>
+        <a class="btn btn-purple" href="#/ai">${hasAI() ? 'AI Öğretmene Git' : 'Nasıl yapılır?'}</a>
       </div>
     </div>`;
 
   if ($('#homeLinkAuthBtn')) {
     $('#homeLinkAuthBtn').onclick = () => openAuthModal();
   }
+
+  // Yoldaş İnteraktif Tıklama ve Konuşma
+  const mascotAvatar = $('#mascotAvatarWrap');
+  const mascotIcon = $('#mascotIconEl');
+  const mascotText = $('#mascotSpeechText');
+  const mascotSpeak = $('#mascotSpeakBtn');
+
+  const triggerCompanionReaction = () => {
+    companionEncouragementIdx++;
+    const nextMsg = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
+    if (mascotText) mascotText.textContent = `"${nextMsg}"`;
+    if (mascotIcon) {
+      mascotIcon.classList.remove('cheer');
+      void mascotIcon.offsetWidth; // reflow
+      mascotIcon.classList.add('cheer');
+    }
+  };
+
+  if (mascotAvatar) {
+    mascotAvatar.onclick = triggerCompanionReaction;
+  }
+  if (mascotSpeak) {
+    mascotSpeak.onclick = (e) => {
+      e.stopPropagation();
+      const currentText = mascotText ? mascotText.textContent.replace(/^"|"$/g, '') : curMascot.motto;
+      speak(currentText);
+    };
+  }
+
   $$('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
 }
 
@@ -559,11 +648,13 @@ function screenLogic() {
             <!-- Lokomotif Vagonları -->
             <div class="loco-train-track">
               ${activeLoco.cars.map((car, i) => `
-                <div class="loco-wagon" style="--c:${car.color};">
-                  <div class="wagon-tag">${car.role}</div>
-                  <div class="wagon-en">${car.en}</div>
-                  <div class="wagon-tr">${car.tr}</div>
-                  ${i < activeLoco.cars.length - 1 ? '<div class="wagon-coupler">🔗</div>' : ''}
+                <div class="loco-wagon-wrapper">
+                  <div class="loco-wagon" style="--c:${car.color};">
+                    <div class="wagon-tag">${car.role}</div>
+                    <div class="wagon-en">${car.en}</div>
+                    <div class="wagon-tr">${car.tr}</div>
+                  </div>
+                  ${i < activeLoco.cars.length - 1 ? '<div class="wagon-connector">➔</div>' : ''}
                 </div>
               `).join('')}
             </div>
@@ -684,13 +775,13 @@ function renderLeaderboardView() {
       </header>
 
       <!-- Otomatik Senkronizasyon Durum Çubuğu -->
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+      <div class="sync-status-bar">
         <div>
           ${navigator.onLine 
-            ? '<span class="status-pill online">🟢 İnternete Bağlı (Otomatik Bulut Senkronizasyonu Aktif)</span>' 
+            ? '<span class="status-pill online">🟢 İnternete Bağlı (Bulut Senkronizasyonu Aktif)</span>' 
             : '<span class="status-pill offline">📡 Çevrimdışı Mod (İnternete bağlanınca otomatik aktarılır)</span>'}
         </div>
-        ${isCloud ? `<span class="badge" style="background:#51CF66;color:#fff;font-weight:800;">Lig Odası: #${esc(state.leagueRoomId.slice(0, 8))}</span>` : ''}
+        ${isCloud ? `<span class="badge-room">🏆 Lig Odası: <b>#${esc(state.leagueRoomId.slice(0, 8))}</b></span>` : ''}
       </div>
 
       <!-- Canlı Lig Durumu veya Oluşturma Kartı -->
@@ -734,7 +825,10 @@ function renderLeaderboardView() {
                 <div class="lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}</div>
                 <div class="lb-avatar">${u.avatar || '🧑'}</div>
                 <div class="lb-details">
-                  <div class="lb-name"><b>${esc(u.name)}</b> ${u.isMe ? '<span class="tag-me">SEN</span>' : ''}</div>
+                  <div class="lb-name">
+                    <span class="lb-uname">${esc(u.name)}</span>
+                    ${u.isMe ? '<span class="tag-me">SEN</span>' : ''}
+                  </div>
                   <div class="lb-sub muted small">🔥 ${u.streak || 0} gün seri · 🏅 ${u.unitsDone || 0} ünite</div>
                 </div>
                 <div class="lb-xp"><b>${u.xp}</b> <span>XP</span></div>

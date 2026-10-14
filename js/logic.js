@@ -12,12 +12,12 @@ const LOKOMOTIF_EXAMPLES = [
     tr: 'Ben dün kafede arkadaşlarımla kahve içtim.',
     explanation: 'Türkçede fiil (içtim) en sondadır. İngilizcede ise sabırsızdır, hemen özneden sonra söylenir!',
     cars: [
-      { role: '🚂 1. ÖZNE (Kim?)', en: 'I', tr: 'Ben', color: '#FF6B6B' },
-      { role: '⚡ 2. EYLEM (Ne yaptı?)', en: 'drank', tr: 'İçtim', color: '#FCC419' },
-      { role: '📦 3. NESNE (Neyi?)', en: 'coffee', tr: 'Kahve', color: '#51CF66' },
-      { role: '👥 4. KİMLE (Kiminle?)', en: 'with my friends', tr: 'Arkadaşlarımla', color: '#20C997' },
-      { role: '📍 5. YER (Nerede?)', en: 'at a cafe', tr: 'Kafede', color: '#339AF0' },
-      { role: '⏰ 6. ZAMAN (Ne zaman?)', en: 'yesterday', tr: 'Dün', color: '#845EF7' }
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'I', tr: 'Ben', color: '#E11D48' },
+      { role: '⚡ 2. EYLEM (Ne yaptı?)', en: 'drank', tr: 'İçtim', color: '#D97706' },
+      { role: '📦 3. NESNE (Neyi?)', en: 'coffee', tr: 'Kahve', color: '#059669' },
+      { role: '👥 4. KİMLE (Kiminle?)', en: 'with my friends', tr: 'Arkadaşlarımla', color: '#0284C7' },
+      { role: '📍 5. YER (Nerede?)', en: 'at a cafe', tr: 'Kafede', color: '#2563EB' },
+      { role: '⏰ 6. ZAMAN (Ne zaman?)', en: 'yesterday', tr: 'Dün', color: '#7C3AED' }
     ],
     fullEn: 'I drank coffee with my friends at a cafe yesterday.'
   },
@@ -25,10 +25,10 @@ const LOKOMOTIF_EXAMPLES = [
     tr: 'Biz her sabah parkta koşarız.',
     explanation: 'Özne ve eylem yapışıktır (We run). Nerede ve ne zaman detayları arkaya sıralanır.',
     cars: [
-      { role: '🚂 1. ÖZNE (Kim?)', en: 'We', tr: 'Biz', color: '#FF6B6B' },
-      { role: '⚡ 2. EYLEM (Ne yapar?)', en: 'run', tr: 'Koşarız', color: '#FCC419' },
-      { role: '📍 3. YER (Nerede?)', en: 'in the park', tr: 'Parkta', color: '#339AF0' },
-      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'every morning', tr: 'Her sabah', color: '#845EF7' }
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'We', tr: 'Biz', color: '#E11D48' },
+      { role: '⚡ 2. EYLEM (Ne yapar?)', en: 'run', tr: 'Koşarız', color: '#D97706' },
+      { role: '📍 3. YER (Nerede?)', en: 'in the park', tr: 'Parkta', color: '#2563EB' },
+      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'every morning', tr: 'Her sabah', color: '#7C3AED' }
     ],
     fullEn: 'We run in the park every morning.'
   },
@@ -36,10 +36,10 @@ const LOKOMOTIF_EXAMPLES = [
     tr: 'Sarah yarın Londra\'ya uçacak.',
     explanation: 'Zaman zarfları (tomorrow, yesterday) lokomotifin en son vagonudur!',
     cars: [
-      { role: '🚂 1. ÖZNE (Kim?)', en: 'Sarah', tr: 'Sarah', color: '#FF6B6B' },
-      { role: '⚡ 2. EYLEM (Ne yapacak?)', en: 'will fly', tr: 'Uçacak', color: '#FCC419' },
-      { role: '📍 3. YER (Nereye?)', en: 'to London', tr: 'Londra\'ya', color: '#339AF0' },
-      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'tomorrow', tr: 'Yarın', color: '#845EF7' }
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'Sarah', tr: 'Sarah', color: '#E11D48' },
+      { role: '⚡ 2. EYLEM (Ne yapacak?)', en: 'will fly', tr: 'Uçacak', color: '#D97706' },
+      { role: '📍 3. YER (Nereye?)', en: 'to London', tr: 'Londra\'ya', color: '#2563EB' },
+      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'tomorrow', tr: 'Yarın', color: '#7C3AED' }
     ],
     fullEn: 'Sarah will fly to London tomorrow.'
   }

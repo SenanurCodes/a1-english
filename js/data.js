@@ -429,11 +429,77 @@ const ALL_WORDS = Object.values(WORD_BY_KEY);
 
 /* ---------- Yoldaş Hayvanlar (Mascots) ---------- */
 const MASCOTS = [
-  { id: 'cat', name: 'Pamuk', animal: 'Kedi', icon: '🐱', motto: 'Çevik, meraklı ve hızla öğrenir!', perk: 'Hızlı seri avantajı' },
-  { id: 'dog', name: 'Dost', animal: 'Köpek', icon: '🐶', motto: 'Sadık, enerjik ve asla pes etmez!', perk: 'Günlük tekrar gücü' },
-  { id: 'owl', name: 'Bilge', animal: 'Baykuş', icon: '🦉', motto: 'Kusursuz hafıza ve gramer ustası!', perk: 'Doğruluk katsayısı' },
-  { id: 'panda', name: 'Bambu', animal: 'Panda', icon: '🐼', motto: 'Sakin, dengeli ve istikrarlı ritim!', perk: 'Stressiz öğrenme' },
-  { id: 'squirrel', name: 'Fındık', animal: 'Sincap', icon: '🐿️', motto: 'Hızlı kelime toplayıcı, pratik zeka!', perk: 'Kelime sandığı' }
+  {
+    id: 'cat',
+    name: 'Pamuk',
+    animal: 'Kedi',
+    icon: '🐱',
+    motto: 'Çevik, meraklı ve hızla öğrenir!',
+    perk: 'Hızlı seri avantajı',
+    encouragements: [
+      "Miyav! Hata yapmaktan asla korkma, keşfederek öğren! 🐾",
+      "Bugün yeni bir kelime yakaladın mı? Hadi başlayalım! 🐱",
+      "Her gün 5 dakikalık pratik seni dev adımlarla öne taşır! ✨",
+      "Küçük adımlar büyük başarılar getirir, sana güveniyorum! 🌟"
+    ]
+  },
+  {
+    id: 'dog',
+    name: 'Dost',
+    animal: 'Köpek',
+    icon: '🐶',
+    motto: 'Sadık, enerjik ve asla pes etmez!',
+    perk: 'Günlük tekrar gücü',
+    encouragements: [
+      "Asla pes etmek yok! Yanındayım, hadi başlayalım! 🐶",
+      "Enerjimiz tavan! Bugünkü hedefini birlikte tamamlayalım! ⚡",
+      "Harika gidiyorsun! Bugünkü dersimizi yapıp seriyi koruyalım! 🎾",
+      "Seninle çalışmak çok keyifli, arkandayım! 🚀"
+    ]
+  },
+  {
+    id: 'owl',
+    name: 'Bilge',
+    animal: 'Baykuş',
+    icon: '🦉',
+    motto: 'Kusursuz hafıza ve gramer ustası!',
+    perk: 'Doğruluk katsayısı',
+    encouragements: [
+      "Her ders bir bilgi damlası, yakında derya olacak! 🦉",
+      "Gramer mantığını kavradığında her şey çorap söküğü gibi gelir! 💡",
+      "Derin bir nefes al, odaklan ve yapabileceğine inan! 📚",
+      "İngilizce bir yetenek değil, keyifli bir pratik meselesidir! 🎯"
+    ]
+  },
+  {
+    id: 'panda',
+    name: 'Bambu',
+    animal: 'Panda',
+    icon: '🐼',
+    motto: 'Sakin, dengeli ve istikrarlı ritim!',
+    perk: 'Stressiz öğrenme',
+    encouragements: [
+      "Acele yok! Sakin ve dengeli adımlar kalıcı öğrenme sağlar! 🎋",
+      "Bugün biraz çalışıp zihnini taze tutmaya ne dersin? 🐼",
+      "Her kelime yeni bir dünya açar, rahat ol ve öğren! 🌸",
+      "İstikrar en büyük süper gücün! Adım adım zirveye! 🌟"
+    ]
+  },
+  {
+    id: 'squirrel',
+    name: 'Fındık',
+    animal: 'Sincap',
+    icon: '🐿️',
+    motto: 'Hızlı kelime toplayıcı, pratik zeka!',
+    perk: 'Kelime sandığı',
+    encouragements: [
+      "Fındık hazır! Hadi bugün 1 ders yapıp fındıkları toplayalım! 🌰",
+      "Pratik zeka pratik yaparak parlar! Sen harikasın! ⚡",
+      "İngilizce her gün sadece 5 dakikayla akıcı hale gelir! 🚀",
+      "Bugünkü hedefini tamamlamak için harika bir an! 🎯",
+      "Birlikte her gün yeni kelimeleri cebe atıyoruz! 🐿️"
+    ]
+  }
 ];
 const MASCOT_BY_ID = Object.fromEntries(MASCOTS.map(m => [m.id, m]));
 

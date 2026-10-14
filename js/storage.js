@@ -235,6 +235,16 @@ class MascotService {
     return (MASCOT_BY_ID && MASCOT_BY_ID[id]) || MASCOTS[0];
   }
 
+  getEncouragements() {
+    const m = this.getActive();
+    return (m.encouragements && m.encouragements.length > 0) ? m.encouragements : [m.motto];
+  }
+
+  getRandomEncouragement() {
+    const list = this.getEncouragements();
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
   select(id) {
     this.store.setMascot(id);
   }
