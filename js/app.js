@@ -469,7 +469,7 @@ function screenHome() {
             </div>
           </div>
         </div>` : `
-        <div class="card action-card" style="--c:#FCC419"><div class="ac-emoji">🎓</div><div class="ac-body"><h3>Tüm A1 üniteleri tamam!</h3><p class="muted">${state.a1BossPassed ? 'A1 Final Sınavı tamamlandı! Tekrar yaparak bilgini pekiştirebilirsin.' : 'Şimdi Haritadan A1 Boss Testi\'ne girerek A2 Dünyası\'nı açabilirsin!'}</p><div class="ac-actions"><a class="btn btn-primary" href="#/learn">🗺️ Haritaya Git</a></div></div></div>`}
+        <div class="card action-card" style="--c:#FCC419"><div class="ac-emoji">🎓</div><div class="ac-body"><h3>Tüm A1 üniteleri tamam!</h3><p class="muted">${state.a1BossPassed ? 'A1 Final Sınavı tamamlandı! Tekrar yaparak bilgini pekiştirebilirsin.' : 'Şimdi haritadaki A1 Seviye Final Sınavı\'na girerek A2 seviyesini açabilirsin!'}</p><div class="ac-actions"><a class="btn btn-primary" href="#/learn">🗺️ Haritaya Git</a></div></div></div>`}
 
         <div class="card action-card" style="--c:#20C997">
           <div class="ac-emoji">🔁</div>
@@ -828,7 +828,7 @@ function screenLearn() {
           </div>
           <div class="world-badge">${state.a1BossPassed ? '👑' : curMascot.icon}</div>
         </div>
-        <p class="muted small" style="margin:8px 0 12px;">Tüm A1 ünitelerini tamamlayınca <b>A1 Boss Testi (Büyük Final)</b> açılır ve <b>A2 Macera Dünyası</b>'na geçiş hakkı kazanırsın!</p>
+        <p class="muted small" style="margin:8px 0 12px;">Tüm A1 ünitelerini tamamladığında <b>A1 Seviye Final Sınavı</b> açılır ve başarıyla bitirdiğinde <b>A2 Seviyesi</b>'ne geçiş yapabilirsin.</p>
         <div class="progress" style="height:10px;"><div class="bar rainbow" style="width:${pct}%"></div></div>
         <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:800;color:var(--muted);margin-top:6px;">
           <span>${done} / ${UNITS.length} Ünite Tamamlandı</span>
@@ -853,15 +853,15 @@ function screenLearn() {
         }).join('')}
       </div>
 
-      <!-- A1 Boss Testi Banner -->
+      <!-- A1 Seviye Finali Banner -->
       ${(() => {
         const allDone = done >= UNITS.length;
         if (state.a1BossPassed) {
           return `
             <div class="boss-banner">
               <div class="boss-emoji">👑</div>
-              <div class="boss-title">A1 Büyük Finali Fethettin!</div>
-              <div class="boss-sub">Tebrikler şampiyon! A1 seviyesini başarıyla bitirdin ve A2 Macera Dünyası'nın kilidini açtın.</div>
+              <div class="boss-title">A1 Seviye Finali Tamamlandı!</div>
+              <div class="boss-sub">Tebrikler! A1 seviyesini başarıyla bitirdin ve A2 Dünyası'nın kilidini açtın.</div>
               <a class="btn btn-purple" href="#/boss-a1">🔄 Final Sınavını Tekrar Çöz</a>
             </div>
           `;
@@ -870,8 +870,8 @@ function screenLearn() {
           return `
             <div class="boss-banner">
               <div class="boss-emoji">⚔️</div>
-              <div class="boss-title">BÜYÜK FİNAL: A1 Boss Testi Açıldı!</div>
-              <div class="boss-sub">Tüm A1 ünitelerini tamamladın! 15 soruluk final sınavından %75 ve üzeri alarak A2 Dünyası'nın kilidini aç!</div>
+              <div class="boss-title">A1 Seviye Final Sınavı Hazır!</div>
+              <div class="boss-sub">Tüm A1 ünitelerini tamamladın. 15 soruluk final sınavını %75 ve üzeri başarıyla tamamlayıp A2 seviyesine geç!</div>
               <a class="btn btn-primary btn-big" href="#/boss-a1">🔥 Final Sınavına Başla</a>
             </div>
           `;
@@ -879,30 +879,30 @@ function screenLearn() {
         return `
           <div class="boss-banner locked">
             <div class="boss-emoji">🔒</div>
-            <div class="boss-title">A1 Boss Testi (Büyük Seviye Sınavı)</div>
-            <div class="boss-sub">Tüm A1 ünitelerini bitirdiğinde bu kapı açılacak (${done}/${UNITS.length} ünite tamamlandı).</div>
+            <div class="boss-title">A1 Seviye Final Sınavı</div>
+            <div class="boss-sub">A1 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${done}/${UNITS.length} ünite tamamlandı).</div>
           </div>
         `;
       })()}
 
-      <!-- Dünya 2: A2 Macera Dünyası Kartı -->
-      <div class="card world-card" style="margin-top:20px;opacity:${state.a2Unlocked ? '1' : '0.75'};border-style:${state.a2Unlocked ? 'solid' : 'dashed'};">
+      <!-- Dünya 2: A2 Seviyesi Kartı -->
+      <div class="card world-card" style="margin-top:20px;opacity:${state.a2Unlocked ? '1' : '0.8'};border-style:${state.a2Unlocked ? 'solid' : 'dashed'};">
         <div class="world-head">
           <div>
-            <div class="muted small" style="font-weight:800;">SONRAKİ SEVİYE · DÜNYA 2</div>
-            <div class="world-title">🚀 A2: Macera Dünyası</div>
+            <div class="muted small" style="font-weight:800;letter-spacing:0.5px;">SONRAKİ SEVİYE · DÜNYA 2</div>
+            <div class="world-title">🚀 A2 Dünyası</div>
           </div>
           <div class="world-badge">${state.a2Unlocked ? '✨' : '🔒'}</div>
         </div>
-        <p class="muted small" style="margin:8px 0 12px;">
+        <p class="muted small" style="margin:8px 0 12px;line-height:1.5;">
           ${state.a2Unlocked 
-            ? '🌟 <b>Tebrikler! A2 Dünyası açık.</b> Yeni gramer yapıları ve zengin kelime dağarcığı içeren A2 müfredatı çok yakında eklenecek!' 
-            : 'Bu dünya A1 Boss Testi tamamlandığında açılır. Tıpkı şeker oyunu gibi seviyeleri birer birer aşarak zirveye ulaş!'}
+            ? '🌟 <b>Tebrikler! A2 seviyesi açık.</b> Yeni gramer yapıları ve zengin kelime dağarcığı içeren A2 müfredatı çok yakında eklenecek!' 
+            : 'A1 seviyesini ve final sınavını tamamladığında, yeni konular ve ileri seviye kalıplar senin için burada açılacak.'}
         </p>
         <div>
           ${state.a2Unlocked 
             ? '<span class="badge" style="background:#51CF66;color:#fff;padding:6px 14px;border-radius:99px;font-weight:800;">🔓 Kilit Açıldı</span>' 
-            : '<span class="badge" style="background:var(--line);color:var(--muted);padding:6px 14px;border-radius:99px;font-weight:800;">🔒 Kilitli (A1 Boss Testi Gerekir)</span>'}
+            : '<span class="badge" style="background:var(--line);color:var(--muted);padding:6px 14px;border-radius:99px;font-weight:800;">🔒 A1 Tamamlanınca Açılır</span>'}
         </div>
       </div>
     </div>`;
@@ -913,11 +913,11 @@ function screenLearn() {
 }
 
 /* ============================================================
-   A1 Boss Testi (Büyük Final Sınavı)
+   A1 Seviye Final Sınavı (A1 Boss Test)
    ============================================================ */
 function screenA1Boss() {
   const start = () => runLesson({
-    title: '👑 A1 Büyük Final Sınavı (Boss Test)',
+    title: '👑 A1 Seviye Final Sınavı',
     questions: buildA1BossTest(),
     color: '#FCC419',
     exitTo: '#/learn',
@@ -928,7 +928,7 @@ function screenA1Boss() {
         return {
           xp: 200,
           exitTo: '#/learn',
-          message: `🎉 <b>İNANILMAZ! %${pct} Başarı ile A1 Seviyesini Tamamladın!</b><br>+200 XP Kazandın ve 🚀 <b>A2 Macera Dünyası'nın kilidini açtın!</b>`
+          message: `🎉 <b>TEBRİKLER! %${pct} Başarı ile A1 Seviyesini Tamamladın!</b><br>+200 XP Kazandın ve 🚀 <b>A2 Dünyası'nın kilidini açtın!</b>`
         };
       } else {
         const earnedXP = correct * 5;
@@ -936,7 +936,7 @@ function screenA1Boss() {
         return {
           xp: earnedXP,
           exitTo: '#/learn',
-          message: `Boss Testinde %${pct} aldın (${correct}/${total}). Kilidi açmak için en az <b>%75</b> alman gerekiyor. Biraz tekrar yapıp tekrar dene! 💪`
+          message: `Final sınavında %${pct} aldın (${correct}/${total}). Kilidi açmak için en az <b>%75</b> alman gerekiyor. Biraz tekrar yapıp tekrar dene! 💪`
         };
       }
     }
@@ -1056,21 +1056,49 @@ function screenCards(id) {
             <div class="flash-face back"><div class="flash-emoji">${w.emoji}</div><div class="flash-tr">${esc(w.tr)}</div><div class="flash-en small-en">${esc(w.en)}</div></div>
           </div>
         </div>
-        <div class="flash-modern-ctrl">
-          <button class="flash-pill-btn" id="prev">← Önceki</button>
-          <button class="speak-btn big" id="spk" aria-label="Kelimeyi sesli dinle" title="Dinle">🔊</button>
-          <span class="flash-indicator">${i + 1} / ${words.length}${st ? ` · ${'⭐'.repeat(Math.min(st.box, 5)) || '·'}` : ''}</span>
-          <button class="flash-pill-btn" id="next">Sonraki →</button>
+        <!-- Akıcı ve Dengeli Kart Kontrolleri -->
+        <div class="flash-modern-ctrl" style="display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0 10px;">
+          <button class="flash-pill-btn" id="prev" style="min-width:105px;">← Önceki</button>
+          <button class="flash-pill-btn" id="spk" style="background:var(--primary);color:#fff;border-color:var(--primary-d);padding:12px 20px;" title="Telaffuzu Dinle">🔊 Dinle</button>
+          <button class="flash-pill-btn" id="next" style="min-width:105px;">Sonraki →</button>
         </div>
-        <div class="center"><a class="btn btn-primary" href="#/lesson/${u.id}">▶ Bu üniteyle ders yap</a></div>
-        <div class="word-list">${u.words.map(x => `<button class="word-chip" data-en="${esc(x.en)}">${x.emoji} <b>${esc(x.en)}</b> <span>${esc(x.tr)}</span></button>`).join('')}</div>
+
+        <div style="text-align:center;margin:6px 0 18px;font-weight:800;color:var(--muted);font-size:0.95rem;">
+          ${i + 1} / ${words.length}${st ? ` · ${'⭐'.repeat(Math.min(st.box, 5)) || '·'}` : ''}
+        </div>
+
+        <div class="center" style="margin-bottom:26px;">
+          <a class="btn btn-primary" href="#/lesson/${u.id}" style="padding:13px 30px;font-size:1.02rem;">▶ Bu Konuyla Derse Başla</a>
+        </div>
+
+        <!-- Dağınık Butonlar Yerine Düzenli, Açılır-Kapanır Kelime Listesi -->
+        <details class="card" style="border-radius:18px;margin-top:20px;cursor:pointer;">
+          <summary style="font-weight:800;font-size:0.95rem;color:var(--text);display:flex;align-items:center;justify-content:space-between;padding:4px 0;outline:none;">
+            <span>📋 Bu Ünitedeki Tüm Kelimeler (${words.length})</span>
+            <span class="muted small" style="font-weight:700;">Listeyi Aç / Kapat ▾</span>
+          </summary>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;">
+            ${u.words.map(x => `
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:14px;background:color-mix(in srgb, var(--primary) 6%, var(--card-bg, #fff));border:1px solid var(--line);">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <span style="font-size:1.4rem;">${x.emoji}</span>
+                  <div>
+                    <div style="font-weight:900;font-size:0.95rem;color:var(--text);">${esc(x.en)}</div>
+                    <div class="muted small">${esc(x.tr)}</div>
+                  </div>
+                </div>
+                <button class="speak-btn sm list-speak-btn" data-en="${esc(x.en)}" aria-label="Dinle" title="Dinle">🔊</button>
+              </div>
+            `).join('')}
+          </div>
+        </details>
       </div>`;
     $('#flash').onclick = () => $('#flash').classList.toggle('flipped');
     $('#spk').onclick = () => speak(w.en);
     $('#prev').onclick = () => { i = (i - 1 + words.length) % words.length; draw(); };
     $('#next').onclick = () => { i = (i + 1) % words.length; draw(); };
     $('#shuf').onclick = () => { words = shuffle(words); i = 0; draw(); };
-    $$('.word-chip').forEach(c => c.onclick = () => speak(c.dataset.en));
+    $$('.list-speak-btn').forEach(c => c.onclick = (e) => { e.stopPropagation(); speak(c.dataset.en); });
     lessonKeyHandler = e => {
       if (e.key === 'ArrowRight') $('#next').click();
       else if (e.key === 'ArrowLeft') $('#prev').click();
