@@ -6,6 +6,16 @@
 
 const FIREBASE_CONFIG_KEY = 'a1_firebase_config';
 
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCsK3eNAey8glF4N04Ey-rf76BTEf95_OM",
+  authDomain: "a1-english-91fff.firebaseapp.com",
+  projectId: "a1-english-91fff",
+  storageBucket: "a1-english-91fff.firebasestorage.app",
+  messagingSenderId: "808229244489",
+  appId: "1:808229244489:web:c0cefe8fb7cf9bd88cf998",
+  measurementId: "G-66B2H7SHQL"
+};
+
 class AuthService {
   constructor(appStore) {
     this.store = appStore;
@@ -17,8 +27,8 @@ class AuthService {
   _init() {
     try {
       const savedConfig = localStorage.getItem(FIREBASE_CONFIG_KEY);
-      if (savedConfig && window.firebase && !firebase.apps.length) {
-        const config = JSON.parse(savedConfig);
+      const config = savedConfig ? JSON.parse(savedConfig) : DEFAULT_FIREBASE_CONFIG;
+      if (config && window.firebase && !firebase.apps.length) {
         firebase.initializeApp(config);
         this.auth = firebase.auth();
         this.provider = new firebase.auth.GoogleAuthProvider();
