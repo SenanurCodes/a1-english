@@ -2033,6 +2033,7 @@ function openAuthModal() {
   $('#modalGoogleBtn').onclick = async () => {
     try {
       const u = await authService.signInWithGoogle();
+      if (!u) return;
       toast(`Hoş geldin, ${u.displayName || u.email}! 🎉`);
       closeModal();
       router();

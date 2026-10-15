@@ -101,16 +101,19 @@ class AuthService {
       const res = await this.auth.signInWithPopup(this.provider);
       return res.user;
     } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user') {
+        return null;
+      }
       if (err.code === 'auth/unauthorized-domain') {
-        throw new Error('Bu alan adı Firebase yetkili alan adlarında henüz kayıtlı değil. E-posta ile tek tıkla hesabını açabilirsin.');
+        throw new Error('senanurcodes.github.io henüz Firebase Yetkili Alan Adı (Authorized Domain) olarak eklenmemiş.');
       }
       if (err.code === 'auth/popup-blocked') {
-        throw new Error('Açılır pencere tarayıcın tarafından engellendi. Lütfen izin verip tekrar dene.');
+        throw new Error('Açılır pencere tarayıcın tarafından engellendi. Lütfen açılır pencerelere izin ver.');
       }
-      if (err.code === 'auth/internal-error' || (err.message && err.message.includes('internal-error'))) {
-        throw new Error('Google girişi bu projede henüz aktif değil. Lütfen hemen yukarıdaki E-posta ve Şifre ile "✨ Kayıt Ol" butonuna tıkla! ✨');
+      if (err.code === 'auth/operation-not-allowed' || err.code === 'auth/internal-error' || (err.message && err.message.includes('internal-error'))) {
+        throw new Error('Firebase Konsolunda Google ile giriş henüz etkinleştirilmemiş.');
       }
-      throw new Error(err.message || 'Google girişi tamamlanamadı. E-posta ile kayıt olabilirsin.');
+      throw new Error(err.message || 'Google girişi tamamlanamadı.');
     }
   }
 
