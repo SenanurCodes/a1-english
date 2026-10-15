@@ -565,6 +565,109 @@ function removeFriend(name) {
   saveState();
 }
 
+function generateSyncCode() {
+  const payload = {
+    v: 2,
+    uId: state.userId,
+    name: state.name || 'Öğrenci',
+    mascot: state.mascot || 'cat',
+    theme: state.theme || 'nordic',
+    xp: state.xp || 0,
+    streak: normalizeStreak(currentStreak()),
+    units: state.units || {},
+    words: state.words || {},
+    unlockedUpTo: state.unlockedUpTo || 0,
+    a1BossPassed: !!state.a1BossPassed,
+    daily: state.daily || {},
+    t: Date.now()
+  };
+  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+}
+
+function mergeSyncCode(codeStr) {
+  try {
+    const raw = decodeURIComponent(escape(atob(codeStr.trim())));
+    const data = JSON.parse(raw);
+    if (!data || typeof data.xp !== 'number') throw new Error('Geçersiz eşitleme kodu.');
+
+    // 1. XP birleştirme: En yüksek değer kazanır
+    state.xp = Math.max(state.xp || 0, data.xp || 0);
+
+    // 2. Seri birleştirme
+    const myStreak = normalizeStreak(currentStreak());
+    const incStreak = normalizeStreak(data.streak);
+    if (incStreak > myStreak) {
+      state.streak.count = incStreak;
+      state.streak.last = todayStr();
+    }
+
+    // 3. Ünite ilerlemelerini birleştir (hiçbir ünite kaybolmaz)
+    if (data.units && typeof data.units === 'object') {
+      if (!state.units) state.units = {};
+      for (const [uId, uVal] of Object.entries(data.units)) {
+        if (!state.units[uId]) {
+          state.units[uId] = uVal;
+        } else {
+          state.units[uId] = {
+            ...state.units[uId],
+            best: Math.max(state.units[uId].best || 0, uVal.best || 0),
+            done: state.units[uId].done || uVal.done || ((uVal.best || 0) >= 70),
+            attempts: Math.max(state.units[uId].attempts || 1, uVal.attempts || 1),
+            correct: Math.max(state.units[uId].correct || 0, uVal.correct || 0),
+            total: state.units[uId].total || uVal.total || 10
+          };
+        }
+      }
+    }
+
+    // 4. Kilitleri birleştir
+    state.unlockedUpTo = Math.max(state.unlockedUpTo || 0, data.unlockedUpTo || 0);
+    state.a1BossPassed = state.a1BossPassed || !!data.a1BossPassed;
+
+    // 5. Kelimeleri birleştir (kutu seviyesi asla düşürülmez)
+    if (data.words && typeof data.words === 'object') {
+      if (!state.words) state.words = {};
+      for (const [wKey, wVal] of Object.entries(data.words)) {
+        if (!state.words[wKey]) {
+          state.words[wKey] = wVal;
+        } else {
+          state.words[wKey] = {
+            ...state.words[wKey],
+            box: Math.max(state.words[wKey].box || 1, wVal.box || 1),
+            right: Math.max(state.words[wKey].right || 0, wVal.right || 0),
+            wrong: Math.max(state.words[wKey].wrong || 0, wVal.wrong || 0)
+          };
+        }
+      }
+    }
+
+    // 6. Günlük skorları birleştir
+    if (data.daily && typeof data.daily === 'object') {
+      if (!state.daily) state.daily = {};
+      for (const [dKey, dVal] of Object.entries(data.daily)) {
+        state.daily[dKey] = Math.max(state.daily[dKey] || 0, dVal || 0);
+      }
+    }
+
+    // 7. İsim ve yoldaşı güncelle (eğer gelen veri doluysa)
+    if (data.name && data.name !== 'Öğrenci') {
+      state.name = data.name;
+    }
+
+    // Tamamlanmış ünitelerin kelimelerini de senkronize et
+    migrateCompletedUnitsWords();
+
+    saveState();
+    return {
+      xp: state.xp,
+      unitsDone: doneCount(),
+      streak: currentStreak()
+    };
+  } catch (err) {
+    throw new Error('Eşitleme kodu okunamadı. Lütfen kodu eksiksiz yapıştırdığından emin ol!');
+  }
+}
+
 function getLeaderboardList() {
   const me = normalizeLeagueMember(myLeagueProfile(), true);
 

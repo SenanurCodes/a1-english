@@ -89,7 +89,7 @@ function renderNav(active) {
       <div class="mh-stats">
         <a href="#/progress" class="mh-badge streak" title="Günlük Seri">🔥 ${currentStreak()}</a>
         <a href="#/progress" class="mh-badge xp" title="Toplam XP">⭐ ${state.xp}</a>
-        <a href="#/settings" class="mh-btn" title="Yoldaşın: ${esc(curMascot.name)}">${curMascot.icon}</a>
+        <button type="button" class="mh-btn" id="mobileAuthBtn" title="Hesap & Eşitleme" style="background:none;border:none;cursor:pointer;font-size:1.1rem;padding:0 4px;">${isGuest ? '👤' : '🟢'}</button>
         <a href="#/settings" class="mh-btn" title="Ayarlar">⚙️</a>
       </div>
     `;
@@ -121,7 +121,13 @@ function renderNav(active) {
           <div class="mini-stat" style="flex:1;">🔥 ${currentStreak()} gün</div>
           <div class="mini-stat" style="flex:1;">⭐ ${state.xp} XP</div>
         </div>
-        ${isGuest ? `<button class="btn btn-ghost sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;">👤 Giriş Yap</button>` : ''}
+        ${isGuest 
+          ? `<button class="btn btn-ghost sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;">👤 Giriş Yap / Eşitle</button>`
+          : `<button class="btn btn-ghost sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;display:flex;align-items:center;justify-content:center;gap:6px;">
+               <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
+               <span style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;">${esc(state.auth?.user?.displayName || state.name)}</span>
+             </button>`
+        }
       </div>
     </div>
 
@@ -148,6 +154,9 @@ function renderNav(active) {
 
   if ($('#navAuthBtn')) {
     $('#navAuthBtn').onclick = () => openAuthModal();
+  }
+  if ($('#mobileAuthBtn')) {
+    $('#mobileAuthBtn').onclick = () => openAuthModal();
   }
 
   const moreBtn = $('#moreNavBtn');
@@ -1824,81 +1833,214 @@ function screenSettings() {
 /* ============================================================
    Kullanıcı Girişi / Firebase Yetkilendirme Modalı
    ============================================================ */
+/* ============================================================
+   Kullanıcı Girişi / Hesap & Cihaz Eşitleme Modalı
+   ============================================================ */
 function openAuthModal() {
-  const isCfg = authService.isConfigured();
+  const isGuest = state.auth ? state.auth.isGuest : true;
+  const user = state.auth?.user || null;
+  const curMascot = mascotService.getActive();
+  const syncCode = generateSyncCode();
+
+  if (!isGuest && user) {
+    // Giriş Yapmış Kullanıcı Profili Modalı
+    openModal(`
+      <div class="modal-head">
+        <div class="modal-emoji">${curMascot.icon}</div>
+        <div>
+          <h2>${esc(user.displayName || state.name)}</h2>
+          <p class="muted small">${esc(user.email || 'Kayıtlı Profil')}</p>
+        </div>
+      </div>
+
+      <div style="margin: 16px 0; display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex;gap:8px;">
+          <div class="mini-stat" style="flex:1;text-align:center;padding:10px;">
+            <div style="font-size:1.2rem;font-weight:800;color:var(--primary);">⭐ ${state.xp}</div>
+            <div class="muted small">Toplam XP</div>
+          </div>
+          <div class="mini-stat" style="flex:1;text-align:center;padding:10px;">
+            <div style="font-size:1.2rem;font-weight:800;color:var(--primary);">🔥 ${currentStreak()}</div>
+            <div class="muted small">Günlük Seri</div>
+          </div>
+          <div class="mini-stat" style="flex:1;text-align:center;padding:10px;">
+            <div style="font-size:1.2rem;font-weight:800;color:var(--primary);">🎖️ ${doneCount()}</div>
+            <div class="muted small">Ünite</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin:0;padding:14px;background:color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff));">
+          <b style="font-size:0.9rem;">📲 Cihazlar Arası Hızlı Eşitle</b>
+          <p class="muted small" style="margin:4px 0 10px;">Bu telefondaki / bilgisayardaki puanlarını diğer cihazına tek tıkla kopyala:</p>
+          <div class="type-row">
+            <input class="text-input" id="profileSyncCode" value="${syncCode}" readonly style="font-size:0.75rem;" />
+            <button class="btn btn-primary sm" id="copyProfileSyncBtn">📋 Kopyala</button>
+          </div>
+        </div>
+
+        <div class="modal-actions" style="margin-top:8px;">
+          <button class="btn btn-red" id="modalLogoutBtn" style="width:100%;justify-content:center;">🚪 Hesaptan Çıkış Yap</button>
+        </div>
+      </div>
+    `);
+
+    $('#copyProfileSyncBtn').onclick = () => {
+      navigator.clipboard.writeText($('#profileSyncCode').value).then(() => {
+        toast('Eşitleme kodu kopyalandı! 📋 Diğer cihazındaki PatiLingo\'ya yapıştırabilirsin.');
+      }).catch(() => {
+        $('#profileSyncCode').select();
+        document.execCommand('copy');
+        toast('Eşitleme kodu kopyalandı! 📋');
+      });
+    };
+
+    $('#modalLogoutBtn').onclick = async () => {
+      if (confirm('Hesabından çıkış yapmak istediğinden emin misin?')) {
+        await authService.logout();
+        toast('Çıkış yapıldı. Misafir moduna geçildi.');
+        closeModal();
+        router();
+      }
+    };
+    return;
+  }
+
+  // Giriş Yapmamış / Kayıt Olacak Kullanıcı Modalı
   openModal(`
     <div class="modal-head">
-      <div class="modal-emoji">🔐</div>
+      <div class="modal-emoji">🐾</div>
       <div>
-        <h2>Kullanıcı Girişi & Hesap</h2>
-        <p class="muted small">İlerlemeni buluta yedekle ve arkadaşlarınla canlı yarış.</p>
+        <h2>PatiLingo Hesabı & Eşitleme</h2>
+        <p class="muted small">İlerlemeni kaydet ve cihazların arasında tek tıkla eşitle.</p>
       </div>
     </div>
-    
-    <div style="margin: 16px 0; display:flex; flex-direction:column; gap:12px;">
-      <button class="btn btn-big btn-primary" id="modalGoogleBtn" style="justify-content:center;font-size:1.05rem;">
-        <span style="font-size:1.3rem;">🌐</span> Google ile Giriş Yap
-      </button>
 
-      <div style="text-align:center;position:relative;margin:6px 0;">
-        <hr style="border:none;border-top:1px solid var(--line);margin:0;" />
-        <span style="position:relative;top:-10px;background:var(--card-bg, #fff);padding:0 10px;font-size:0.75rem;color:var(--muted);font-weight:700;">VEYA E-POSTA İLE</span>
+    <!-- Sekmeler -->
+    <div style="display:flex;gap:6px;margin:14px 0;background:var(--line);padding:4px;border-radius:12px;">
+      <button id="tabBtnLogin" class="btn btn-ghost sm" style="flex:1;background:var(--card-bg, #fff);font-weight:700;">🔑 Giriş & Kayıt</button>
+      <button id="tabBtnSync" class="btn btn-ghost sm" style="flex:1;font-weight:700;color:var(--muted);">📲 Cihaz Eşitle</button>
+    </div>
+
+    <!-- Sekme 1: E-posta ile Giriş & Kayıt -->
+    <div id="tabContentLogin" style="display:flex; flex-direction:column; gap:10px;">
+      <div>
+        <label class="lbl">Adın / Takma Adın</label>
+        <input type="text" id="modalNameIn" class="text-input" value="${esc(state.name !== 'Öğrenci' ? state.name : '')}" placeholder="Örn: Sena, Kenan" />
       </div>
-
       <div>
         <label class="lbl">E-posta</label>
-        <input type="email" id="modalEmailIn" class="text-input" placeholder="ornek@gmail.com" />
+        <input type="email" id="modalEmailIn" class="text-input" placeholder="ornek@gmail.com" autocomplete="email" />
       </div>
       <div>
         <label class="lbl">Şifre</label>
-        <input type="password" id="modalPassIn" class="text-input" placeholder="En az 6 karakter" />
+        <input type="password" id="modalPassIn" class="text-input" placeholder="En az 4 karakter" autocomplete="current-password" />
       </div>
 
-      <div class="modal-actions" style="margin-top:6px;">
-        <button class="btn btn-ghost" id="modalEmailLoginBtn">Giriş Yap</button>
-        <button class="btn btn-ghost" id="modalEmailRegBtn">Kayıt Ol</button>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button class="btn btn-primary btn-big" id="modalEmailRegBtn" style="flex:1;justify-content:center;">✨ Kayıt Ol</button>
+        <button class="btn btn-ghost btn-big" id="modalEmailLoginBtn" style="flex:1;justify-content:center;">🔑 Giriş Yap</button>
       </div>
 
-      ${!isCfg ? `
-        <details style="margin-top:10px;background:color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff));border-radius:12px;padding:10px 12px;border:1px solid var(--line);cursor:pointer;">
-          <summary style="font-weight:800;font-size:0.82rem;color:var(--primary);outline:none;">🔧 Firebase Yapılandırması (Geliştirici / Proje Ayarı)</summary>
-          <p class="muted small" style="margin:8px 0;">Firebase Console'dan kopyaladığın JSON veya API Key bilgilerini buraya kaydedebilirsin:</p>
-          <textarea id="firebaseConfigJsonIn" class="text-input" style="height:70px;font-family:monospace;font-size:0.78rem;" placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "a1-english"}'></textarea>
-          <button class="btn btn-primary sm" id="saveFirebaseCfgBtn" style="margin-top:8px;">Firebase'i Kaydet</button>
-        </details>
-      ` : ''}
+      <div style="text-align:center;position:relative;margin:10px 0 4px;">
+        <hr style="border:none;border-top:1px solid var(--line);margin:0;" />
+        <span style="position:relative;top:-10px;background:var(--card-bg, #fff);padding:0 10px;font-size:0.75rem;color:var(--muted);font-weight:700;">VEYA</span>
+      </div>
 
-      <div style="text-align:center;margin-top:10px;">
-        <button class="btn btn-ghost sm" id="modalGuestBtn">👤 Misafir Olarak Devam Et</button>
+      <button class="btn btn-ghost" id="modalGoogleBtn" style="justify-content:center;font-size:0.95rem;width:100%;">
+        <span style="font-size:1.1rem;">🌐</span> Google ile Giriş Yap
+      </button>
+
+      <div style="text-align:center;margin-top:4px;">
+        <button class="btn btn-ghost sm" id="modalGuestBtn" style="color:var(--muted);font-size:0.8rem;">👤 Misafir Modunda Kal</button>
+      </div>
+    </div>
+
+    <!-- Sekme 2: Cihaz Eşitleme (Bilgisayar ↔ Telefon) -->
+    <div id="tabContentSync" style="display:none; flex-direction:column; gap:12px;">
+      <div class="card" style="margin:0;padding:12px;background:color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff));">
+        <b style="font-size:0.88rem;">1. Bu Cihazdaki İlerlemeni Kopyala</b>
+        <p class="muted small" style="margin:3px 0 8px;">Bu cihazdaki (${state.xp} XP, ${doneCount()} ünite) ilerlemeni diğer cihaza aktarmak için kodu al:</p>
+        <div class="type-row">
+          <input class="text-input" id="myDeviceCodeOut" value="${syncCode}" readonly style="font-size:0.75rem;" />
+          <button class="btn btn-primary sm" id="copyDeviceCodeBtn">📋 Kopyala</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin:0;padding:12px;">
+        <b style="font-size:0.88rem;">2. Diğer Cihazdaki İlerlemeyi Buraya Aktar</b>
+        <p class="muted small" style="margin:3px 0 8px;">Diğer cihazından aldığın kodu buraya yapıştırıp puanlarını birleştir:</p>
+        <textarea id="incomingDeviceCodeIn" class="text-input" placeholder="Diğer cihazından kopyaladığın kodu buraya yapıştır..." style="height:65px;font-size:0.78rem;font-family:monospace;"></textarea>
+        <button class="btn btn-green btn-big" id="applyDeviceSyncBtn" style="width:100%;margin-top:8px;justify-content:center;">⚡ Şimdi Eşitle & Birleştir</button>
       </div>
     </div>
   `);
+
+  // Sekme Geçişleri
+  $('#tabBtnLogin').onclick = () => {
+    $('#tabBtnLogin').style.background = 'var(--card-bg, #fff)';
+    $('#tabBtnLogin').style.color = 'var(--text)';
+    $('#tabBtnSync').style.background = 'transparent';
+    $('#tabBtnSync').style.color = 'var(--muted)';
+    $('#tabContentLogin').style.display = 'flex';
+    $('#tabContentSync').style.display = 'none';
+  };
+
+  $('#tabBtnSync').onclick = () => {
+    $('#tabBtnSync').style.background = 'var(--card-bg, #fff)';
+    $('#tabBtnSync').style.color = 'var(--text)';
+    $('#tabBtnLogin').style.background = 'transparent';
+    $('#tabBtnLogin').style.color = 'var(--muted)';
+    $('#tabContentSync').style.display = 'flex';
+    $('#tabContentLogin').style.display = 'none';
+  };
+
+  $('#copyDeviceCodeBtn').onclick = () => {
+    navigator.clipboard.writeText($('#myDeviceCodeOut').value).then(() => {
+      toast('Eşitleme kodu kopyalandı! 📋 Diğer cihazında "Cihaz Eşitle" bölümüne yapıştır.');
+    }).catch(() => {
+      $('#myDeviceCodeOut').select();
+      document.execCommand('copy');
+      toast('Eşitleme kodu kopyalandı! 📋');
+    });
+  };
+
+  $('#applyDeviceSyncBtn').onclick = () => {
+    const val = $('#incomingDeviceCodeIn').value.trim();
+    if (!val) return toast('Lütfen diğer cihazından aldığın kodu yapıştır!');
+    try {
+      const res = mergeSyncCode(val);
+      toast(`🎉 Cihazlar başarıyla eşitlendi! Toplam: ${res.xp} XP, ${res.unitsDone} Ünite`);
+      closeModal();
+      router();
+    } catch (e) {
+      toast(e.message);
+    }
+  };
 
   $('#modalGuestBtn').onclick = () => {
     closeModal();
     toast('Misafir modunda devam ediliyor.');
   };
 
-  if ($('#saveFirebaseCfgBtn')) {
-    $('#saveFirebaseCfgBtn').onclick = () => {
-      const raw = $('#firebaseConfigJsonIn').value.trim();
-      if (!raw) return toast('Lütfen Firebase yapılandırma JSON metnini gir.');
-      try {
-        const cfg = JSON.parse(raw);
-        authService.setupConfig(cfg);
-        toast('Firebase yapılandırması kaydedildi! ✅');
-        closeModal();
-        openAuthModal();
-      } catch (err) {
-        toast('Geçersiz JSON formatı: ' + err.message);
-      }
-    };
-  }
-
   $('#modalGoogleBtn').onclick = async () => {
     try {
-      const user = await authService.signInWithGoogle();
-      toast(`Hoş geldin, ${user.displayName || user.email}! 🎉`);
+      const u = await authService.signInWithGoogle();
+      toast(`Hoş geldin, ${u.displayName || u.email}! 🎉`);
+      closeModal();
+      router();
+    } catch (err) {
+      toast(err.message);
+    }
+  };
+
+  $('#modalEmailRegBtn').onclick = async () => {
+    const email = $('#modalEmailIn').value.trim();
+    const pass = $('#modalPassIn').value.trim();
+    const name = $('#modalNameIn').value.trim() || state.name;
+    if (!email || !pass) return toast('Lütfen e-posta ve şifreni gir.');
+    try {
+      const u = await authService.registerWithEmail(email, pass, name);
+      toast(`🎉 Tebrikler! Hesabın oluşturuldu. Hoş geldin, ${u.displayName}!`);
       closeModal();
       router();
     } catch (err) {
@@ -1911,22 +2053,8 @@ function openAuthModal() {
     const pass = $('#modalPassIn').value.trim();
     if (!email || !pass) return toast('Lütfen e-posta ve şifreni gir.');
     try {
-      const user = await authService.signInWithEmail(email, pass);
-      toast(`Giriş yapıldı: ${user.email} ✅`);
-      closeModal();
-      router();
-    } catch (err) {
-      toast(err.message);
-    }
-  };
-
-  $('#modalEmailRegBtn').onclick = async () => {
-    const email = $('#modalEmailIn').value.trim();
-    const pass = $('#modalPassIn').value.trim();
-    if (!email || !pass) return toast('Lütfen e-posta ve şifreni gir.');
-    try {
-      const user = await authService.registerWithEmail(email, pass, state.name);
-      toast(`Hesabın oluşturuldu! Hoş geldin 🎉`);
+      const u = await authService.signInWithEmail(email, pass);
+      toast(`Giriş yapıldı: ${u.displayName || u.email} ✅`);
       closeModal();
       router();
     } catch (err) {

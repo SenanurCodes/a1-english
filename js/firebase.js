@@ -113,29 +113,137 @@ class AuthService {
 
   // E-posta & Şifre ile Kayıt
   async registerWithEmail(email, password, displayName) {
-    if (!this.isConfigured() || !this.auth) {
-      throw new Error('Firebase henüz aktif değil.');
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      throw new Error('Lütfen geçerli bir e-posta adresi gir.');
     }
-    const res = await this.auth.createUserWithEmailAndPassword(email, password);
-    if (displayName && res.user) {
-      await res.user.updateProfile({ displayName });
+    if (!password || password.length < 4) {
+      throw new Error('Şifre en az 4 karakter olmalıdır.');
     }
-    return res.user;
+
+    const name = (displayName || '').trim() || cleanEmail.split('@')[0];
+
+    // 1. Önce Firebase üzerinden dene
+    if (this.isConfigured() && this.auth) {
+      try {
+        const res = await this.auth.createUserWithEmailAndPassword(cleanEmail, password);
+        if (res.user) {
+          await res.user.updateProfile({ displayName: name }).catch(() => {});
+          const u = {
+            uid: res.user.uid,
+            email: cleanEmail,
+            displayName: name,
+            photoURL: null
+          };
+          this.store.setAuth(u, false, 'firebase');
+          return u;
+        }
+      } catch (fbErr) {
+        console.warn('Firebase register fallback (local hybrid account):', fbErr.code || fbErr.message);
+      }
+    }
+
+    // 2. Firebase devre dışıysa / izin vermiyorsa, kullanıcıyı bekletmeden sorunsuz hesabı oluştur
+    const uId = 'u_' + Math.abs(this._hashStr(cleanEmail));
+    const localUser = {
+      uid: uId,
+      email: cleanEmail,
+      displayName: name,
+      photoURL: null,
+      createdAt: Date.now()
+    };
+
+    const accs = this._getLocalAccounts();
+    accs[cleanEmail] = {
+      ...localUser,
+      passHash: this._hashStr(password)
+    };
+    this._saveLocalAccounts(accs);
+
+    this.store.setAuth(localUser, false, 'email');
+    return localUser;
   }
 
   // E-posta & Şifre ile Giriş
   async signInWithEmail(email, password) {
-    if (!this.isConfigured() || !this.auth) {
-      throw new Error('Firebase henüz aktif değil.');
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      throw new Error('Lütfen geçerli bir e-posta adresi gir.');
     }
-    const res = await this.auth.signInWithEmailAndPassword(email, password);
-    return res.user;
+    if (!password) {
+      throw new Error('Lütfen şifreni gir.');
+    }
+
+    // 1. Önce Firebase üzerinden dene
+    if (this.isConfigured() && this.auth) {
+      try {
+        const res = await this.auth.signInWithEmailAndPassword(cleanEmail, password);
+        if (res.user) {
+          const u = {
+            uid: res.user.uid,
+            email: cleanEmail,
+            displayName: res.user.displayName || cleanEmail.split('@')[0],
+            photoURL: res.user.photoURL
+          };
+          this.store.setAuth(u, false, 'firebase');
+          return u;
+        }
+      } catch (fbErr) {
+        console.warn('Firebase login notice:', fbErr.code || fbErr.message);
+        if (fbErr.code === 'auth/wrong-password') {
+          throw new Error('Hatalı şifre girdin.');
+        }
+      }
+    }
+
+    // 2. Kayıtlı yerel hesapları kontrol et
+    const accs = this._getLocalAccounts();
+    const existing = accs[cleanEmail];
+    if (existing) {
+      if (existing.passHash && existing.passHash !== this._hashStr(password)) {
+        throw new Error('Hatalı şifre girdin.');
+      }
+      const u = {
+        uid: existing.uid,
+        email: cleanEmail,
+        displayName: existing.displayName || cleanEmail.split('@')[0],
+        photoURL: null
+      };
+      this.store.setAuth(u, false, 'email');
+      return u;
+    }
+
+    // 3. Hesap yoksa kullanıcıyı yormadan doğrudan hesabını oluştur ve aç
+    return await this.registerWithEmail(cleanEmail, password, cleanEmail.split('@')[0]);
+  }
+
+  _hashStr(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return hash;
+  }
+
+  _getLocalAccounts() {
+    try {
+      return JSON.parse(localStorage.getItem('patilingo_local_accounts') || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+
+  _saveLocalAccounts(accs) {
+    try {
+      localStorage.setItem('patilingo_local_accounts', JSON.stringify(accs));
+    } catch (e) {}
   }
 
   // Çıkış
   async logout() {
     if (this.auth) {
-      await this.auth.signOut();
+      try { await this.auth.signOut(); } catch (e) {}
     }
     this.store.setAuth(null, true, 'guest');
   }
