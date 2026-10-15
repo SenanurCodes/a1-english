@@ -1,8 +1,8 @@
 /* ============================================================
-   PatiLingo v2.4 - Service Worker (Offline First Caching)
+   PatiLingo v2.5 - Service Worker (Offline First Caching)
    ============================================================ */
 
-const CACHE_NAME = 'patilingo-cache-v2.4.0';
+const CACHE_NAME = 'patilingo-cache-v2.5.0';
 
 const PRECACHE_ASSETS = [
   './',
@@ -13,14 +13,14 @@ const PRECACHE_ASSETS = [
   'icons/favicon.png',
   'css/style.css?v=2.2.3',
   'js/theme-init.js',
-  'js/data.js?v=2.0.0',
-  'js/logic.js?v=2.0.0',
-  'js/storage.js?v=2.0.0',
-  'js/firebase.js?v=2.0.0',
-  'js/utils.js?v=2.0.0',
-  'js/ai.js?v=2.0.0',
-  'js/exercises.js?v=2.0.0',
-  'js/app.js?v=2.0.0'
+  'js/data.js?v=2.5.0',
+  'js/logic.js?v=2.5.0',
+  'js/storage.js?v=2.5.0',
+  'js/firebase.js?v=2.5.0',
+  'js/utils.js?v=2.5.0',
+  'js/ai.js?v=2.5.0',
+  'js/exercises.js?v=2.5.0',
+  'js/app.js?v=2.5.0'
 ];
 
 // Install: Core dosyaları önbelleğe al

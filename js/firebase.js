@@ -27,10 +27,25 @@ class AuthService {
 
   _init() {
     try {
+      let config = DEFAULT_FIREBASE_CONFIG;
       const savedConfig = localStorage.getItem(FIREBASE_CONFIG_KEY);
-      const config = savedConfig ? JSON.parse(savedConfig) : DEFAULT_FIREBASE_CONFIG;
-      if (config && window.firebase && !firebase.apps.length) {
-        firebase.initializeApp(config);
+      if (savedConfig) {
+        try {
+          const parsed = JSON.parse(savedConfig);
+          if (parsed && parsed.apiKey && parsed.projectId) {
+            config = parsed;
+          } else {
+            localStorage.removeItem(FIREBASE_CONFIG_KEY);
+          }
+        } catch (e) {
+          localStorage.removeItem(FIREBASE_CONFIG_KEY);
+        }
+      }
+
+      if (window.firebase) {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(config);
+        }
         this.auth = firebase.auth();
         this.provider = new firebase.auth.GoogleAuthProvider();
 
@@ -56,7 +71,11 @@ class AuthService {
   }
 
   isConfigured() {
-    return !!(window.firebase && firebase.apps && firebase.apps.length);
+    if (!window.firebase) return false;
+    if (!firebase.apps.length) {
+      this._init();
+    }
+    return !!(firebase.apps && firebase.apps.length);
   }
 
   setupConfig(configObj) {
@@ -73,12 +92,21 @@ class AuthService {
   // Google ile Giriş
   async signInWithGoogle() {
     if (!this.isConfigured() || !this.auth) {
-      throw new Error('Firebase henüz yapılandırılmadı. Ayarlardan Firebase yapılandırmasını ekleyebilirsin.');
+      this._init();
+    }
+    if (!this.auth) {
+      throw new Error('Firebase bağlantısı kurulamadı. İnternet bağlantını kontrol edip sayfayı yenile.');
     }
     try {
       const res = await this.auth.signInWithPopup(this.provider);
       return res.user;
     } catch (err) {
+      if (err.code === 'auth/unauthorized-domain') {
+        throw new Error('Bu alan adı Firebase yetkili alan adlarında henüz kayıtlı değil. Giriş yapmadan Misafir Modu ile devam edebilirsin.');
+      }
+      if (err.code === 'auth/popup-blocked') {
+        throw new Error('Açılır pencere tarayıcın tarafından engellendi. Lütfen izin verip tekrar dene.');
+      }
       throw new Error(err.message || 'Google girişi tamamlanamadı.');
     }
   }
