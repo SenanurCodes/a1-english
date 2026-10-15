@@ -2,13 +2,12 @@
   try {
     var raw = localStorage.getItem('a1english_v2') || localStorage.getItem('a1_state_v2') || localStorage.getItem('a1_state') || '{}';
     var s = JSON.parse(raw);
-    var t = s.theme || 'nordic';
+    var t = localStorage.getItem('a1_theme_id') || s.theme || 'nordic';
     document.documentElement.setAttribute('data-theme', t);
-    if (t === 'cyber' || t === 'midnight') {
-      document.documentElement.setAttribute('data-mode', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-mode', 'light');
-    }
+
+    // Tek kaynak: ThemeService.apply() tarafından kaydedilen 'a1_data_mode' okunur
+    var mode = localStorage.getItem('a1_data_mode') || 'light';
+    document.documentElement.setAttribute('data-mode', mode);
 
     var fbCfg = localStorage.getItem('a1_firebase_config');
     if (fbCfg) {

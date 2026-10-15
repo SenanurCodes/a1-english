@@ -9,6 +9,7 @@ const SRS_INTERVALS = [0, 1, 2, 4, 7, 15, 30]; // gün (Leitner kutuları)
 
 function defaultState() {
   return {
+    schemaVersion: 1,
     userId: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
     onboarded: false,
     name: 'Öğrenci',
@@ -74,6 +75,27 @@ class AppStore {
     }
   }
 
+  _migrate(data, fromVer, toVer) {
+    let current = { ...data };
+    console.info(`[Store Migration] Veri göçü uygulanıyor: v${fromVer} -> v${toVer}`);
+
+    // v0 -> v1: schemaVersion ekleme, temel veri bütünlüğü garantisi
+    if (fromVer < 1 && toVer >= 1) {
+      current.schemaVersion = 1;
+      if (!current.auth) current.auth = defaultState().auth;
+      if (!current.daily) current.daily = {};
+      if (!current.units) current.units = {};
+      if (!current.words) current.words = {};
+      if (!Array.isArray(current.friends)) current.friends = [];
+      else current.friends = current.friends.filter(f => f && !f.isBot);
+      if (!current.leagueMembers) current.leagueMembers = {};
+      fromVer = 1;
+    }
+
+    current.schemaVersion = toVer;
+    return current;
+  }
+
   _load() {
     try {
       // 1. Önce v2 key'i kontrol et
@@ -84,9 +106,20 @@ class AppStore {
       }
       if (!raw) return defaultState();
 
-      const s = JSON.parse(raw);
+      let s = JSON.parse(raw);
+      const currentVersion = s.schemaVersion || 0;
+      const targetVersion = 1;
+
+      // Sıralı geçiş (Migration) mekanizması
+      if (currentVersion < targetVersion) {
+        s = this._migrate(s, currentVersion, targetVersion);
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify(s));
+        } catch (e) {}
+      }
+
       const d = defaultState();
-      const cleanFriends = (s.friends || []).filter(f => !f.isBot);
+      const cleanFriends = (s.friends || []).filter(f => f && !f.isBot);
       const userId = s.userId || d.userId;
       const mascot = s.mascot || 'cat';
       const theme = s.theme || 'nordic';
@@ -94,6 +127,7 @@ class AppStore {
       return {
         ...d,
         ...s,
+        schemaVersion: targetVersion,
         userId,
         mascot,
         theme,
@@ -105,6 +139,7 @@ class AppStore {
         friends: cleanFriends
       };
     } catch (e) {
+      console.warn('[Store] _load hatası, defaultState yükleniyor:', e);
       return defaultState();
     }
   }
@@ -246,8 +281,6 @@ class AppStore {
       },
       friends: cleanFriends.length > 0 ? cleanFriends : (this._state.friends || [])
     };
-    state = this._state;
-
     if (typeof themeService !== 'undefined' && this._state.theme) {
       themeService.apply(this._state.theme);
     }
@@ -269,7 +302,28 @@ class AppStore {
 
 // Global Store Instance
 const store = new AppStore();
-let state = store.state;
+
+// İki veri kaynağını teke indiren dinamik Proxy köprüsü:
+// 'state' üzerinden yapılan tüm okuma ve yazmalar anında 'store.state'e yönlendirilir.
+// Bu sayede 'state' değişkeni hiçbir zaman bayat (stale) kalamaz.
+const state = new Proxy({}, {
+  get(target, prop) {
+    return store.state[prop];
+  },
+  set(target, prop, value) {
+    store.state[prop] = value;
+    return true;
+  },
+  has(target, prop) {
+    return prop in store.state;
+  },
+  ownKeys(target) {
+    return Reflect.ownKeys(store.state);
+  },
+  getOwnPropertyDescriptor(target, prop) {
+    return Object.getOwnPropertyDescriptor(store.state, prop);
+  }
+});
 
 /* ============================================================
    OOP: ThemeService (Renk Paletleri & Tasarım Yönetimi)
@@ -290,7 +344,13 @@ class ThemeService {
 
     const root = document.documentElement;
     root.setAttribute('data-theme', palette.id);
-    root.setAttribute('data-mode', palette.isDark ? 'dark' : 'light');
+    const mode = palette.isDark ? 'dark' : 'light';
+    root.setAttribute('data-mode', mode);
+
+    try {
+      localStorage.setItem('a1_data_mode', mode);
+      localStorage.setItem('a1_theme_id', palette.id);
+    } catch (e) {}
     root.style.setProperty('--bg', palette.colors.bg);
     root.style.setProperty('--card', palette.colors.cardBg);
     root.style.setProperty('--card-bg', palette.colors.cardBg);
@@ -377,7 +437,6 @@ const progressionManager = new ProgressionManager(store);
    ============================================================ */
 function saveState() {
   store.save();
-  state = store.state;
   if (typeof syncManager !== 'undefined') {
     if (!navigator.onLine) {
       syncManager.markPending();
@@ -406,7 +465,6 @@ function daysAgoStr(n) {
 
 function addXP(amount) {
   store.gainXP(amount);
-  state = store.state;
 }
 
 function currentStreak() {
@@ -571,7 +629,12 @@ function syncUnitWordsToBox1(unitId) {
 }
 
 function migrateCompletedUnitsWords() {
-  if (typeof UNITS === 'undefined' || !state || !state.units) return 0;
+  if (typeof UNITS === 'undefined' || !state || !state.units) {
+    if (typeof UNITS === 'undefined') {
+      console.warn('[Storage] UNITS tanımlı değil (data.js henüz yüklenmemiş olabilir), kelime göçü ertelendi.');
+    }
+    return 0;
+  }
   let total = 0;
   UNITS.forEach(u => {
     const s = state.units[u.id];
@@ -585,7 +648,9 @@ function migrateCompletedUnitsWords() {
 // Otomatik Göç (Migration): Tamamlanmış ünitelerdeki kelimeleri Kutu 1'e al
 try {
   migrateCompletedUnitsWords();
-} catch (e) {}
+} catch (e) {
+  console.warn('[Storage] migrateCompletedUnitsWords sırasında hata oluştu:', e);
+}
 
 function myLeagueProfile() {
   const m = typeof mascotService !== 'undefined' ? mascotService.getActive() : { id: 'cat', name: 'Pamuk', icon: '🐱' };
@@ -602,6 +667,8 @@ function myLeagueProfile() {
   };
 }
 
+// TODO: calcScoreChecksum istemci tarafında tuz (salt) içeriyor ve istemci tarafında çalışıyor; bu nedenle %100 güvenli değildir.
+// Düello/rekabet ve liderlik tablosu puan doğrulaması ileride mutlaka sunucu tarafında (Firebase Cloud Functions / backend) yapılmalıdır.
 function calcScoreChecksum(payload) {
   const str = `${payload.n}_${payload.x}_${payload.s}_${payload.u}_A1_SALT_2026`;
   let hash = 0;

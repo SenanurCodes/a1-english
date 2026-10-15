@@ -3,21 +3,29 @@
    Anahtar kullanıcının tarayıcısında saklanır, başka yere gönderilmez.
    ============================================================ */
 
+class AIError extends Error {
+  constructor(code, message, original = null) {
+    super(message);
+    this.name = 'AIError';
+    this.code = code; // 'NO_KEY' | 'RATE_LIMIT' | 'BAD_KEY' | 'EMPTY_RESPONSE' | 'UNKNOWN'
+    this.original = original;
+  }
+}
+
 function hasAI() { return !!state.settings.apiKey; }
 
 async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   const key = state.settings.apiKey;
-  if (!key) throw new Error('API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
+  if (!key) throw new AIError('NO_KEY', 'API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
   
-  // Kullanıcının seçtiği model ve yedek kararlı modeller sırası
+  // Kullanıcının seçtiği model ve yedek kararlı modeller sırası (eski 1.5 modeller kaldırıldı)
   const preferred = (state.settings.model || '').trim();
   const candidateModels = [
     preferred,
-    'gemini-1.5-flash',
-    'gemini-1.5-flash-latest',
+    'gemini-2.5-flash',
     'gemini-2.0-flash',
-    'gemini-2.0-flash-exp',
-    'gemini-flash-latest'
+    'gemini-2.0-flash-lite',
+    'gemini-2.5-flash-latest'
   ].filter(Boolean);
 
   // Tekrarlayanları temizle
@@ -41,13 +49,19 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         const msg = err?.error?.message || `HTTP ${res.status}`;
-        if (res.status === 429) throw new Error('Ücretsiz kullanım sınırına ulaşıldı. Biraz bekleyip tekrar dene.');
-        if (res.status === 400 || res.status === 403) throw new Error(`API anahtarı geçersiz olabilir: ${msg}`);
-        throw new Error(msg);
+        if (res.status === 429) {
+          throw new AIError('RATE_LIMIT', 'Google Gemini ücretsiz kullanım sınırına ulaşıldı. Biraz bekleyip tekrar dene.', err);
+        }
+        if (res.status === 400 || res.status === 403) {
+          throw new AIError('BAD_KEY', `API anahtarı geçersiz veya yetkisiz: ${msg}`, err);
+        }
+        throw new AIError('UNKNOWN', msg, err);
       }
       const data = await res.json();
       const text = (data.candidates?.[0]?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('');
-      if (!text) throw new Error('Yapay zekadan boş yanıt geldi.');
+      if (!text) {
+        throw new AIError('EMPTY_RESPONSE', 'Yapay zekadan boş yanıt geldi.');
+      }
       
       // Çalışan modeli kaydet
       if (state.settings.model !== model) {
@@ -57,13 +71,13 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
       return text;
     } catch (err) {
       lastError = err;
-      if (err.message.includes('API anahtarı') || err.message.includes('sınırına ulaşıldı')) {
+      if (err instanceof AIError && (err.code === 'NO_KEY' || err.code === 'BAD_KEY' || err.code === 'RATE_LIMIT')) {
         throw err;
       }
     }
   }
 
-  throw lastError || new Error('Uygun bir Gemini modeli bulunamadı. Lütfen API anahtarını kontrol et.');
+  throw lastError || new AIError('UNKNOWN', 'Uygun bir Gemini modeli bulunamadı. Lütfen API anahtarını kontrol et.');
 }
 
 /* ---------- Öğrenci özeti (AI'ya gönderilecek) ---------- */
