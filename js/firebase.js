@@ -102,12 +102,15 @@ class AuthService {
       return res.user;
     } catch (err) {
       if (err.code === 'auth/unauthorized-domain') {
-        throw new Error('Bu alan adı Firebase yetkili alan adlarında henüz kayıtlı değil. Giriş yapmadan Misafir Modu ile devam edebilirsin.');
+        throw new Error('Bu alan adı Firebase yetkili alan adlarında henüz kayıtlı değil. E-posta ile tek tıkla hesabını açabilirsin.');
       }
       if (err.code === 'auth/popup-blocked') {
         throw new Error('Açılır pencere tarayıcın tarafından engellendi. Lütfen izin verip tekrar dene.');
       }
-      throw new Error(err.message || 'Google girişi tamamlanamadı.');
+      if (err.code === 'auth/internal-error' || (err.message && err.message.includes('internal-error'))) {
+        throw new Error('Google girişi bu projede henüz aktif değil. Lütfen hemen yukarıdaki E-posta ve Şifre ile "✨ Kayıt Ol" butonuna tıkla! ✨');
+      }
+      throw new Error(err.message || 'Google girişi tamamlanamadı. E-posta ile kayıt olabilirsin.');
     }
   }
 
