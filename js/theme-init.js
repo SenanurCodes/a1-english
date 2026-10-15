@@ -9,6 +9,16 @@
     } else {
       document.documentElement.setAttribute('data-mode', 'light');
     }
+
+    var fbCfg = localStorage.getItem('a1_firebase_config');
+    if (fbCfg) {
+      try {
+        var p = JSON.parse(fbCfg);
+        if (!p || !p.apiKey) localStorage.removeItem('a1_firebase_config');
+      } catch(e) {
+        localStorage.removeItem('a1_firebase_config');
+      }
+    }
   } catch(e) {}
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {

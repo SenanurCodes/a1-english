@@ -49,7 +49,7 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch: Ağ yoksa önbellekten sun (Offline First)
+// Fetch: Ağ öncelikli (Network First, internetsizken önbellek - Offline Destek)
 self.addEventListener('fetch', event => {
   const req = event.request;
   const url = new URL(req.url);
@@ -63,17 +63,14 @@ self.addEventListener('fetch', event => {
   }
 
   event.respondWith(
-    caches.match(req).then(cached => {
-      // Önbellekte varsa hemen sun, arka planda ağı güncelle (Stale-While-Revalidate)
-      const fetchPromise = fetch(req).then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200) {
-          const resClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(req, resClone));
-        }
-        return networkResponse;
-      }).catch(() => cached);
-
-      return cached || fetchPromise;
+    fetch(req).then(networkResponse => {
+      if (networkResponse && networkResponse.status === 200) {
+        const resClone = networkResponse.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(req, resClone));
+      }
+      return networkResponse;
+    }).catch(() => {
+      return caches.match(req);
     })
   );
 });
