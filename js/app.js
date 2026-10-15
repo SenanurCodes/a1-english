@@ -1820,11 +1820,18 @@ function screenSettings() {
   $('#importIn').onchange = async e => {
     const f = e.target.files[0]; if (!f) return;
     try {
-      const data = JSON.parse(await f.text());
-      const key = state.settings.apiKey;
-      state = { ...defaultState(), ...data, settings: { ...defaultState().settings, ...data.settings, apiKey: key || data.settings?.apiKey || '' } };
-      saveState(); toast('İçe aktarıldı ✅'); router();
-    } catch (err) { toast('Dosya okunamadı ❌'); }
+      const text = await f.text();
+      const data = JSON.parse(text);
+      if (!data || typeof data !== 'object') throw new Error('Geçersiz dosya formatı.');
+      store.importState(data);
+      toast('İlerleme başarıyla içe aktarıldı! 🎉');
+      router();
+    } catch (err) {
+      console.error('Import error:', err);
+      toast('Dosya okunamadı: ' + (err.message || 'Geçersiz veri'));
+    } finally {
+      e.target.value = '';
+    }
   };
   $('#resetBtn').onclick = () => {
     if (confirm('Tüm ilerlemen silinecek. Emin misin?')) { resetState(); location.hash = '#/'; router(); }

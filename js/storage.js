@@ -168,6 +168,103 @@ class AppStore {
     this.save();
     this._notify('A1_BOSS_PASSED', null);
   }
+
+  importState(data) {
+    if (!data || typeof data !== 'object') throw new Error('Geçersiz dosya verisi');
+    const currentApiKey = this._state.settings?.apiKey || '';
+    const cleanFriends = (data.friends || []).filter(f => !f.isBot);
+
+    // Akıllı Birleştirme: Mevcut ve gelen veriler harmanlanır (hiçbir ilerleme kaybolmaz)
+    const mergedUnits = { ...(this._state.units || {}) };
+    if (data.units && typeof data.units === 'object') {
+      for (const [uId, uVal] of Object.entries(data.units)) {
+        if (!mergedUnits[uId]) {
+          mergedUnits[uId] = uVal;
+        } else {
+          mergedUnits[uId] = {
+            ...mergedUnits[uId],
+            best: Math.max(mergedUnits[uId].best || 0, uVal.best || 0),
+            done: mergedUnits[uId].done || uVal.done || ((uVal.best || 0) >= 70),
+            attempts: Math.max(mergedUnits[uId].attempts || 1, uVal.attempts || 1),
+            correct: Math.max(mergedUnits[uId].correct || 0, uVal.correct || 0),
+            total: Math.max(mergedUnits[uId].total || 10, uVal.total || 10)
+          };
+        }
+      }
+    }
+
+    const mergedWords = { ...(this._state.words || {}) };
+    if (data.words && typeof data.words === 'object') {
+      for (const [wKey, wVal] of Object.entries(data.words)) {
+        if (!mergedWords[wKey]) {
+          mergedWords[wKey] = wVal;
+        } else {
+          mergedWords[wKey] = {
+            ...mergedWords[wKey],
+            box: Math.max(mergedWords[wKey].box || 1, wVal.box || 1),
+            right: Math.max(mergedWords[wKey].right || 0, wVal.right || 0),
+            wrong: Math.max(mergedWords[wKey].wrong || 0, wVal.wrong || 0)
+          };
+        }
+      }
+    }
+
+    const mergedDaily = { ...(this._state.daily || {}) };
+    if (data.daily && typeof data.daily === 'object') {
+      for (const [dKey, dVal] of Object.entries(data.daily)) {
+        mergedDaily[dKey] = Math.max(mergedDaily[dKey] || 0, dVal || 0);
+      }
+    }
+
+    const mergedXp = Math.max(this._state.xp || 0, data.xp || 0);
+    const incStreak = typeof normalizeStreak === 'function' ? normalizeStreak(data.streak) : (data.streak?.count || 0);
+    const myStreak = this._state.streak?.count || 0;
+    const finalStreakCount = Math.max(myStreak, incStreak);
+    const finalStreakLast = incStreak >= myStreak && data.streak?.last ? data.streak.last : this._state.streak?.last;
+
+    this._state = {
+      ...defaultState(),
+      ...this._state,
+      ...data,
+      userId: (data.userId && data.userId !== 'Öğrenci') ? data.userId : this._state.userId,
+      name: (data.name && data.name !== 'Öğrenci') ? data.name : (this._state.name || 'Öğrenci'),
+      mascot: data.mascot || this._state.mascot || 'cat',
+      theme: data.theme || this._state.theme || 'nordic',
+      xp: mergedXp,
+      streak: { count: finalStreakCount, last: finalStreakLast || todayStr() },
+      daily: mergedDaily,
+      units: mergedUnits,
+      words: mergedWords,
+      unlockedUpTo: Math.max(this._state.unlockedUpTo || 0, data.unlockedUpTo || 0),
+      a1BossPassed: !!(this._state.a1BossPassed || data.a1BossPassed),
+      a2Unlocked: !!(this._state.a2Unlocked || data.a2Unlocked),
+      auth: { ...defaultState().auth, ...(this._state.auth?.user ? this._state.auth : (data.auth || {})) },
+      settings: {
+        ...defaultState().settings,
+        ...(data.settings || {}),
+        apiKey: currentApiKey || data.settings?.apiKey || ''
+      },
+      friends: cleanFriends.length > 0 ? cleanFriends : (this._state.friends || [])
+    };
+    state = this._state;
+
+    if (typeof themeService !== 'undefined' && this._state.theme) {
+      themeService.apply(this._state.theme);
+    }
+    if (typeof migrateCompletedUnitsWords === 'function') {
+      migrateCompletedUnitsWords();
+    }
+    this.save();
+    if (typeof syncManager !== 'undefined') {
+      if (!navigator.onLine) {
+        syncManager.markPending();
+      } else {
+        syncManager.syncNow(false);
+      }
+    }
+    this._notify('IMPORT', this._state);
+    return this._state;
+  }
 }
 
 // Global Store Instance
