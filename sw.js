@@ -1,13 +1,16 @@
 /* ============================================================
-   A1 English v2.3 - Service Worker (Offline First Caching)
+   PatiLingo v2.4 - Service Worker (Offline First Caching)
    ============================================================ */
 
-const CACHE_NAME = 'a1english-cache-v2.3.0';
+const CACHE_NAME = 'patilingo-cache-v2.4.0';
 
 const PRECACHE_ASSETS = [
   './',
   'index.html',
   'manifest.json',
+  'icons/icon-192.png',
+  'icons/icon-512.png',
+  'icons/favicon.png',
   'css/style.css?v=2.2.3',
   'js/theme-init.js',
   'js/data.js?v=2.0.0',

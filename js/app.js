@@ -82,9 +82,9 @@ function renderNav(active) {
   const mHeader = $('#mobile-header');
   if (mHeader) {
     mHeader.innerHTML = `
-      <a href="#/home" class="mh-brand">
-        <span class="mh-logo">${curMascot.icon}</span>
-        <span class="mh-title">A1 English</span>
+      <a href="#/home" class="mh-brand" aria-label="PatiLingo Ana Sayfa">
+        <img src="icons/icon-192.png" alt="PatiLingo" style="width:28px;height:28px;border-radius:6px;vertical-align:middle;object-fit:contain;" />
+        <span class="mh-title">PatiLingo</span>
       </a>
       <div class="mh-stats">
         <a href="#/progress" class="mh-badge streak" title="Günlük Seri">🔥 ${currentStreak()}</a>
@@ -102,9 +102,9 @@ function renderNav(active) {
     <!-- Masaüstü Sidebar -->
     <div class="desktop-nav">
       <div class="logo">
-        <span class="logo-icon">${curMascot.icon}</span>
+        <img src="icons/icon-192.png" alt="PatiLingo" style="width:38px;height:38px;border-radius:8px;object-fit:contain;" />
         <div>
-          <div class="logo-text">A1 English</div>
+          <div class="logo-text">PatiLingo</div>
           <div class="logo-sub muted small">${curMascot.icon} ${esc(curMascot.name)}</div>
         </div>
       </div>
@@ -231,7 +231,7 @@ function screenOnboarding() {
   view().innerHTML = `
     <div class="onboard" style="width:100%;max-width:640px;margin:0 auto;">
       <div class="onboard-hero">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾'}</div>
-      <h1 class="rainbow-text">A1 English</h1>
+      <h1 class="rainbow-text">PatiLingo</h1>
       <p class="lead">Sana özel yoldaşın ve renklerinle İngilizce öğrenmeye başla! 🎈</p>
       
       <div class="card onboard-card" style="width:100%;max-width:640px;box-sizing:border-box;">
@@ -1735,7 +1735,7 @@ function screenSettings() {
     saveState();
   };
   $('#setRate').oninput = e => { $('#rateVal').textContent = e.target.value; };
-  $('#tryVoice').onclick = () => { collect(); speak('Hello! Welcome to A1 English. Let\'s learn together!'); };
+  $('#tryVoice').onclick = () => { collect(); speak('Hello! Welcome to PatiLingo. Let\'s learn together!'); };
   $('#saveBtn').onclick = () => { collect(); renderNav('settings'); toast('Kaydedildi ✅'); };
   $('#testBtn').onclick = async () => {
     collect();
@@ -1882,7 +1882,7 @@ function openAuthModal() {
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').then(reg => {
-      console.log('A1 English Service Worker aktif:', reg.scope);
+      console.log('PatiLingo Service Worker aktif:', reg.scope);
     }).catch(err => {
       console.warn('Service Worker kaydı atlandı:', err.message);
     });
