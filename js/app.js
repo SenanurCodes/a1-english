@@ -213,7 +213,8 @@ function router() {
   const screens = {
     home: screenHome, learn: screenLearn, logic: screenLogic, leaderboard: screenLeaderboard, review: screenReview, cards: screenCards, ai: screenAI,
     progress: screenProgress, settings: screenSettings, grammar: screenGrammar, lesson: screenLesson,
-    placement: screenPlacement, 'ai-lesson': screenAILesson, 'boss-a1': screenA1Boss
+    placement: screenPlacement, 'ai-lesson': screenAILesson, 'boss-a1': screenA1Boss,
+    auth: () => { screenHome(); openAuthModal(); }
   };
   (screens[r] || screenHome)(param);
 }
