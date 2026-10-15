@@ -818,7 +818,7 @@ function renderLeaderboardView() {
             <input class="text-input" value="${inviteLink}" readonly id="leagueInviteIn" />
             <button class="btn btn-primary" id="copyInviteBtn">📲 Davet Linkini Kopyala</button>
           </div>
-          <p class="muted small">Bu linki WhatsApp'tan arkadaşına gönder! Linke tıkladığında doğrudan bu lige katılır ve ikinizin puanları canlı güncellenir.</p>
+          <p class="muted small" style="margin-top:8px;">✨ <b>Otomatik Katılım:</b> Bu linki WhatsApp'tan arkadaşına gönder! Linke tıkladığı anda hiçbir kod yazmasına gerek kalmadan <b>doğrudan senin ligine bağlanır</b> ve ikinizin puanları canlı güncellenir.</p>
         </div>
       ` : `
         <div class="card live-promo-card">
