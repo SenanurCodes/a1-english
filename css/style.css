@@ -2,21 +2,73 @@
    A1 English 🌈 Rengarenk tema
    ============================================================ */
 :root {
-  --bg: #F6F4FF;
-  --card: #FFFFFF;
-  --text: #2B2D42;
-  --muted: #7A7F9A;
-  --line: #ECEAF7;
+  /* Renkler & Yüzeyler */
   --primary: #5C7CFA;
   --primary-d: #4263EB;
-  --green: #40C057;
-  --green-d: #2F9E44;
-  --red: #FA5252;
-  --red-d: #E03131;
-  --purple: #AE3EC9;
-  --purple-d: #9C36B5;
-  --radius: 22px;
-  --shadow: 0 8px 28px rgba(92, 124, 250, .12);
+  --primary-soft: rgba(92, 124, 250, 0.14);
+  --surface: #FFFFFF;
+  --background: #F6F4FF;
+  --text: #1E293B;
+  --text-muted: #555E6D;
+  --border: #ECEAF7;
+
+  /* Anlamlı Durum Renkleri (Başarı=Yeşil, Uyarı=Sarı, Hata=Kırmızı) */
+  --success: #2F9E44;
+  --success-d: #237032;
+  --warning: #D97706;
+  --warning-d: #B45309;
+  --danger: #E03131;
+  --danger-d: #C92A2A;
+
+  /* Kategori Renkleri (Uygulama genelinde sabit ve kurallı) */
+  --cat-kelime: #8B5CF6;
+  --cat-gramer: #2563EB;
+  --cat-mantik: #D97706;
+  --cat-rekabet: #EAB308;
+  --cat-ai: #0D9488;
+  --cat-tekrar: #EC4899;
+
+  /* Lokomotif Dil Mantığı Rol Renkleri */
+  --role-subject: #E11D48;
+  --role-verb: #D97706;
+  --role-object: #059669;
+  --role-with: #0284C7;
+  --role-place: #2563EB;
+  --role-time: #7C3AED;
+
+  /* Boşluk Ölçeği */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Köşe Yuvarlaklığı */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 9999px;
+
+  /* Gölgeler (2 Seviye + 3D Buton Gölgesi) */
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-btn: 0 4px 0;
+
+  /* Geriye Dönük Uyumluluk Değişkenleri */
+  --bg: var(--background);
+  --card: var(--surface);
+  --card-bg: var(--surface);
+  --muted: var(--text-muted);
+  --line: var(--border);
+  --radius: var(--radius-lg);
+  --shadow: var(--shadow-md);
+  --green: var(--success);
+  --green-d: var(--success-d);
+  --red: var(--danger);
+  --red-d: var(--danger-d);
+  --purple: var(--cat-kelime);
+  --purple-d: #7C3AED;
   --rainbow: linear-gradient(90deg, #FF6B6B, #FF922B, #FCC419, #51CF66, #339AF0, #845EF7, #F06595);
 }
 
@@ -30,7 +82,9 @@ html, body {
 }
 body {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
+  font-size: 15px; /* Minimum 15px gövde yazısı (WCAG AA) */
+  line-height: 1.6;
+  background: var(--background);
   color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -40,11 +94,11 @@ body {
 a { color: var(--primary-d); }
 h1, h2, h3, h4 { margin: 0 0 .4em; font-weight: 800; letter-spacing: -.02em; }
 h1 { font-size: 1.85rem; }
-p { line-height: 1.6; }
-.muted { color: var(--muted); }
-.small { font-size: .85rem; }
+p { line-height: 1.6; margin: 0 0 .75em; }
+.muted { color: var(--text-muted); }
+.small { font-size: 13px; } /* Minimum 13px alt açıklama */
 .center { text-align: center; }
-.hidden { display: none; }
+.hidden { display: none !important; }
 
 /* Arka plan baloncukları */
 .bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
@@ -84,7 +138,7 @@ p { line-height: 1.6; }
   box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 .nav-link.active .nav-icon { transform: scale(1.08); }
-.nav-icon { font-size: 1.35rem; width: 28px; text-align: center; }
+.nav-icon { font-size: 1.35rem; width: 28px; height: 28px; text-align: center; display: inline-flex; align-items: center; justify-content: center; }
 .nav-foot { margin-top: auto; display: flex; gap: 8px; padding: 10px; }
 .mini-stat { flex: 1; background: #FFF4E6; border-radius: 12px; padding: 8px; text-align: center; font-weight: 900; }
 .mini-stat:last-child { background: #FFF9DB; }
@@ -147,10 +201,10 @@ p { line-height: 1.6; }
 .sc-icon { font-size: 1.6rem; }
 .sc-val { font-size: 2rem; font-weight: 900; line-height: 1.1; }
 .sc-lbl { font-weight: 700; opacity: .92; font-size: .9rem; }
-.grad-1 { background: linear-gradient(135deg, #FF922B, #FF6B6B); }
-.grad-2 { background: linear-gradient(135deg, #FCC419, #FF922B); }
-.grad-3 { background: linear-gradient(135deg, #20C997, #339AF0); }
-.grad-4 { background: linear-gradient(135deg, #845EF7, #F06595); }
+.grad-1 { background: linear-gradient(135deg, var(--cat-mantik), color-mix(in srgb, var(--cat-mantik) 75%, #ff4b4b)); }
+.grad-2 { background: linear-gradient(135deg, var(--cat-rekabet), color-mix(in srgb, var(--cat-rekabet) 75%, #f97316)); }
+.grad-3 { background: linear-gradient(135deg, var(--cat-kelime), color-mix(in srgb, var(--cat-kelime) 75%, #3b82f6)); }
+.grad-4 { background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 70%, var(--primary-d))); }
 
 /* Dil Mantığı & Lokomotif Stilleri */
 .logic-tabs-bar {
@@ -627,23 +681,50 @@ p { line-height: 1.6; }
 .ai-teaser { background: linear-gradient(135deg, #F3F0FF, #FFF0F6); }
 .ai-teaser h3 { margin-top: 4px; }
 
-/* ---------- Butonlar ---------- */
+/* ---------- Butonlar (3 Standart Oyunsu Stil) ---------- */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-  font-family: inherit; font-weight: 900; font-size: 1rem; padding: 11px 20px; border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: inherit; font-weight: 800; font-size: 15px; padding: 11px 20px; border-radius: var(--radius-md);
   border: 2px solid transparent; cursor: pointer; text-decoration: none; transition: transform .08s, filter .15s, box-shadow .1s;
-  user-select: none; white-space: nowrap;
+  user-select: none; white-space: nowrap; line-height: 1.3;
 }
 .btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none !important; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn:hover:not(:disabled) { filter: brightness(1.05); }
-.btn-big { padding: 14px 28px; font-size: 1.08rem; border-radius: 16px; }
-.btn.sm { padding: 6px 12px; font-size: .85rem; }
-.btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 0 var(--primary-d); }
-.btn-green { background: var(--green); color: #fff; box-shadow: 0 4px 0 var(--green-d); }
-.btn-red { background: var(--red); color: #fff; box-shadow: 0 4px 0 var(--red-d); }
-.btn-purple { background: var(--purple); color: #fff; box-shadow: 0 4px 0 var(--purple-d); }
-.btn-ghost { background: #fff; color: var(--text); border-color: var(--line); box-shadow: 0 4px 0 var(--line); }
+.btn-big { padding: 14px 28px; font-size: 16px; border-radius: 16px; }
+.btn.sm { padding: 6px 14px; font-size: 13px; border-radius: 10px; }
+
+/* 1. Ana Buton (Ekranda tek; dolgu, --primary, kalın oyunsu alt gölge) */
+.btn-primary {
+  background: var(--primary);
+  color: #FFFFFF !important;
+  border-color: var(--primary);
+  box-shadow: 0 4px 0 var(--primary-d);
+}
+
+/* 2. İkincil Buton (Çerçeveli, yüzey arka planı) */
+.btn-secondary, .btn-ghost {
+  background: var(--surface);
+  color: var(--text) !important;
+  border-color: var(--border);
+  box-shadow: 0 4px 0 var(--border);
+}
+.btn-secondary:hover:not(:disabled), .btn-ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+}
+
+/* 3. Tehlikeli Buton (Sadece sil / sıfırla) */
+.btn-danger, .btn-red {
+  background: var(--danger);
+  color: #FFFFFF !important;
+  border-color: var(--danger);
+  box-shadow: 0 4px 0 var(--danger-d);
+}
+
+/* Eski renk sınıfları için uyumluluk */
+.btn-green { background: var(--success); color: #fff; box-shadow: 0 4px 0 var(--success-d); border-color: var(--success); }
+.btn-purple { background: var(--cat-kelime); color: #fff; box-shadow: 0 4px 0 #7C3AED; border-color: var(--cat-kelime); }
 
 .speak-btn {
   width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; font-size: 1.35rem;
@@ -1265,6 +1346,10 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   .mobile-nav .nav-icon {
     font-size: 1.35rem;
     width: auto;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     line-height: 1;
   }
   .mobile-nav .nav-label {
@@ -1505,8 +1590,137 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 
 /* ============================================================
-   v2.0: Renk Temaları, Yoldaş Hayvanlar, Boss Testi & Misafir Modu
+   v2.0: 5 Renk Teması, Tasarım Sistemi & Yardımcı Sınıflar
    ============================================================ */
+
+/* 5 Tema Değişkenleri & Kategori Renkleri */
+[data-theme="cyber"] {
+  --primary: #6366F1;
+  --primary-d: #4F46E5;
+  --primary-soft: rgba(99, 102, 241, 0.16);
+  --background: #0B0F19;
+  --surface: #161F33;
+  --text: #F8FAFC;
+  --text-muted: #94A3B8;
+  --border: #28354D;
+  --cat-kelime: #A855F7;
+  --cat-gramer: #3B82F6;
+  --cat-mantik: #F59E0B;
+  --cat-rekabet: #EAB308;
+  --cat-ai: #06B6D4;
+  --cat-tekrar: #EC4899;
+}
+[data-theme="midnight"] {
+  --primary: #10B981;
+  --primary-d: #059669;
+  --primary-soft: rgba(16, 185, 129, 0.16);
+  --background: #0A0C10;
+  --surface: #141A24;
+  --text: #F0FDF4;
+  --text-muted: #8B9BAE;
+  --border: #222D3E;
+  --cat-kelime: #8B5CF6;
+  --cat-gramer: #0EA5E9;
+  --cat-mantik: #F59E0B;
+  --cat-rekabet: #FBBF24;
+  --cat-ai: #10B981;
+  --cat-tekrar: #F43F5E;
+}
+[data-theme="nordic"] {
+  --primary: #3B8B67;
+  --primary-d: #28684C;
+  --primary-soft: rgba(59, 139, 103, 0.14);
+  --background: #F4F7F5;
+  --surface: #FFFFFF;
+  --text: #1E2D24;
+  --text-muted: #52695C;
+  --border: #DCE5E0;
+  --cat-kelime: #7C3AED;
+  --cat-gramer: #2563EB;
+  --cat-mantik: #D97706;
+  --cat-rekabet: #CA8A04;
+  --cat-ai: #0D9488;
+  --cat-tekrar: #DB2777;
+}
+[data-theme="sunset"] {
+  --primary: #F97316;
+  --primary-d: #C2410C;
+  --primary-soft: rgba(249, 115, 22, 0.14);
+  --background: #FFF8F4;
+  --surface: #FFFFFF;
+  --text: #2C1810;
+  --text-muted: #7C5848;
+  --border: #F2DFD5;
+  --cat-kelime: #8B5CF6;
+  --cat-gramer: #2563EB;
+  --cat-mantik: #EA580C;
+  --cat-rekabet: #D97706;
+  --cat-ai: #059669;
+  --cat-tekrar: #E11D48;
+}
+[data-theme="ocean"] {
+  --primary: #0EA5E9;
+  --primary-d: #0284C7;
+  --primary-soft: rgba(14, 165, 233, 0.14);
+  --background: #F0F9FF;
+  --surface: #FFFFFF;
+  --text: #0C2738;
+  --text-muted: #426883;
+  --border: #D2E8F7;
+  --cat-kelime: #8B5CF6;
+  --cat-gramer: #0284C7;
+  --cat-mantik: #D97706;
+  --cat-rekabet: #EAB308;
+  --cat-ai: #0D9488;
+  --cat-tekrar: #E11D48;
+}
+
+/* Lucide İkon Stilleri */
+.lucide-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  stroke-width: 2.2px;
+}
+.nav-link .lucide-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* Tasarım Sistemi Yardımcı (Utility) Sınıfları */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; min-width: 0; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-5 { gap: var(--space-5); }
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-5); }
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.w-full { width: 100%; }
+.pos-relative { position: relative; }
+.pointer { cursor: pointer; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.bold { font-weight: 800; }
+.text-highlight { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+
 [data-theme] .card { background: var(--card-bg, #fff); color: var(--text); border-color: var(--line); }
 [data-theme] .modal { background: var(--card-bg, #fff); color: var(--text); }
 [data-theme] .node-label { background: var(--card-bg, #fff); color: var(--text); border-color: var(--line); }

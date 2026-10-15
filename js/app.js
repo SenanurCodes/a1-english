@@ -5,31 +5,31 @@ const view = () => $('#view');
 let pendingAILesson = null;
 
 const NAV_DESKTOP = [
-  ['home', '🏠', 'Ana Sayfa'],
-  ['learn', '🗺️', 'Öğren'],
-  ['logic', '💡', 'Dil Mantığı'],
-  ['leaderboard', '🏆', 'Rekabet'],
-  ['review', '🔁', 'Tekrar'],
-  ['cards', '🃏', 'Kartlar'],
-  ['ai', '🤖', 'AI Öğretmen'],
-  ['progress', '📊', 'İlerleme'],
-  ['settings', '⚙️', 'Ayarlar']
+  ['home', icon('home'), 'Ana Sayfa'],
+  ['learn', icon('map'), 'Öğren'],
+  ['logic', icon('lightbulb'), 'Dil Mantığı'],
+  ['leaderboard', icon('trophy'), 'Rekabet'],
+  ['review', icon('repeat'), 'Tekrar'],
+  ['cards', icon('cards'), 'Kartlar'],
+  ['ai', icon('bot'), 'AI Öğretmen'],
+  ['progress', icon('chart'), 'İlerleme'],
+  ['settings', icon('settings'), 'Ayarlar']
 ];
 
 const NAV_MOBILE = [
-  ['home', '🏠', 'Ana Sayfa'],
-  ['learn', '🗺️', 'Öğren'],
-  ['logic', '💡', 'Mantık'],
-  ['cards', '🃏', 'Kartlar'],
-  ['more', '✨', 'Menü']
+  ['home', icon('home'), 'Ana Sayfa'],
+  ['learn', icon('map'), 'Öğren'],
+  ['logic', icon('lightbulb'), 'Mantık'],
+  ['cards', icon('cards'), 'Kartlar'],
+  ['more', icon('more'), 'Menü']
 ];
 
 const MORE_LINKS = [
-  { id: 'leaderboard', icon: '🏆', title: 'Rekabet & Liderlik', desc: 'Arkadaşlarınla yarış ve skorunu paylaş' },
-  { id: 'ai', icon: '🤖', title: 'AI Öğretmen', desc: 'Google Gemini ile seviye analizi ve pratik' },
-  { id: 'review', icon: '🔁', title: 'Akıllı Tekrar', desc: 'Aralıklı tekrar sistemi ve hata havuzu' },
-  { id: 'progress', icon: '📊', title: 'İlerleme Grafiği', desc: 'Haftalık XP ve ünite başarı tablosu' },
-  { id: 'settings', icon: '⚙️', title: 'Ayarlar', desc: 'Profil, ses hızı ve Gemini API anahtarı' }
+  { id: 'leaderboard', icon: icon('trophy'), title: 'Rekabet & Liderlik', desc: 'Arkadaşlarınla yarış ve skorunu paylaş' },
+  { id: 'ai', icon: icon('bot'), title: 'AI Öğretmen', desc: 'Google Gemini ile seviye analizi ve pratik' },
+  { id: 'review', icon: icon('repeat'), title: 'Akıllı Tekrar', desc: 'Aralıklı tekrar sistemi ve hata havuzu' },
+  { id: 'progress', icon: icon('chart'), title: 'İlerleme Grafiği', desc: 'Haftalık XP ve ünite başarı tablosu' },
+  { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, ses hızı ve Gemini API anahtarı' }
 ];
 
 function closeMenuSheet() {
@@ -45,10 +45,10 @@ function openMenuSheet(active) {
       <div class="menu-sheet">
         <div class="menu-sheet-head">
           <div class="msh-title">
-            <span class="msh-icon">✨</span>
+            <span class="msh-icon">${icon('sparkles', '', 22)}</span>
             <b>Diğer Bölümler</b>
           </div>
-          <button class="icon-btn close-sheet-btn" id="closeMenuBtn" aria-label="Kapat">✕</button>
+          <button class="icon-btn close-sheet-btn" id="closeMenuBtn" aria-label="Kapat">${icon('x', '', 18)}</button>
         </div>
         <div class="menu-sheet-grid">
           ${MORE_LINKS.map(item => `
@@ -58,7 +58,7 @@ function openMenuSheet(active) {
                 <b>${esc(item.title)}</b>
                 <p class="muted small">${esc(item.desc)}</p>
               </div>
-              <span class="menu-arr">→</span>
+              <span class="menu-arr">${icon('chevronRight', '', 18)}</span>
             </a>
           `).join('')}
         </div>
@@ -89,8 +89,8 @@ function renderNav(active) {
       <div class="mh-stats">
         <a href="#/progress" class="mh-badge streak" title="Günlük Seri">🔥 ${currentStreak()}</a>
         <a href="#/progress" class="mh-badge xp" title="Toplam XP">⭐ ${state.xp}</a>
-        <button type="button" class="mh-btn" id="mobileAuthBtn" title="Hesap & Eşitleme" style="background:none;border:none;cursor:pointer;font-size:1.1rem;padding:0 4px;">${isGuest ? '👤' : '🟢'}</button>
-        <a href="#/settings" class="mh-btn" title="Ayarlar">⚙️</a>
+        <button type="button" class="mh-btn" id="mobileAuthBtn" title="Hesap & Eşitleme" style="background:none;border:none;cursor:pointer;font-size:1.1rem;padding:0 4px;">${isGuest ? icon('user', '', 20) : '🟢'}</button>
+        <a href="#/settings" class="mh-btn" title="Ayarlar" aria-label="Ayarlar">${icon('settings', '', 20)}</a>
       </div>
     `;
   }
@@ -109,9 +109,9 @@ function renderNav(active) {
         </div>
       </div>
       <div class="nav-links">
-        ${NAV_DESKTOP.map(([id, icon, label]) => `
+        ${NAV_DESKTOP.map(([id, iconHtml, label]) => `
           <a href="#/${id}" class="nav-link ${active === id ? 'active' : ''}">
-            <span class="nav-icon">${icon}</span>
+            <span class="nav-icon">${iconHtml}</span>
             <span class="nav-label">${label}</span>
           </a>
         `).join('')}
@@ -122,8 +122,8 @@ function renderNav(active) {
           <div class="mini-stat" style="flex:1;">⭐ ${state.xp} XP</div>
         </div>
         ${isGuest 
-          ? `<button class="btn btn-ghost sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;">👤 Giriş Yap / Eşitle</button>`
-          : `<button class="btn btn-ghost sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;display:flex;align-items:center;justify-content:center;gap:6px;">
+          ? `<button class="btn btn-secondary sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;">${icon('user', '', 16)} Giriş Yap / Eşitle</button>`
+          : `<button class="btn btn-secondary sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;display:flex;align-items:center;justify-content:center;gap:6px;">
                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
                <span style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;">${esc(state.auth?.user?.displayName || state.name)}</span>
              </button>`
@@ -564,11 +564,11 @@ function screenHome() {
         </div>
       </div>
 
-      <div class="card ai-teaser" style="margin-top:20px;">
-        <div class="muted small">🤖 AI Öğretmen & Kişisel Rehber</div>
+      <div class="card ai-teaser mt-4">
+        <div class="muted small">${icon('bot', '', 16)} AI Öğretmen & Kişisel Rehber</div>
         <h3>${hasAI() ? 'Seviyeni analiz etmemi ister misin?' : 'Yapay zeka öğretmenini etkinleştir'}</h3>
         <p class="muted">${hasAI() ? 'Hatalarına bakıp sana özel plan ve alıştırma hazırlarım.' : 'Ücretsiz bir Gemini anahtarıyla sana özel analiz, alıştırma ve sohbet pratiği.'}</p>
-        <a class="btn btn-purple" href="#/ai">${hasAI() ? 'AI Öğretmene Git' : 'Nasıl yapılır?'}</a>
+        <a class="btn btn-secondary" href="#/ai">${hasAI() ? 'AI Öğretmene Git' : 'Nasıl yapılır?'}</a>
       </div>
     </div>`;
 
@@ -875,7 +875,7 @@ function renderLeaderboardView() {
             <label class="lbl">Senin Tek Seferlik Kodun (Anlık Skor):</label>
             <div class="type-row">
               <input id="myShareCode" class="text-input" value="${myCode}" readonly />
-              <button class="btn btn-purple" id="copyCodeBtn">📋 Kopyala</button>
+              <button class="btn btn-secondary sm" id="copyCodeBtn">${icon('copy', '', 16)} Kopyala</button>
             </div>
           </div>
 
@@ -885,7 +885,7 @@ function renderLeaderboardView() {
             <label class="lbl">Arkadaşının Kodunu Ekle / Güncelle:</label>
             <div class="type-row">
               <input id="friendCodeIn" class="text-input" placeholder="Arkadaşının sana attığı kodu buraya yapıştır..." />
-              <button class="btn btn-green" id="importCodeBtn">➕ Ekle / Güncelle</button>
+              <button class="btn btn-secondary sm" id="importCodeBtn">${icon('check', '', 16)} Ekle / Güncelle</button>
             </div>
           </div>
         </details>
@@ -1077,7 +1077,7 @@ function screenLearn() {
               <div class="boss-emoji">👑</div>
               <div class="boss-title">A1 Seviye Finali Tamamlandı!</div>
               <div class="boss-sub">Tebrikler! A1 seviyesini başarıyla bitirdin ve A2 Dünyası'nın kilidini açtın.</div>
-              <a class="btn btn-purple" href="#/boss-a1">🔄 Final Sınavını Tekrar Çöz</a>
+              <a class="btn btn-secondary" href="#/boss-a1">${icon('repeat', '', 18)} Final Sınavını Tekrar Çöz</a>
             </div>
           `;
         }
@@ -1372,19 +1372,19 @@ function screenProgress() {
       <div class="grid-4">
         <div class="stat-card grad-1"><div class="sc-icon">🔥</div><div class="sc-val">${currentStreak()}</div><div class="sc-lbl">gün seri</div></div>
         <div class="stat-card grad-2"><div class="sc-icon">⭐</div><div class="sc-val">${state.xp}</div><div class="sc-lbl">XP</div></div>
-        <div class="stat-card grad-3" style="position:relative;">
-          <button class="metric-info-btn" id="wordInfoBtn" title="Nasıl hesaplanır?" aria-label="Kelime istatistiği bilgisi">ℹ️</button>
+        <div class="stat-card grad-3 pos-relative">
+          <button class="metric-info-btn" id="wordInfoBtn" title="Nasıl hesaplanır?" aria-label="Kelime istatistiği bilgisi">${icon('info', '', 14)}</button>
           <div class="sc-icon">🧠</div>
           <div class="sc-val">${startedWords}</div>
           <div class="sc-lbl">öğrenilen kelime</div>
-          <div class="sc-sub" style="font-size:0.75rem;margin-top:4px;opacity:0.9;">⭐ Ustalaşılan: <b>${masteredWords}</b> kelime</div>
+          <div class="sc-sub mt-1">⭐ Ustalaşılan: <b>${masteredWords}</b> kelime</div>
         </div>
-        <div class="stat-card grad-4" style="position:relative;">
-          <button class="metric-info-btn" id="a1InfoBtn" title="Nasıl hesaplanır?" aria-label="A1 müfredat tamamlanma bilgisi">ℹ️</button>
+        <div class="stat-card grad-4 pos-relative">
+          <button class="metric-info-btn" id="a1InfoBtn" title="Nasıl hesaplanır?" aria-label="A1 müfredat tamamlanma bilgisi">${icon('info', '', 14)}</button>
           <div class="sc-icon">📚</div>
           <div class="sc-val">%${lvl.pct}</div>
           <div class="sc-lbl">A1 tamamlandı</div>
-          <div class="sc-sub" style="font-size:0.75rem;margin-top:4px;opacity:0.9;">${lvl.done} / ${UNITS.length} ünite (%70+ başarı)</div>
+          <div class="sc-sub mt-1">${lvl.done} / ${UNITS.length} ünite (%70+ başarı)</div>
         </div>
       </div>
 
@@ -1397,9 +1397,9 @@ function screenProgress() {
           <h3>🔍 Yerel Analiz</h3>
           ${practiced.length === 0 ? '<p class="muted">Ders yaptıkça burada güçlü ve zayıf yönlerin görünecek.</p>' : `
             ${weakUnits.length ? `<p><b>Tekrar etmen önerilen üniteler:</b></p><div class="tag-list">${weakUnits.map(u => `<a class="tag" style="--c:${u.color}" href="#/lesson/${u.id}">${u.emoji} ${esc(u.title)} · %${unitStats(u.id).best}</a>`).join('')}</div>` : '<p>Tüm çalıştığın ünitelerde %80 üzerindesin! 🌟</p>'}
-            ${weak.length ? `<p><b>Zorlandığın kelimeler:</b></p><div class="tag-list">${weak.map(w => `<span class="tag" style="--c:#FF6B6B">${w.emoji} ${esc(w.en)} = ${esc(w.tr)}</span>`).join('')}</div>` : ''}
+            ${weak.length ? `<p><b>Zorlandığın kelimeler:</b></p><div class="tag-list">${weak.map(w => `<span class="tag" style="--c:var(--danger)">${w.emoji} ${esc(w.en)} = ${esc(w.tr)}</span>`).join('')}</div>` : ''}
           `}
-          <a class="btn btn-purple" href="#/ai">🤖 Detaylı AI analizi</a>
+          <a class="btn btn-secondary mt-2" href="#/ai">${icon('bot', '', 16)} Detaylı AI analizi</a>
         </div>
       </div>
 
@@ -1465,7 +1465,7 @@ function screenAI() {
           </ol>
           <div class="type-row">
             <input id="keyIn" class="text-input" placeholder="AIza..." autocomplete="off" />
-            <button class="btn btn-purple" id="saveKey">Kaydet ve Test Et</button>
+            <button class="btn btn-primary" id="saveKey">Kaydet ve Test Et</button>
           </div>
           <p class="muted small">🔒 Anahtarın sadece bu tarayıcıda saklanır ve yalnızca Google'a gönderilir.</p>
         </div>
@@ -1501,7 +1501,7 @@ function aiAnalyzeTab(el) {
     <div class="card">
       <div class="row-between">
         <div><h3>Seviye Raporu</h3><p class="muted small">${r ? `Son analiz: ${new Date(r.at).toLocaleString('tr-TR')}` : 'Henüz analiz yapılmadı.'}</p></div>
-        <button class="btn btn-purple" id="anBtn">${r ? '🔄 Yeniden Analiz Et' : '✨ Analiz Et'}</button>
+        <button class="btn btn-primary" id="anBtn">${r ? icon('repeat', '', 16) + ' Yeniden Analiz Et' : icon('sparkles', '', 16) + ' Analiz Et'}</button>
       </div>
       <div id="report" class="ai-report">${r ? md(r.text) : '<p class="muted">Ders yaptıkça yapay zeka hatalarını ve başarılarını inceleyerek seviyeni belirler ve sana özel bir plan hazırlar.</p>'}</div>
     </div>`;
@@ -1521,9 +1521,9 @@ function aiPracticeTab(el) {
       <p class="muted">Yapay zeka hatalarına ve zayıf ünitelerine bakarak yeni sorular üretir. İstersen bir konu da yazabilirsin.</p>
       <div class="type-row">
         <input id="focusIn" class="text-input" placeholder="İsteğe bağlı konu: ör. present simple, hayvanlar, saatler..." />
-        <button class="btn btn-purple" id="genBtn">✨ Alıştırma Üret</button>
+        <button class="btn btn-primary" id="genBtn">${icon('sparkles', '', 16)} Alıştırma Üret</button>
       </div>
-      <div class="tag-list">${['to be', 'Present Simple', 'have got', 'there is / are', 'Yer edatları', 'Soru kelimeleri'].map(t => `<button class="tag" style="--c:#CC5DE8" data-f="${t}">${t}</button>`).join('')}</div>
+      <div class="tag-list">${['to be', 'Present Simple', 'have got', 'there is / are', 'Yer edatları', 'Soru kelimeleri'].map(t => `<button class="tag" style="--c:var(--cat-kelime)" data-f="${t}">${t}</button>`).join('')}</div>
       <div id="genOut"></div>
     </div>`;
   $$('[data-f]').forEach(b => b.onclick = () => { $('#focusIn').value = b.dataset.f; });
@@ -1719,7 +1719,7 @@ function screenSettings() {
         <label class="lbl">Model</label>
         <input id="setModel" class="text-input" value="${esc(s.model)}" list="models" />
         <datalist id="models"><option value="gemini-2.5-flash"><option value="gemini-2.5-flash-lite"><option value="gemini-2.0-flash"><option value="gemini-flash-latest"></datalist>
-        <div class="row-gap"><button class="btn btn-purple" id="testBtn">🔌 Bağlantıyı Test Et</button><span id="testOut" class="muted"></span></div>
+        <div class="row-gap"><button class="btn btn-secondary sm" id="testBtn">🔌 Bağlantıyı Test Et</button><span id="testOut" class="muted"></span></div>
       </div>
 
       <!-- Ses Ayarları -->
@@ -1728,14 +1728,14 @@ function screenSettings() {
         <label class="lbl">Okuma hızı: <b id="rateVal">${s.rate}</b></label>
         <input id="setRate" type="range" min="0.5" max="1.3" step="0.1" value="${s.rate}" />
         <label class="check"><input type="checkbox" id="setSound" ${s.sound ? 'checked' : ''}/> Ses efektleri</label>
-        <div><button class="btn btn-ghost" id="tryVoice">▶ Sesi dene</button></div>
+        <div><button class="btn btn-secondary sm" id="tryVoice">${icon('volume', '', 16)} Sesi Dene</button></div>
       </div>
 
       <!-- Öğrenme & Tekrar Ayarları -->
       <div class="card">
         <h3>🔁 Akıllı Tekrar & Hafıza Ayarları</h3>
         <label class="lbl">Günlük Tekrar Kelime Sınırı</label>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+        <div class="flex items-center gap-3 mt-1">
           <input id="setReviewLimit" type="number" min="5" max="100" class="text-input" style="max-width:120px;" value="${s.reviewLimit || 25}" />
           <span class="muted small">kelime / gün (Tekrar ekranında günlük karşına çıkacak maksimum kelime sayısı)</span>
         </div>
@@ -1746,12 +1746,12 @@ function screenSettings() {
         <h3>💾 Veriler</h3>
         <p class="muted small">İlerlemeni dosya olarak indirip başka bir cihaza aktarabilirsin.</p>
         <div class="row-gap">
-          <button class="btn btn-ghost" id="exportBtn">⬇️ Dışa Aktar</button>
-          <label class="btn btn-ghost">⬆️ İçe Aktar<input type="file" id="importIn" accept=".json" hidden /></label>
-          <button class="btn btn-red" id="resetBtn">🗑️ İlerlemeyi Sıfırla</button>
+          <button class="btn btn-secondary sm" id="exportBtn">⬇️ Dışa Aktar</button>
+          <label class="btn btn-secondary sm">⬆️ İçe Aktar<input type="file" id="importIn" accept=".json" hidden /></label>
+          <button class="btn btn-danger sm" id="resetBtn">${icon('trash', '', 16)} İlerlemeyi Sıfırla</button>
         </div>
       </div>
-      <div class="center"><button class="btn btn-big btn-primary" id="saveBtn">💾 Kaydet</button></div>
+      <div class="center mt-4"><button class="btn btn-big btn-primary" id="saveBtn">${icon('check', '', 18)} Kaydet</button></div>
     </div>`;
 
   // Yoldaş seçimi
@@ -1882,12 +1882,12 @@ function openAuthModal() {
           <p class="muted small" style="margin:4px 0 10px;">Bu telefondaki / bilgisayardaki puanlarını diğer cihazına tek tıkla kopyala:</p>
           <div class="type-row">
             <input class="text-input" id="profileSyncCode" value="${syncCode}" readonly style="font-size:0.75rem;" />
-            <button class="btn btn-primary sm" id="copyProfileSyncBtn">📋 Kopyala</button>
+            <button class="btn btn-secondary sm" id="copyProfileSyncBtn">${icon('copy', '', 14)} Kopyala</button>
           </div>
         </div>
 
-        <div class="modal-actions" style="margin-top:8px;">
-          <button class="btn btn-red" id="modalLogoutBtn" style="width:100%;justify-content:center;">🚪 Hesaptan Çıkış Yap</button>
+        <div class="modal-actions mt-2">
+          <button class="btn btn-danger w-full justify-center" id="modalLogoutBtn">🚪 Hesaptan Çıkış Yap</button>
         </div>
       </div>
     `);
@@ -1925,12 +1925,12 @@ function openAuthModal() {
 
     <!-- Sekmeler -->
     <div style="display:flex;gap:6px;margin:14px 0;background:var(--line);padding:4px;border-radius:12px;">
-      <button id="tabBtnLogin" class="btn btn-ghost sm" style="flex:1;background:var(--card-bg, #fff);font-weight:700;">🔑 Giriş & Kayıt</button>
-      <button id="tabBtnSync" class="btn btn-ghost sm" style="flex:1;font-weight:700;color:var(--muted);">📲 Cihaz Eşitle</button>
+      <button id="tabBtnLogin" class="btn btn-secondary sm flex-1 bold" style="background:var(--card-bg, #fff);">🔑 Giriş & Kayıt</button>
+      <button id="tabBtnSync" class="btn btn-secondary sm flex-1 bold" style="color:var(--muted);">📲 Cihaz Eşitle</button>
     </div>
 
     <!-- Sekme 1: E-posta ile Giriş & Kayıt -->
-    <div id="tabContentLogin" style="display:flex; flex-direction:column; gap:10px;">
+    <div id="tabContentLogin" class="flex flex-col gap-2">
       <div>
         <label class="lbl">Adın / Takma Adın</label>
         <input type="text" id="modalNameIn" class="text-input" value="${esc(state.name !== 'Öğrenci' ? state.name : '')}" placeholder="Örn: Sena, Kenan" />
@@ -1944,9 +1944,9 @@ function openAuthModal() {
         <input type="password" id="modalPassIn" class="text-input" placeholder="En az 4 karakter" autocomplete="current-password" />
       </div>
 
-      <div style="display:flex;gap:8px;margin-top:6px;">
-        <button class="btn btn-primary btn-big" id="modalEmailRegBtn" style="flex:1;justify-content:center;">✨ Kayıt Ol</button>
-        <button class="btn btn-ghost btn-big" id="modalEmailLoginBtn" style="flex:1;justify-content:center;">🔑 Giriş Yap</button>
+      <div class="flex gap-2 mt-1">
+        <button class="btn btn-primary btn-big flex-1 justify-center" id="modalEmailRegBtn">${icon('sparkles', '', 16)} Kayıt Ol</button>
+        <button class="btn btn-secondary btn-big flex-1 justify-center" id="modalEmailLoginBtn">🔑 Giriş Yap</button>
       </div>
 
       <div style="text-align:center;position:relative;margin:10px 0 4px;">
@@ -1954,12 +1954,12 @@ function openAuthModal() {
         <span style="position:relative;top:-10px;background:var(--card-bg, #fff);padding:0 10px;font-size:0.75rem;color:var(--muted);font-weight:700;">VEYA</span>
       </div>
 
-      <button class="btn btn-ghost" id="modalGoogleBtn" style="justify-content:center;font-size:0.95rem;width:100%;">
+      <button class="btn btn-secondary w-full justify-center" id="modalGoogleBtn" style="font-size:0.95rem;">
         <span style="font-size:1.1rem;">🌐</span> Google ile Giriş Yap
       </button>
 
-      <div style="text-align:center;margin-top:4px;">
-        <button class="btn btn-ghost sm" id="modalGuestBtn" style="color:var(--muted);font-size:0.8rem;">👤 Misafir Modunda Kal</button>
+      <div class="center mt-1">
+        <button class="btn btn-secondary sm" id="modalGuestBtn" style="color:var(--muted);font-size:0.8rem;">👤 Misafir Modunda Kal</button>
       </div>
     </div>
 
@@ -1970,7 +1970,7 @@ function openAuthModal() {
         <p class="muted small" style="margin:3px 0 8px;">Bu cihazdaki (${state.xp} XP, ${doneCount()} ünite) ilerlemeni diğer cihaza aktarmak için kodu al:</p>
         <div class="type-row">
           <input class="text-input" id="myDeviceCodeOut" value="${syncCode}" readonly style="font-size:0.75rem;" />
-          <button class="btn btn-primary sm" id="copyDeviceCodeBtn">📋 Kopyala</button>
+          <button class="btn btn-secondary sm" id="copyDeviceCodeBtn">${icon('copy', '', 14)} Kopyala</button>
         </div>
       </div>
 
@@ -1978,7 +1978,7 @@ function openAuthModal() {
         <b style="font-size:0.88rem;">2. Diğer Cihazdaki İlerlemeyi Buraya Aktar</b>
         <p class="muted small" style="margin:3px 0 8px;">Diğer cihazından aldığın kodu buraya yapıştırıp puanlarını birleştir:</p>
         <textarea id="incomingDeviceCodeIn" class="text-input" placeholder="Diğer cihazından kopyaladığın kodu buraya yapıştır..." style="height:65px;font-size:0.78rem;font-family:monospace;"></textarea>
-        <button class="btn btn-green btn-big" id="applyDeviceSyncBtn" style="width:100%;margin-top:8px;justify-content:center;">⚡ Şimdi Eşitle & Birleştir</button>
+        <button class="btn btn-primary btn-big w-full mt-2 justify-center" id="applyDeviceSyncBtn">⚡ Şimdi Eşitle & Birleştir</button>
       </div>
     </div>
   `);

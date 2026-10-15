@@ -431,7 +431,7 @@ const RAW_UNITS = [
 
 /* ---------- Normalize ---------- */
 const UNITS = RAW_UNITS.map((u, i) => {
-  const unit = { ...u, index: i, color: UNIT_COLORS[i % UNIT_COLORS.length] };
+  const unit = { ...u, index: i, color: u.type === 'vocab' ? 'var(--cat-kelime)' : 'var(--cat-gramer)' };
   if (u.type === 'vocab') {
     unit.words = u.words.map(([en, tr, emoji]) => ({ en, tr, emoji, key: `${u.id}:${en}`, unitId: u.id }));
   }
@@ -535,7 +535,14 @@ const PALETTES = [
       accent: '#818CF8',
       accentD: '#6366F1',
       primary: '#6366F1',
-      primaryD: '#818CF8'
+      primaryD: '#4F46E5',
+      primarySoft: 'rgba(99, 102, 241, 0.16)',
+      catKelime: '#A855F7',
+      catGramer: '#3B82F6',
+      catMantik: '#F59E0B',
+      catRekabet: '#EAB308',
+      catAi: '#06B6D4',
+      catTekrar: '#EC4899'
     }
   },
   {
@@ -552,7 +559,14 @@ const PALETTES = [
       accent: '#34D399',
       accentD: '#10B981',
       primary: '#10B981',
-      primaryD: '#34D399'
+      primaryD: '#059669',
+      primarySoft: 'rgba(16, 185, 129, 0.16)',
+      catKelime: '#8B5CF6',
+      catGramer: '#0EA5E9',
+      catMantik: '#F59E0B',
+      catRekabet: '#FBBF24',
+      catAi: '#10B981',
+      catTekrar: '#F43F5E'
     }
   },
   {
@@ -564,12 +578,19 @@ const PALETTES = [
       bg: '#F4F7F5',
       cardBg: '#FFFFFF',
       text: '#1E2D24',
-      muted: '#637A6D',
+      muted: '#52695C',
       line: '#DCE5E0',
       accent: '#2F7C5D',
       accentD: '#1F5A42',
       primary: '#3B8B67',
-      primaryD: '#28684C'
+      primaryD: '#28684C',
+      primarySoft: 'rgba(59, 139, 103, 0.14)',
+      catKelime: '#7C3AED',
+      catGramer: '#2563EB',
+      catMantik: '#D97706',
+      catRekabet: '#CA8A04',
+      catAi: '#0D9488',
+      catTekrar: '#DB2777'
     }
   },
   {
@@ -581,12 +602,19 @@ const PALETTES = [
       bg: '#FFF8F4',
       cardBg: '#FFFFFF',
       text: '#2C1810',
-      muted: '#8C6858',
+      muted: '#7C5848',
       line: '#F2DFD5',
       accent: '#F97316',
       accentD: '#EA580C',
       primary: '#F97316',
-      primaryD: '#C2410C'
+      primaryD: '#C2410C',
+      primarySoft: 'rgba(249, 115, 22, 0.14)',
+      catKelime: '#8B5CF6',
+      catGramer: '#2563EB',
+      catMantik: '#EA580C',
+      catRekabet: '#D97706',
+      catAi: '#059669',
+      catTekrar: '#E11D48'
     }
   },
   {
@@ -598,12 +626,19 @@ const PALETTES = [
       bg: '#F0F9FF',
       cardBg: '#FFFFFF',
       text: '#0C2738',
-      muted: '#527993',
+      muted: '#426883',
       line: '#D2E8F7',
       accent: '#0284C7',
       accentD: '#0369A1',
       primary: '#0EA5E9',
-      primaryD: '#0284C7'
+      primaryD: '#0284C7',
+      primarySoft: 'rgba(14, 165, 233, 0.14)',
+      catKelime: '#8B5CF6',
+      catGramer: '#0284C7',
+      catMantik: '#D97706',
+      catRekabet: '#EAB308',
+      catAi: '#0D9488',
+      catTekrar: '#E11D48'
     }
   }
 ];

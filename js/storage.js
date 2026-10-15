@@ -352,15 +352,26 @@ class ThemeService {
       localStorage.setItem('a1_theme_id', palette.id);
     } catch (e) {}
     root.style.setProperty('--bg', palette.colors.bg);
+    root.style.setProperty('--background', palette.colors.bg);
     root.style.setProperty('--card', palette.colors.cardBg);
     root.style.setProperty('--card-bg', palette.colors.cardBg);
+    root.style.setProperty('--surface', palette.colors.cardBg);
     root.style.setProperty('--text', palette.colors.text);
     root.style.setProperty('--muted', palette.colors.muted);
+    root.style.setProperty('--text-muted', palette.colors.muted);
     root.style.setProperty('--line', palette.colors.line);
+    root.style.setProperty('--border', palette.colors.line);
     root.style.setProperty('--accent', palette.colors.accent);
     root.style.setProperty('--accent-d', palette.colors.accentD);
     root.style.setProperty('--primary', palette.colors.primary);
     root.style.setProperty('--primary-d', palette.colors.primaryD);
+    root.style.setProperty('--primary-soft', palette.colors.primarySoft || 'rgba(99, 102, 241, 0.14)');
+    if (palette.colors.catKelime) root.style.setProperty('--cat-kelime', palette.colors.catKelime);
+    if (palette.colors.catGramer) root.style.setProperty('--cat-gramer', palette.colors.catGramer);
+    if (palette.colors.catMantik) root.style.setProperty('--cat-mantik', palette.colors.catMantik);
+    if (palette.colors.catRekabet) root.style.setProperty('--cat-rekabet', palette.colors.catRekabet);
+    if (palette.colors.catAi) root.style.setProperty('--cat-ai', palette.colors.catAi);
+    if (palette.colors.catTekrar) root.style.setProperty('--cat-tekrar', palette.colors.catTekrar);
 
     const metaTheme = document.querySelector('meta[name="theme-color"]');
     if (metaTheme) metaTheme.setAttribute('content', palette.colors.bg);

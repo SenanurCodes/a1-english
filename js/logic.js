@@ -12,12 +12,12 @@ const LOKOMOTIF_EXAMPLES = [
     tr: 'Ben dün kafede arkadaşlarımla kahve içtim.',
     explanation: 'Türkçede fiil (içtim) en sondadır. İngilizcede ise sabırsızdır, hemen özneden sonra söylenir!',
     cars: [
-      { role: '🚂 1. ÖZNE (Kim?)', en: 'I', tr: 'Ben', color: '#E11D48' },
-      { role: '⚡ 2. EYLEM (Ne yaptı?)', en: 'drank', tr: 'İçtim', color: '#D97706' },
-      { role: '📦 3. NESNE (Neyi?)', en: 'coffee', tr: 'Kahve', color: '#059669' },
-      { role: '👥 4. KİMLE (Kiminle?)', en: 'with my friends', tr: 'Arkadaşlarımla', color: '#0284C7' },
-      { role: '📍 5. YER (Nerede?)', en: 'at a cafe', tr: 'Kafede', color: '#2563EB' },
-      { role: '⏰ 6. ZAMAN (Ne zaman?)', en: 'yesterday', tr: 'Dün', color: '#7C3AED' }
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'I', tr: 'Ben', color: 'var(--role-subject)' },
+      { role: '⚡ 2. EYLEM (Ne yaptı?)', en: 'drank', tr: 'İçtim', color: 'var(--role-verb)' },
+      { role: '📦 3. NESNE (Neyi?)', en: 'coffee', tr: 'Kahve', color: 'var(--role-object)' },
+      { role: '👥 4. KİMLE (Kiminle?)', en: 'with my friends', tr: 'Arkadaşlarımla', color: 'var(--role-with)' },
+      { role: '📍 5. YER (Nerede?)', en: 'at a cafe', tr: 'Kafede', color: 'var(--role-place)' },
+      { role: '⏰ 6. ZAMAN (Ne zaman?)', en: 'yesterday', tr: 'Dün', color: 'var(--role-time)' }
     ],
     fullEn: 'I drank coffee with my friends at a cafe yesterday.'
   },
@@ -25,10 +25,10 @@ const LOKOMOTIF_EXAMPLES = [
     tr: 'Biz her sabah parkta koşarız.',
     explanation: 'Özne ve eylem yapışıktır (We run). Nerede ve ne zaman detayları arkaya sıralanır.',
     cars: [
-      { role: '🚂 1. ÖZNE (Kim?)', en: 'We', tr: 'Biz', color: '#E11D48' },
-      { role: '⚡ 2. EYLEM (Ne yapar?)', en: 'run', tr: 'Koşarız', color: '#D97706' },
-      { role: '📍 3. YER (Nerede?)', en: 'in the park', tr: 'Parkta', color: '#2563EB' },
-      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'every morning', tr: 'Her sabah', color: '#7C3AED' }
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'We', tr: 'Biz', color: 'var(--role-subject)' },
+      { role: '⚡ 2. EYLEM (Ne yapar?)', en: 'run', tr: 'Koşarız', color: 'var(--role-verb)' },
+      { role: '📍 3. YER (Nerede?)', en: 'in the park', tr: 'Parkta', color: 'var(--role-place)' },
+      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'every morning', tr: 'Her sabah', color: 'var(--role-time)' }
     ],
     fullEn: 'We run in the park every morning.'
   },
@@ -36,10 +36,10 @@ const LOKOMOTIF_EXAMPLES = [
     tr: 'Sarah yarın Londra\'ya uçacak.',
     explanation: 'Zaman zarfları (tomorrow, yesterday) lokomotifin en son vagonudur!',
     cars: [
-      { role: '🚂 1. ÖZNE (Kim?)', en: 'Sarah', tr: 'Sarah', color: '#E11D48' },
-      { role: '⚡ 2. EYLEM (Ne yapacak?)', en: 'will fly', tr: 'Uçacak', color: '#D97706' },
-      { role: '📍 3. YER (Nereye?)', en: 'to London', tr: 'Londra\'ya', color: '#2563EB' },
-      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'tomorrow', tr: 'Yarın', color: '#7C3AED' }
+      { role: '🚂 1. ÖZNE (Kim?)', en: 'Sarah', tr: 'Sarah', color: 'var(--role-subject)' },
+      { role: '⚡ 2. EYLEM (Ne yapacak?)', en: 'will fly', tr: 'Uçacak', color: 'var(--role-verb)' },
+      { role: '📍 3. YER (Nereye?)', en: 'to London', tr: 'Londra\'ya', color: 'var(--role-place)' },
+      { role: '⏰ 4. ZAMAN (Ne zaman?)', en: 'tomorrow', tr: 'Yarın', color: 'var(--role-time)' }
     ],
     fullEn: 'Sarah will fly to London tomorrow.'
   }
@@ -60,7 +60,7 @@ const LOGIC_GUIDES = [
     title: '🧠 Cümle Kurma Mantığı: Lokomotif Kuralı',
     sub: 'Türkçe vs İngilizce Düşünce Farkı',
     emoji: '🚂',
-    color: '#FF6B6B',
+    color: 'var(--cat-mantik)',
     summary: 'Türkçe cümle tersten gelir, İngilizce ise tren lokomotifi gibi düz gider!',
     content: `
       <h4>1. Lokomotif Kuralı: Özne + İş + Detay</h4>
@@ -81,7 +81,7 @@ const LOGIC_GUIDES = [
     title: '⚠️ Türklerin Düştüğü Kritik Tuzaklar',
     sub: 'Türkçeden Birebir Çevirince Komik Olan Hatalar',
     emoji: '🚨',
-    color: '#FCC419',
+    color: 'var(--warning)',
     summary: 'Kelimeleri birebir Türkçe düşünerek İngilizceye çevirdiğinde bu tuzaklara düşersin.',
     traps: [
       {
@@ -122,7 +122,7 @@ const LOGIC_GUIDES = [
     title: '🛡️ Hayatta Kalma Kalıpları (Refleks Kalıplar)',
     sub: 'Yurt Dışında / İnternette En Çok Kurtaranlar',
     emoji: '✈️',
-    color: '#20C997',
+    color: 'var(--success)',
     summary: 'Gramer formülü düşünmeden doğrudan ağzından çıkması gereken hayat kurtarıcı refleksler.',
     phrases: [
       { en: 'Could I get a coffee, please?', tr: 'Bir kahve alabilir miyim lütfen?', tip: 'Restoranda/kafede en kibar ve doğal sipariş isteme yolu.' },
@@ -141,7 +141,7 @@ const LOGIC_GUIDES = [
     title: '🤝 Nezaket ve İletişim İncelikleri',
     sub: 'Kaba Görünmeden Konuşmanın Sırrı',
     emoji: '🎩',
-    color: '#339AF0',
+    color: 'var(--cat-mantik)',
     summary: 'İngilizler ve Amerikalılar doğrudan emir kiplerini kaba bulurlar. İşte sihirli yumuşatıcılar:',
     content: `
       <h4>1. "Give me water" deme!</h4>
