@@ -33,7 +33,7 @@ function defaultState() {
     friends: [],          // Kod ile eklenen gerçek arkadaşlar
     leagueRoomId: null,   // Canlı senkronize lig oda ID'si
     leagueMembers: {},    // Canlı lig üyeleri { userId: { id, name, xp, streak, unitsDone, avatar, mascot, lastActive } }
-    settings: { apiKey: '', model: 'gemini-2.5-flash', rate: 0.9, sound: true }
+    settings: { apiKey: '', model: 'gemini-2.5-flash', rate: 0.9, sound: true, reviewLimit: 25 }
   };
 }
 
@@ -100,7 +100,7 @@ class AppStore {
         auth: { ...d.auth, ...(s.auth || {}) },
         leagueRoomId: s.leagueRoomId || null,
         leagueMembers: s.leagueMembers || {},
-        settings: { ...d.settings, ...(s.settings || {}) },
+        settings: { ...d.settings, ...(s.settings || {}), reviewLimit: (s.settings && s.settings.reviewLimit) ? s.settings.reviewLimit : 25 },
         streak: { ...d.streak, ...(s.streak || {}) },
         friends: cleanFriends
       };
@@ -350,6 +350,7 @@ function recordUnitResult(unitId, correct, total) {
     if (u) {
       state.unlockedUpTo = Math.max(state.unlockedUpTo, Math.min(u.index + 1, UNITS.length - 1));
     }
+    syncUnitWordsToBox1(unitId);
   }
   state.units[unitId] = s;
   saveState();
@@ -407,19 +408,99 @@ function recordMistake(m) {
 }
 
 /* ============================================================
-   Arkadaş Rekabeti & Skor Kodu Güvenliği
+   Arkadaş Rekabeti, Veri Güvenliği & Tip Normalizasyonu
    ============================================================ */
+
+/* ---------- Tip Dönüştürücüler & Güvenli Veri Normalizasyonu ---------- */
+function normalizeStreak(val) {
+  if (val == null) return 0;
+  if (typeof val === 'number') return Math.max(0, Math.floor(val));
+  if (typeof val === 'object' && val !== null) {
+    return Math.max(0, Math.floor(val.count || val.streak || 0));
+  }
+  const n = parseInt(val, 10);
+  return isNaN(n) ? 0 : Math.max(0, n);
+}
+
+function normalizeUnitsDone(val) {
+  if (val == null) return 0;
+  if (typeof val === 'number') return Math.max(0, Math.floor(val));
+  if (typeof val === 'object' && val !== null) {
+    return Math.max(0, Math.floor(val.count || val.unitsDone || val.completedUnits || 0));
+  }
+  const n = parseInt(val, 10);
+  return isNaN(n) ? 0 : Math.max(0, n);
+}
+
+function normalizeLeagueMember(m, isMe = false) {
+  if (!m) return null;
+  const streak = normalizeStreak(m.streak);
+  const unitsDone = normalizeUnitsDone(m.unitsDone ?? m.completedUnits);
+  const xp = Math.max(0, parseInt(m.xp, 10) || 0);
+  return {
+    ...m,
+    id: m.id || (isMe ? state.userId : 'unknown'),
+    name: m.name || (isMe ? (state.name || 'Öğrenci') : 'Arkadaş'),
+    xp,
+    streak,
+    unitsDone,
+    avatar: m.avatar || (isMe ? ((typeof mascotService !== 'undefined' && mascotService.getActive()) ? mascotService.getActive().icon : '🐾') : '🧑'),
+    isMe: !!isMe
+  };
+}
+
+/* ---------- Ünite Kelimelerini Aralıklı Tekrara Aktarma & Göç (Migration) ---------- */
+function syncUnitWordsToBox1(unitId) {
+  if (typeof UNITS === 'undefined') return 0;
+  const u = UNITS.find(x => x.id === unitId);
+  if (!u || !Array.isArray(u.words)) return 0;
+  let count = 0;
+  if (!state.words) state.words = {};
+  u.words.forEach(w => {
+    if (!w || !w.key) return;
+    const existing = state.words[w.key];
+    if (!existing) {
+      state.words[w.key] = { box: 1, due: Date.now(), right: 1, wrong: 0 };
+      count++;
+    } else if (existing.box < 1) {
+      existing.box = 1;
+      existing.due = Math.min(existing.due || Date.now(), Date.now());
+      count++;
+    }
+    // Kural: Mevcut kutusu 1'den yüksek olan kelimelerin kutusunu ASLA düşürme!
+  });
+  if (count > 0) saveState();
+  return count;
+}
+
+function migrateCompletedUnitsWords() {
+  if (typeof UNITS === 'undefined' || !state || !state.units) return 0;
+  let total = 0;
+  UNITS.forEach(u => {
+    const s = state.units[u.id];
+    if (s && (s.done || s.best >= 70)) {
+      total += syncUnitWordsToBox1(u.id);
+    }
+  });
+  return total;
+}
+
+// Otomatik Göç (Migration): Tamamlanmış ünitelerdeki kelimeleri Kutu 1'e al
+try {
+  migrateCompletedUnitsWords();
+} catch (e) {}
+
 function myLeagueProfile() {
-  const m = mascotService.getActive();
+  const m = typeof mascotService !== 'undefined' ? mascotService.getActive() : { id: 'cat', name: 'Pamuk', icon: '🐱' };
   return {
     id: state.userId,
     name: state.name || 'Öğrenci',
     mascot: m.id,
     mascotName: m.name,
     avatar: m.icon,
-    xp: state.xp,
-    streak: currentStreak(),
-    unitsDone: doneCount(),
+    xp: Math.max(0, parseInt(state.xp, 10) || 0),
+    streak: normalizeStreak(currentStreak()),
+    unitsDone: normalizeUnitsDone(doneCount()),
     lastActive: Date.now()
   };
 }
@@ -438,8 +519,8 @@ function generateShareCode() {
   const payload = {
     n: state.name || 'Ben',
     x: state.xp,
-    s: currentStreak(),
-    u: doneCount(),
+    s: normalizeStreak(currentStreak()),
+    u: normalizeUnitsDone(doneCount()),
     m: state.mascot || 'cat',
     t: Date.now()
   };
@@ -460,9 +541,9 @@ function importFriendFromCode(code) {
     const friendObj = {
       id: existingIdx >= 0 ? state.friends[existingIdx].id : 'f_' + Date.now(),
       name: data.n,
-      xp: data.x,
-      streak: data.s || 0,
-      unitsDone: data.u || 0,
+      xp: Math.max(0, parseInt(data.x, 10) || 0),
+      streak: normalizeStreak(data.s),
+      unitsDone: normalizeUnitsDone(data.u),
       mascot: mascot.id,
       avatar: mascot.icon,
       updatedAt: data.t
@@ -485,19 +566,38 @@ function removeFriend(name) {
 }
 
 function getLeaderboardList() {
-  const me = myLeagueProfile();
-  me.isMe = true;
+  const me = normalizeLeagueMember(myLeagueProfile(), true);
 
   if (state.leagueRoomId && state.leagueMembers && Object.keys(state.leagueMembers).length > 0) {
-    const list = Object.values(state.leagueMembers).map(m => ({
-      ...m,
-      isMe: m.id === state.userId
-    }));
-    if (!list.some(x => x.isMe)) list.push(me);
+    let foundMe = false;
+    const list = Object.values(state.leagueMembers).map(raw => {
+      const isCurrent = raw && raw.id === state.userId;
+      if (isCurrent) {
+        foundMe = true;
+        // Yerel ilerleme verisi ASLA sıfırlanmaz veya düşürülmez.
+        // Sunucudaki değer yerelden düşükse yerel değer kazanır!
+        const serverXp = parseInt(raw.xp, 10) || 0;
+        const serverStreak = normalizeStreak(raw.streak);
+        const serverUnits = normalizeUnitsDone(raw.unitsDone ?? raw.completedUnits);
+        return {
+          ...raw,
+          ...me,
+          xp: Math.max(serverXp, me.xp),
+          streak: Math.max(serverStreak, me.streak),
+          unitsDone: Math.max(serverUnits, me.unitsDone),
+          isMe: true
+        };
+      }
+      return normalizeLeagueMember(raw, false);
+    }).filter(Boolean);
+
+    if (!foundMe) {
+      list.push(me);
+    }
     return list.sort((a, b) => b.xp - a.xp);
   }
 
-  return [me, ...(state.friends || [])].sort((a, b) => b.xp - a.xp);
+  return [me, ...(state.friends || []).map(f => normalizeLeagueMember(f, false))].sort((a, b) => b.xp - a.xp);
 }
 
 // Bulut Ligi Servis Fonksiyonları (Firebase Realtime Database)
@@ -510,8 +610,21 @@ function getFirebaseDatabase() {
   return null;
 }
 
+let leagueSyncStatus = {
+  status: 'synced',
+  text: '🟢 Skorlar Güncel',
+  lastSync: Date.now()
+};
+
+function getLeagueSyncStatus() {
+  if (!navigator.onLine) {
+    return { status: 'offline', text: '📡 Çevrimdışı Mod (İnternete bağlanınca senkronize edilecek)', lastSync: leagueSyncStatus.lastSync };
+  }
+  return leagueSyncStatus;
+}
+
 async function createCloudLeague() {
-  const me = myLeagueProfile();
+  const me = normalizeLeagueMember(myLeagueProfile(), true);
   const db = getFirebaseDatabase();
   if (!db) {
     throw new Error('Canlı lig kurmak için Firebase bağlantısı gereklidir. Lütfen internet bağlantını veya Firebase ayarlarını kontrol et.');
@@ -527,13 +640,14 @@ async function createCloudLeague() {
   state.leagueRoomId = roomId;
   state.leagueMembers = { [state.userId]: me };
   saveState();
+  leagueSyncStatus = { status: 'synced', text: '🟢 Canlı Lig Kuruldu & Senkronize', lastSync: Date.now() };
   return roomId;
 }
 
 async function joinCloudLeague(roomId) {
   const id = (roomId || '').trim();
   if (!id) throw new Error('Geçersiz lig kodu.');
-  const me = myLeagueProfile();
+  const me = normalizeLeagueMember(myLeagueProfile(), true);
   const db = getFirebaseDatabase();
 
   if (!db) {
@@ -547,7 +661,8 @@ async function joinCloudLeague(roomId) {
   state.leagueRoomId = id;
   state.leagueMembers = { ...(val.members || {}), [state.userId]: me };
   saveState();
-  return Object.values(state.leagueMembers);
+  leagueSyncStatus = { status: 'synced', text: '🟢 Lige Katıldın & Skorun Aktarıldı', lastSync: Date.now() };
+  return getLeaderboardList();
 }
 
 let isSyncInProgress = false;
@@ -555,26 +670,88 @@ let pendingSyncAgain = false;
 
 async function syncCloudLeague() {
   if (!state.leagueRoomId) return null;
-  const me = myLeagueProfile();
-  const db = getFirebaseDatabase();
+  const me = normalizeLeagueMember(myLeagueProfile(), true);
 
-  if (!db) return Object.values(state.leagueMembers || {});
+  // Yerel lig tablosundaki kendi satırını her zaman en güncel yerel verilerle koru
+  if (!state.leagueMembers) state.leagueMembers = {};
+  const curLocal = state.leagueMembers[state.userId] || {};
+  state.leagueMembers[state.userId] = {
+    ...curLocal,
+    ...me,
+    xp: Math.max(parseInt(curLocal.xp, 10) || 0, me.xp),
+    streak: Math.max(normalizeStreak(curLocal.streak), me.streak),
+    unitsDone: Math.max(normalizeUnitsDone(curLocal.unitsDone ?? curLocal.completedUnits), me.unitsDone)
+  };
+  saveState();
+
+  if (!navigator.onLine) {
+    leagueSyncStatus = {
+      status: 'offline',
+      text: '📡 Çevrimdışı Mod (Skorların güvende, internet gelince aktarılacak)',
+      lastSync: leagueSyncStatus.lastSync
+    };
+    return getLeaderboardList();
+  }
+
+  const db = getFirebaseDatabase();
+  if (!db) {
+    leagueSyncStatus = {
+      status: 'offline',
+      text: '📡 Yerel Mod (Firebase bağlantısı bekleniyor)',
+      lastSync: leagueSyncStatus.lastSync
+    };
+    return getLeaderboardList();
+  }
 
   if (isSyncInProgress) {
     pendingSyncAgain = true;
-    return Object.values(state.leagueMembers || {});
+    return getLeaderboardList();
   }
+
   isSyncInProgress = true;
+  leagueSyncStatus = {
+    status: 'syncing',
+    text: '🔄 Senkronize ediliyor...',
+    lastSync: leagueSyncStatus.lastSync
+  };
+
   try {
-    await db.ref('leagues/' + state.leagueRoomId + '/members/' + state.userId).set(me);
+    // 1. Önce güncel yerel profilimizi Firebase'e aktar
+    await db.ref('leagues/' + state.leagueRoomId + '/members/' + state.userId).set(state.leagueMembers[state.userId]);
+
+    // 2. Odanın tüm üyelerini çek
     const snap = await db.ref('leagues/' + state.leagueRoomId + '/members').once('value');
-    const members = snap.val() || { [state.userId]: me };
-    state.leagueMembers = members;
+    const remoteMembers = snap.val() || {};
+
+    // 3. Sunucudan gelen verilerle birleştir; sunucudaki değer yerelden düşükse YEREL DEĞER KAZANSIN!
+    const remoteMe = remoteMembers[state.userId] || {};
+    remoteMembers[state.userId] = {
+      ...remoteMe,
+      ...state.leagueMembers[state.userId],
+      xp: Math.max(parseInt(remoteMe.xp, 10) || 0, state.leagueMembers[state.userId].xp),
+      streak: Math.max(normalizeStreak(remoteMe.streak), state.leagueMembers[state.userId].streak),
+      unitsDone: Math.max(normalizeUnitsDone(remoteMe.unitsDone ?? remoteMe.completedUnits), state.leagueMembers[state.userId].unitsDone)
+    };
+
+    state.leagueMembers = remoteMembers;
     saveState();
-    return Object.values(members);
+    leagueSyncStatus = {
+      status: 'synced',
+      text: '🟢 Tüm Skorlar Güncel (Bulutla Eşitlendi)',
+      lastSync: Date.now()
+    };
+    return getLeaderboardList();
   } catch (e) {
-    console.warn('Firebase sync notice:', e.message);
-    return Object.values(state.leagueMembers || {});
+    console.warn('Firebase league sync warning:', e.message);
+    leagueSyncStatus = {
+      status: 'error',
+      text: '⚠️ Ağ Gecikmesi (Yerel skorlar güvende, tekrar deneniyor)',
+      lastSync: leagueSyncStatus.lastSync
+    };
+    if (navigator.onLine) {
+      setTimeout(syncCloudLeague, 3500);
+    }
+    return getLeaderboardList();
   } finally {
     isSyncInProgress = false;
     if (pendingSyncAgain) {

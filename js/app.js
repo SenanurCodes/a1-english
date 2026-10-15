@@ -767,6 +767,7 @@ function renderLeaderboardView() {
   const list = getLeaderboardList();
   const myRank = list.findIndex(u => u.isMe) + 1;
   const isCloud = !!state.leagueRoomId;
+  const syncStat = typeof getLeagueSyncStatus === 'function' ? getLeagueSyncStatus() : { status: navigator.onLine ? 'synced' : 'offline', text: navigator.onLine ? '🟢 Skorlar Güncel' : '📡 Çevrimdışı' };
   const myCode = generateShareCode();
   const inviteLink = isCloud ? `${location.origin}${location.pathname}#/leaderboard?room=${state.leagueRoomId}` : '';
 
@@ -788,9 +789,7 @@ function renderLeaderboardView() {
       <!-- Otomatik Senkronizasyon Durum Çubuğu -->
       <div class="sync-status-bar">
         <div>
-          ${navigator.onLine 
-            ? '<span class="status-pill online">🟢 İnternete Bağlı (Bulut Senkronizasyonu Aktif)</span>' 
-            : '<span class="status-pill offline">📡 Çevrimdışı Mod (İnternete bağlanınca otomatik aktarılır)</span>'}
+          <span class="status-pill ${syncStat.status}">${esc(syncStat.text)}</span>
         </div>
         ${isCloud ? `<span class="badge-room">🏆 Lig Odası: <b>#${esc(state.leagueRoomId.slice(0, 8))}</b></span>` : ''}
       </div>
@@ -900,14 +899,15 @@ function renderLeaderboardView() {
     $('#refreshLeagueBtn').onclick = async () => {
       const btn = $('#refreshLeagueBtn');
       btn.disabled = true;
-      btn.textContent = '⏳ Çekiliyor...';
+      btn.textContent = '🔄 Senkronize ediliyor...';
       try {
         await syncCloudLeague();
-        toast('Canlı skorlar güncellendi! 🔄');
+        toast('Canlı skorlar eşitlendi ve güncellendi! ✅');
       } catch (e) {
-        toast('Güncelleme hatası: ' + e.message);
+        toast('Senkronizasyon bildirimi: ' + e.message);
+      } finally {
+        renderLeaderboardView();
       }
-      renderLeaderboardView();
     };
   }
 
@@ -1205,6 +1205,7 @@ function screenLesson(id) {
    Tekrar
    ============================================================ */
 function screenReview() {
+  const reviewLimit = Math.max(5, parseInt(state.settings.reviewLimit, 10) || 25);
   let words = dueWords();
   const seen = Object.keys(state.words).map(k => WORD_BY_KEY[k]).filter(Boolean);
   if (words.length < 5) {
@@ -1212,6 +1213,12 @@ function screenReview() {
     words = [...words, ...extra];
   }
   if (words.length < 5) words = [...words, ...sample(seen.filter(w => !words.find(x => x.key === w.key)), 5 - words.length)];
+
+  // Günlük tekrar kelime üst sınırı (Varsayılan 25, Ayarlar'dan değiştirilebilir)
+  if (words.length > reviewLimit) {
+    words = words.slice(0, reviewLimit);
+  }
+
   if (words.length < 3) {
     view().innerHTML = `<div class="page"><div class="card empty"><div class="empty-emoji">🌱</div><h2>Henüz tekrar edilecek kelime yok</h2>
       <p class="muted">Birkaç kelime dersi tamamla, öğrendiğin kelimeler burada akıllı tekrar sistemine girecek.</p>
@@ -1219,7 +1226,7 @@ function screenReview() {
     return;
   }
   const start = () => runLesson({
-    title: '🔁 Akıllı Tekrar',
+    title: `🔁 Akıllı Tekrar (${words.length} Kelime)`,
     questions: buildReviewLesson(words),
     color: '#20C997',
     exitTo: '#/home',
@@ -1343,7 +1350,8 @@ function screenProgress() {
   const maxXP = Math.max(50, ...days.map(d => d.xp));
   const dayNames = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
   const weak = weakWords(8);
-  const learned = Object.values(state.words).filter(w => w.box >= 3).length;
+  const startedWords = Object.values(state.words).filter(w => w.box >= 1).length;
+  const masteredWords = Object.values(state.words).filter(w => w.box >= 3).length;
   const practiced = UNITS.filter(u => unitStats(u.id).attempts);
   const weakUnits = practiced.filter(u => unitStats(u.id).best < 80).sort((a, b) => unitStats(a.id).best - unitStats(b.id).best).slice(0, 4);
 
@@ -1354,8 +1362,20 @@ function screenProgress() {
       <div class="grid-4">
         <div class="stat-card grad-1"><div class="sc-icon">🔥</div><div class="sc-val">${currentStreak()}</div><div class="sc-lbl">gün seri</div></div>
         <div class="stat-card grad-2"><div class="sc-icon">⭐</div><div class="sc-val">${state.xp}</div><div class="sc-lbl">XP</div></div>
-        <div class="stat-card grad-3"><div class="sc-icon">🧠</div><div class="sc-val">${learned}</div><div class="sc-lbl">iyi bilinen kelime</div></div>
-        <div class="stat-card grad-4"><div class="sc-icon">📚</div><div class="sc-val">%${lvl.pct}</div><div class="sc-lbl">A1 tamamlandı</div></div>
+        <div class="stat-card grad-3" style="position:relative;">
+          <button class="metric-info-btn" id="wordInfoBtn" title="Nasıl hesaplanır?" aria-label="Kelime istatistiği bilgisi">ℹ️</button>
+          <div class="sc-icon">🧠</div>
+          <div class="sc-val">${startedWords}</div>
+          <div class="sc-lbl">öğrenilen kelime</div>
+          <div class="sc-sub" style="font-size:0.75rem;margin-top:4px;opacity:0.9;">⭐ Ustalaşılan: <b>${masteredWords}</b> kelime</div>
+        </div>
+        <div class="stat-card grad-4" style="position:relative;">
+          <button class="metric-info-btn" id="a1InfoBtn" title="Nasıl hesaplanır?" aria-label="A1 müfredat tamamlanma bilgisi">ℹ️</button>
+          <div class="sc-icon">📚</div>
+          <div class="sc-val">%${lvl.pct}</div>
+          <div class="sc-lbl">A1 tamamlandı</div>
+          <div class="sc-sub" style="font-size:0.75rem;margin-top:4px;opacity:0.9;">${lvl.done} / ${UNITS.length} ünite (%70+ başarı)</div>
+        </div>
       </div>
 
       <div class="grid-2">
@@ -1391,6 +1411,30 @@ function screenProgress() {
         ${state.mistakes.slice(0, 10).map(m => `<div class="wrong-row"><span>${esc(m.q)} <i class="muted">(sen: ${esc(m.given || '—')})</i></span><b>${esc(m.correct)}</b></div>`).join('')}
       </div>` : ''}
     </div>`;
+
+  $('#wordInfoBtn').onclick = () => {
+    openModal(`
+      <h2>🧠 Kelime İstatistikleri Nasıl Hesaplanır?</h2>
+      <div style="text-align:left;line-height:1.6;margin:16px 0;font-size:0.95rem;">
+        <p><b>🌱 Öğrenilen Kelime (${startedWords}):</b> Testini başarıyla (%70+) tamamladığın ünitelerdeki ve derslerde karşılaştığın kelimeler aralıklı tekrar hafıza havuzuna (Kutu 1) eklenir.</p>
+        <p><b>⭐ Ustalaşılan Kelime (${masteredWords}):</b> Tekrar kartlarında aralıklı olarak en az 3 farklı oturumda doğru yanıtladığın (Kutu 3 ve üzeri), kalıcı hafızana yerleşmiş kelimelerdir.</p>
+        <p class="muted small" style="margin-top:12px;">💡 İpucu: Kelimelerde ustalaşmak için menüdeki <b>"Tekrar"</b> ekranından günlük aralıklı tekrar alıştırmalarını çözebilirsin.</p>
+      </div>
+      <button class="btn btn-primary" onclick="closeModal()">Anladım 👍</button>
+    `);
+  };
+
+  $('#a1InfoBtn').onclick = () => {
+    openModal(`
+      <h2>📚 A1 Müfredat Tamamlanma Oranı</h2>
+      <div style="text-align:left;line-height:1.6;margin:16px 0;font-size:0.95rem;">
+        <p><b>Nasıl Ölçülür?</b> Test başarı puanı <b>%70 ve üzerinde</b> olan üniteler A1 standardında tamamlanmış kabul edilir.</p>
+        <p>Şu ana kadar <b>${lvl.done} / ${UNITS.length} üniteyi</b> (%70+ başarıyla) tamamladın. Bu da tüm A1 müfredatının <b>%${lvl.pct}</b>'sine denk gelir.</p>
+        <p class="muted small" style="margin-top:12px;">Aşağıdaki <b>Ünite Başarıları</b> çubukları ise her bir ünitede ulaştığın en yüksek sınav skorunu (%best) gösterir.</p>
+      </div>
+      <button class="btn btn-primary" onclick="closeModal()">Harika 👍</button>
+    `);
+  };
 }
 
 /* ============================================================
@@ -1677,6 +1721,16 @@ function screenSettings() {
         <div><button class="btn btn-ghost" id="tryVoice">▶ Sesi dene</button></div>
       </div>
 
+      <!-- Öğrenme & Tekrar Ayarları -->
+      <div class="card">
+        <h3>🔁 Akıllı Tekrar & Hafıza Ayarları</h3>
+        <label class="lbl">Günlük Tekrar Kelime Sınırı</label>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:6px;">
+          <input id="setReviewLimit" type="number" min="5" max="100" class="text-input" style="max-width:120px;" value="${s.reviewLimit || 25}" />
+          <span class="muted small">kelime / gün (Tekrar ekranında günlük karşına çıkacak maksimum kelime sayısı)</span>
+        </div>
+      </div>
+
       <!-- Veriler -->
       <div class="card">
         <h3>💾 Veriler</h3>
@@ -1732,6 +1786,9 @@ function screenSettings() {
     state.settings.model = $('#setModel').value.trim() || 'gemini-2.5-flash';
     state.settings.rate = parseFloat($('#setRate').value);
     state.settings.sound = $('#setSound').checked;
+    if ($('#setReviewLimit')) {
+      state.settings.reviewLimit = Math.max(5, Math.min(100, parseInt($('#setReviewLimit').value, 10) || 25));
+    }
     saveState();
   };
   $('#setRate').oninput = e => { $('#rateVal').textContent = e.target.value; };
