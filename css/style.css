@@ -1094,6 +1094,34 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; }
 
+/* Yeni sürüm bandı (sw.js güncellemesi) */
+.sw-update-banner {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 110; display: flex; align-items: center; gap: 12px;
+  max-width: calc(100vw - 24px); padding: 10px 12px 10px 18px;
+  background: var(--card); color: var(--text);
+  border: 2px solid var(--primary); border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .18); font-weight: 700;
+}
+@media (max-width: 860px) {
+  /* Mobil alt gezinme çubuğunun üstünde dursun */
+  .sw-update-banner { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Hareket azaltma tercihi: animasyon ve geçişleri neredeyse kapat */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Klavye ile gezinmede odak her zaman görünsün */
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
 .empty { text-align: center; padding: 50px 24px; }
 .empty-emoji { font-size: 4rem; }
 

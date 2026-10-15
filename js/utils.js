@@ -158,7 +158,13 @@ const sfx = {
 };
 
 /* ---------- Konfeti ---------- */
+function prefersReducedMotion() {
+  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+
 function confetti(count = 140) {
+  // Hareket azaltma tercihi açıksa konfeti gösterme
+  if (prefersReducedMotion()) return;
   const canvas = $('#confetti');
   const ctx = canvas.getContext('2d');
   canvas.width = innerWidth; canvas.height = innerHeight;

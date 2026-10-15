@@ -1,8 +1,11 @@
 /* ============================================================
-   PatiLingo v2.6 - Service Worker (Offline First Caching)
+   PatiLingo - Service Worker (Offline First Caching)
+   APP_VERSION tek kaynaktır: scripts/bump-version.js bu satırı,
+   index.html'deki ?v= parametrelerini ve aşağıdaki listeyi birlikte günceller.
    ============================================================ */
 
-const CACHE_NAME = 'patilingo-cache-v2.6.0';
+const APP_VERSION = '2.7.0';
+const CACHE_NAME = 'patilingo-cache-v' + APP_VERSION;
 
 const PRECACHE_ASSETS = [
   './',
@@ -11,27 +14,35 @@ const PRECACHE_ASSETS = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/favicon.png',
-  'css/style.css?v=2.2.3',
-  'js/theme-init.js',
-  'js/data.js?v=2.6.0',
-  'js/logic.js?v=2.6.0',
-  'js/storage.js?v=2.6.0',
-  'js/firebase.js?v=2.6.0',
-  'js/utils.js?v=2.6.0',
-  'js/ai.js?v=2.6.0',
-  'js/exercises.js?v=2.6.0',
-  'js/app.js?v=2.6.0'
+  'css/style.css?v=2.7.0',
+  'js/theme-init.js?v=2.7.0',
+  'js/data.js?v=2.7.0',
+  'js/logic.js?v=2.7.0',
+  'js/storage.js?v=2.7.0',
+  'js/firebase.js?v=2.7.0',
+  'js/utils.js?v=2.7.0',
+  'js/ai.js?v=2.7.0',
+  'js/exercises.js?v=2.7.0',
+  'js/app.js?v=2.7.0'
 ];
 
-// Install: Core dosyaları önbelleğe al
+// Install: Core dosyaları önbelleğe al.
+// skipWaiting() burada çağrılmaz: yeni sürüm, kullanıcı "Güncelle"ye basana kadar bekler.
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(PRECACHE_ASSETS).catch(err => {
         console.warn('SW Precache warning:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
+});
+
+// Sayfadan gelen "şimdi güncelle" isteği
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Activate: Eski sürümleri temizle
@@ -57,13 +68,19 @@ self.addEventListener('fetch', event => {
   // Sadece GET istekleri önbelleğe alınır
   if (req.method !== 'GET') return;
 
-  // Firebase Realtime DB, Gemini AI veya harici API isteklerini doğrudan ağa bırak
-  if (url.hostname.includes('firebase') || url.hostname.includes('googleapis.com/v1') || url.hostname.includes('restful-api.dev')) {
+  // Firebase, Gemini AI veya harici API isteklerini doğrudan ağa bırak
+  if (url.hostname.includes('firebase') ||
+      url.hostname === 'generativelanguage.googleapis.com' ||
+      url.hostname.includes('restful-api.dev')) {
     return;
   }
 
+  // Kendi dosyalarımızda tarayıcının HTTP önbelleğini atla (bayat JS/CSS gelmesin)
+  const sameOrigin = url.origin === self.location.origin;
+  const netReq = sameOrigin ? new Request(req, { cache: 'no-cache' }) : req;
+
   event.respondWith(
-    fetch(req).then(networkResponse => {
+    fetch(netReq).then(networkResponse => {
       if (networkResponse && networkResponse.status === 200) {
         const resClone = networkResponse.clone();
         caches.open(CACHE_NAME).then(cache => cache.put(req, resClone));

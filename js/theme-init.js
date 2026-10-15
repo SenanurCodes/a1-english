@@ -21,10 +21,45 @@
   } catch(e) {}
 
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    // Yeni sürüm bekliyorsa ekranın altında "Güncelle" bandı göster
+    var showUpdateBanner = function(worker) {
+      if (!worker || document.getElementById('sw-update-banner')) return;
+      var bar = document.createElement('div');
+      bar.id = 'sw-update-banner';
+      bar.className = 'sw-update-banner';
+      bar.setAttribute('role', 'status');
+      bar.innerHTML = '<span>✨ PatiLingo\'nun yeni sürümü hazır.</span>' +
+        '<button type="button" class="btn btn-primary sm" id="sw-update-btn">Güncelle</button>';
+      document.body.appendChild(bar);
+      document.getElementById('sw-update-btn').onclick = function() {
+        this.disabled = true;
+        this.textContent = 'Güncelleniyor...';
+        worker.postMessage({ type: 'SKIP_WAITING' });
+      };
+    };
+
+    // Yeni SW kontrolü aldığında bir kez yenile (ilerleme localStorage'da güvende)
+    var hadController = !!navigator.serviceWorker.controller;
+    var reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (!hadController || reloading) return;
+      reloading = true;
+      location.reload();
+    });
+
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('sw.js').then(function(reg) {
-        console.log('A1 English SW active:', reg.scope);
-      }).catch(function() {});
+        if (reg.waiting && navigator.serviceWorker.controller) showUpdateBanner(reg.waiting);
+        reg.addEventListener('updatefound', function() {
+          var nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener('statechange', function() {
+            if (nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner(nw);
+          });
+        });
+        // Uygulama uzun süre açık kalırsa saatte bir güncelleme kontrolü
+        setInterval(function() { reg.update().catch(function() {}); }, 60 * 60 * 1000);
+      }).catch(function(e) { console.warn('SW kaydı başarısız:', e); });
     });
   }
 })();
