@@ -972,11 +972,11 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 @keyframes popIn { from { opacity: 0; transform: scale(.85); } }
 .modal-head { display: flex; gap: 16px; align-items: center; margin-bottom: 18px; }
 .modal-head h2 { margin: 0; }
-.modal-emoji { font-size: 2.6rem; width: 76px; height: 76px; border-radius: 22px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 20%, white); flex-shrink: 0; }
+.modal-emoji { font-size: 2.6rem; width: 76px; height: 76px; border-radius: 22px; display: grid; place-items: center; background: color-mix(in srgb, var(--c, var(--primary)) 18%, var(--surface)); border: 2px solid color-mix(in srgb, var(--c, var(--primary)) 35%, var(--border)); flex-shrink: 0; }
 .modal-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
-.modal-stats div { background: #F8F7FF; border-radius: 14px; padding: 10px; text-align: center; display: flex; flex-direction: column; }
-.modal-stats b { font-size: 1.3rem; }
-.modal-stats span { font-size: .8rem; color: var(--muted); font-weight: 700; }
+.modal-stats div { background: color-mix(in srgb, var(--primary) 8%, var(--surface)); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px; text-align: center; display: flex; flex-direction: column; }
+.modal-stats b { font-size: 1.3rem; color: var(--text); }
+.modal-stats span { font-size: .8rem; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
 .modal-actions { display: flex; flex-direction: column; gap: 10px; }
 
 /* ---------- Ders ---------- */
@@ -1767,6 +1767,20 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   background: var(--card-bg) !important;
   border: 1px solid var(--line);
   color: var(--text) !important;
+}
+[data-mode="dark"] .modal-stats div {
+  background: color-mix(in srgb, var(--bg, #0B0F19) 70%, var(--card-bg, #161F33)) !important;
+  border: 1px solid var(--line) !important;
+}
+[data-mode="dark"] .modal-stats b {
+  color: #FFFFFF !important;
+}
+[data-mode="dark"] .modal-stats span {
+  color: var(--muted) !important;
+}
+[data-mode="dark"] .modal-emoji {
+  background: color-mix(in srgb, var(--c, var(--primary)) 25%, var(--card-bg)) !important;
+  border: 2px solid color-mix(in srgb, var(--c, var(--primary)) 50%, var(--line)) !important;
 }
 [data-mode="dark"] .menu-sheet {
   background: var(--card-bg) !important;

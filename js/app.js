@@ -1174,11 +1174,11 @@ function unitModal(u) {
         <div><b>${s.done ? '✅' : '—'}</b><span>durum</span></div>
       </div>
       <div class="modal-actions">
-        ${u.type === 'vocab' ? `<a class="btn btn-ghost" href="#/cards/${u.id}">🃏 Kelime Kartları</a>` : `<a class="btn btn-ghost" href="#/grammar/${u.id}">📖 Konu Anlatımı</a>`}
+        ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kelime Kartları</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konu Anlatımı</a>`}
         <a class="btn btn-big btn-primary" href="#/lesson/${u.id}">▶ ${s.attempts ? 'Tekrar Çalış' : 'Derse Başla'}</a>
       </div>` : `
       <p class="muted center">Bu ünite kilitli 🔒 Önceki üniteyi tamamla ya da seviye testine gir.</p>
-      <div class="modal-actions">${u.type === 'vocab' ? `<a class="btn btn-ghost" href="#/cards/${u.id}">🃏 Kartlara göz at</a>` : `<a class="btn btn-ghost" href="#/grammar/${u.id}">📖 Konuya göz at</a>`}</div>`}
+      <div class="modal-actions">${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kartlara göz at</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konuya göz at</a>`}</div>`}
   `);
 }
 
