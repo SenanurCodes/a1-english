@@ -212,6 +212,14 @@ class AppStore {
     this._notify('A2_BOSS_PASSED', null);
   }
 
+  unlockA2() {
+    this._state.a2Unlocked = true;
+    const maxIdx = (typeof UNITS !== 'undefined' && Array.isArray(UNITS)) ? UNITS.length - 1 : 51;
+    this._state.unlockedUpTo = Math.max(this._state.unlockedUpTo, maxIdx);
+    this.save();
+    this._notify('STATE_CHANGED', this._state);
+  }
+
   importState(data) {
     if (!data || typeof data !== 'object') throw new Error('Geçersiz dosya verisi');
     const currentApiKey = this._state.settings?.apiKey || '';
@@ -507,6 +515,7 @@ function unitStats(id) {
 }
 
 function isUnlocked(index) {
+  if (state.a2Unlocked && index >= 27) return true;
   return index <= state.unlockedUpTo;
 }
 
@@ -541,7 +550,7 @@ function levelInfo() {
   const doneA2 = doneCount('A2');
   const totalDone = doneA1 + doneA2;
   const pctA1 = Math.round((doneA1 / 27) * 100);
-  const pctA2 = Math.round((doneA2 / 20) * 100);
+  const pctA2 = Math.round((doneA2 / 25) * 100);
   
   let label, desc;
   if (!state.a2Unlocked && !state.a1BossPassed) {

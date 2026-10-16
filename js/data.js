@@ -434,12 +434,50 @@ const RAW_UNITS = [
   {
     id: 'numbers_large', level: 'A2', type: 'vocab', title: 'Büyük Sayılar ve Sıra Sayıları', en: 'Numbers, Ordinals & Dates', emoji: '🔢',
     words: [
-      ['one hundred', 'yüz', '💯'], ['two hundred', 'iki yüz', '2️⃣0️⃣0️⃣'], ['five hundred', 'beş yüz', '5️⃣0️⃣0️⃣'],
-      ['one thousand', 'bin', '1️⃣0️⃣0️⃣0️⃣'], ['ten thousand', 'on bin', '🔟0️⃣0️⃣0️⃣'], ['fifty thousand', 'elli bin', '5️⃣0️⃣k'],
-      ['one hundred thousand', 'yüz bin', '💯k'], ['one million', 'bir milyon', '💎'], ['first', 'birinci / ilk', '🥇'],
-      ['second', 'ikinci', '🥈'], ['third', 'üçüncü', '🥉'], ['fourth', 'dördüncü', '4️⃣th'], ['fifth', 'beşinci', '5️⃣th'],
-      ['tenth', 'onuncu', '🔟th'], ['twentieth', 'yirminci', '2️⃣0️⃣th'], ['half', 'yarım / buçuk', '½'],
-      ['quarter', 'çeyrek', '¼'], ['double', 'çift / iki katı', '✖️2'], ['century', 'yüzyıl / asır', '🏛️'], ['date', 'tarih', '📅']
+      ['one hundred', 'yüz (100)', '💯'], ['two hundred', 'iki yüz (200)', '2️⃣0️⃣0️⃣'], ['five hundred', 'beş yüz (500)', '5️⃣0️⃣0️⃣'],
+      ['one thousand', 'bin (1.000)', '1️⃣0️⃣0️⃣0️⃣'], ['two thousand', 'iki bin (2.000)', '2️⃣0️⃣0️⃣0️⃣'], ['ten thousand', 'on bin (10.000)', '🔟0️⃣0️⃣0️⃣'],
+      ['fifty thousand', 'elli bin (50.000)', '5️⃣0️⃣k'], ['one hundred thousand', 'yüz bin (100.000)', '💯k'], ['one million', 'bir milyon (1.000.000)', '💎'],
+      ['one billion', 'bir milyar', '🪐'],
+      ['first', 'birinci / ilk (1st)', '🥇'], ['second', 'ikinci (2nd)', '🥈'], ['third', 'üçüncü (3rd)', '🥉'],
+      ['fourth', 'dördüncü (4th)', '4️⃣th'], ['fifth', 'beşinci (5th)', '5️⃣th'], ['sixth', 'altıncı (6th)', '6️⃣th'],
+      ['seventh', 'yedinci (7th)', '7️⃣th'], ['eighth', 'sekizinci (8th)', '8️⃣th'], ['ninth', 'dokuzuncu (9th)', '9️⃣th'],
+      ['tenth', 'onuncu (10th)', '🔟th'], ['eleventh', 'on birinci (11th)', '1️⃣1️⃣th'], ['twelfth', 'on ikinci (12th)', '1️⃣2️⃣th'],
+      ['thirteenth', 'on üçüncü (13th)', '1️⃣3️⃣th'], ['fourteenth', 'on dördüncü (14th)', '1️⃣4️⃣th'], ['fifteenth', 'on beşinci (15th)', '1️⃣5️⃣th'],
+      ['twentieth', 'yirminci (20th)', '2️⃣0️⃣th'], ['twenty-first', 'yirmi birinci (21st)', '2️⃣1️⃣st'], ['twenty-second', 'yirmi ikinci (22nd)', '2️⃣2️⃣nd'],
+      ['thirtieth', 'otuzuncu (30th)', '3️⃣0️⃣th'], ['thirty-first', 'otuz birinci (31st)', '3️⃣1️⃣st'],
+      ['half', 'yarım / buçuk', '½'], ['quarter', 'çeyrek', '¼'], ['percent', 'yüzde (%)', '％'], ['double', 'çift / iki katı', '✖️2'],
+      ['century', 'yüzyıl / asır', '🏛️'], ['date', 'tarih', '📅']
+    ]
+  },
+  {
+    id: 'dates_years_rules', level: 'A2', type: 'grammar', title: 'Tarih, Yıl ve Sayı Okuma Kuralları', en: 'Dates, Years & Numbers Rules', emoji: '📆',
+    explain: `
+      <p>İngilizcede tarih, yıl ve büyük sayıları okurken Türkçe mantığından farklı kesin kurallar vardır:</p>
+      <table class="g-table">
+        <tr><th>Kullanım</th><th>Kural</th><th>Örnek</th></tr>
+        <tr><td>Günler & Tarihler</td><td><b>on + the + Sıra Sayısı</b></td><td><b>on the 15th of May</b> / on May 15th</td></tr>
+        <tr><td>Yıllar (2000 öncesi)</td><td>İkiye bölünerek okunur</td><td>1995 ➔ <b>nineteen ninety-five</b></td></tr>
+        <tr><td>Yıllar (2000 sonrası)</td><td>two thousand and ...</td><td>2024 ➔ <b>twenty twenty-four</b></td></tr>
+        <tr><td>Büyük Sayılar</td><td>hundred, thousand -s ALMAZ!</td><td>three <b>thousand</b> cars (thousands DEĞİL!)</td></tr>
+      </table>
+      <p><b>DİKKAT (Türk Tuzağı):</b> Gün belirtirken daima <b>"on"</b> kullanılır: <i>"on Monday", "on the 1st of January"</i>.</p>`,
+    examples: [
+      ['My birthday is on the 4th of July.', 'Doğum günüm 4 Temmuz\'da.'],
+      ['I was born in nineteen ninety-eight.', '1998\'de doğdum.'],
+      ['There are two hundred students.', 'İki yüz öğrenci var.']
+    ],
+    mc: [
+      ['My birthday is ___ the 5th of May.', ['on', 'in', 'at']],
+      ['How do you read 1985?', ['nineteen eighty-five', 'one thousand nine eighty-five', 'nineteen eighty']],
+      ['There are three ___ books in the library.', ['thousand', 'thousands', 'thousand of']],
+      ['We celebrate Republic Day ___ October 29th.', ['on', 'in', 'at']],
+      ['He won the ___ prize in the competition.', ['first', 'one', 'once']],
+      ['Tomorrow is the ___ of September.', ['twenty-first', 'twenty-one', 'twenties']]
+    ],
+    order: [
+      ['My birthday is on May fifth', 'Doğum günüm 5 Mayıs\'ta.'],
+      ['There are five hundred students here', 'Burada beş yüz öğrenci var.'],
+      ['I was born in nineteen ninety', '1990 yılında doğdum.']
     ]
   },
   {
@@ -526,6 +564,40 @@ const RAW_UNITS = [
       ['We ___ having dinner when he arrived.', ['were', 'was', 'did']], ["He ___ not driving fast.", ['was', 'were', 'is']]
     ],
     order: [['I was sleeping when you called', 'Sen aradığında uyuyordum.'], ['They were watching television at eight', 'Saat sekizde televizyon izliyorlardı.'], ['She was cooking in the kitchen', 'Mutfakta yemek pişiriyordu.']]
+  },
+  {
+    id: 'quantifiers_a2', level: 'A2', type: 'grammar', title: 'Miktar Belirteçleri (some, any, much, many)', en: 'Quantifiers: much, many, some, any', emoji: '🍎',
+    explain: `
+      <p>İsimlerin miktarını belirtirken <b>sayılabilen (countable)</b> ve <b>sayılamayan (uncountable)</b> ayrımı yapılır:</p>
+      <table class="g-table">
+        <tr><th>Belirteç</th><th>Hangi İsimlerle?</th><th>Cümle Türü</th><th>Örnek</th></tr>
+        <tr><td><b>some</b> (biraz/birkaç)</td><td>Her ikisiyle</td><td>Olumlu</td><td>I have <b>some</b> apples / milk.</td></tr>
+        <tr><td><b>any</b> (hiç)</td><td>Her ikisiyle</td><td>Olumsuz & Soru</td><td>Do you have <b>any</b> water?</td></tr>
+        <tr><td><b>many</b> (çok)</td><td>Sayılabilen çoğul</td><td>Olumsuz & Soru</td><td><b>many</b> books, <b>many</b> friends</td></tr>
+        <tr><td><b>much</b> (çok)</td><td>Sayılamayan tekil</td><td>Olumsuz & Soru</td><td><b>much</b> time, <b>much</b> money</td></tr>
+        <tr><td><b>a lot of</b> (çok)</td><td>Her ikisiyle</td><td>Olumlu</td><td><b>a lot of</b> people / sugar</td></tr>
+        <tr><td><b>a few / a little</b></td><td>few: sayılan / little: sayılamayan</td><td>Olumlu (az)</td><td>a <b>few</b> books, a <b>little</b> water</td></tr>
+      </table>
+      <p><b>DİKKAT (Türk Tuzağı):</b> "Money" (para) ve "time" (zaman) İngilizcede <b>sayılamaz</b> kabul edilir! <i>"I don't have much money"</i> denir.</p>`,
+    examples: [
+      ['Do you have any questions?', 'Hiç sorunuz var mı?'],
+      ['How much milk do you need?', 'Ne kadar süte ihtiyacın var?'],
+      ['How many students are there?', 'Kaç tane öğrenci var?'],
+      ['I have a few close friends.', 'Birkaç yakın arkadaşım var.']
+    ],
+    mc: [
+      ['How ___ books did you buy?', ['many', 'much', 'any']],
+      ['How ___ money do you have?', ['much', 'many', 'few']],
+      ['We don\'t have ___ milk in the fridge.', ['any', 'some', 'many']],
+      ['I have ___ friends in London.', ['a few', 'a little', 'much']],
+      ['There is only a ___ sugar left.', ['little', 'few', 'many']],
+      ['Would you like ___ coffee? (teklif)', ['some', 'any', 'many']]
+    ],
+    order: [
+      ['How many books do you have', 'Kaç tane kitabın var?'],
+      ['I do not have much time', 'Çok fazla vaktim yok.'],
+      ['Do you have any questions', 'Hiç sorunuz var mı?']
+    ]
   },
   {
     id: 'travel_airport', level: 'A2', type: 'vocab', title: 'Havalimanı ve Seyahat', en: 'Airport & Travel', emoji: '✈️',
@@ -638,6 +710,64 @@ const RAW_UNITS = [
     order: [['Everest is the highest mountain', 'Everest en yüksek dağdır.'], ['He is the best student here', 'O buradaki en iyi öğrencidir.'], ['This is the most expensive car', 'Bu en pahalı arabadır.']]
   },
   {
+    id: 'too_enough', level: 'A2', type: 'grammar', title: 'Aşırılık ve Yeterlilik: too & enough', en: 'too & enough', emoji: '⚖️',
+    explain: `
+      <p><b>too</b> ve <b>enough</b> bir durumun aşırı veya yeterli olduğunu anlatır:</p>
+      <table class="g-table">
+        <tr><th>Kalıp</th><th>Kural</th><th>Örnek</th><th>Anlamı</th></tr>
+        <tr><td><b>too</b> (fazla/aşırı)</td><td><b>too + Sıfat</b></td><td>This coffee is <b>too hot</b>.</td><td>Bu kahve aşırı sıcak (olumsuz).</td></tr>
+        <tr><td><b>enough</b> (sıfatla)</td><td><b>Sıfat + enough</b></td><td>He is <b>tall enough</b>.</td><td>Yeterince uzun.</td></tr>
+        <tr><td><b>enough</b> (isimle)</td><td><b>enough + İsim</b></td><td>I have <b>enough money</b>.</td><td>Yeterli param var.</td></tr>
+      </table>
+      <p><b>DİKKAT (Türk Tuzağı):</b> Sıfatla kullanılırken enough <b>sıfattan sonra</b> gelir: <i>"old enough"</i> (enough old YANLIŞ!).</p>`,
+    examples: [
+      ['This box is too heavy to lift.', 'Bu kutu kaldırılamayacak kadar ağır.'],
+      ['She is old enough to drive a car.', 'Araba kullanacak kadar yeterince büyük.'],
+      ['We don\'t have enough time.', 'Yeterli vaktimiz yok.']
+    ],
+    mc: [
+      ['The soup is ___ hot to drink.', ['too', 'enough', 'much']],
+      ['He is not strong ___ to carry this.', ['enough', 'too', 'very']],
+      ['Do we have ___ money for tickets?', ['enough', 'too', 'too much']],
+      ['This jacket is ___ small for me.', ['too', 'enough', 'many']],
+      ['She speaks English well ___ to communicate.', ['enough', 'too', 'such']]
+    ],
+    order: [
+      ['This coffee is too hot to drink', 'Bu kahve içmek için aşırı sıcak.'],
+      ['He is not old enough to drive', 'Araba kullanmak için yeterince büyük değil.'],
+      ['We have enough time for lunch', 'Öğle yemeği için yeterli vaktimiz var.']
+    ]
+  },
+  {
+    id: 'first_conditional', level: 'A2', type: 'grammar', title: 'Koşul Cümleleri (First Conditional - If)', en: 'First Conditional (Type 1)', emoji: '🌱',
+    explain: `
+      <p>Gelecekte <b>gerçekleşmesi muhtemel</b> durumları ve şartları anlatırken kullanılır (<b>Eğer ... yaparsan, ... olacak</b>).</p>
+      <p>Formül: <b>If + Geniş Zaman (Present Simple) , will + Fiil (V1)</b></p>
+      <table class="g-table">
+        <tr><th>Kısım</th><th>Yapı</th><th>Örnek</th></tr>
+        <tr><td>Şart Cümlesi (If)</td><td>If + Özne + V1 (Geniş Zaman)</td><td><b>If it rains</b>,</td></tr>
+        <tr><td>Sonuç Cümlesi</td><td>Özne + will / won't + V1</td><td>we <b>will stay</b> home.</td></tr>
+      </table>
+      <p><b>DİKKAT (Türk Tuzağı):</b> "If" olan tarafa ASLA <b>will</b> gelmez! <i>"If you study, you will pass."</i> (If you will study YANLIŞ!).</p>`,
+    examples: [
+      ['If it is sunny tomorrow, we will go to the beach.', 'Yarın hava güneşli olursa plaja gideceğiz.'],
+      ['If you study hard, you will pass the exam.', 'Eğer sıkı çalışırsan sınavı geçeceksin.'],
+      ['She will be angry if you are late.', 'Geç kalırsan sana kızacak.']
+    ],
+    mc: [
+      ['If it rains tomorrow, we ___ at home.', ['will stay', 'stayed', 'staying']],
+      ['If you ___ hard, you will succeed.', ['study', 'will study', 'studied']],
+      ['She will call you if she ___ time.', ['has', 'will have', 'have']],
+      ['If he doesn\'t hurry, he ___ miss the bus.', ['will', 'is', 'did']],
+      ['What ___ you do if it rains?', ['will', 'do', 'are']]
+    ],
+    order: [
+      ['If it rains we will stay home', 'Yağmur yağarsa evde kalacağız.'],
+      ['If you study you will pass', 'Eğer çalışırsan geçeceksin.'],
+      ['She will be happy if you come', 'Eğer gelirsen mutlu olacak.']
+    ]
+  },
+  {
     id: 'shopping_stores', level: 'A2', type: 'vocab', title: 'Alışveriş ve Mağazalar', en: 'Shopping & Stores', emoji: '🛍️',
     words: [
       ['price', 'fiyat', '🏷️'], ['discount', 'indirim', '🔖'], ['customer', 'müşteri', '🛍️'],
@@ -733,6 +863,35 @@ const RAW_UNITS = [
       ['___ it was cold, he wore only a T-shirt.', ['Although', 'Because', 'So']], ['She called me ___ I was studying.', ['while', 'because', 'so']]
     ],
     order: [['I stayed home because it rained', 'Evde kaldım çünkü yağmur yağdı.'], ['He was tired so he slept', 'Yorgundu bu yüzden uyudu.'], ['Although it rained we went out', 'Yağmur yağmasına rağmen dışarı çıktık.']]
+  },
+  {
+    id: 'relative_pronouns', level: 'A2', type: 'grammar', title: 'İlgi Zamirleri (who, which, that, where)', en: 'Relative Pronouns', emoji: '🔍',
+    explain: `
+      <p>Bir insanı, nesneyi veya yeri tanımlarken iki cümleyi tek bir cümlede birleştirmeye yarar (<b>-en, -an, -dığı</b>):</p>
+      <table class="g-table">
+        <tr><th>Zamir</th><th>Neler İçin?</th><th>Örnek</th><th>Anlamı</th></tr>
+        <tr><td><b>who</b></td><td>İnsanlar için</td><td>The boy <b>who</b> speaks English</td><td>İngilizce konuş<b>an</b> çocuk</td></tr>
+        <tr><td><b>which</b></td><td>Hayvan ve eşyalar</td><td>The car <b>which</b> is red</td><td>Kırmızı ol<b>an</b> araba</td></tr>
+        <tr><td><b>that</b></td><td>Hem insan hem eşya</td><td>The book <b>that</b> I read</td><td>Okudu<b>ğum</b> kitap</td></tr>
+        <tr><td><b>where</b></td><td>Yerler için</td><td>The city <b>where</b> I live</td><td>Yaşadı<b>ğım</b> şehir</td></tr>
+      </table>`,
+    examples: [
+      ['This is the doctor who helped me.', 'Bana yardım eden doktor bu.'],
+      ['I loved the book which you gave me.', 'Bana verdiğin kitabı çok sevdim.'],
+      ['This is the cafe where we met.', 'Tanıştığımız kafe burası.']
+    ],
+    mc: [
+      ['The woman ___ lives next door is a teacher.', ['who', 'which', 'where']],
+      ['This is the laptop ___ I bought yesterday.', ['which', 'who', 'where']],
+      ['That is the restaurant ___ we ate delicious pizza.', ['where', 'who', 'which']],
+      ['I know a person ___ speaks four languages.', ['who', 'which', 'where']],
+      ['The dog ___ is barking belongs to Tom.', ['which', 'who', 'where']]
+    ],
+    order: [
+      ['This is the doctor who helped me', 'Bana yardım eden doktor bu.'],
+      ['This is the city where I live', 'Yaşadığım şehir burası.'],
+      ['I like books which are interesting', 'İlginç olan kitapları severim.']
+    ]
   },
   {
     id: 'technology_media', level: 'A2', type: 'vocab', title: 'Dijital Dünya ve Teknoloji', en: 'Technology & Digital World', emoji: '💻',
@@ -978,7 +1137,7 @@ const LEVEL_WORLDS = {
     badge: '🚀',
     desc: 'Geçmiş zaman, seyahat, planlar, kıyaslamalar ve akıcı diyaloglar',
     unlocked: false,
-    totalUnits: 20,
+    totalUnits: 25,
     requires: 'A1_BOSS_PASSED'
   }
 };

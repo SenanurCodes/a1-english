@@ -1192,7 +1192,7 @@ function screenLearn() {
           <span>${state.a2Unlocked ? '🚀' : '🔒'}</span>
           <div style="text-align:left;">
             <div>Dünya 2: A2 Macera</div>
-            <div class="muted small" style="font-weight:600;font-size:0.75rem;color:${!isA1 ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.a2Unlocked ? `${doneA2} / 20 Ünite · %${pctA2}` : 'A1 Sonrası Açılır'}</div>
+            <div class="muted small" style="font-weight:600;font-size:0.75rem;color:${!isA1 ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.a2Unlocked ? `${doneA2} / 25 Ünite · %${pctA2}` : 'A1 Sonrası (Tıkla & Aç)'}</div>
           </div>
         </button>
       </div>
@@ -1223,15 +1223,16 @@ function screenLearn() {
             </div>
             <div class="world-badge">${state.a2BossPassed ? '👑' : state.a2Unlocked ? '🌟' : '🔒'}</div>
           </div>
-          <p class="muted small" style="margin:8px 0 12px;">Geçmiş zaman (was/were, düzenli/düzensiz fiiller), gelecek planları, seyahat, restoran ve akıcı diyaloglar!</p>
+          <p class="muted small" style="margin:8px 0 12px;">Geçmiş zaman (was/were, düzenli/düzensiz fiiller), büyük sayılar & tarihler, gelecek planları, seyahat, restoran ve akıcı diyaloglar!</p>
           <div class="progress" style="height:10px;"><div class="bar rainbow" style="width:${pctA2}%"></div></div>
           <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:800;color:var(--muted);margin-top:6px;">
-            <span>${doneA2} / 20 Ünite Tamamlandı</span>
+            <span>${doneA2} / 25 Ünite Tamamlandı</span>
             <span>%${pctA2}</span>
           </div>
           ${!state.a2Unlocked ? `
-            <div style="margin-top:12px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb, var(--primary) 12%, transparent);border:1px dashed var(--primary);font-size:0.85rem;">
-              💡 <b>A2 Dünyası Keşif Modu:</b> Henüz A1 Final Sınavı'nı tamamlamadın ama aşağıdaki ünitelerin konu özetlerini ve kelime kartlarını serbestçe inceleyebilirsin!
+            <div style="margin-top:12px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb, var(--primary) 12%, transparent);border:1px dashed var(--primary);font-size:0.85rem;display:flex;flex-direction:column;gap:8px;">
+              <div>💡 <b>A2 Dünyası Serbest Mod:</b> A1'in bitmesini beklemeden doğrudan A2 ünitelerini çözmek ve tüm üniteleri anında açmak istiyorsan aşağıdaki butona basabilirsin!</div>
+              <button class="btn btn-primary btn-sm" id="unlockAllA2Btn" style="align-self:flex-start;display:flex;align-items:center;gap:6px;">🔓 Tüm A2 Ünitelerinin Kilidini Aç (Hemen Oyna)</button>
             </div>
           ` : ''}
         </div>
@@ -1291,7 +1292,7 @@ function screenLearn() {
           </div>
         `;
       })() : (() => {
-        const allDone = doneA2 >= 20;
+        const allDone = doneA2 >= 25;
         if (state.a2BossPassed) {
           return `
             <div class="boss-banner">
@@ -1316,7 +1317,7 @@ function screenLearn() {
           <div class="boss-banner locked">
             <div class="boss-emoji">🔒</div>
             <div class="boss-title">A2 Seviye Final Sınavı</div>
-            <div class="boss-sub">A2 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneA2}/20 ünite tamamlandı).</div>
+            <div class="boss-sub">A2 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneA2}/25 ünite tamamlandı).</div>
           </div>
         `;
       })()}
@@ -1325,6 +1326,11 @@ function screenLearn() {
   $('#tabWorldA1').onclick = () => { currentLearnWorld = 'A1'; screenLearn(); };
   $('#tabWorldA2').onclick = () => { currentLearnWorld = 'A2'; screenLearn(); };
   if ($('#goWorldA2Btn')) $('#goWorldA2Btn').onclick = () => { currentLearnWorld = 'A2'; screenLearn(); };
+  if ($('#unlockAllA2Btn')) $('#unlockAllA2Btn').onclick = () => {
+    store.unlockA2();
+    toast('🎉 Tüm A2 ünitelerinin kilidi açıldı! İyi çalışmalar!');
+    screenLearn();
+  };
 
   $$('.node').forEach(n => n.onclick = () => unitModal(UNIT_BY_ID[n.dataset.id]));
   const cur = $('.node.current');
@@ -1397,7 +1403,7 @@ function screenA2Boss() {
 
 function unitModal(u) {
   const s = unitStats(u.id);
-  const unlocked = isUnlocked(u.index);
+  const unlocked = isUnlocked(u.index) || (u.level === 'A2' && state.a2Unlocked);
   openModal(`
     <div class="modal-head" style="--c:${u.color}">
       <div class="modal-emoji">${u.emoji}</div>
@@ -1413,8 +1419,11 @@ function unitModal(u) {
         ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kelime Kartları</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konu Anlatımı</a>`}
         <a class="btn btn-big btn-primary" href="#/lesson/${u.id}">▶ ${s.attempts ? 'Tekrar Çalış' : 'Derse Başla'}</a>
       </div>` : `
-      <p class="muted center">Bu ünite kilitli 🔒 Önceki üniteyi tamamla ya da seviye testine gir.</p>
-      <div class="modal-actions">${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kartlara göz at</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konuya göz at</a>`}</div>`}
+      <p class="muted center">Bu ünite henüz kilitli 🔒</p>
+      <div class="modal-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kartlara göz at</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konuya göz at</a>`}
+        ${u.level === 'A2' ? `<button class="btn btn-primary" onclick="store.unlockA2(); closeModal(); location.hash='#/lesson/${u.id}';">🔓 Kilidi Aç ve Derse Başla</button>` : ''}
+      </div>`}
   `);
 }
 
@@ -1424,7 +1433,15 @@ function unitModal(u) {
 function screenLesson(id) {
   const u = UNIT_BY_ID[id];
   if (!u) { location.hash = '#/learn'; return; }
-  if (!isUnlocked(u.index)) { toast('Bu ünite henüz kilitli 🔒'); location.hash = '#/learn'; return; }
+  if (!isUnlocked(u.index)) {
+    if (u.level === 'A2') {
+      store.unlockA2();
+    } else {
+      toast('Bu ünite henüz kilitli 🔒');
+      location.hash = '#/learn';
+      return;
+    }
+  }
   const start = () => runLesson({
     title: `${u.emoji} ${u.title}`,
     questions: buildUnitLesson(u),
@@ -1693,7 +1710,7 @@ function screenProgress() {
           <div class="sc-icon">📚</div>
           <div class="sc-val">%${lvl.pct}</div>
           <div class="sc-lbl">${state.a2Unlocked ? 'A2 ilerlemesi' : 'A1 tamamlandı'}</div>
-          <div class="sc-sub mt-1">🌱 A1: <b>${lvl.doneA1}/27</b> · 🚀 A2: <b>${lvl.doneA2}/20</b></div>
+          <div class="sc-sub mt-1">🌱 A1: <b>${lvl.doneA1}/27</b> · 🚀 A2: <b>${lvl.doneA2}/25</b></div>
         </div>
       </div>
 
@@ -1717,7 +1734,7 @@ function screenProgress() {
           <h3 style="margin:0;">🧩 Ünite Başarıları</h3>
           <div style="display:flex;gap:6px;">
             <span class="badge" style="font-size:0.75rem;">🌱 A1: ${lvl.doneA1}/27</span>
-            <span class="badge" style="font-size:0.75rem;">🚀 A2: ${lvl.doneA2}/20</span>
+            <span class="badge" style="font-size:0.75rem;">🚀 A2: ${lvl.doneA2}/25</span>
           </div>
         </div>
         <div class="unit-bars">

@@ -291,14 +291,17 @@ test('Firebase Auth fallback: operation-not-allowed veya çevrimdışıyken çö
   ok(env.run('state.auth.isGuest === false'), 'Kullanıcı giriş yapmış sayılmalı');
 });
 
-test('A2 Müfredatı: 27 A1 + 20 A2 ünitesi ve toplam 47 ünite eksiksiz tanımlı', () => {
+test('A2 Müfredatı: 27 A1 + 25 A2 ünitesi ve toplam 52 ünite eksiksiz tanımlı', () => {
   const env = makeEnv();
   const total = env.run('UNITS.length');
   const a1 = env.run('UNITS.filter(u => u.level === "A1").length');
   const a2 = env.run('UNITS.filter(u => u.level === "A2").length');
-  eq(total, 47, 'Toplam 47 ünite olmalı');
+  eq(total, 52, 'Toplam 52 ünite olmalı');
   eq(a1, 27, 'A1 seviyesinde 27 ünite olmalı');
-  eq(a2, 20, 'A2 seviyesinde 20 ünite olmalı');
+  eq(a2, 25, 'A2 seviyesinde 25 ünite olmalı');
+  ok(env.run('UNITS.some(u => u.id === "too_enough")'), 'too_enough ünitesi bulunmalı');
+  ok(env.run('UNITS.some(u => u.id === "first_conditional")'), 'first_conditional ünitesi bulunmalı');
+  ok(env.run('UNITS.some(u => u.id === "relative_pronouns")'), 'relative_pronouns ünitesi bulunmalı');
 });
 
 test('Büyük sayılar ve sıra sayıları: 100 - 1.000.000 ve 1st-20th eksiksiz tanımlı', () => {
