@@ -199,9 +199,17 @@ class AppStore {
   passA1Boss() {
     this._state.a1BossPassed = true;
     this._state.a2Unlocked = true;
+    this._state.unlockedUpTo = Math.max(this._state.unlockedUpTo, 27);
     this.gainXP(200); // Boss tamamlama ödülü
     this.save();
     this._notify('A1_BOSS_PASSED', null);
+  }
+
+  passA2Boss() {
+    this._state.a2BossPassed = true;
+    this.gainXP(300); // A2 Boss tamamlama ödülü
+    this.save();
+    this._notify('A2_BOSS_PASSED', null);
   }
 
   importState(data) {
@@ -523,21 +531,40 @@ function recordUnitResult(unitId, correct, total) {
   return pct;
 }
 
-function doneCount() {
+function doneCount(level) {
+  if (level) return UNITS.filter(u => u.level === level && unitStats(u.id).done).length;
   return UNITS.filter(u => unitStats(u.id).done).length;
 }
 
 function levelInfo() {
-  const done = doneCount();
-  const pct = done / UNITS.length;
+  const doneA1 = doneCount('A1');
+  const doneA2 = doneCount('A2');
+  const totalDone = doneA1 + doneA2;
+  const pctA1 = Math.round((doneA1 / 27) * 100);
+  const pctA2 = Math.round((doneA2 / 20) * 100);
+  
   let label, desc;
-  if (done === 0) { label = 'A1 · Yolculuk Başlıyor'; desc = 'Adım adım temelleri atıyoruz! 🚀'; }
-  else if (pct < 0.25) { label = 'A1.1 · İlk Kelimeler'; desc = 'Harika bir başlangıç yaptın.'; }
-  else if (pct < 0.5) { label = 'A1.2 · Günlük Diyaloglar'; desc = 'Basit cümlelerle iletişim kurabiliyorsun.'; }
-  else if (pct < 0.75) { label = 'A1.3 · Kendini Anlatma'; desc = 'İngilizceyi rahatça kavramaya başladın.'; }
-  else if (pct < 1) { label = 'A1.4 · Zirveye Yakın'; desc = 'Az kaldı, A1 Final Sınavı kapıda!'; }
-  else { label = 'A1 Tamamlandı 🏆'; desc = 'Final sınavını geçip A2 Macera Dünyası\'nı açabilirsin!'; }
-  return { label, desc, pct: Math.round(pct * 100), done };
+  if (!state.a2Unlocked && !state.a1BossPassed) {
+    if (doneA1 === 0) { label = 'A1 · Yolculuk Başlıyor'; desc = 'Adım adım temelleri atıyoruz! 🌱'; }
+    else if (pctA1 < 25) { label = 'A1.1 · İlk Kelimeler'; desc = 'Harika bir başlangıç yaptın.'; }
+    else if (pctA1 < 50) { label = 'A1.2 · Günlük Diyaloglar'; desc = 'Basit cümlelerle iletişim kurabiliyorsun.'; }
+    else if (pctA1 < 75) { label = 'A1.3 · Kendini Anlatma'; desc = 'İngilizceyi rahatça kavramaya başladın.'; }
+    else if (pctA1 < 100) { label = 'A1.4 · Zirveye Yakın'; desc = 'Az kaldı, A1 Final Sınavı kapıda!'; }
+    else { label = 'A1 Tamamlandı 🏆'; desc = 'Final sınavını geçip A2 Macera Dünyası\'nı açabilirsin!'; }
+  } else {
+    if (pctA2 === 0) { label = 'A2 · Macera Başladı'; desc = 'Geçmiş zaman ve seyahat kalıplarına hoş geldin! 🚀'; }
+    else if (pctA2 < 50) { label = 'A2.1 · Akıcı İletişim'; desc = 'Geçmiş ve geleceği rahatça konuşabiliyorsun.'; }
+    else if (pctA2 < 100) { label = 'A2.2 · Usta Gezgin'; desc = 'A2 Final Sınavı\'na çok yaklaştın!'; }
+    else { label = 'A2 Ustası 👑'; desc = 'Tebrikler! Hem A1 hem A2 müfredatını fethettin!'; }
+  }
+  return {
+    label, desc,
+    pct: state.a2Unlocked ? pctA2 : pctA1,
+    totalPct: Math.round((totalDone / UNITS.length) * 100),
+    done: totalDone,
+    doneA1,
+    doneA2
+  };
 }
 
 function nextUnit() {

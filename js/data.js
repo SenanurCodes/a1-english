@@ -426,14 +426,332 @@ const RAW_UNITS = [
       ['Listen ___ me!', ['to', 'at', 'for']], ["Let's ___ to the park.", ['go', 'goes', 'going']]
     ],
     order: [['Please close the window', 'Lütfen pencereyi kapat.'], ["Don't be late", 'Geç kalma.'], ['Turn right at the bank', 'Bankadan sağa dön.']]
+  },
+
+  /* ============================================================
+     DÜNYA 2: A2 İNGİLİZCE MÜFREDATI (CEFR STANDARDI)
+     ============================================================ */
+  {
+    id: 'numbers_large', level: 'A2', type: 'vocab', title: 'Büyük Sayılar ve Sıra Sayıları', en: 'Numbers, Ordinals & Dates', emoji: '🔢',
+    words: [
+      ['one hundred', 'yüz', '💯'], ['two hundred', 'iki yüz', '2️⃣0️⃣0️⃣'], ['five hundred', 'beş yüz', '5️⃣0️⃣0️⃣'],
+      ['one thousand', 'bin', '1️⃣0️⃣0️⃣0️⃣'], ['ten thousand', 'on bin', '🔟0️⃣0️⃣0️⃣'], ['fifty thousand', 'elli bin', '5️⃣0️⃣k'],
+      ['one hundred thousand', 'yüz bin', '💯k'], ['one million', 'bir milyon', '💎'], ['first', 'birinci / ilk', '🥇'],
+      ['second', 'ikinci', '🥈'], ['third', 'üçüncü', '🥉'], ['fourth', 'dördüncü', '4️⃣th'], ['fifth', 'beşinci', '5️⃣th'],
+      ['tenth', 'onuncu', '🔟th'], ['twentieth', 'yirminci', '2️⃣0️⃣th'], ['half', 'yarım / buçuk', '½'],
+      ['quarter', 'çeyrek', '¼'], ['double', 'çift / iki katı', '✖️2'], ['century', 'yüzyıl / asır', '🏛️'], ['date', 'tarih', '📅']
+    ]
+  },
+  {
+    id: 'past_tobe', level: 'A2', type: 'grammar', title: 'was / were (Geçmiş Zaman to be)', en: 'Past Simple of to be', emoji: '🕰️',
+    explain: `
+      <p><b>was / were</b>, "am / is / are" fiilinin geçmiş zaman halidir (<b>-idi</b>).</p>
+      <table class="g-table">
+        <tr><th>Özne</th><th>Olumlu</th><th>Olumsuz</th><th>Soru</th></tr>
+        <tr><td>I / He / She / It</td><td><b>was</b></td><td><b>wasn't</b> (was not)</td><td><b>Was</b> he?</td></tr>
+        <tr><td>You / We / They</td><td><b>were</b></td><td><b>weren't</b> (were not)</td><td><b>Were</b> you?</td></tr>
+      </table>
+      <p>Geçmiş zaman zaman zarfları: <b>yesterday</b> (dün), <b>last night</b> (dün gece), <b>two days ago</b> (iki gün önce).</p>`,
+    examples: [['I was at home yesterday.', 'Dün evdeydim.'], ['They were very happy.', 'Onlar çok mutluydu.'], ['Was she tired last night?', 'Dün gece yorgun muydu?'], ["We weren't at school.", 'Biz okulda değildik.']],
+    mc: [
+      ['I ___ at home yesterday.', ['was', 'were', 'am']], ['They ___ very happy last week.', ['were', 'was', 'are']],
+      ['She ___ not at work on Monday.', ['was', 'were', 'is']], ['___ you tired last night?', ['Were', 'Was', 'Are']],
+      ['It ___ a sunny day yesterday.', ['was', 'were', 'is']], ['We ___ in London two years ago.', ['were', 'was', 'are']],
+      ['Where ___ you yesterday morning?', ['were', 'was', 'are']], ['He ___ hungry, so he ate dinner.', ['was', 'were', 'is']]
+    ],
+    order: [['I was at home yesterday', 'Dün evdeydim.'], ['They were very tired last night', 'Dün gece çok yorgundular.'], ['Where were you yesterday', 'Dün neredeydin?']]
+  },
+  {
+    id: 'past_regular', level: 'A2', type: 'grammar', title: 'Geçmiş Zaman: Düzenli Fiiller', en: 'Past Simple - Regular Verbs', emoji: '📅',
+    explain: `
+      <p>Düzenli fiillerin geçmiş zaman halinde fiilin sonuna <b>-ed</b> eklenir.</p>
+      <table class="g-table">
+        <tr><th>Kural</th><th>Örnek</th></tr>
+        <tr><td>Genel: + ed</td><td>play → play<b>ed</b>, watch → watch<b>ed</b>, cook → cook<b>ed</b></td></tr>
+        <tr><td>-e ile biten: + d</td><td>live → live<b>d</b>, like → like<b>d</b></td></tr>
+        <tr><td>ünsüz + y: -ied</td><td>study → stud<b>ied</b>, try → tr<b>ied</b></td></tr>
+        <tr><td>Kısa ünlü + ünsüz: çift harf</td><td>stop → stop<b>ped</b>, plan → plan<b>ned</b></td></tr>
+      </table>
+      <p><b>DİKKAT (Türk Tuzağı):</b> Olumsuz ve sorularda <b>did / didn't</b> geldiğinde fiil tekrar <b>yalın haline</b> döner! <i>"I didn't play"</i> (I didn't played DEĞİL!).</p>`,
+    examples: [['I played tennis yesterday.', 'Dün tenis oynadım.'], ['She watched a movie last night.', 'Dün gece bir film izledi.'], ["They didn't visit us.", 'Bizi ziyaret etmediler.'], ['Did you study for the exam?', 'Sınava çalıştın mı?']],
+    mc: [
+      ['I ___ football yesterday. (oynadım)', ['played', 'play', 'playing']], ['She ___ a great movie last night.', ['watched', 'watch', 'watches']],
+      ["We didn't ___ tennis on Sunday.", ['play', 'played', 'playing']], ['Did you ___ your homework?', ['finish', 'finished', 'finishes']],
+      ['He ___ hard for the test.', ['studied', 'study', 'studyed']], ['They ___ to Istanbul two years ago.', ['moved', 'move', 'moving']],
+      ['She ___ her room yesterday.', ['cleaned', 'clean', 'cleaning']], ["I didn't ___ the door.", ['lock', 'locked', 'locking']]
+    ],
+    order: [['I played football yesterday', 'Dün futbol oynadım.'], ['She watched a movie last night', 'Dün gece bir film izledi.'], ['Did you finish your homework', 'Ödevini bitirdin mi?']]
+  },
+  {
+    id: 'past_irregular', level: 'A2', type: 'grammar', title: 'Geçmiş Zaman: Düzensiz Fiiller', en: 'Past Simple - Irregular Verbs', emoji: '⚡',
+    explain: `
+      <p>İngilizcede en sık kullanılan fiiller kural dinlemez; <b>-ed almaz, tamamen şekil değiştirir</b>.</p>
+      <table class="g-table">
+        <tr><th>Fiil (V1)</th><th>Geçmiş (V2)</th><th>Anlamı</th></tr>
+        <tr><td>go</td><td><b>went</b></td><td>gitti</td></tr>
+        <tr><td>see</td><td><b>saw</b></td><td>gördü</td></tr>
+        <tr><td>have</td><td><b>had</b></td><td>sahip oldu / yaptı</td></tr>
+        <tr><td>eat</td><td><b>ate</b></td><td>yedi</td></tr>
+        <tr><td>buy</td><td><b>bought</b></td><td>satın aldı</td></tr>
+        <tr><td>come</td><td><b>came</b></td><td>geldi</td></tr>
+        <tr><td>make / do</td><td><b>made / did</b></td><td>yaptı</td></tr>
+        <tr><td>take / write</td><td><b>took / wrote</b></td><td>aldı / yazdı</td></tr>
+      </table>
+      <p><b>Tüyo:</b> Olumsuzda ve soruda fiil 1. haline döner: <i>"I went"</i> ➔ <i>"I didn't go"</i> ➔ <i>"Did you go?"</i></p>`,
+    examples: [['I went to the cinema yesterday.', 'Dün sinemaya gittim.'], ['She bought a new car.', 'O yeni bir araba satın aldı.'], ['We ate delicious pizza.', 'Lezzetli pizza yedik.'], ["He didn't come to the party.", 'Partiye gelmedi.']],
+    mc: [
+      ['Yesterday I ___ to the beach.', ['went', 'go', 'goed']], ['She ___ a new dress on Friday.', ['bought', 'buyed', 'buy']],
+      ['We ___ dinner at 8 PM.', ['ate', 'eated', 'eat']], ["He didn't ___ a letter.", ['write', 'wrote', 'written']],
+      ['Did you ___ my keys?', ['see', 'saw', 'seen']], ['They ___ a lot of photos on holiday.', ['took', 'taked', 'take']],
+      ['I ___ my best friend yesterday.', ['met', 'meeted', 'meet']], ['She ___ me a great present.', ['gave', 'gived', 'give']]
+    ],
+    order: [['I went to school yesterday', 'Dün okula gittim.'], ['She bought a new car', 'O yeni bir araba satın aldı.'], ['Did you see my keys', 'Anahtarlarımı gördün mü?']]
+  },
+  {
+    id: 'past_continuous', level: 'A2', type: 'grammar', title: 'Geçmişte Devam Eden Zaman (was/were + -ing)', en: 'Past Continuous', emoji: '⏳',
+    explain: `
+      <p>Geçmişte belli bir anda <b>yapmakta olduğumuz</b> süregelen işleri anlatır (<b>-yordu</b>).</p>
+      <p>Formül: <b>was / were + Fiil-ing</b></p>
+      <table class="g-table">
+        <tr><th>Kural</th><th>Örnek</th></tr>
+        <tr><td>I / He / She / It</td><td>I <b>was reading</b> a book at 8 PM.</td></tr>
+        <tr><td>You / We / They</td><td>They <b>were playing</b> tennis.</td></tr>
+        <tr><td>Olumsuz</td><td>He <b>wasn't sleeping</b>.</td></tr>
+        <tr><td>when (olduğunda)</td><td>I was studying <b>when you called</b>.</td></tr>
+      </table>`,
+    examples: [['I was sleeping at 11 PM.', 'Saat 11\'de uyuyordum.'], ['They were watching TV when I arrived.', 'Ben vardığımda TV izliyorlardı.'], ["She wasn't listening to me.", 'Beni dinlemiyordu.']],
+    mc: [
+      ['At 9 PM yesterday, I ___ a book.', ['was reading', 'were reading', 'readed']], ['What ___ you doing when it rained?', ['were', 'was', 'are']],
+      ['She ___ sleeping when the phone rang.', ['was', 'were', 'is']], ['They ___ playing football at 4 PM.', ['were', 'was', 'are']],
+      ['We ___ having dinner when he arrived.', ['were', 'was', 'did']], ["He ___ not driving fast.", ['was', 'were', 'is']]
+    ],
+    order: [['I was sleeping when you called', 'Sen aradığında uyuyordum.'], ['They were watching television at eight', 'Saat sekizde televizyon izliyorlardı.'], ['She was cooking in the kitchen', 'Mutfakta yemek pişiriyordu.']]
+  },
+  {
+    id: 'travel_airport', level: 'A2', type: 'vocab', title: 'Havalimanı ve Seyahat', en: 'Airport & Travel', emoji: '✈️',
+    words: [
+      ['passport', 'pasaport', '🛂'], ['boarding pass', 'biniş kartı', '🎫'], ['flight', 'uçuş', '🛫'],
+      ['airport', 'havalimanı', '✈️'], ['luggage', 'bagaj', '🧳'], ['suitcase', 'bavul', '💼'],
+      ['departure', 'kalkış', '🛫'], ['arrival', 'varış', '🛬'], ['ticket', 'bilet', '🎟️'],
+      ['gate', 'kapı (uçuş kapısı)', '🚪'], ['passenger', 'yolcu', '🧑‍✈️'], ['delay', 'gecikme / rötar', '⏱️'],
+      ['security', 'güvenlik kontrolü', '👮'], ['pilot', 'pilot', '👨‍✈️'], ['land', 'iniş yapmak', '🛬'],
+      ['take off', 'havalanmak / kalkmak', '🛫'], ['journey', 'yolculuk / seyahat', '🗺️'], ['customs', 'gümrük', '🛃']
+    ]
+  },
+  {
+    id: 'hotel_booking', level: 'A2', type: 'vocab', title: 'Otel ve Konaklama', en: 'Hotel & Booking', emoji: '🏨',
+    words: [
+      ['hotel', 'otel', '🏨'], ['reception', 'resepsiyon', '🛎️'], ['reservation', 'rezervasyon', '📋'],
+      ['single room', 'tek kişilik oda', '🛏️'], ['double room', 'çift kişilik oda', '🛌'], ['key card', 'oda kartı / anahtarı', '💳'],
+      ['check-in', 'giriş yapma', '📥'], ['check-out', 'çıkış yapma', '📤'], ['elevator', 'asansör', '🛗'],
+      ['guest', 'konuk / misafir', '👤'], ['sea view', 'deniz manzarası', '🌊'], ['breakfast included', 'kahvaltı dahil', '🍳'],
+      ['swimming pool', 'yüzme havuzu', '🏊'], ['stay', 'konaklamak / kalmak', '🏠'], ['available', 'müsait / boşta', '✅'],
+      ['air conditioning', 'klima', '❄️']
+    ]
+  },
+  {
+    id: 'future_goingto', level: 'A2', type: 'grammar', title: 'Gelecek Zaman: be going to', en: 'Future with be going to', emoji: '🎯',
+    explain: `
+      <p>Önceden <b>karar verilmiş planlar, niyetler</b> ve <b>belirtisi görünen olaylar</b> için kullanılır (<b>-ecek / -acak</b>).</p>
+      <p>Formül: <b>am / is / are + going to + Fiil (V1)</b></p>
+      <table class="g-table">
+        <tr><th>Özne</th><th>Cümle</th></tr>
+        <tr><td>I</td><td>I <b>am going to travel</b> to Spain.</td></tr>
+        <tr><td>He / She / It</td><td>He <b>is going to buy</b> a laptop.</td></tr>
+        <tr><td>You / We / They</td><td>They <b>are going to meet</b> us.</td></tr>
+        <tr><td>Kanıtlı Durum</td><td>Look at the clouds! It <b>is going to rain</b>.</td></tr>
+      </table>`,
+    examples: [['I am going to visit my grandmother.', 'Büyükannemi ziyaret edeceğim.'], ['She is going to buy a new phone.', 'Yeni bir telefon satın alacak.'], ['Are you going to study tonight?', 'Bu gece ders çalışacak mısın?']],
+    mc: [
+      ['I am ___ to visit my friend tomorrow.', ['going', 'go', 'went']], ['She ___ going to buy a new car.', ['is', 'are', 'am']],
+      ['Look at the dark clouds! It is going to ___ .', ['rain', 'rained', 'raining']], ['We are going ___ cook dinner.', ['to', 'for', 'at']],
+      ['___ you going to watch the match?', ['Are', 'Is', 'Do']], ['They ___ not going to travel this summer.', ['are', 'is', 'do']]
+    ],
+    order: [['I am going to visit my friend', 'Arkadaşımı ziyaret edeceğim.'], ['She is going to buy a car', 'O bir araba satın alacak.'], ['Are you going to study tonight', 'Bu gece ders çalışacak mısın?']]
+  },
+  {
+    id: 'future_will', level: 'A2', type: 'grammar', title: 'Gelecek Zaman: will / won\'t', en: 'Future with will', emoji: '🔮',
+    explain: `
+      <p><b>will</b>, konuşma anında verilen <b>ani kararlar</b>, <b>tahminler</b> ve <b>sözler</b> için kullanılır.</p>
+      <table class="g-table">
+        <tr><th>Cümle Türü</th><th>Yapı</th><th>Örnek</th></tr>
+        <tr><td>Olumlu</td><td>Özne + <b>will</b> + V1</td><td>I <b>will help</b> you.</td></tr>
+        <tr><td>Olumsuz</td><td>Özne + <b>won't</b> + V1</td><td>I <b>won't tell</b> anyone.</td></tr>
+        <tr><td>Soru</td><td><b>Will</b> + Özne + V1?</td><td><b>Will</b> it rain?</td></tr>
+      </table>
+      <p>Genellikle <i>"I think"</i> (bence) veya <i>"I promise"</i> (söz veririm) kalıplarıyla kullanılır.</p>`,
+    examples: [['I will open the window.', 'Pencereyi açayım (anlık karar).'], ['I think it will be sunny tomorrow.', 'Bence yarın hava güneşli olacak.'], ["Don't worry, I won't forget.", 'Merak etme, unutmayacağım.']],
+    mc: [
+      ['The phone is ringing. I ___ answer it.', ['will', 'am', 'going']], ['I think you ___ pass the exam.', ['will', 'are', 'did']],
+      ["Don't worry, I ___ be late.", ["won't", "not will", "don't"]], ['___ you help me with this box?', ['Will', 'Do', 'Are']],
+      ['Tomorrow ___ be a great day.', ['will', 'is', 'did']], ['I promise I ___ call you tonight.', ['will', 'would', 'am']]
+    ],
+    order: [['I will help you with bags', 'Çantalar için sana yardım edeceğim.'], ['I think it will rain tomorrow', 'Bence yarın yağmur yağacak.'], ['I will not forget your birthday', 'Doğum gününü unutmayacağım.']]
+  },
+  {
+    id: 'restaurant_dining', level: 'A2', type: 'vocab', title: 'Restoran ve Yemek Siparişi', en: 'Restaurant & Ordering', emoji: '🍽️',
+    words: [
+      ['waiter', 'garson (erkek)', '🤵'], ['waitress', 'garson (kadın)', '👩‍🍳'], ['menu', 'menü', '📜'],
+      ['order', 'sipariş vermek', '📝'], ['bill', 'hesap / adisyon', '🧾'], ['appetizer', 'başlangıç / meze', '🥗'],
+      ['main course', 'ana yemek', '🥩'], ['dessert', 'tatlı', '🍰'], ['tip', 'bahşiş', '💵'],
+      ['delicious', 'lezzetli / nefis', '😋'], ['sparkling water', 'maden suyu', '🫧'], ['napkin', 'peçete', '🧻'],
+      ['fork and knife', 'çatal ve bıçak', '🍴'], ['table for two', 'iki kişilik masa', '🪑'], ['recommend', 'tavsiye etmek / önermek', '👍'],
+      ['ready to order', 'siparişe hazır', '🙋']
+    ]
+  },
+  {
+    id: 'comparatives', level: 'A2', type: 'grammar', title: 'Kıyaslama: Sıfatlarda Karşılaştırma', en: 'Comparatives', emoji: '⚖️',
+    explain: `
+      <p>İki şeyi birbiriyle kıyaslarken (<b>daha ...</b>) sıfatın uzunluğuna göre kural değişir:</p>
+      <table class="g-table">
+        <tr><th>Sıfat Türü</th><th>Kural</th><th>Örnek</th></tr>
+        <tr><td>Kısa sıfatlar</td><td>+ <b>er than</b></td><td>tall → tall<b>er than</b>, fast → fast<b>er than</b></td></tr>
+        <tr><td>-y ile bitenler</td><td>y düşer + <b>ier than</b></td><td>easy → eas<b>ier than</b>, happy → happ<b>ier than</b></td></tr>
+        <tr><td>Uzun sıfatlar</td><td><b>more</b> ... <b>than</b></td><td>more expensive than, more beautiful than</td></tr>
+        <tr><td>Düzensizler</td><td>özel şekil</td><td>good → <b>better than</b>, bad → <b>worse than</b></td></tr>
+      </table>`,
+    examples: [['An elephant is bigger than a lion.', 'Fil aslandan daha büyüktür.'], ['This car is more expensive than that one.', 'Bu araba şu arabadan daha pahalıdır.'], ['English is easier than German.', 'İngilizce Almancadan daha kolaydır.']],
+    mc: [
+      ['An airplane is ___ than a train.', ['faster', 'fast', 'more fast']], ['Gold is ___ than silver.', ['more expensive', 'expensiver', 'most expensive']],
+      ['Today is ___ than yesterday.', ['colder', 'cold', 'more cold']], ['My brother is ___ than me.', ['taller', 'more tall', 'tall']],
+      ['This book is ___ than that movie.', ['better', 'gooder', 'more good']], ['Driving in snow is ___ than in rain.', ['worse', 'badder', 'more bad']]
+    ],
+    order: [['An elephant is bigger than a lion', 'Fil aslandan daha büyüktür.'], ['This book is better than that one', 'Bu kitap şu kitaptan daha iyidir.'], ['London is bigger than Oxford', 'Londra Oxford\'dan daha büyüktür.']]
+  },
+  {
+    id: 'superlatives', level: 'A2', type: 'grammar', title: 'Üstünlük Sıfatları (the -est / the most)', en: 'Superlatives', emoji: '🥇',
+    explain: `
+      <p>Bir grup içindeki <b>"en ..."</b> olanı söylerken kullanılır.</p>
+      <table class="g-table">
+        <tr><th>Sıfat Türü</th><th>Kural</th><th>Örnek</th></tr>
+        <tr><td>Kısa sıfatlar</td><td><b>the</b> + sıfat<b>est</b></td><td>the fast<b>est</b>, the tall<b>est</b>, the bigg<b>est</b></td></tr>
+        <tr><td>Uzun sıfatlar</td><td><b>the most</b> + sıfat</td><td><b>the most</b> expensive, <b>the most</b> popular</td></tr>
+        <tr><td>Düzensizler</td><td>özel ezber</td><td>good → <b>the best</b>, bad → <b>the worst</b></td></tr>
+      </table>
+      <p><b>Tüyo:</b> Superlative'in önünde mutlaka <b>"the"</b> bulunur: <i>"the tallest boy in class"</i>.</p>`,
+    examples: [['Mount Everest is the highest mountain.', 'Everest Dağı en yüksek dağdır.'], ['He is the best student in class.', 'O sınıftaki en iyi öğrencidir.'], ['This is the most interesting book.', 'Bu en ilginç kitaptır.']],
+    mc: [
+      ['The cheetah is ___ animal in the world.', ['the fastest', 'faster', 'the most fast']], ['Russia is ___ country on Earth.', ['the biggest', 'bigger', 'the most big']],
+      ['She is ___ singer in our school.', ['the best', 'the goodest', 'better']], ['This is ___ difficult question of all.', ['the most', 'the more', 'the much']],
+      ['January is usually ___ month of the year.', ['the coldest', 'colder', 'the most cold']]
+    ],
+    order: [['Everest is the highest mountain', 'Everest en yüksek dağdır.'], ['He is the best student here', 'O buradaki en iyi öğrencidir.'], ['This is the most expensive car', 'Bu en pahalı arabadır.']]
+  },
+  {
+    id: 'shopping_stores', level: 'A2', type: 'vocab', title: 'Alışveriş ve Mağazalar', en: 'Shopping & Stores', emoji: '🛍️',
+    words: [
+      ['price', 'fiyat', '🏷️'], ['discount', 'indirim', '🔖'], ['customer', 'müşteri', '🛍️'],
+      ['cashier', 'kasiyer', '🧑‍💼'], ['receipt', 'fiş / makbuz', '🧾'], ['cheap', 'ucuz', '🪙'],
+      ['expensive', 'pahalı', '💎'], ['size', 'beden / numara', '📏'], ['fitting room', 'soyunma / deneme kabini', '🚪'],
+      ['credit card', 'kredi kartı', '💳'], ['cash', 'nakit para', '💵'], ['refund', 'para iadesi', '↩️'],
+      ['on sale', 'indirimde / satışta', '🔥'], ['buy', 'satın almak', '🛒'], ['sell', 'satmak', '🏪']
+    ]
+  },
+  {
+    id: 'directions_location', level: 'A2', type: 'vocab', title: 'Yol Tarifi ve Şehirde Yönler', en: 'Directions & Locations', emoji: '🧭',
+    words: [
+      ['turn left', 'sola dön', '⬅️'], ['turn right', 'sağa dön', '➡️'], ['go straight ahead', 'dümdüz ilerle', '⬆️'],
+      ['opposite', 'karşısında', '↔️'], ['next to', 'yanında / bitişiğinde', '👉'], ['between', 'arasında', '🥪'],
+      ['traffic lights', 'trafik ışıkları', '🚦'], ['roundabout', 'dönel kavşak / göbek', '🔄'], ['cross the street', 'karşıya geç', '🚶‍♂️'],
+      ['corner', 'köşe', '📐'], ['near', 'yakın', '📍'], ['far', 'uzak', '🔭'],
+      ['bridge', 'köprü', '🌉'], ['bus stop', 'otobüs durağı', '🚏'], ['map', 'harita', '🗺️']
+    ]
+  },
+  {
+    id: 'modals_rules', level: 'A2', type: 'grammar', title: 'have to / must / should', en: 'Modals of Obligation & Advice', emoji: '📜',
+    explain: `
+      <p>Zorunluluk ve tavsiye bildiren modallar:</p>
+      <table class="g-table">
+        <tr><th>Modal</th><th>Anlamı</th><th>Kullanım</th></tr>
+        <tr><td><b>have to / has to</b></td><td>-mek zorunda</td><td>Dış kurallar (kanun, okul kuralı): I <b>have to wear</b> a uniform.</td></tr>
+        <tr><td><b>don't have to</b></td><td>zorunda değilsin</td><td>Gerek yok / serbestsin: You <b>don't have to pay</b>.</td></tr>
+        <tr><td><b>must</b></td><td>kesin zorunluluk</td><td>Güçlü kişisel his veya kural: We <b>must stop</b> here.</td></tr>
+        <tr><td><b>should</b></td><td>-meli / -malı</td><td>Tavsiye ve öneri: You <b>should drink</b> water.</td></tr>
+      </table>`,
+    examples: [['You must stop at red lights.', 'Kırmızı ışıkta durmalısın (zorunluluk).'], ['You should visit the doctor.', 'Doktora gitmelisin (tavsiye).'], ["Tomorrow is Sunday, I don't have to wake up early.", 'Yarın pazar, erken uyanmak zorunda değilim.']],
+    mc: [
+      ['You look sick. You ___ see a doctor.', ['should', 'have', 'must to']], ['Drivers ___ stop at red lights.', ['must', 'should', 'can']],
+      ['Tomorrow is a holiday. We ___ wake up early.', ["don't have to", "must not", "should"]], ['She ___ wear glasses to read.', ['has to', 'have to', 'must to']],
+      ['You ___ smoke in the hospital!', ["mustn't", "don't have to", "should"]]
+    ],
+    order: [['You should see a doctor soon', 'Yakında bir doktora görünmelisin.'], ['We must stop at red light', 'Kırmızı ışıkta durmalıyız.'], ['You do not have to pay', 'Ödeme yapmak zorunda değilsin.']]
+  },
+  {
+    id: 'health_medicine', level: 'A2', type: 'vocab', title: 'Sağlık, Eczane ve Hastalıklar', en: 'Health & Medicine', emoji: '🩺',
+    words: [
+      ['headache', 'baş ağrısı', '🤕'], ['stomachache', 'karın ağrısı', '🤢'], ['sore throat', 'boğaz ağrısı', '🗣️'],
+      ['fever', 'yüksek ateş', '🌡️'], ['cough', 'öksürük', '😷'], ['medicine', 'ilaç', '💊'],
+      ['pharmacy', 'eczane', '🏥'], ['painkiller', 'ağrı kesici', '💉'], ['dentist', 'diş hekimi', '🦷'],
+      ['doctor', 'doktor', '👩‍⚕️'], ['hospital', 'hastane', '🏥'], ['appointment', 'randevu', '📅'],
+      ['hurt', 'acımak / incinmek', '⚡'], ['rest', 'dinlenmek', '🛌'], ['feel sick', 'hasta hissetmek', '🤒']
+    ]
+  },
+  {
+    id: 'feelings_traits', level: 'A2', type: 'vocab', title: 'Duygular ve Kişilik Özellikleri', en: 'Feelings & Personality', emoji: '🎭',
+    words: [
+      ['excited', 'heyecanlı', '🤩'], ['nervous', 'gergin / endişeli', '😰'], ['proud', 'gururlu', '🦁'],
+      ['bored', 'canı sıkılmış', '🥱'], ['angry', 'kızgın / öfkeli', '😡'], ['polite', 'kibar / nazik', '🎩'],
+      ['generous', 'cömert / eli açık', '🎁'], ['confident', 'kendine güvenen', '💪'], ['patient', 'sabırlı', '🧘'],
+      ['honest', 'dürüst', '🤝'], ['hardworking', 'çalışkan', '🐝'], ['lazy', 'tembel', '🦥'],
+      ['friendly', 'arkadaş canlısı', '🤗'], ['calm', 'sakin / huzurlu', '🌊'], ['creative', 'yaratıcı', '🎨']
+    ]
+  },
+  {
+    id: 'present_perfect_exp', level: 'A2', type: 'grammar', title: 'Hayat Deneyimleri: Present Perfect', en: 'Present Perfect for Experience', emoji: '🎒',
+    explain: `
+      <p>Hayatımız boyunca <b>hiç yapıp yapmadığımız tecrübeleri</b> anlatırken kullanılır (tam zamanı önemli değildir).</p>
+      <p>Formül: <b>have / has + Fiilin 3. Hali (V3)</b></p>
+      <table class="g-table">
+        <tr><th>Kalıp</th><th>Örnek</th><th>Anlamı</th></tr>
+        <tr><td>Soru (ever)</td><td>Have you <b>ever been</b> to Italy?</td><td>Hiç İtalya'da bulundun mu?</td></tr>
+        <tr><td>Olumsuz (never)</td><td>I have <b>never eaten</b> sushi.</td><td>Hiç suşi yemedim.</td></tr>
+        <tr><td>Olumlu</td><td>She has <b>visited</b> five countries.</td><td>Beş ülke ziyaret etti.</td></tr>
+      </table>
+      <p><b>Tüyo:</b> "Gitmek ve dönmek" tecrübesi için <b>been</b> kullanılır: <i>"I have been to London"</i> (Londra'da bulundum).</p>`,
+    examples: [['Have you ever seen snow?', 'Hiç kar gördün mü?'], ['I have never flown in a plane.', 'Hiç uçağa binmedim.'], ['He has lived in three different cities.', 'Üç farklı şehirde yaşadı.']],
+    mc: [
+      ['Have you ever ___ to London?', ['been', 'went', 'go']], ['I have never ___ sushi in my life.', ['eaten', 'ate', 'eat']],
+      ['She has ___ five books this year.', ['read', 'reads', 'reading']], ['___ you ever seen a tiger?', ['Have', 'Has', 'Did']],
+      ['He ___ never traveled abroad.', ['has', 'have', 'is']]
+    ],
+    order: [['Have you ever seen snow', 'Hiç kar gördün mü?'], ['I have never been to London', 'Hiç Londra\'da bulunmadım.'], ['She has visited three countries', 'O üç ülke ziyaret etti.']]
+  },
+  {
+    id: 'conjunctions_a2', level: 'A2', type: 'grammar', title: 'Bağlaçlar: because, so, although', en: 'Conjunctions', emoji: '🔗',
+    explain: `
+      <p>Cümleleri mantıkla birbirine bağlayarak akıcı konuşmayı sağlar:</p>
+      <table class="g-table">
+        <tr><th>Bağlaç</th><th>Anlamı</th><th>Örnek</th></tr>
+        <tr><td><b>because</b></td><td>çünkü / -dığı için</td><td>I took an umbrella <b>because</b> it was raining.</td></tr>
+        <tr><td><b>so</b></td><td>bu yüzden / bu sebeple</td><td>I was tired, <b>so</b> I went to bed early.</td></tr>
+        <tr><td><b>although</b></td><td>-e rağmen</td><td><b>Although</b> it was cold, we went swimming.</td></tr>
+        <tr><td><b>while</b></td><td>-iken (aynı anda)</td><td>He called me <b>while</b> I was cooking.</td></tr>
+      </table>`,
+    examples: [['I study English because I love traveling.', 'İngilizce çalışıyorum çünkü seyahat etmeyi seviyorum.'], ['He had a headache, so he took medicine.', 'Başı ağrıyordu, bu yüzden ilaç aldı.'], ['Although she was tired, she smiled.', 'Yorgun olmasına rağmen gülümsedi.']],
+    mc: [
+      ['I went to bed early ___ I was very tired.', ['because', 'so', 'although']], ['It was raining, ___ we stayed at home.', ['so', 'because', 'although']],
+      ['___ it was cold, he wore only a T-shirt.', ['Although', 'Because', 'So']], ['She called me ___ I was studying.', ['while', 'because', 'so']]
+    ],
+    order: [['I stayed home because it rained', 'Evde kaldım çünkü yağmur yağdı.'], ['He was tired so he slept', 'Yorgundu bu yüzden uyudu.'], ['Although it rained we went out', 'Yağmur yağmasına rağmen dışarı çıktık.']]
+  },
+  {
+    id: 'technology_media', level: 'A2', type: 'vocab', title: 'Dijital Dünya ve Teknoloji', en: 'Technology & Digital World', emoji: '💻',
+    words: [
+      ['smartphone', 'akıllı telefon', '📱'], ['download', 'indirmek', '⬇️'], ['upload', 'yüklemek', '⬆️'],
+      ['password', 'şifre / parola', '🔑'], ['charger', 'şarj aleti', '🔌'], ['battery', 'pil / batarya', '🔋'],
+      ['screen', 'ekran', '🖥️'], ['send message', 'mesaj göndermek', '💬'], ['attachment', 'ek / dosya eki', '📎'],
+      ['wireless', 'kablosuz (Wi-Fi)', '📶'], ['headphones', 'kulaklık', '🎧'], ['application', 'uygulama (app)', '📲'],
+      ['website', 'web sitesi', '🌐'], ['click', 'tıklamak', '🖱️'], ['connect', 'bağlanmak', '🔗']
+    ]
   }
 ];
 
 /* ---------- Normalize ---------- */
 const UNITS = RAW_UNITS.map((u, i) => {
-  const unit = { ...u, index: i, color: u.type === 'vocab' ? 'var(--cat-kelime)' : 'var(--cat-gramer)' };
+  const level = u.level || (i < 27 ? 'A1' : 'A2');
+  const unit = { ...u, level, index: i, color: u.type === 'vocab' ? 'var(--cat-kelime)' : 'var(--cat-gramer)' };
   if (u.type === 'vocab') {
-    unit.words = u.words.map(([en, tr, emoji]) => ({ en, tr, emoji, key: `${u.id}:${en}`, unitId: u.id }));
+    unit.words = u.words.map(([en, tr, emoji]) => ({ en, tr, emoji, key: `${u.id}:${en}`, unitId: u.id, level }));
   }
   return unit;
 });
@@ -652,14 +970,15 @@ const LEVEL_WORLDS = {
     badge: '🌱',
     desc: 'Temel iletişim, tanışma ve günlük konuşma kalıpları',
     unlocked: true,
-    totalUnits: UNITS.length
+    totalUnits: 27
   },
   A2: {
     id: 'A2',
     name: 'A2: Macera Dünyası',
     badge: '🚀',
-    desc: 'Geçmiş zaman, seyahat, planlar ve akıcı diyaloglar',
+    desc: 'Geçmiş zaman, seyahat, planlar, kıyaslamalar ve akıcı diyaloglar',
     unlocked: false,
+    totalUnits: 20,
     requires: 'A1_BOSS_PASSED'
   }
 };

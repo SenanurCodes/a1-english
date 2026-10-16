@@ -10,7 +10,7 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
-const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js', 'js/firebase.js', 'js/ai.js'];
+const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js', 'js/firebase.js', 'js/utils.js', 'js/exercises.js', 'js/ai.js'];
 const SOURCES = FILES.map(f => [f, fs.readFileSync(path.join(ROOT, f), 'utf8')]);
 
 /* ---------- Sahte tarayıcı ortamı ---------- */
@@ -35,7 +35,8 @@ function makeEnv(initialStorage = {}) {
     location: { hash: '#/', pathname: '/', origin: 'http://test' },
     document: {
       documentElement: { setAttribute: (k, v) => { attrs[k] = v; }, style: { setProperty() {} } },
-      querySelector: () => null
+      querySelector: () => null,
+      addEventListener: () => {}
     },
     setTimeout, clearTimeout, Date, Math, JSON, Promise,
     btoa: s => Buffer.from(s, 'binary').toString('base64'),
@@ -288,6 +289,37 @@ test('Firebase Auth fallback: operation-not-allowed veya çevrimdışıyken çö
   const u = await env.run('authService.signInWithEmail("test@example.com", "pass123")');
   ok(u && u.email === 'test@example.com', 'Sağlayıcı yokken yerel hesapla giriş yapılabilmeli');
   ok(env.run('state.auth.isGuest === false'), 'Kullanıcı giriş yapmış sayılmalı');
+});
+
+test('A2 Müfredatı: 27 A1 + 20 A2 ünitesi ve toplam 47 ünite eksiksiz tanımlı', () => {
+  const env = makeEnv();
+  const total = env.run('UNITS.length');
+  const a1 = env.run('UNITS.filter(u => u.level === "A1").length');
+  const a2 = env.run('UNITS.filter(u => u.level === "A2").length');
+  eq(total, 47, 'Toplam 47 ünite olmalı');
+  eq(a1, 27, 'A1 seviyesinde 27 ünite olmalı');
+  eq(a2, 20, 'A2 seviyesinde 20 ünite olmalı');
+});
+
+test('Büyük sayılar ve sıra sayıları: 100 - 1.000.000 ve 1st-20th eksiksiz tanımlı', () => {
+  const env = makeEnv();
+  const largeUnit = env.run('UNITS.find(u => u.id === "numbers_large")');
+  ok(largeUnit, 'numbers_large ünitesi tanımlı olmalı');
+  const enWords = largeUnit.words.map(w => w.en);
+  ok(enWords.includes('one hundred'), 'one hundred bulunmalı');
+  ok(enWords.includes('one thousand'), 'one thousand bulunmalı');
+  ok(enWords.includes('one million'), 'one million bulunmalı');
+  ok(enWords.includes('first'), 'first bulunmalı');
+  ok(enWords.includes('second'), 'second bulunmalı');
+  ok(enWords.includes('tenth'), 'tenth bulunmalı');
+});
+
+test('Boss testleri: buildA1BossTest ve buildA2BossTest 15\'er soru üretir', () => {
+  const env = makeEnv();
+  const a1Q = env.run('buildA1BossTest()');
+  const a2Q = env.run('buildA2BossTest()');
+  eq(a1Q.length, 15, 'A1 Boss testi 15 soru olmalı');
+  eq(a2Q.length, 15, 'A2 Boss testi 15 soru olmalı');
 });
 
 /* ---------- Sonuç ---------- */

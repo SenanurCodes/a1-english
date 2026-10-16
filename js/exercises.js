@@ -86,8 +86,24 @@ function buildPlacementTest() {
 }
 
 function buildA1BossTest() {
-  const vocabUnits = UNITS.filter(u => u.type === 'vocab');
-  const grammarUnits = UNITS.filter(u => u.type === 'grammar');
+  const vocabUnits = UNITS.filter(u => u.type === 'vocab' && u.level === 'A1');
+  const grammarUnits = UNITS.filter(u => u.type === 'grammar' && u.level === 'A1');
+  const vocabQuestions = sample(vocabUnits, 8).map(u => {
+    const w = sample(u.words, 1)[0];
+    const maker = pickOne([qEnToTr, qTrToEn, qListen, qType]);
+    const q = maker(w);
+    delete q.wordKey;
+    return q;
+  });
+  const grammarQuestions = sample(grammarUnits, 7).map(u => {
+    return qGrammarMC(u, sample(u.mc, 1)[0]);
+  });
+  return shuffle([...vocabQuestions, ...grammarQuestions]);
+}
+
+function buildA2BossTest() {
+  const vocabUnits = UNITS.filter(u => u.type === 'vocab' && u.level === 'A2');
+  const grammarUnits = UNITS.filter(u => u.type === 'grammar' && u.level === 'A2');
   const vocabQuestions = sample(vocabUnits, 8).map(u => {
     const w = sample(u.words, 1)[0];
     const maker = pickOne([qEnToTr, qTrToEn, qListen, qType]);
