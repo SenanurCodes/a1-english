@@ -1230,9 +1230,8 @@ function screenLearn() {
             <span>%${pctA2}</span>
           </div>
           ${!state.a2Unlocked ? `
-            <div style="margin-top:12px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb, var(--primary) 12%, transparent);border:1px dashed var(--primary);font-size:0.85rem;display:flex;flex-direction:column;gap:8px;">
-              <div>💡 <b>A2 Dünyası Serbest Mod:</b> A1'in bitmesini beklemeden doğrudan A2 ünitelerini çözmek ve tüm üniteleri anında açmak istiyorsan aşağıdaki butona basabilirsin!</div>
-              <button class="btn btn-primary btn-sm" id="unlockAllA2Btn" style="align-self:flex-start;display:flex;align-items:center;gap:6px;">🔓 Tüm A2 Ünitelerinin Kilidini Aç (Hemen Oyna)</button>
+            <div style="margin-top:12px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb, var(--primary) 12%, transparent);border:1px dashed var(--primary);font-size:0.85rem;">
+              💡 <b>A2 Macera Dünyası:</b> A1 Seviyesindeki 27 üniteyi tamamlayıp A1 Final Sınavı'nı geçtiğinde bu dünya açılacaktır.
             </div>
           ` : ''}
         </div>
@@ -1242,7 +1241,7 @@ function screenLearn() {
       <div class="path">
         ${unitsToShow.map((u, i) => {
           const s = unitStats(u.id);
-          const unlocked = isUnlocked(u.index) && (isA1 || state.a2Unlocked);
+          const unlocked = isUnlocked(u.index);
           const offset = Math.round(Math.sin(i * 0.9) * 110);
           return `
             <div class="path-row" style="--x:${offset}px">
@@ -1326,11 +1325,6 @@ function screenLearn() {
   $('#tabWorldA1').onclick = () => { currentLearnWorld = 'A1'; screenLearn(); };
   $('#tabWorldA2').onclick = () => { currentLearnWorld = 'A2'; screenLearn(); };
   if ($('#goWorldA2Btn')) $('#goWorldA2Btn').onclick = () => { currentLearnWorld = 'A2'; screenLearn(); };
-  if ($('#unlockAllA2Btn')) $('#unlockAllA2Btn').onclick = () => {
-    store.unlockA2();
-    toast('🎉 Tüm A2 ünitelerinin kilidi açıldı! İyi çalışmalar!');
-    screenLearn();
-  };
 
   $$('.node').forEach(n => n.onclick = () => unitModal(UNIT_BY_ID[n.dataset.id]));
   const cur = $('.node.current');
@@ -1403,7 +1397,7 @@ function screenA2Boss() {
 
 function unitModal(u) {
   const s = unitStats(u.id);
-  const unlocked = isUnlocked(u.index) || (u.level === 'A2' && state.a2Unlocked);
+  const unlocked = isUnlocked(u.index);
   openModal(`
     <div class="modal-head" style="--c:${u.color}">
       <div class="modal-emoji">${u.emoji}</div>
@@ -1419,10 +1413,9 @@ function unitModal(u) {
         ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kelime Kartları</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konu Anlatımı</a>`}
         <a class="btn btn-big btn-primary" href="#/lesson/${u.id}">▶ ${s.attempts ? 'Tekrar Çalış' : 'Derse Başla'}</a>
       </div>` : `
-      <p class="muted center">Bu ünite henüz kilitli 🔒</p>
+      <p class="muted center">Bu ünite henüz kilitli 🔒 Önceki üniteleri tamamlayarak sırayla ilerle!</p>
       <div class="modal-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
         ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kartlara göz at</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konuya göz at</a>`}
-        ${u.level === 'A2' ? `<button class="btn btn-primary" onclick="store.unlockA2(); closeModal(); location.hash='#/lesson/${u.id}';">🔓 Kilidi Aç ve Derse Başla</button>` : ''}
       </div>`}
   `);
 }
@@ -1434,13 +1427,9 @@ function screenLesson(id) {
   const u = UNIT_BY_ID[id];
   if (!u) { location.hash = '#/learn'; return; }
   if (!isUnlocked(u.index)) {
-    if (u.level === 'A2') {
-      store.unlockA2();
-    } else {
-      toast('Bu ünite henüz kilitli 🔒');
-      location.hash = '#/learn';
-      return;
-    }
+    toast('Bu ünite henüz kilitli 🔒');
+    location.hash = '#/learn';
+    return;
   }
   const start = () => runLesson({
     title: `${u.emoji} ${u.title}`,

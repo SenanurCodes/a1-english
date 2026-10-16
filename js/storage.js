@@ -124,10 +124,21 @@ class AppStore {
       const mascot = s.mascot || 'cat';
       const theme = s.theme || 'nordic';
 
-      // Doğal müfredat: A1 Boss sınavı geçilmeden A2 açık kalamaz
+      // Doğal Candy Crush / Duolingo kilit mekanizması:
+      // Kullanıcının henüz tamamlamadığı üniteler kilitli (🔒) kalır.
+      let highestDone = -1;
+      if (s.units && typeof s.units === 'object') {
+        Object.entries(s.units).forEach(([uid, ustat]) => {
+          if (ustat && (ustat.done || (ustat.best >= 70))) {
+            const u = (typeof UNIT_BY_ID !== 'undefined' && UNIT_BY_ID[uid]);
+            if (u) highestDone = Math.max(highestDone, u.index);
+          }
+        });
+      }
+      const realUnlocked = Math.max(0, highestDone + 1);
       const a1BossPassed = Boolean(s.a1BossPassed);
-      const a2Unlocked = a1BossPassed && Boolean(s.a2Unlocked);
-      const unlockedUpTo = a1BossPassed ? (s.unlockedUpTo ?? 0) : Math.min(s.unlockedUpTo ?? 0, 26);
+      const a2Unlocked = a1BossPassed;
+      const unlockedUpTo = a1BossPassed ? Math.max(realUnlocked, 27) : Math.min(s.unlockedUpTo ?? 0, realUnlocked);
 
       return {
         ...d,
@@ -532,7 +543,6 @@ function unitStats(id) {
 }
 
 function isUnlocked(index) {
-  if (state.a2Unlocked && index >= 27) return true;
   return index <= state.unlockedUpTo;
 }
 
