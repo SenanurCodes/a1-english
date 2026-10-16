@@ -252,11 +252,16 @@ test('Lokomotif Simülatörü: Örnek 1, 2 ve 3 eksiksiz vagon ve mapping verisi
   });
 });
 
-test('Gemini API mock/test ortamı: test anahtarları test ortamında otomatik onaylanır', async () => {
-  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: 'AIzaSyMockTestKey123' } }) });
-  ok(env.run('isTestEnvironment("AIzaSyMockTestKey123")'), 'isTestEnvironment true olmalı');
-  const res = await env.run('aiTest()');
-  ok(res.includes('ready to help'), 'aiTest mock başarılı dönmeli');
+test('Gemini API: anahtar yoksa dürüstçe NO_KEY hatası fırlatır', async () => {
+  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: '' } }) });
+  let threw = false;
+  try {
+    await env.run('aiTest()');
+  } catch (err) {
+    threw = true;
+    ok(err.message.includes('API anahtarı yok'), 'Doğru hata mesajı verilmeli');
+  }
+  ok(threw, 'Anahtar yokken hata fırlatılmalı');
 });
 
 /* ---------- Sonuç ---------- */

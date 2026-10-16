@@ -123,13 +123,13 @@ class AuthService {
     if (!cleanEmail || !cleanEmail.includes('@')) {
       throw new Error('Lütfen geçerli bir e-posta adresi gir.');
     }
-    if (!password || password.length < 4) {
-      throw new Error('Şifre en az 4 karakter olmalıdır.');
+    if (!password || password.length < 6) {
+      throw new Error('Şifre en az 6 karakter olmalıdır.');
     }
 
     const name = (displayName || '').trim() || cleanEmail.split('@')[0];
 
-    // 1. Önce Firebase üzerinden dene
+    // 1. Firebase yapılandırılmışsa doğrudan Firebase ile kaydet
     if (this.isConfigured() && this.auth) {
       try {
         const res = await this.auth.createUserWithEmailAndPassword(cleanEmail, password);
@@ -145,12 +145,29 @@ class AuthService {
           return u;
         }
       } catch (fbErr) {
-        console.warn('Firebase register fallback (local hybrid account):', fbErr.code || fbErr.message);
+        // Firebase doğrulama ve hesap hatalarını kullanıcıya açıkça ilet
+        if (fbErr.code === 'auth/email-already-in-use') {
+          throw new Error('Bu e-posta adresi zaten kayıtlı. Lütfen giriş yap.');
+        }
+        if (fbErr.code === 'auth/weak-password') {
+          throw new Error('Şifreniz çok zayıf. Lütfen en az 6 karakterli bir şifre seçin.');
+        }
+        if (fbErr.code === 'auth/invalid-email') {
+          throw new Error('Geçersiz bir e-posta adresi girdin.');
+        }
+        if (fbErr.code === 'auth/operation-not-allowed') {
+          throw new Error('E-posta ile kayıt Firebase konsolunda henüz etkinleştirilmemiş.');
+        }
+        // Yalnızca ağ erişim hatası varsa yerel çevrimdışı hesap yedeğine geç
+        if (fbErr.code !== 'auth/network-request-failed') {
+          throw new Error(fbErr.message || 'Kayıt işlemi tamamlanamadı.');
+        }
+        console.warn('Firebase ağ hatası (çevrimdışı yerel hesaba geçiliyor):', fbErr.message);
       }
     }
 
-    // 2. Firebase devre dışıysa / izin vermiyorsa, kullanıcıyı bekletmeden sorunsuz hesabı oluştur
-    const uId = 'u_' + Math.abs(this._hashStr(cleanEmail));
+    // 2. Yalnızca ağ erişimi yokken yerel çevrimdışı hesap aç
+    const uId = 'u_' + Math.abs(this._hashStr(cleanEmail + '_' + Date.now()));
     const localUser = {
       uid: uId,
       email: cleanEmail,
@@ -180,7 +197,7 @@ class AuthService {
       throw new Error('Lütfen şifreni gir.');
     }
 
-    // 1. Önce Firebase üzerinden dene
+    // 1. Firebase üzerinden giriş yap
     if (this.isConfigured() && this.auth) {
       try {
         const res = await this.auth.signInWithEmailAndPassword(cleanEmail, password);
@@ -195,19 +212,32 @@ class AuthService {
           return u;
         }
       } catch (fbErr) {
-        console.warn('Firebase login notice:', fbErr.code || fbErr.message);
-        if (fbErr.code === 'auth/wrong-password') {
-          throw new Error('Hatalı şifre girdin.');
+        if (fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
+          throw new Error('E-posta veya şifre hatalı.');
         }
+        if (fbErr.code === 'auth/user-not-found') {
+          // Firebase'de hesap yoksa yerel hesap listesine bak
+          const accs = this._getLocalAccounts();
+          if (!accs[cleanEmail]) {
+            throw new Error('Bu e-posta adresine ait bir hesap bulunamadı. Lütfen önce kayıt ol.');
+          }
+        } else if (fbErr.code === 'auth/invalid-email') {
+          throw new Error('Geçersiz bir e-posta adresi girdin.');
+        } else if (fbErr.code === 'auth/user-disabled') {
+          throw new Error('Bu kullanıcı hesabı devre dışı bırakılmış.');
+        } else if (fbErr.code !== 'auth/network-request-failed') {
+          throw new Error(fbErr.message || 'Giriş yapılamadı.');
+        }
+        console.warn('Firebase giriş kontrolü:', fbErr.code || fbErr.message);
       }
     }
 
-    // 2. Kayıtlı yerel hesapları kontrol et
+    // 2. Çevrimdışı veya yerel hesap listesinde varsa şifreyi kontrol et
     const accs = this._getLocalAccounts();
     const existing = accs[cleanEmail];
     if (existing) {
       if (existing.passHash && existing.passHash !== this._hashStr(password)) {
-        throw new Error('Hatalı şifre girdin.');
+        throw new Error('E-posta veya şifre hatalı.');
       }
       const u = {
         uid: existing.uid,
@@ -219,8 +249,8 @@ class AuthService {
       return u;
     }
 
-    // 3. Hesap yoksa kullanıcıyı yormadan doğrudan hesabını oluştur ve aç
-    return await this.registerWithEmail(cleanEmail, password, cleanEmail.split('@')[0]);
+    // Hesap yoksa otomatik sahte hesap AÇMA; dürüstçe hata fırlat
+    throw new Error('Bu e-posta ile kayıtlı bir hesap bulunamadı. Lütfen önce kayıt ol.');
   }
 
   _hashStr(str) {

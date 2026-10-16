@@ -26,38 +26,11 @@ function getApiKey() {
   return '';
 }
 
-function isTestEnvironment(key = '') {
-  const k = (key || '').toLowerCase();
-  if (k.includes('test') || k.includes('mock') || k.includes('dummy') || k.includes('fake') || k.includes('fixture') || k.includes('sample') || k.startsWith('aizasytest') || k === 'aizadummykey') {
-    return true;
-  }
-  if (typeof window !== 'undefined') {
-    if (window.__TEST_MODE__ || window.__TESTSPRITE__ || window.Cypress) return true;
-    if (typeof navigator !== 'undefined' && navigator.webdriver) return true;
-    if (typeof location !== 'undefined' && location.search && (location.search.includes('test=') || location.search.includes('mock='))) return true;
-  }
-  return false;
-}
-
 function hasAI() { return !!getApiKey(); }
 
 async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   const key = getApiKey();
   if (!key) throw new AIError('NO_KEY', 'API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
-  
-  // Test ortamı veya sahte test anahtarı algılandığında upstream servisi mock'la
-  if (isTestEnvironment(key)) {
-    if (json) {
-      return JSON.stringify({
-        title: "A1 Pratik Alıştırması",
-        questions: [
-          { t: "mc", q: "I ___ a student. (am/is/are)", o: ["am", "is", "are"], a: "am", h: "I öznesi ile am kullanılır." },
-          { t: "order", s: "We study English every day", tr: "Biz her gün İngilizce çalışırız." }
-        ]
-      });
-    }
-    return "Hello! I am ready to help you learn English.";
-  }
 
   // Kullanıcının seçtiği model ve yedek kararlı modeller sırası
   const preferred = (state?.settings?.model || '').trim();
@@ -75,7 +48,7 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   let lastError = null;
   for (const model of modelsToTry) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
       const body = {
         contents,
         generationConfig: { temperature, ...(json ? { responseMimeType: 'application/json' } : {}) }
@@ -101,19 +74,6 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
           throw new AIError('RATE_LIMIT', 'Google Gemini ücretsiz kullanım sınırına ulaşıldı. Biraz bekleyip tekrar dene.', err);
         }
         if (res.status === 400 || res.status === 403) {
-          // Eğer otomatik test ortamında (headless browser / webdriver) test anahtarıyla koşuluyorsa mock dön
-          if (typeof navigator !== 'undefined' && (navigator.webdriver || isTestEnvironment(key))) {
-            console.warn('[Test Environment] Gemini API mock fallback triggered for automated test runner.');
-            if (json) {
-              return JSON.stringify({
-                title: "A1 Pratik Alıştırması",
-                questions: [
-                  { t: "mc", q: "I ___ a student.", o: ["am", "is", "are"], a: "am", h: "I öznesi ile am kullanılır." }
-                ]
-              });
-            }
-            return "Hello! I am ready to help you learn English.";
-          }
           throw new AIError('BAD_KEY', `API anahtarı geçersiz veya yetkisiz: ${msg}`, err);
         }
         throw new AIError('UNKNOWN', msg, err);
@@ -260,18 +220,6 @@ async function aiChat(userText) {
 
 /* ---------- Bağlantı testi ---------- */
 async function aiTest() {
-  const key = getApiKey();
-  if (isTestEnvironment(key)) {
-    return 'Hello! I am ready to help you learn English.';
-  }
-  try {
-    return await gemini({ contents: [{ role: 'user', parts: [{ text: 'Say "Hello! I am ready to help you learn English." in one line.' }] }], temperature: 0 });
-  } catch (err) {
-    if (typeof navigator !== 'undefined' && (navigator.webdriver || isTestEnvironment(key))) {
-      console.warn('[Test Environment] Gemini API test rejected by upstream; returning stubbed success for automated UI testing.', err);
-      return 'Hello! I am ready to help you learn English.';
-    }
-    throw err;
-  }
+  return gemini({ contents: [{ role: 'user', parts: [{ text: 'Say "Hello! I am ready to help you learn English." in one line.' }] }], temperature: 0 });
 }
 

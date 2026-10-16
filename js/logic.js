@@ -141,7 +141,7 @@ const LOGIC_GUIDES = [
     title: '🤝 Nezaket ve İletişim İncelikleri',
     sub: 'Kaba Görünmeden Konuşmanın Sırrı',
     emoji: '🎩',
-    color: 'var(--cat-mantik)',
+    color: 'var(--cat-kelime)',
     summary: 'İngilizler ve Amerikalılar doğrudan emir kiplerini kaba bulurlar. İşte sihirli yumuşatıcılar:',
     content: `
       <h4>1. "Give me water" deme!</h4>
