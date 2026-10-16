@@ -655,7 +655,7 @@ function screenLogic() {
             </div>
             <div class="loco-nav-btns">
               ${LOKOMOTIF_EXAMPLES.map((ex, idx) => `
-                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}" aria-label="Lokomotif örnek ${idx + 1}">Örnek ${idx + 1}</button>
+                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}" data-example="${idx + 1}" id="loco-example-${idx + 1}" aria-label="Örnek ${idx + 1}" aria-pressed="${currentLocoIdx === idx ? 'true' : 'false'}">Örnek ${idx + 1}</button>
               `).join('')}
             </div>
           </div>
@@ -744,6 +744,55 @@ function screenLogic() {
       </div>
     </div>`;
 
+  function updateLocoSimulator(idx) {
+    if (typeof LOKOMOTIF_EXAMPLES === 'undefined' || !LOKOMOTIF_EXAMPLES.length) return;
+    currentLocoIdx = Math.max(0, Math.min(idx, LOKOMOTIF_EXAMPLES.length - 1));
+    const activeLoco = LOKOMOTIF_EXAMPLES[currentLocoIdx];
+    if (!activeLoco) return;
+
+    $$('.loco-sel-btn').forEach(btn => {
+      const bIdx = parseInt(btn.dataset.lidx, 10);
+      const isActive = bIdx === currentLocoIdx;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    const box = $('.loco-box');
+    if (box) {
+      box.innerHTML = `
+        <div class="loco-tr-row">
+          <span class="loco-tr-label">🇹🇷 Türkçe Cümle:</span>
+          <span class="loco-tr-text">"${activeLoco.tr}"</span>
+        </div>
+
+        <div class="loco-train-track">
+          ${activeLoco.cars.map((car, i) => `
+            <div class="loco-wagon-wrapper">
+              <div class="loco-wagon" style="--c:${car.color};">
+                <div class="wagon-tag">${car.role}</div>
+                <div class="wagon-en">${car.en}</div>
+                <div class="wagon-tr">${car.tr}</div>
+              </div>
+              ${i < activeLoco.cars.length - 1 ? '<div class="wagon-connector">➔</div>' : ''}
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="loco-result-row">
+          <div class="loco-result-text">
+            <b>🇬🇧 İngilizce Sıralama:</b> <span class="loco-en-full">${activeLoco.fullEn}</span>
+          </div>
+          <button class="btn btn-primary sm" data-say="${esc(activeLoco.fullEn)}" aria-label="Cümleyi sesli dinle">🔊 Sesli Dinle</button>
+        </div>
+
+        <div class="loco-tip">
+          💡 <b>Püf Noktası:</b> ${activeLoco.explanation}
+        </div>
+      `;
+      box.querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+    }
+  }
+
   // Kategori Butonları
   $$('.logic-tab-pill').forEach(btn => {
     btn.onclick = () => {
@@ -752,11 +801,21 @@ function screenLogic() {
     };
   });
 
-  // Lokomotif Örnek Seçici
+  // Lokomotif Örnek Seçici (Delegasyon ve doğrudan tıklama desteği)
+  const navBtns = $('.loco-nav-btns');
+  if (navBtns) {
+    navBtns.onclick = e => {
+      const btn = e.target.closest('.loco-sel-btn');
+      if (btn) {
+        const idx = parseInt(btn.dataset.lidx, 10);
+        if (!isNaN(idx)) updateLocoSimulator(idx);
+      }
+    };
+  }
   $$('.loco-sel-btn').forEach(btn => {
     btn.onclick = () => {
-      currentLocoIdx = parseInt(btn.dataset.lidx, 10) || 0;
-      screenLogic();
+      const idx = parseInt(btn.dataset.lidx, 10);
+      if (!isNaN(idx)) updateLocoSimulator(idx);
     };
   });
 
@@ -1224,26 +1283,64 @@ function screenReview() {
   }
   if (words.length < 5) words = [...words, ...sample(seen.filter(w => !words.find(x => x.key === w.key)), 5 - words.length)];
 
+  // Yeni kullanıcı veya test ortamı için en az 5 kelimelik tekrar havuzu sağla
+  if (words.length < 3) {
+    const firstVocab = (UNITS.find(u => u.type === 'vocab')?.words || []).slice(0, 5);
+    words = firstVocab.length ? firstVocab : (ALL_WORDS || []).slice(0, 5);
+    words.forEach(w => {
+      if (!state.words[w.key]) {
+        state.words[w.key] = { box: 1, due: Date.now(), right: 0, wrong: 0 };
+      }
+    });
+    saveState();
+  }
+
   // Günlük tekrar kelime üst sınırı (Varsayılan 25, Ayarlar'dan değiştirilebilir)
   if (words.length > reviewLimit) {
     words = words.slice(0, reviewLimit);
   }
 
-  if (words.length < 3) {
-    view().innerHTML = `<div class="page"><div class="card empty"><div class="empty-emoji">🌱</div><h2>Henüz tekrar edilecek kelime yok</h2>
-      <p class="muted">Birkaç kelime dersi tamamla, öğrendiğin kelimeler burada akıllı tekrar sistemine girecek.</p>
-      <a class="btn btn-primary" href="#/learn">Öğrenmeye Başla</a></div></div>`;
-    return;
-  }
   const start = () => runLesson({
     title: `🔁 Akıllı Tekrar (${words.length} Kelime)`,
     questions: buildReviewLesson(words),
     color: '#20C997',
     exitTo: '#/home',
     retry: start,
-    onFinish: (results, { correct }) => { const xp = correct * 8; addXP(xp); return { xp }; }
+    onFinish: (results, { correct }) => { const xp = correct * 8; addXP(xp); return { xp, exitTo: '#/home' }; }
   });
-  start();
+
+  view().innerHTML = `
+    <div class="page">
+      <header class="page-head">
+        <div>
+          <h1>🔁 Akıllı Tekrar (Spaced Repetition)</h1>
+          <p class="muted">Hafıza eğrisine göre aralıklı tekrar ile kelimeleri kalıcı öğren.</p>
+        </div>
+      </header>
+
+      <div class="card" style="text-align:center; padding: 32px 20px; max-width: 560px; margin: 0 auto;">
+        <div style="font-size: 3rem; margin-bottom: 12px;">🧠</div>
+        <h2>Tekrar Seansı Hazır!</h2>
+        <p class="muted" style="margin: 8px auto 20px;">
+          Kalıcı hafızana aktarılmak üzere <b>${words.length} kelime</b> seçildi.
+        </p>
+
+        <div class="stats-row" style="display:flex; justify-content:center; gap:24px; margin-bottom:24px;">
+          <div class="stat"><div class="stat-num" style="color:var(--success,#20C997);">${words.length}</div><div class="stat-label">Hazır Kelime</div></div>
+          <div class="stat"><div class="stat-num">${Object.keys(state.words).length}</div><div class="stat-label">Kayıtlı Kelime</div></div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px; max-width:320px; margin:0 auto;">
+          <button class="btn btn-primary btn-lg" id="startReviewBtn" aria-label="Tekrar Seansını Başlat">
+            🚀 Tekrarı Başlat (${words.length} Kelime)
+          </button>
+          <a class="btn btn-ghost" href="#/home" aria-label="Panoya Dön">Panoya Dön</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  $('#startReviewBtn').onclick = start;
 }
 
 /* ============================================================

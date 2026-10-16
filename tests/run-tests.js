@@ -51,10 +51,9 @@ function makeEnv(initialStorage = {}) {
 }
 
 /* ---------- Mini test çatısı ---------- */
-const results = [];
+const tests = [];
 function test(name, fn) {
-  try { fn(); results.push([true, name]); }
-  catch (e) { results.push([false, name, e.message]); }
+  tests.push({ name, fn });
 }
 function eq(actual, expected, msg) {
   const a = JSON.stringify(actual), b = JSON.stringify(expected);
@@ -242,11 +241,41 @@ test('Gemini API anahtarı: state, window ve env değişkenlerinden boşluksuz a
   ok(envWithWindow.run('hasAI()'), 'window.GEMINI_API_KEY ile hasAI true olmalı');
 });
 
+test('Lokomotif Simülatörü: Örnek 1, 2 ve 3 eksiksiz vagon ve mapping verisine sahip', () => {
+  const { run } = makeEnv();
+  const examples = run('LOKOMOTIF_EXAMPLES');
+  ok(Array.isArray(examples) && examples.length >= 3, 'En az 3 lokomotif örneği olmalı');
+  examples.forEach((ex, idx) => {
+    ok(ex.tr && ex.explanation && ex.fullEn, `Örnek ${idx + 1} temel alanları içermeli`);
+    ok(Array.isArray(ex.cars) && ex.cars.length >= 4, `Örnek ${idx + 1} en az 4 vagon içermeli`);
+    ex.cars.forEach(c => ok(c.role && c.en && c.tr && c.color, `Örnek ${idx + 1} vagon eksiksiz olmalı`));
+  });
+});
+
+test('Gemini API mock/test ortamı: test anahtarları test ortamında otomatik onaylanır', async () => {
+  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: 'AIzaSyMockTestKey123' } }) });
+  ok(env.run('isTestEnvironment("AIzaSyMockTestKey123")'), 'isTestEnvironment true olmalı');
+  const res = await env.run('aiTest()');
+  ok(res.includes('ready to help'), 'aiTest mock başarılı dönmeli');
+});
+
 /* ---------- Sonuç ---------- */
-let failed = 0;
-for (const [pass, name, err] of results) {
-  console.log(`${pass ? '✅' : '❌'} ${name}${pass ? '' : '\n     → ' + err}`);
-  if (!pass) failed++;
-}
-console.log(`\n${results.length - failed}/${results.length} test geçti.`);
-process.exit(failed ? 1 : 0);
+(async () => {
+  const results = [];
+  for (const { name, fn } of tests) {
+    try {
+      await fn();
+      results.push([true, name]);
+    } catch (e) {
+      results.push([false, name, e.message]);
+    }
+  }
+
+  let failed = 0;
+  for (const [pass, name, err] of results) {
+    console.log(`${pass ? '✅' : '❌'} ${name}${pass ? '' : '\n     → ' + err}`);
+    if (!pass) failed++;
+  }
+  console.log(`\n${results.length - failed}/${results.length} test geçti.`);
+  process.exit(failed ? 1 : 0);
+})();
