@@ -1548,7 +1548,8 @@ function screenCards(id) {
     const isA2Unlocked = Boolean(state.a2Unlocked);
     const a1Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A1');
     const a2Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A2');
-    // A2 henüz açılmamışsa kartlar listesinde sadece A1 kelime konuları gelir
+    
+    // A2 henüz açılmamışsa kartlar listesinde tamamen ve sadece A1 kelime konuları yer alır
     const availableVocab = isA2Unlocked ? UNITS.filter(x => x.type === 'vocab') : a1Vocab;
 
     if (!isA2Unlocked && currentCardsFilter === 'A2') {
@@ -1564,13 +1565,13 @@ function screenCards(id) {
         <header class="page-head">
           <div>
             <h1>🃏 Kelime Kartları</h1>
-            <p class="muted">Bir konu seç, kartları çevir, dinle ve aralıklı tekrarla kalıcı öğren.</p>
+            <p class="muted">${isA2Unlocked ? 'Bir konu seç, kartları çevir, dinle ve aralıklı tekrarla kalıcı öğren.' : 'A1 Temel Seviye · 15 Konu · Kartları çevir ve dinleyerek öğren.'}</p>
           </div>
         </header>
 
-        <!-- Seviye Filtre Hapları -->
-        <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center;">
-          ${isA2Unlocked ? `
+        <!-- Seviye Filtre Hapları (Sadece A2 açıldığında görünür) -->
+        ${isA2Unlocked ? `
+          <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center;">
             <button class="btn ${currentCardsFilter === 'all' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterAll">
               Tüm Konular (${availableVocab.length})
             </button>
@@ -1580,15 +1581,8 @@ function screenCards(id) {
             <button class="btn ${currentCardsFilter === 'A2' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterA2">
               🚀 A2 Macera (${a2Vocab.length})
             </button>
-          ` : `
-            <button class="btn btn-primary sm" id="cardFilterA1" style="cursor:default;">
-              🌱 A1 Temel Kelime Kartları (${a1Vocab.length} Konu)
-            </button>
-            <button class="btn btn-secondary sm" id="cardFilterA2Locked" style="opacity:0.85;border:1px dashed var(--line);" title="A2 açılınca bu kartlar gelir">
-              🔒 A2 Kartları (A2 Açılınca Gelir)
-            </button>
-          `}
-        </div>
+          </div>
+        ` : ''}
 
         <div class="unit-grid">
           ${filteredUnits.map(x => `
@@ -1601,43 +1595,11 @@ function screenCards(id) {
               <span class="muted small">${x.words.length} kelime</span>
             </a>`).join('')}
         </div>
-
-        ${!isA2Unlocked ? `
-          <div class="card" style="margin-top:24px;padding:18px 20px;border:1.5px dashed var(--line);border-radius:18px;background:color-mix(in srgb, var(--primary) 5%, transparent);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
-            <div style="display:flex;align-items:center;gap:14px;">
-              <span style="font-size:2.2rem;">🚀🔒</span>
-              <div>
-                <b style="font-size:1rem;color:var(--text);">A2 Seviyesi Kelime Kartları (${a2Vocab.length} Konu)</b>
-                <div class="muted small" style="margin-top:2px;">A2 Seviyesi açıldığında Büyük Sayılar, Havalimanı, Otel, Restoran, Alışveriş, Yol Tarifi, Sağlık, Kişilik ve Teknoloji kartları buraya eklenir.</div>
-              </div>
-            </div>
-            <button class="btn btn-primary btn-sm" id="unlockA2FromCardsBtn" style="white-space:nowrap;">🔓 A2 Kartlarının Kilidini Şimdi Aç</button>
-          </div>
-        ` : ''}
       </div>`;
 
     if ($('#cardFilterAll')) $('#cardFilterAll').onclick = () => { currentCardsFilter = 'all'; screenCards(); };
     if ($('#cardFilterA1')) $('#cardFilterA1').onclick = () => { currentCardsFilter = 'A1'; screenCards(); };
     if ($('#cardFilterA2')) $('#cardFilterA2').onclick = () => { currentCardsFilter = 'A2'; screenCards(); };
-    if ($('#cardFilterA2Locked')) $('#cardFilterA2Locked').onclick = () => {
-      openModal(`
-        <div style="text-align:center;padding:10px;">
-          <div style="font-size:2.8rem;margin-bottom:8px;">🚀🔒</div>
-          <h3>A2 Seviyesi Kelime Kartları</h3>
-          <p class="muted" style="margin:10px 0 16px;">A2 seviyesinde toplam <b>${a2Vocab.length} adet zengin kelime konusu</b> (Büyük Sayılar & Sıra Sayıları, Havalimanı, Otel, Restoran, Alışveriş, Yol Tarifi, Sağlık, Kişilik ve Teknoloji) bulunmaktadır.</p>
-          <p style="font-size:0.9rem;margin-bottom:18px;">A2 seviyesini şimdi açarak hem haritadaki üniteleri hem de bu kelime kartlarını hemen oynamaya başlayabilirsin!</p>
-          <div style="display:flex;gap:10px;justify-content:center;">
-            <button class="btn btn-secondary" onclick="closeModal()">Vazgeç</button>
-            <button class="btn btn-primary" onclick="store.unlockA2(); closeModal(); screenCards();">🔓 A2 Kartlarının Kilidini Aç</button>
-          </div>
-        </div>
-      `);
-    };
-    if ($('#unlockA2FromCardsBtn')) $('#unlockA2FromCardsBtn').onclick = () => {
-      store.unlockA2();
-      toast('🎉 A2 Seviyesi ve kelime kartları açıldı!');
-      screenCards();
-    };
     return;
   }
   if (u.level === 'A2' && !state.a2Unlocked) {
