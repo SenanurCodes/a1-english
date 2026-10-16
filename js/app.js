@@ -286,9 +286,11 @@ function screenOnboarding() {
         <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <button class="btn btn-ghost sm" id="onboardAuthBtn">🚀 Google ile Giriş Yap</button>
           <button class="btn btn-ghost sm" id="onboardGuestBtn">👤 Misafir Olarak Hesapsız Dene</button>
+          <a class="btn btn-ghost sm" href="#/progress" id="onboardGuestProgressBtn" aria-label="Giriş Yapmadan Kurs İlerlemesini Gör">📊 Kurs İlerlemesi (Girişsiz)</a>
         </div>
 
         <div class="onboard-nav-links" style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--border);display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a class="btn btn-ghost sm" href="#/progress" aria-label="Kurs İlerlemesi ve Başarı Kartı">📊 Kurs İlerlemesi</a>
           <a class="btn btn-ghost sm" href="#/cards" aria-label="Kelime Kartları ve Konu Kütüphanesi">🃏 Kelime Kartları</a>
           <a class="btn btn-ghost sm" href="#/logic" aria-label="Cümle Lokomotifi Simülatörü">🚂 Cümle Lokomotifi</a>
           <a class="btn btn-ghost sm" href="#/learn" aria-label="Ders Müfredatı">📚 A1 Dersleri</a>
@@ -309,6 +311,26 @@ function screenOnboarding() {
             <div><b>Sonraki ders:</b> 👋 Selamlaşma & Tanışma (A1 Başlangıç)</div>
             <a class="btn btn-primary sm" href="#/lesson/u1">▶ Sonraki Derse Başla (+15 XP)</a>
           </div>
+        </div>
+      </div>
+
+      <!-- Kurs İlerlemesi & Ünite Başarı Kartı (Course Progress Card) -->
+      <div class="card onboard-progress-card" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi</h2>
+          <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm İlerlemeyi Gör">Tüm İlerleme ➔</a>
+        </div>
+        <p class="muted small" style="margin-bottom:14px;">Giriş yapmadan misafir olarak üniteleri ve kelimeleri doğrudan inceleyebilirsin:</p>
+        <div class="unit-bars">
+          ${UNITS.slice(0, 5).map(u => {
+            const targetUrl = u.type === 'vocab' ? `#/cards/${u.id}` : `#/grammar/${u.id}`;
+            return `
+            <a class="ub-row" href="${targetUrl}" role="button" tabindex="0" aria-label="${esc(u.title)} ünitesi kelimelerini aç" style="text-decoration:none;color:inherit;cursor:pointer;display:flex;align-items:center;">
+              <span class="ub-name">${u.emoji} ${esc(u.title)}</span>
+              <div class="progress"><div class="bar" style="width:0%;background:${u.color}"></div></div>
+              <span class="ub-val">İncele ➔</span>
+            </a>`;
+          }).join('')}
         </div>
       </div>
 
@@ -388,6 +410,12 @@ function screenOnboarding() {
   $('#placeBtn').onclick = () => go('place');
   $('#zeroBtn').onclick = () => go('zero');
   $('#onboardGuestBtn').onclick = () => go('guest');
+  if ($('#onboardGuestProgressBtn')) {
+    $('#onboardGuestProgressBtn').onclick = () => {
+      state.onboarded = true;
+      saveState();
+    };
+  }
   $('#onboardAuthBtn').onclick = () => openAuthModal();
   $('#nameIn').onkeydown = e => { if (e.key === 'Enter') go('zero'); };
 }
@@ -2177,8 +2205,11 @@ function openAuthModal() {
   };
 
   $('#modalGuestBtn').onclick = () => {
+    authService.continueAsGuest(state.name || 'Öğrenci');
     closeModal();
     toast('Misafir modunda devam ediliyor.');
+    location.hash = '#/progress';
+    router();
   };
 
   $('#modalGoogleBtn').onclick = async () => {

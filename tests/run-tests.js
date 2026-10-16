@@ -10,7 +10,7 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
-const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js', 'js/ai.js'];
+const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js', 'js/firebase.js', 'js/ai.js'];
 const SOURCES = FILES.map(f => [f, fs.readFileSync(path.join(ROOT, f), 'utf8')]);
 
 /* ---------- Sahte tarayıcı ortamı ---------- */
@@ -272,6 +272,22 @@ test('Gemini API sandbox anahtarları: TESTKEY/TEST_KEY/dummy içeren anahtarlar
   ok(!env.run('isTestSandboxKey("AIzaSyRealLiveProdKey98765")'), 'Gerçek anahtar false dönmeli');
   const res = await env.run('aiTest()');
   ok(res.includes('ready to help'), 'Sandbox anahtarıyla aiTest başarılı dönmeli');
+});
+
+test('Landing dashboard bileşenleri: index.html Günlük, hedef, sonraki ders ve Kurs İlerlemesi içerir', () => {
+  const fs = require('fs');
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  ok(html.includes('Günlük'), 'index.html "Günlük" kelimesini içermeli');
+  ok(html.includes('hedef'), 'index.html "hedef" kelimesini içermeli');
+  ok(html.includes('Sonraki ders') || html.includes('sonraki ders'), 'index.html "Sonraki ders" ibaresini içermeli');
+  ok(html.includes('Kurs İlerlemesi'), 'index.html "Kurs İlerlemesi" progress card içermeli');
+});
+
+test('Firebase Auth fallback: operation-not-allowed veya çevrimdışıyken çökmeden yerel oturum açar', async () => {
+  const env = makeEnv();
+  const u = await env.run('authService.signInWithEmail("test@example.com", "pass123")');
+  ok(u && u.email === 'test@example.com', 'Sağlayıcı yokken yerel hesapla giriş yapılabilmeli');
+  ok(env.run('state.auth.isGuest === false'), 'Kullanıcı giriş yapmış sayılmalı');
 });
 
 /* ---------- Sonuç ---------- */

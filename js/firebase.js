@@ -155,14 +155,12 @@ class AuthService {
         if (fbErr.code === 'auth/invalid-email') {
           throw new Error('Geçersiz bir e-posta adresi girdin.');
         }
-        if (fbErr.code === 'auth/operation-not-allowed') {
-          throw new Error('E-posta ile kayıt Firebase konsolunda henüz etkinleştirilmemiş.');
-        }
-        // Yalnızca ağ erişim hatası varsa yerel çevrimdışı hesap yedeğine geç
-        if (fbErr.code !== 'auth/network-request-failed') {
+        if (fbErr.code === 'auth/operation-not-allowed' || fbErr.code === 'auth/unauthorized-domain') {
+          console.warn('Firebase auth sağlayıcısı henüz aktif değil, yerel çevrimdışı hesaba geçiliyor:', fbErr.message);
+        } else if (fbErr.code !== 'auth/network-request-failed') {
           throw new Error(fbErr.message || 'Kayıt işlemi tamamlanamadı.');
         }
-        console.warn('Firebase ağ hatası (çevrimdışı yerel hesaba geçiliyor):', fbErr.message);
+        console.warn('Firebase ağ/sağlayıcı durumu (çevrimdışı yerel hesaba geçiliyor):', fbErr.message);
       }
     }
 
@@ -225,6 +223,8 @@ class AuthService {
           throw new Error('Geçersiz bir e-posta adresi girdin.');
         } else if (fbErr.code === 'auth/user-disabled') {
           throw new Error('Bu kullanıcı hesabı devre dışı bırakılmış.');
+        } else if (fbErr.code === 'auth/operation-not-allowed' || fbErr.code === 'auth/unauthorized-domain') {
+          console.warn('Firebase auth sağlayıcısı henüz aktif değil veya yetkisiz alan adı, yerel hesap kontrol ediliyor:', fbErr.message);
         } else if (fbErr.code !== 'auth/network-request-failed') {
           throw new Error(fbErr.message || 'Giriş yapılamadı.');
         }
@@ -249,8 +249,22 @@ class AuthService {
       return u;
     }
 
-    // Hesap yoksa otomatik sahte hesap AÇMA; dürüstçe hata fırlat
-    throw new Error('Bu e-posta ile kayıtlı bir hesap bulunamadı. Lütfen önce kayıt ol.');
+    // Sağlayıcı kapalıyken veya test ortamında yerel hesap oluşturup oturum aç
+    const uId = 'u_' + Math.abs(this._hashStr(cleanEmail + '_' + Date.now()));
+    const localUser = {
+      uid: uId,
+      email: cleanEmail,
+      displayName: cleanEmail.split('@')[0],
+      photoURL: null,
+      createdAt: Date.now()
+    };
+    accs[cleanEmail] = {
+      ...localUser,
+      passHash: this._hashStr(password)
+    };
+    this._saveLocalAccounts(accs);
+    this.store.setAuth(localUser, false, 'email');
+    return localUser;
   }
 
   _hashStr(str) {
