@@ -191,7 +191,7 @@ function router() {
   const [rawRoute, param] = location.hash.replace(/^#\/?/, '').split('/');
   const route = rawRoute ? rawRoute.split('?')[0] : '';
 
-  if (!state.onboarded && route !== 'placement') {
+  if (!state.onboarded && (!route || route === 'onboarding')) {
     if (roomParam) state.pendingLeagueRoom = roomParam;
     return screenOnboarding();
   }
@@ -234,12 +234,13 @@ function closeModal() { $('#modal-root').innerHTML = ''; }
    Karşılama & Kişiselleştirme (Onboarding v2.0)
    ============================================================ */
 function screenOnboarding() {
-  document.body.classList.add('focus-mode');
+  document.body.classList.remove('focus-mode');
+  renderNav('');
   let selectedMascot = state.mascot || 'cat';
   let selectedTheme = state.theme || 'nordic';
 
   view().innerHTML = `
-    <div class="onboard" style="width:100%;max-width:640px;margin:0 auto;">
+    <div class="onboard" style="width:100%;max-width:640px;margin:0 auto;padding-bottom:32px;">
       <div class="onboard-hero">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾'}</div>
       <h1 class="rainbow-text">PatiLingo</h1>
       <p class="lead">Sana özel yoldaşın ve renklerinle İngilizce öğrenmeye başla! 🎈</p>
@@ -285,6 +286,32 @@ function screenOnboarding() {
         <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <button class="btn btn-ghost sm" id="onboardAuthBtn">🚀 Google ile Giriş Yap</button>
           <button class="btn btn-ghost sm" id="onboardGuestBtn">👤 Misafir Olarak Hesapsız Dene</button>
+        </div>
+
+        <div class="onboard-nav-links" style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--border);display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a class="btn btn-ghost sm" href="#/cards" aria-label="Kelime Kartları ve Konu Kütüphanesi">🃏 Kelime Kartları</a>
+          <a class="btn btn-ghost sm" href="#/logic" aria-label="Cümle Lokomotifi Simülatörü">🚂 Cümle Lokomotifi</a>
+          <a class="btn btn-ghost sm" href="#/learn" aria-label="Ders Müfredatı">📚 A1 Dersleri</a>
+        </div>
+      </div>
+
+      <!-- Konu Bazlı Kelime Kartları & Kategori Kütüphanesi -->
+      <div class="card onboard-vocab-library" style="margin-top:24px;width:100%;max-width:640px;box-sizing:border-box;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🃏 Kelime Kartları & Kategori Kütüphanesi</h2>
+          <a href="#/cards" class="btn btn-ghost sm" aria-label="Tümünü Gör">Tümünü Gör ➔</a>
+        </div>
+        <p class="muted small" style="margin-bottom:16px;">Başlamadan önce kelime kategorilerini ve kart kütüphanesini doğrudan inceleyebilirsin:</p>
+        <div class="unit-grid">
+          ${UNITS.filter(x => x.type === 'vocab').slice(0, 6).map(x => `
+            <a class="unit-tile" href="#/cards/${x.id}" style="--c:${x.color}">
+              <span class="unit-tile-emoji">${x.emoji}</span>
+              <div>
+                <h3>${esc(x.title)}</h3>
+                <p class="muted small">${x.words ? x.words.length : 0} kelime</p>
+              </div>
+            </a>
+          `).join('')}
         </div>
       </div>
     </div>`;
