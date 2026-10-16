@@ -1545,14 +1545,14 @@ let currentCardsFilter = 'all';
 function screenCards(id) {
   const u = UNIT_BY_ID[id];
   if (!u || u.type !== 'vocab') {
-    const isA2Unlocked = Boolean(state.a1BossPassed && state.a2Unlocked);
+    const isA2Unlocked = Boolean(state.a1BossPassed);
     const a1Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A1');
     const a2Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A2');
     
-    // A2 henüz açılmamışsa kartlar listesinde tamamen ve sadece A1 kelime konuları yer alır
+    // A2 kartları sadece A1 Boss Sınavı tamamlandığında (a1BossPassed) açılır
     const availableVocab = isA2Unlocked ? UNITS.filter(x => x.type === 'vocab') : a1Vocab;
 
-    if (!isA2Unlocked && currentCardsFilter === 'A2') {
+    if (!isA2Unlocked) {
       currentCardsFilter = 'all';
     }
 
@@ -1585,7 +1585,7 @@ function screenCards(id) {
         ` : ''}
 
         <div class="unit-grid">
-          ${filteredUnits.map(x => `
+          ${filteredUnits.filter(x => isA2Unlocked || x.level === 'A1').map(x => `
             <a class="unit-tile" href="#/cards/${x.id}" style="--c:${x.color}">
               <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:4px;">
                 <span class="ut-emoji">${x.emoji}</span>
