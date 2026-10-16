@@ -325,6 +325,19 @@ test('Boss testleri: buildA1BossTest ve buildA2BossTest 15\'er soru üretir', ()
   eq(a2Q.length, 15, 'A2 Boss testi 15 soru olmalı');
 });
 
+test('Kelime kartları: A2 seviyesi açılmadıkça A2 kartları gizli kalır, açılınca listelenir', () => {
+  const env = makeEnv();
+  ok(!env.run('state.a2Unlocked'), 'Başlangıçta A2 kilitli olmalı');
+  const a1VocabCount = env.run('UNITS.filter(x => x.type === "vocab" && x.level === "A1").length');
+  const totalVocabCount = env.run('UNITS.filter(x => x.type === "vocab").length');
+  ok(a1VocabCount > 0, 'A1 kelime üniteleri bulunmalı');
+  ok(totalVocabCount > a1VocabCount, 'Toplam kelime üniteleri A1 den fazla olmalı (A2 dahil)');
+
+  // store.unlockA2() çağrıldığında A2 kartları açılır
+  env.run('store.unlockA2()');
+  ok(env.run('state.a2Unlocked'), 'A2 kilidi açılmış olmalı');
+});
+
 /* ---------- Sonuç ---------- */
 (async () => {
   const results = [];

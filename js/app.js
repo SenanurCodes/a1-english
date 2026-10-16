@@ -1545,10 +1545,19 @@ let currentCardsFilter = 'all';
 function screenCards(id) {
   const u = UNIT_BY_ID[id];
   if (!u || u.type !== 'vocab') {
-    const vocabUnits = UNITS.filter(x => x.type === 'vocab');
+    const isA2Unlocked = Boolean(state.a2Unlocked);
+    const a1Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A1');
+    const a2Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A2');
+    // A2 henüz açılmamışsa kartlar listesinde sadece A1 kelime konuları gelir
+    const availableVocab = isA2Unlocked ? UNITS.filter(x => x.type === 'vocab') : a1Vocab;
+
+    if (!isA2Unlocked && currentCardsFilter === 'A2') {
+      currentCardsFilter = 'all';
+    }
+
     const filteredUnits = currentCardsFilter === 'all' 
-      ? vocabUnits 
-      : vocabUnits.filter(x => x.level === currentCardsFilter);
+      ? availableVocab 
+      : availableVocab.filter(x => x.level === currentCardsFilter);
 
     view().innerHTML = `
       <div class="page">
@@ -1560,16 +1569,25 @@ function screenCards(id) {
         </header>
 
         <!-- Seviye Filtre Hapları -->
-        <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;">
-          <button class="btn ${currentCardsFilter === 'all' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterAll">
-            Tüm Konular (${vocabUnits.length})
-          </button>
-          <button class="btn ${currentCardsFilter === 'A1' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterA1">
-            🌱 A1 Temel (${vocabUnits.filter(x => x.level === 'A1').length})
-          </button>
-          <button class="btn ${currentCardsFilter === 'A2' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterA2">
-            🚀 A2 Macera (${vocabUnits.filter(x => x.level === 'A2').length})
-          </button>
+        <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center;">
+          ${isA2Unlocked ? `
+            <button class="btn ${currentCardsFilter === 'all' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterAll">
+              Tüm Konular (${availableVocab.length})
+            </button>
+            <button class="btn ${currentCardsFilter === 'A1' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterA1">
+              🌱 A1 Temel (${a1Vocab.length})
+            </button>
+            <button class="btn ${currentCardsFilter === 'A2' ? 'btn-primary' : 'btn-secondary'} sm" id="cardFilterA2">
+              🚀 A2 Macera (${a2Vocab.length})
+            </button>
+          ` : `
+            <button class="btn btn-primary sm" id="cardFilterA1" style="cursor:default;">
+              🌱 A1 Temel Kelime Kartları (${a1Vocab.length} Konu)
+            </button>
+            <button class="btn btn-secondary sm" id="cardFilterA2Locked" style="opacity:0.85;border:1px dashed var(--line);" title="A2 açılınca bu kartlar gelir">
+              🔒 A2 Kartları (A2 Açılınca Gelir)
+            </button>
+          `}
         </div>
 
         <div class="unit-grid">
@@ -1583,12 +1601,47 @@ function screenCards(id) {
               <span class="muted small">${x.words.length} kelime</span>
             </a>`).join('')}
         </div>
+
+        ${!isA2Unlocked ? `
+          <div class="card" style="margin-top:24px;padding:18px 20px;border:1.5px dashed var(--line);border-radius:18px;background:color-mix(in srgb, var(--primary) 5%, transparent);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span style="font-size:2.2rem;">🚀🔒</span>
+              <div>
+                <b style="font-size:1rem;color:var(--text);">A2 Seviyesi Kelime Kartları (${a2Vocab.length} Konu)</b>
+                <div class="muted small" style="margin-top:2px;">A2 Seviyesi açıldığında Büyük Sayılar, Havalimanı, Otel, Restoran, Alışveriş, Yol Tarifi, Sağlık, Kişilik ve Teknoloji kartları buraya eklenir.</div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="unlockA2FromCardsBtn" style="white-space:nowrap;">🔓 A2 Kartlarının Kilidini Şimdi Aç</button>
+          </div>
+        ` : ''}
       </div>`;
 
-    $('#cardFilterAll').onclick = () => { currentCardsFilter = 'all'; screenCards(); };
-    $('#cardFilterA1').onclick = () => { currentCardsFilter = 'A1'; screenCards(); };
-    $('#cardFilterA2').onclick = () => { currentCardsFilter = 'A2'; screenCards(); };
+    if ($('#cardFilterAll')) $('#cardFilterAll').onclick = () => { currentCardsFilter = 'all'; screenCards(); };
+    if ($('#cardFilterA1')) $('#cardFilterA1').onclick = () => { currentCardsFilter = 'A1'; screenCards(); };
+    if ($('#cardFilterA2')) $('#cardFilterA2').onclick = () => { currentCardsFilter = 'A2'; screenCards(); };
+    if ($('#cardFilterA2Locked')) $('#cardFilterA2Locked').onclick = () => {
+      openModal(`
+        <div style="text-align:center;padding:10px;">
+          <div style="font-size:2.8rem;margin-bottom:8px;">🚀🔒</div>
+          <h3>A2 Seviyesi Kelime Kartları</h3>
+          <p class="muted" style="margin:10px 0 16px;">A2 seviyesinde toplam <b>${a2Vocab.length} adet zengin kelime konusu</b> (Büyük Sayılar & Sıra Sayıları, Havalimanı, Otel, Restoran, Alışveriş, Yol Tarifi, Sağlık, Kişilik ve Teknoloji) bulunmaktadır.</p>
+          <p style="font-size:0.9rem;margin-bottom:18px;">A2 seviyesini şimdi açarak hem haritadaki üniteleri hem de bu kelime kartlarını hemen oynamaya başlayabilirsin!</p>
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="btn btn-secondary" onclick="closeModal()">Vazgeç</button>
+            <button class="btn btn-primary" onclick="store.unlockA2(); closeModal(); screenCards();">🔓 A2 Kartlarının Kilidini Aç</button>
+          </div>
+        </div>
+      `);
+    };
+    if ($('#unlockA2FromCardsBtn')) $('#unlockA2FromCardsBtn').onclick = () => {
+      store.unlockA2();
+      toast('🎉 A2 Seviyesi ve kelime kartları açıldı!');
+      screenCards();
+    };
     return;
+  }
+  if (u.level === 'A2' && !state.a2Unlocked) {
+    store.unlockA2();
   }
   let words = [...u.words], i = 0;
   const draw = () => {
