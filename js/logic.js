@@ -154,7 +154,13 @@ const LOGIC_GUIDES = [
 
       <h4>2. Teşekkürün Önemi</h4>
       <p>İngilizcede <b>"Please"</b>, <b>"Thank you"</b> ve <b>"Excuse me"</b> kelimelerini ne kadar çok kullanırsan o kadar iyi karşılanırsın. Fazla kullanmaktan asla korkma!</p>
-    `
+    `,
+    phrases: [
+      { en: 'Can I have a water, please?', tr: 'Bir su alabilir miyim lütfen?', tip: 'Restoranda/kafede kaba emir kipi yerine kullanılan en kibar ve doğal istek kalıbı.' },
+      { en: "I'd like a coffee, please.", tr: 'Bir kahve rica ediyorum.', tip: 'Sipariş verirken kullanılan sihirli yumuşatıcı ifade.' },
+      { en: 'Excuse me, could you help me?', tr: 'Affedersiniz, bana yardımcı olabilir misiniz?', tip: 'Birine soru sormadan önce mutlaka söylenmesi gereken nezaket kalıbı.' },
+      { en: 'Thank you so much!', tr: 'Çok teşekkür ederim!', tip: 'Her yardım veya alışveriş sonrasında içten teşekkür kalıbı.' }
+    ]
   }
 ];
 

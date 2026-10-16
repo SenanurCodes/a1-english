@@ -12,20 +12,34 @@ class AIError extends Error {
   }
 }
 
-function hasAI() { return !!state.settings.apiKey; }
+function getApiKey() {
+  const fromState = state?.settings?.apiKey;
+  if (typeof fromState === 'string' && fromState.trim()) return fromState.trim();
+  if (typeof window !== 'undefined') {
+    if (window.GEMINI_API_KEY && typeof window.GEMINI_API_KEY === 'string' && window.GEMINI_API_KEY.trim()) {
+      return window.GEMINI_API_KEY.trim();
+    }
+    if (window.__ENV__?.GEMINI_API_KEY && typeof window.__ENV__.GEMINI_API_KEY === 'string' && window.__ENV__.GEMINI_API_KEY.trim()) {
+      return window.__ENV__.GEMINI_API_KEY.trim();
+    }
+  }
+  return '';
+}
+
+function hasAI() { return !!getApiKey(); }
 
 async function gemini({ system, contents, json = false, temperature = 0.8 }) {
-  const key = state.settings.apiKey;
+  const key = getApiKey();
   if (!key) throw new AIError('NO_KEY', 'API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
   
-  // Kullanıcının seçtiği model ve yedek kararlı modeller sırası (eski 1.5 modeller kaldırıldı)
-  const preferred = (state.settings.model || '').trim();
+  // Kullanıcının seçtiği model ve yedek kararlı modeller sırası
+  const preferred = (state?.settings?.model || '').trim();
   const candidateModels = [
     preferred,
-    'gemini-2.5-flash',
     'gemini-2.0-flash',
+    'gemini-1.5-flash',
     'gemini-2.0-flash-lite',
-    'gemini-2.5-flash-latest'
+    'gemini-2.5-flash'
   ].filter(Boolean);
 
   // Tekrarlayanları temizle
@@ -41,9 +55,16 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
       };
       if (system) body.systemInstruction = { parts: [{ text: system }] };
 
-      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': key
+        },
+        body: JSON.stringify(body)
+      });
       if (res.status === 404) {
-        // Bu model yoksa listedeki bir sonrakini dene
+        // Bu model yoksa veya bu anahtarın bölgesinde açık değilse listedeki bir sonrakini dene
         continue;
       }
       if (!res.ok) {
@@ -64,7 +85,7 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
       }
       
       // Çalışan modeli kaydet
-      if (state.settings.model !== model) {
+      if (state.settings && state.settings.model !== model) {
         state.settings.model = model;
         saveState();
       }

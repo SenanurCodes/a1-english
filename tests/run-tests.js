@@ -10,7 +10,7 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
-const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js'];
+const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js', 'js/ai.js'];
 const SOURCES = FILES.map(f => [f, fs.readFileSync(path.join(ROOT, f), 'utf8')]);
 
 /* ---------- Sahte tarayıcı ortamı ---------- */
@@ -219,6 +219,27 @@ test('Tema: karanlık/aydınlık bilgisi sadece PALETTES\'ten gelir ve kaydedili
     eq(localStorage._raw.a1_data_mode, p.dark ? 'dark' : 'light', p.id);
     eq(attrs['data-mode'], p.dark ? 'dark' : 'light', p.id + ' attr');
   }
+});
+
+test('Nezaket & Kültür kategorisi: phrases ve dinleme kalıpları eksiksiz tanımlı', () => {
+  const { run } = makeEnv();
+  const culture = run('LOGIC_GUIDES.find(g => g.category === "culture")');
+  ok(culture, 'Nezaket ve kültür kategorisi bulunmalı');
+  ok(Array.isArray(culture.phrases) && culture.phrases.length >= 3, 'En az 3 dinleme kalıbı içermeli');
+  for (const p of culture.phrases) {
+    ok(p.en && p.tr && p.tip, `Kalıp en/tr/tip alanlarına sahip olmalı: ${JSON.stringify(p)}`);
+  }
+});
+
+test('Gemini API anahtarı: state, window ve env değişkenlerinden boşluksuz alınır', () => {
+  const envWithState = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: '  AIzaCustomKey123  ' } }) });
+  eq(envWithState.run('getApiKey()'), 'AIzaCustomKey123');
+  ok(envWithState.run('hasAI()'), 'hasAI true olmalı');
+
+  const envWithWindow = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: '' } }) });
+  envWithWindow.run('window.GEMINI_API_KEY = "  AIzaFromWindow456  ";');
+  eq(envWithWindow.run('getApiKey()'), 'AIzaFromWindow456');
+  ok(envWithWindow.run('hasAI()'), 'window.GEMINI_API_KEY ile hasAI true olmalı');
 });
 
 /* ---------- Sonuç ---------- */

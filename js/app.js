@@ -645,7 +645,7 @@ function screenLogic() {
       </div>
 
       <!-- İnteraktif Lokomotif Cümle Simülatörü -->
-      ${(isAll || currentLogicTab === 'mindset') && activeLoco ? `
+      ${activeLoco ? `
         <div class="card loco-simulator-card">
           <div class="loco-head">
             <div>
