@@ -124,9 +124,17 @@ class AppStore {
       const mascot = s.mascot || 'cat';
       const theme = s.theme || 'nordic';
 
+      // Doğal müfredat: A1 Boss sınavı geçilmeden A2 açık kalamaz
+      const a1BossPassed = Boolean(s.a1BossPassed);
+      const a2Unlocked = a1BossPassed && Boolean(s.a2Unlocked);
+      const unlockedUpTo = a1BossPassed ? (s.unlockedUpTo ?? 0) : Math.min(s.unlockedUpTo ?? 0, 26);
+
       return {
         ...d,
         ...s,
+        a1BossPassed,
+        a2Unlocked,
+        unlockedUpTo,
         schemaVersion: targetVersion,
         userId,
         mascot,
@@ -213,9 +221,18 @@ class AppStore {
   }
 
   unlockA2() {
+    this._state.a1BossPassed = true;
     this._state.a2Unlocked = true;
     const maxIdx = (typeof UNITS !== 'undefined' && Array.isArray(UNITS)) ? UNITS.length - 1 : 51;
     this._state.unlockedUpTo = Math.max(this._state.unlockedUpTo, maxIdx);
+    this.save();
+    this._notify('STATE_CHANGED', this._state);
+  }
+
+  lockA2() {
+    this._state.a1BossPassed = false;
+    this._state.a2Unlocked = false;
+    this._state.unlockedUpTo = Math.min(this._state.unlockedUpTo, 26);
     this.save();
     this._notify('STATE_CHANGED', this._state);
   }

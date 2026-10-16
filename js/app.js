@@ -1545,7 +1545,7 @@ let currentCardsFilter = 'all';
 function screenCards(id) {
   const u = UNIT_BY_ID[id];
   if (!u || u.type !== 'vocab') {
-    const isA2Unlocked = Boolean(state.a2Unlocked);
+    const isA2Unlocked = Boolean(state.a1BossPassed && state.a2Unlocked);
     const a1Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A1');
     const a2Vocab = UNITS.filter(x => x.type === 'vocab' && x.level === 'A2');
     
@@ -1602,8 +1602,10 @@ function screenCards(id) {
     if ($('#cardFilterA2')) $('#cardFilterA2').onclick = () => { currentCardsFilter = 'A2'; screenCards(); };
     return;
   }
-  if (u.level === 'A2' && !state.a2Unlocked) {
-    store.unlockA2();
+  if (u.level === 'A2' && !Boolean(state.a1BossPassed && state.a2Unlocked)) {
+    toast('Bu seviye henüz kilitli 🔒');
+    location.hash = '#/cards';
+    return;
   }
   let words = [...u.words], i = 0;
   const draw = () => {
