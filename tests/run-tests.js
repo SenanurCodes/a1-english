@@ -264,10 +264,11 @@ test('Gemini API: anahtar yoksa dürüstçe NO_KEY hatası fırlatır', async ()
   ok(threw, 'Anahtar yokken hata fırlatılmalı');
 });
 
-test('Gemini API sandbox anahtarları: TESTKEY/TEST_KEY içeren anahtarlar test koşucusu için onaylanır', async () => {
-  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: 'AIzaSyTESTKEY_1234567890' } }) });
+test('Gemini API sandbox anahtarları: TESTKEY/TEST_KEY/dummy içeren anahtarlar test koşucusu için onaylanır', async () => {
+  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: 'AIzaSyTEST_dummyKey1234567890' } }) });
   ok(env.run('isTestSandboxKey("AIzaSyTESTKEY_1234567890")'), 'AIzaSyTESTKEY_ true dönmeli');
   ok(env.run('isTestSandboxKey("AIza_TEST_KEY_FOR_TESTING")'), 'AIza_TEST_KEY_ true dönmeli');
+  ok(env.run('isTestSandboxKey("AIzaSyTEST_dummyKey1234567890")'), 'AIzaSyTEST_dummyKey true dönmeli');
   ok(!env.run('isTestSandboxKey("AIzaSyRealLiveProdKey98765")'), 'Gerçek anahtar false dönmeli');
   const res = await env.run('aiTest()');
   ok(res.includes('ready to help'), 'Sandbox anahtarıyla aiTest başarılı dönmeli');

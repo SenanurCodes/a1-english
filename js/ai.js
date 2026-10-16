@@ -28,8 +28,8 @@ function getApiKey() {
 
 function isTestSandboxKey(key) {
   if (!key) return false;
-  const k = key.trim();
-  return k.includes('TESTKEY') || k.includes('TEST_KEY') || k.startsWith('AIzaSyTESTKEY') || k.startsWith('AIza_TEST_KEY');
+  const k = key.trim().toLowerCase();
+  return k.includes('test') || k.includes('dummy') || k.includes('mock') || k.includes('fake') || k.includes('sample') || k.startsWith('aizasytest');
 }
 
 function hasAI() { return !!getApiKey(); }

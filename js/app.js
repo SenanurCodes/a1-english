@@ -1530,12 +1530,17 @@ function screenProgress() {
       <div class="card">
         <h3>🧩 Ünite Başarıları</h3>
         <div class="unit-bars">
-          ${UNITS.map(u => { const s = unitStats(u.id); return `
-            <div class="ub-row ${isUnlocked(u.index) ? '' : 'locked'}">
+          ${UNITS.map(u => {
+            const s = unitStats(u.id);
+            const unlocked = isUnlocked(u.index);
+            const targetUrl = u.type === 'vocab' ? `#/cards/${u.id}` : `#/grammar/${u.id}`;
+            return `
+            <a class="ub-row ${unlocked ? '' : 'locked'}" href="${targetUrl}" role="button" tabindex="0" aria-label="${esc(u.title)} ünitesi kelimelerini aç" style="text-decoration:none;color:inherit;cursor:pointer;display:flex;align-items:center;">
               <span class="ub-name">${u.emoji} ${esc(u.title)}</span>
               <div class="progress"><div class="bar" style="width:${s.best}%;background:${u.color}"></div></div>
-              <span class="ub-val">${s.attempts ? `%${s.best}` : isUnlocked(u.index) ? '—' : '🔒'}</span>
-            </div>`; }).join('')}
+              <span class="ub-val">${s.attempts ? `%${s.best}` : unlocked ? 'İncele ➔' : '🔒'}</span>
+            </a>`;
+          }).join('')}
         </div>
       </div>
 
