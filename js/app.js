@@ -295,8 +295,25 @@ function screenOnboarding() {
         </div>
       </div>
 
+      <!-- Günlük Hedef & Sonraki Ders Kartı -->
+      <div class="card onboard-daily-preview" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span class="badge" style="font-weight:700;">🎯 Günlük Hedef</span>
+          <span class="muted small"><b>Günlük hedef:</b> 50 XP / gün</span>
+        </div>
+        <div class="progress thick" style="margin-bottom:12px;"><div class="bar rainbow" style="width:20%;"></div></div>
+        
+        <div class="next-lesson-box" style="padding-top:10px;border-top:1px dashed var(--border);">
+          <div class="muted small" style="font-weight:700;margin-bottom:4px;">📖 Sonraki ders:</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div><b>Sonraki ders:</b> 👋 Selamlaşma & Tanışma (A1 Başlangıç)</div>
+            <a class="btn btn-primary sm" href="#/lesson/u1">▶ Sonraki Derse Başla (+15 XP)</a>
+          </div>
+        </div>
+      </div>
+
       <!-- Konu Bazlı Kelime Kartları & Kategori Kütüphanesi -->
-      <div class="card onboard-vocab-library" style="margin-top:24px;width:100%;max-width:640px;box-sizing:border-box;">
+      <div class="card onboard-vocab-library" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🃏 Kelime Kartları & Kategori Kütüphanesi</h2>
           <a href="#/cards" class="btn btn-ghost sm" aria-label="Tümünü Gör">Tümünü Gör ➔</a>
@@ -493,14 +510,14 @@ function screenHome() {
       <div class="card mission-card">
         <div class="mission-top">
           <div class="mission-top-header">
-            <div class="mission-badge">🎯 BUGÜNKÜ ODAK GÖREVİN</div>
+            <div class="mission-badge">🎯 Günlük Hedef</div>
             <div class="mission-level-badge">${lvl.label} · %${lvl.pct} Tamamlandı</div>
           </div>
           
           <div class="mission-goal-bar-wrap">
             <div class="mission-goal-info">
-              <span class="mgi-title">Hedef İlerlemesi: <b>${Math.min(todayXP, 50)} / 50 XP</b></span>
-              <span class="mgi-sub muted small">${todayXP >= 50 ? '🎉 Günlük Hedef Tamamlandı!' : `${50 - todayXP} XP kaldı`}</span>
+              <span class="mgi-title"><b>Günlük Hedef:</b> <b>${Math.min(todayXP, 50)} / 50 XP</b></span>
+              <span class="mgi-sub muted small">${todayXP >= 50 ? '🎉 Günlük Hedef Tamamlandı!' : `Günlük hedefe ${50 - todayXP} XP kaldı`}</span>
             </div>
             <div class="progress thick"><div class="bar rainbow" style="width:${Math.min(100, (todayXP / 50) * 100)}%;"></div></div>
           </div>
@@ -508,38 +525,43 @@ function screenHome() {
 
         <div class="mission-divider"></div>
 
-        ${nu ? `
-          <div class="mission-unit-row" style="--c:${nu.color}">
-            <div class="mission-unit-left">
-              <div class="mission-unit-avatar">${nu.emoji}</div>
-              <div class="mission-unit-text">
-                <div class="mission-step-tag">Sıradaki Ünite · ${nu.type === 'vocab' ? 'Kelime Dünyası' : 'Gramer Mantığı'}</div>
-                <h2 class="mission-unit-name">${esc(nu.title)}</h2>
-                <div class="mission-unit-desc">${esc(nu.desc || 'Konuyu pekiştir, yeni kelimeler öğren ve XP topla!')}</div>
+        <div class="next-lesson-section">
+          <div class="next-lesson-header" style="margin-bottom:8px;">
+            <span class="badge" style="background:var(--card-hover);font-weight:700;">📖 Sonraki Ders</span>
+          </div>
+          ${nu ? `
+            <div class="mission-unit-row" style="--c:${nu.color}">
+              <div class="mission-unit-left">
+                <div class="mission-unit-avatar">${nu.emoji}</div>
+                <div class="mission-unit-text">
+                  <div class="mission-step-tag">Sonraki ders · ${nu.type === 'vocab' ? 'Kelime Dünyası' : 'Gramer Mantığı'}</div>
+                  <h2 class="mission-unit-name">Sonraki ders: ${esc(nu.title)}</h2>
+                  <div class="mission-unit-desc">${esc(nu.desc || 'Konuyu pekiştir, yeni kelimeler öğren ve XP topla!')}</div>
+                </div>
+              </div>
+              <div class="mission-unit-btns">
+                ${nu.type === 'grammar' 
+                  ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu Özeti</a>` 
+                  : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kelimeler</a>`}
+                <a class="btn btn-primary mission-play-btn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 XP)</a>
               </div>
             </div>
-            <div class="mission-unit-btns">
-              ${nu.type === 'grammar' 
-                ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu Özeti</a>` 
-                : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kelimeler</a>`}
-              <a class="btn btn-primary mission-play-btn" href="#/lesson/${nu.id}">▶ Derse Başla (+15 XP)</a>
-            </div>
-          </div>
-        ` : `
-          <div class="mission-unit-row" style="--c:#10B981">
-            <div class="mission-unit-left">
-              <div class="mission-unit-avatar">🎓</div>
-              <div class="mission-unit-text">
-                <div class="mission-step-tag">A1 Başarısı</div>
-                <h2 class="mission-unit-name">Tüm A1 Üniteleri Tamamlandı!</h2>
-                <div class="mission-unit-desc">${state.a1BossPassed ? 'Tebrikler! A1 Seviye Sınavını geçtin.' : 'Haritadaki Final Sınavına girerek A2 seviyesini açabilirsin!'}</div>
+          ` : `
+            <div class="mission-unit-row" style="--c:#10B981">
+              <div class="mission-unit-left">
+                <div class="mission-unit-avatar">🎓</div>
+                <div class="mission-unit-text">
+                  <div class="mission-step-tag">Sonraki ders · A1 Finali</div>
+                  <h2 class="mission-unit-name">Sonraki ders: Tüm A1 Üniteleri Tamamlandı!</h2>
+                  <div class="mission-unit-desc">${state.a1BossPassed ? 'Tebrikler! A1 Seviye Sınavını geçtin.' : 'Haritadaki Final Sınavına girerek A2 seviyesini açabilirsin!'}</div>
+                </div>
+              </div>
+              <div class="mission-unit-btns">
+                <a class="btn btn-primary mission-play-btn" href="#/learn">🗺️ Macera Haritasına Git</a>
               </div>
             </div>
-            <div class="mission-unit-btns">
-              <a class="btn btn-primary mission-play-btn" href="#/learn">🗺️ Macera Haritasına Git</a>
-            </div>
-          </div>
-        `}
+          `}
+        </div>
       </div>
 
       <!-- İkincil Eylemler Grid (Rekabet, Akıllı Tekrar, Günün Kelimesi, AI) -->
