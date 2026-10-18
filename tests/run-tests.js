@@ -435,6 +435,23 @@ test('Bölüm ilerlemesi, boş tekrar seansı ve AI kurulum kalıcılığı bile
   ok(appSrc.includes('id="aiSetupSuccessBanner"') && appSrc.includes('id="aiPingBtn"'), 'AI kurulumunda kalıcı kayıt onayı ve ayrı bağlantı testi butonu bulunmalı');
 });
 
+test('AI anahtar/model kalıcılığı ve serbest tekrar ders üretimi: yenileme sonrası korunur', () => {
+  const env1 = makeEnv();
+  env1.run('state.settings.apiKey = "AIzaSyExampleKey12345"; state.settings.model = "gemini-2.0-flash"; saveState();');
+  const savedRaw = env1.localStorage.getItem('a1english_v2');
+  ok(savedRaw && savedRaw.includes('AIzaSyExampleKey12345'), 'Anahtar localStorage içine kaydedilmeli');
+
+  // Sayfa yenilendiğinde (yeni ortam aynı localStorage ile açıldığında)
+  const env2 = makeEnv({ a1english_v2: savedRaw });
+  eq(env2.run('hasAI()'), true, 'Yenileme sonrası hasAI() true dönmeli');
+  eq(env2.run('getApiKey()'), 'AIzaSyExampleKey12345', 'Yenileme sonrası anahtar korunmalı');
+  eq(env2.run('state.settings.model'), 'gemini-2.0-flash', 'Yenileme sonrası seçilen model korunmalı');
+
+  // Boş tekrar durumunda 1. ünite kelimeleriyle serbest tekrar dersi üretilebilmeli
+  const reviewQs = env2.run('buildReviewLesson(UNITS[0].words.slice(0, 10))');
+  ok(Array.isArray(reviewQs) && reviewQs.length > 0, 'Serbest tekrar seansı için geçerli sorular üretilmeli');
+});
+
 
 /* ---------- Sonuç ---------- */
 (async () => {
