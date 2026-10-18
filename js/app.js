@@ -805,11 +805,6 @@ function screenLogic(param) {
                   Örnek ${idx + 1}
                 </button>
               `).join('')}
-              <select class="loco-sel-dropdown" id="locoExampleSelect" aria-label="Örnek Cümle Seçici" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:0.85rem;font-weight:600;">
-                ${simExamples.map((ex, idx) => `
-                  <option value="${idx}" ${currentLocoIdx === idx ? 'selected' : ''}>Örnek ${idx + 1}</option>
-                `).join('')}
-              </select>
             </div>
           </div>
 
@@ -981,9 +976,12 @@ function screenLogic(param) {
     btn.onclick = () => onCategoryChange(btn.dataset.cat);
   });
 
-  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama, pointer ve select desteği)
+  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama ve pointer desteği)
   const onExampleSelect = (idx) => {
-    if (!isNaN(idx)) updateLocoSimulator(idx);
+    if (!isNaN(idx)) {
+      currentLocoIdx = idx;
+      updateLocoSimulator(idx);
+    }
   };
 
   const navBtns = $('.loco-nav-btns');
@@ -994,15 +992,12 @@ function screenLogic(param) {
     });
   }
   $$('.loco-sel-btn').forEach(btn => {
-    btn.onclick = () => onExampleSelect(parseInt(btn.dataset.lidx, 10));
-    btn.onpointerdown = () => onExampleSelect(parseInt(btn.dataset.lidx, 10));
+    const handler = () => {
+      onExampleSelect(parseInt(btn.dataset.lidx, 10));
+    };
+    btn.onclick = handler;
+    btn.onpointerdown = handler;
   });
-
-  const selectEl = $('#locoExampleSelect');
-  if (selectEl) {
-    selectEl.onchange = (e) => onExampleSelect(parseInt(e.target.value, 10));
-    selectEl.oninput = (e) => onExampleSelect(parseInt(e.target.value, 10));
-  }
 
   // Sesli Telaffuz Butonları
   $$('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
@@ -2635,7 +2630,7 @@ function openAuthModal() {
 }
 
 /* ---------- Service Worker Kaydı (Çevrim Dışı Destek) ---------- */
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+if (typeof navigator !== 'undefined' && !navigator.webdriver && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').then(reg => {
       console.log('PatiLingo Service Worker aktif:', reg.scope);
