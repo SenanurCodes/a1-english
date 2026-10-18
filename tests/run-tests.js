@@ -426,6 +426,15 @@ test('Ana sayfa kısayolları: AI Öğretmen kurulum butonu (#dashAiSetupBtn) ve
   ok(htmlSrc.includes('id="dashAiSetupBtn"') && htmlSrc.includes('href="#/ai"'), 'index.html içinde #/ai kurulum kısayolu bulunmalı');
 });
 
+test('Bölüm ilerlemesi, boş tekrar seansı ve AI kurulum kalıcılığı bileşenleri tanımlı', () => {
+  const fs = require('fs');
+  const appSrc = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
+
+  ok(appSrc.includes('function renderUnitProgressionCard(u)') && appSrc.includes('id="chapterProgressionCard"'), 'Kilitli/açık ünitelerde Bölüm İlerlemesi (Chapter Progression) kartı bulunmalı');
+  ok(appSrc.includes('Serbest Tekrar Seansı Başlat'), 'Boş tekrar durumunda doğrudan serbest tekrar seansı başlatma aksiyonu bulunmalı');
+  ok(appSrc.includes('id="aiSetupSuccessBanner"') && appSrc.includes('id="aiPingBtn"'), 'AI kurulumunda kalıcı kayıt onayı ve ayrı bağlantı testi butonu bulunmalı');
+});
+
 
 /* ---------- Sonuç ---------- */
 (async () => {

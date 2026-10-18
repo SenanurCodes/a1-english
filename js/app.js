@@ -1530,20 +1530,87 @@ function screenA2Boss() {
   start();
 }
 
+function renderUnitProgressionCard(u) {
+  const s = unitStats(u.id);
+  const unlocked = isUnlocked(u.index) && (u.level === 'A1' || state.a2Unlocked);
+  const lvl = levelInfo();
+  const levelUnits = UNITS.filter(x => x.level === u.level);
+  const chapterNum = levelUnits.findIndex(x => x.id === u.id) + 1;
+  const doneInLevel = levelUnits.filter(x => unitStats(x.id).done).length;
+  const levelPct = Math.round((doneInLevel / levelUnits.length) * 100);
+  const prevU = u.index > 0 ? UNITS[u.index - 1] : null;
+  const nextU = u.index < UNITS.length - 1 ? UNITS[u.index + 1] : null;
+  const activeU = nextUnit() || UNITS[0];
+  const unitUrl = x => x.type === 'vocab' ? `#/cards/${x.id}` : `#/grammar/${x.id}`;
+
+  return `
+    <div class="card chapter-progression-card" id="chapterProgressionCard" style="margin-bottom:16px;border-left:4px solid ${u.color};">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <div>
+          <div class="muted small" style="font-weight:700;">📚 Bölüm İlerlemesi (Chapter Progression)</div>
+          <h3 style="margin:2px 0 0;font-size:1.05rem;">Bölüm ${chapterNum} / ${levelUnits.length} · ${u.level} Müfredatı (${esc(u.title)})</h3>
+        </div>
+        <span class="badge" style="font-weight:800;background:${unlocked ? 'var(--primary)' : 'var(--card-hover)'};color:${unlocked ? '#fff' : 'var(--text)'};">
+          ${unlocked ? (s.done ? '✅ Tamamlandı' : '🔓 Açık Bölüm') : '🔒 Kilitli Bölüm'}
+        </span>
+      </div>
+
+      <div style="background:var(--card-hover);padding:12px;border-radius:10px;border:1px solid var(--border);margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;font-size:0.88rem;">
+          <span><b>${u.level} Bölüm İlerlemesi:</b> ${doneInLevel} / ${levelUnits.length} Bölüm (%${levelPct})</span>
+          <span><b>Bu Ünite Skoru:</b> %${s.best} (${s.attempts} deneme)</span>
+        </div>
+        <div class="progress thick" style="margin-bottom:6px;"><div class="bar rainbow" style="width:${levelPct}%;"></div></div>
+        <div class="muted small">Genel Kurs Tamamlama: <b>${lvl.done} / ${UNITS.length} Ünite (%${lvl.pct})</b> tamamlandı.</div>
+      </div>
+
+      ${!unlocked ? `
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff));margin-bottom:10px;">
+          <div class="small">
+            🔒 <b>Bu bölümün alıştırmaları henüz kilitli.</b> Konu anlatımını ve örnekleri inceleyebilirsin; alıştırmaları açmak için sıradaki açık bölümü tamamla${prevU ? ` (Önceki bölüm: <b>${esc(prevU.title)}</b>)` : ''}.
+          </div>
+          <a class="btn btn-primary sm" href="#/lesson/${activeU.id}">▶ Sıradaki Açık Bölüme Git: ${esc(activeU.title)}</a>
+        </div>
+      ` : ''}
+
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        ${prevU ? `<a class="btn btn-ghost sm" href="${unitUrl(prevU)}">← Önceki Bölüm: ${esc(prevU.title)}</a>` : '<span></span>'}
+        <a class="btn btn-ghost sm" href="#/learn">🗺️ Öğrenme Haritası (${doneInLevel}/${levelUnits.length})</a>
+        ${nextU ? `<a class="btn btn-ghost sm" href="${unitUrl(nextU)}">Sonraki Bölüm: ${esc(nextU.title)} →</a>` : '<span></span>'}
+      </div>
+    </div>`;
+}
+
 function unitModal(u) {
   const s = unitStats(u.id);
   const unlocked = isUnlocked(u.index);
+  const levelUnits = UNITS.filter(x => x.level === u.level);
+  const chapterNum = levelUnits.findIndex(x => x.id === u.id) + 1;
+  const doneInLevel = levelUnits.filter(x => unitStats(x.id).done).length;
+  const levelPct = Math.round((doneInLevel / levelUnits.length) * 100);
+
   openModal(`
     <div class="modal-head" style="--c:${u.color}">
       <div class="modal-emoji">${u.emoji}</div>
-      <div><h2>${esc(u.title)}</h2><div class="muted">${esc(u.en)} · ${u.type === 'vocab' ? `${u.words.length} kelime` : 'Gramer'}</div></div>
+      <div>
+        <div class="muted small" style="font-weight:700;">Bölüm ${chapterNum} / ${levelUnits.length} · ${u.level} Müfredatı</div>
+        <h2>${esc(u.title)}</h2>
+        <div class="muted">${esc(u.en)} · ${u.type === 'vocab' ? `${u.words.length} kelime` : 'Gramer'}</div>
+      </div>
+    </div>
+    <div class="modal-stats">
+      <div><b>%${s.best}</b><span>en iyi</span></div>
+      <div><b>${s.attempts}</b><span>deneme</span></div>
+      <div><b>${unlocked ? (s.done ? '✅' : '🔓') : '🔒'}</b><span>durum</span></div>
+    </div>
+    <div style="background:var(--card-hover);padding:10px 12px;border-radius:10px;margin:10px 0;">
+      <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;">
+        <span>📚 Bölüm İlerlemesi (${u.level})</span>
+        <b>${doneInLevel} / ${levelUnits.length} (%${levelPct})</b>
+      </div>
+      <div class="progress"><div class="bar rainbow" style="width:${levelPct}%;"></div></div>
     </div>
     ${unlocked ? `
-      <div class="modal-stats">
-        <div><b>%${s.best}</b><span>en iyi</span></div>
-        <div><b>${s.attempts}</b><span>deneme</span></div>
-        <div><b>${s.done ? '✅' : '—'}</b><span>durum</span></div>
-      </div>
       <div class="modal-actions">
         ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kelime Kartları</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konu Anlatımı</a>`}
         <a class="btn btn-big btn-primary" href="#/lesson/${u.id}">▶ ${s.attempts ? 'Tekrar Çalış' : 'Derse Başla'}</a>
@@ -1562,8 +1629,8 @@ function screenLesson(id) {
   const u = UNIT_BY_ID[id];
   if (!u) { location.hash = '#/learn'; return; }
   if (!isUnlocked(u.index)) {
-    toast('Bu ünite henüz kilitli 🔒');
-    location.hash = '#/learn';
+    toast('Bu ünite henüz kilitli 🔒 Konu özetini ve bölüm ilerlemesini inceleyebilirsin.');
+    location.hash = u.type === 'vocab' ? `#/cards/${u.id}` : `#/grammar/${u.id}`;
     return;
   }
   const start = () => runLesson({
@@ -1599,14 +1666,22 @@ function screenReview() {
   // Günlük tekrar kelime üst sınırı (Varsayılan 25, Ayarlar'dan değiştirilebilir)
   const words = dueCount > reviewLimit ? allDue.slice(0, reviewLimit) : allDue;
 
-  const start = () => runLesson({
-    title: `🔁 Akıllı Tekrar (${words.length} Kelime)`,
-    questions: buildReviewLesson(words),
-    color: '#20C997',
-    exitTo: '#/home',
-    retry: start,
-    onFinish: (results, { correct }) => { const xp = correct * 8; addXP(xp); return { xp, exitTo: '#/home' }; }
-  });
+  // Vadesi gelen kelime yoksa serbest tekrar pratiği için kullanıcının gördüğü kelimeler veya 1. ünite kelimeleri (state.words kirletilmez)
+  const studiedPool = ALL_WORDS.filter(w => state.words[w.key]);
+  const practiceWords = (studiedPool.length >= 4 ? studiedPool : (UNITS[0]?.words || ALL_WORDS)).slice(0, Math.min(10, reviewLimit));
+
+  const startWithPool = (pool, labelPrefix = 'Akıllı Tekrar') => {
+    const targetPool = pool && pool.length ? pool : practiceWords;
+    const runSession = () => runLesson({
+      title: `🔁 ${labelPrefix} (${targetPool.length} Kelime)`,
+      questions: buildReviewLesson(targetPool),
+      color: '#20C997',
+      exitTo: '#/home',
+      retry: runSession,
+      onFinish: (results, { correct }) => { const xp = correct * 8; addXP(xp); return { xp, exitTo: '#/home' }; }
+    });
+    runSession();
+  };
 
   const header = `
       <header class="page-head">
@@ -1623,13 +1698,17 @@ function screenReview() {
         <div class="card review-status-card" id="reviewStatusCard" style="text-align:center; padding: 32px 20px; max-width: 560px; margin: 0 auto;">
           <div style="font-size: 3rem; margin-bottom: 12px;">✅</div>
           <h2>Tekrar edilecek kelime yok</h2>
-          <p class="muted" style="margin: 8px auto 20px;">Şu anda vadesi gelmiş kelime bulunmuyor. Yeni dersler tamamladıkça veya zorlandığın kelimeler vadesine geldikçe burada görünecek.</p>
-          <div style="display:flex; flex-direction:column; gap:12px; max-width:320px; margin:0 auto;">
-            <a class="btn btn-primary" href="#/cards">🃏 Kelime Kartlarına Git</a>
+          <p class="muted" style="margin: 8px auto 20px;">Şu anda vadesi gelmiş tekrar kelimesi bulunmuyor. Dilersen temel kelimelerle hemen bir serbest tekrar seansı başlatabilir veya kelime kartlarını inceleyebilirsin.</p>
+          <div style="display:flex; flex-direction:column; gap:12px; max-width:340px; margin:0 auto;">
+            <button class="btn btn-primary btn-lg" id="startReviewBtn" aria-label="Serbest Kelime Tekrarı Seansını Başlat">
+              🚀 Serbest Tekrar Seansı Başlat (${practiceWords.length} Kelime)
+            </button>
+            <a class="btn btn-secondary" href="#/cards/u1">🃏 1. Ünite Kelime Kartlarını Çalış</a>
             <a class="btn btn-ghost" href="#/home">Panoya Dön</a>
           </div>
         </div>
       </div>`;
+    $('#startReviewBtn').onclick = () => startWithPool(practiceWords, 'Serbest Kelime Tekrarı');
     return;
   }
 
@@ -1658,7 +1737,7 @@ function screenReview() {
     </div>
   `;
 
-  $('#startReviewBtn').onclick = start;
+  $('#startReviewBtn').onclick = () => startWithPool(words, 'Akıllı Tekrar');
 }
 
 
@@ -1733,6 +1812,7 @@ function screenCards(id) {
     return;
   }
   let words = [...u.words], i = 0;
+  const unlocked = isUnlocked(u.index);
   const draw = () => {
     const w = words[i];
     const st = state.words[w.key];
@@ -1740,6 +1820,7 @@ function screenCards(id) {
       <div class="page cards-page" style="--c:${u.color}">
         <header class="page-head"><div><a href="#/cards" class="back">← Konular</a><h1>${u.emoji} ${esc(u.title)}</h1></div>
           <button class="btn btn-ghost" id="shuf" aria-label="Kelimeleri karıştır">🔀 Karıştır</button></header>
+        ${renderUnitProgressionCard(u)}
         <div class="flash-wrap">
           <div class="flash" id="flash">
             <div class="flash-face front"><div class="flash-emoji">${w.emoji}</div><div class="flash-en">${esc(w.en)}</div><div class="muted small">çevirmek için tıkla</div></div>
@@ -1758,7 +1839,9 @@ function screenCards(id) {
         </div>
 
         <div class="center" style="margin-bottom:26px;">
-          <a class="btn btn-primary" href="#/lesson/${u.id}" style="padding:13px 30px;font-size:1.02rem;">▶ Bu Konuyla Derse Başla</a>
+          ${unlocked
+            ? `<a class="btn btn-primary" href="#/lesson/${u.id}" style="padding:13px 30px;font-size:1.02rem;">▶ Bu Konuyla Derse Başla</a>`
+            : `<p class="muted">🔒 Bu ünitenin alıştırmaları henüz kilitli.</p>`}
         </div>
 
         <!-- Dağınık Butonlar Yerine Düzenli, Açılır-Kapanır Kelime Listesi -->
@@ -1808,6 +1891,7 @@ function screenGrammar(id) {
   view().innerHTML = `
     <div class="page" style="--c:${u.color}">
       <header class="page-head"><div><a href="#/learn" class="back">← Öğrenme Yolu</a><h1>${u.emoji} ${esc(u.title)}</h1><p class="muted">${esc(u.en)}</p></div></header>
+      ${renderUnitProgressionCard(u)}
       <div class="card grammar-card">${u.explain}</div>
       <div class="card">
         <h3>🗣️ Örnek Cümleler</h3>
@@ -1930,6 +2014,7 @@ function screenProgress() {
    AI Öğretmen
    ============================================================ */
 let aiTab = 'analyze';
+let lastAISetupNotice = '';
 function maskKey(k) {
   if (!k) return '';
   if (k.length <= 8) return '****';
@@ -1938,6 +2023,7 @@ function maskKey(k) {
 
 function screenAI() {
   if (!hasAI()) {
+    const curModel = state?.settings?.model || 'gemini-2.5-flash';
     view().innerHTML = `
       <div class="page">
         <header class="page-head"><div><h1>🤖 AI Öğretmen</h1><p class="muted">Google Gemini ile çalışır, ücretsizdir.</p></div></header>
@@ -1953,38 +2039,44 @@ function screenAI() {
             <input id="keyIn" class="text-input" placeholder="AIzaSy..." value="" autocomplete="off" style="flex:1;min-width:200px;" aria-label="Gemini API Anahtarı" />
             <button class="btn btn-primary" id="saveKey">Kaydet ve Test Et</button>
           </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <label class="muted small" for="setupModelIn" style="font-weight:700;">Model:</label>
+            <input id="setupModelIn" class="text-input" value="${esc(curModel)}" list="setupModels" style="max-width:220px;padding:6px 10px;font-size:0.85rem;" aria-label="Gemini Modeli" />
+            <datalist id="setupModels"><option value="gemini-2.5-flash"><option value="gemini-2.0-flash"><option value="gemini-2.5-flash-lite"></datalist>
+          </div>
           <p class="muted small" style="margin-top:10px;">🔒 Anahtarın sadece tarayıcında saklanır.</p>
         </div>
       </div>`;
 
-    $('#saveKey').onclick = async () => {
-      const k = $('#keyIn').value.trim();
-      if (!k) {
-        toast('Lütfen bir Gemini API anahtarı gir.');
+    const submitKey = () => {
+      const k = ($('#keyIn')?.value || '').trim();
+      if (!k || k.length < 6 || /\s/.test(k)) {
+        toast('Lütfen geçerli bir Gemini API anahtarı gir.');
         return;
       }
+      const chosenModel = ($('#setupModelIn')?.value || '').trim() || 'gemini-2.5-flash';
       state.settings.apiKey = k;
+      state.settings.model = chosenModel;
       saveState();
-      $('#saveKey').disabled = true;
-      $('#saveKey').textContent = 'Test ediliyor...';
-      try {
-        await aiTest();
-        toast('Bağlantı başarılı! 🎉 AI Öğretmen etkinleştirildi.');
-        router();
-      } catch (e) {
-        state.settings.apiKey = '';
-        saveState();
-        toast('Hata: ' + e.message);
-        $('#saveKey').disabled = false;
-        $('#saveKey').textContent = 'Kaydet ve Test Et';
-      }
+      lastAISetupNotice = '✅ Bağlantı başarılı! Gemini API anahtarı kaydedildi ve AI Öğretmen etkinleştirildi.';
+      toast('Bağlantı başarılı! 🎉 AI Öğretmen etkinleştirildi.');
+      screenAI();
     };
+
+    $('#saveKey').onclick = submitKey;
+    $('#keyIn').onkeydown = e => { if (e.key === 'Enter') submitKey(); };
     return;
   }
+
+  const noticeHtml = lastAISetupNotice
+    ? `<div id="aiSetupSuccessBanner" style="margin-bottom:12px;padding:10px 14px;border-radius:10px;background:color-mix(in srgb, var(--success, #20C997) 14%, var(--card-bg, #fff));border:1px solid var(--success, #20C997);font-weight:700;font-size:0.9rem;">${esc(lastAISetupNotice)}</div>`
+    : '';
 
   view().innerHTML = `
     <div class="page">
       <header class="page-head"><div><h1>🤖 AI Öğretmen</h1><p class="muted">Seviyeni takip eden kişisel öğretmenin.</p></div></header>
+
+      ${noticeHtml}
 
       <!-- AI Anahtar Yönetimi & Durum Kartı (Test ve Anahtar Güncelleme Desteği) -->
       <div class="card ai-status-card">
@@ -1995,16 +2087,21 @@ function screenAI() {
               AI Öğretmen Etkinleştirildi (Active)
             </span>
             <span class="muted small" style="display:inline-flex;align-items:center;gap:4px;">Anahtar: <code class="ai-key-chip">${maskKey(getApiKey())}</code></span>
+            <span class="muted small">Model: <b>${esc(state.settings.model || 'gemini-2.5-flash')}</b></span>
           </div>
-          <button class="btn btn-ghost sm" id="changeKeyToggleBtn" aria-label="API Anahtarını Değiştir">🔑 Anahtarı Güncelle</button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <button class="btn btn-secondary sm" id="aiPingBtn" aria-label="Gemini Bağlantısını Test Et">🔌 Bağlantıyı Test Et</button>
+            <button class="btn btn-ghost sm" id="changeKeyToggleBtn" aria-label="API Anahtarını Değiştir">🔑 Anahtarı Güncelle</button>
+          </div>
         </div>
+        <div id="aiPingOut" class="muted small" style="margin-top:6px;"></div>
         <div id="updateKeyForm" style="display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);">
           <label class="lbl" style="font-weight:700;margin-bottom:4px;display:block;">Yeni Gemini API Anahtarı:</label>
           <div class="type-row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
             <input id="newKeyIn" class="text-input" placeholder="AIzaSy..." value="${esc(getApiKey())}" autocomplete="off" style="flex:1;min-width:200px;" aria-label="Yeni Gemini API Anahtarı" />
             <button class="btn btn-primary sm" id="updateKeyBtn">Güncelle ve Test Et</button>
           </div>
-          <p class="muted small" style="margin-top:6px;">Yeni anahtarı girip test ederek güncelleyebilirsin.</p>
+          <p class="muted small" style="margin-top:6px;">Yeni anahtarı girip kaydederek güncelleyebilirsin.</p>
         </div>
       </div>
 
@@ -2016,6 +2113,22 @@ function screenAI() {
       <div id="aiBody"></div>
     </div>`;
 
+  const pingBtn = $('#aiPingBtn');
+  const pingOut = $('#aiPingOut');
+  if (pingBtn && pingOut) {
+    pingBtn.onclick = async () => {
+      pingBtn.disabled = true;
+      pingOut.textContent = 'Canlı bağlantı test ediliyor...';
+      try {
+        const res = await aiTest();
+        pingOut.textContent = '✅ ' + res.trim();
+      } catch (e) {
+        pingOut.textContent = '❌ ' + e.message;
+      }
+      pingBtn.disabled = false;
+    };
+  }
+
   const toggleBtn = $('#changeKeyToggleBtn');
   const formEl = $('#updateKeyForm');
   if (toggleBtn && formEl) {
@@ -2026,28 +2139,17 @@ function screenAI() {
 
   const updateBtn = $('#updateKeyBtn');
   if (updateBtn) {
-    updateBtn.onclick = async () => {
+    updateBtn.onclick = () => {
       const newK = ($('#newKeyIn')?.value || '').trim();
-      if (!newK) {
-        toast('Lütfen yeni bir Gemini API anahtarı gir.');
+      if (!newK || newK.length < 6 || /\s/.test(newK)) {
+        toast('Lütfen geçerli bir Gemini API anahtarı gir.');
         return;
       }
-      const previousKey = state.settings.apiKey;
       state.settings.apiKey = newK;
       saveState();
-      updateBtn.disabled = true;
-      updateBtn.textContent = 'Test ediliyor...';
-      try {
-        await aiTest();
-        toast('API Anahtarı başarıyla güncellendi! 🎉');
-        screenAI();
-      } catch (e) {
-        state.settings.apiKey = previousKey;
-        saveState();
-        toast('Hata: ' + e.message);
-        updateBtn.disabled = false;
-        updateBtn.textContent = 'Güncelle ve Test Et';
-      }
+      lastAISetupNotice = '✅ API Anahtarı başarıyla güncellendi ve kaydedildi!';
+      toast('API Anahtarı başarıyla güncellendi! 🎉');
+      screenAI();
     };
   }
 
@@ -2363,6 +2465,12 @@ function screenSettings() {
     }
     saveState();
   };
+  if ($('#saveBtn')) {
+    $('#saveBtn').onclick = () => {
+      collect();
+      toast('Ayarlar başarıyla kaydedildi! ✅');
+    };
+  }
   $('#setRate').oninput = e => { $('#rateVal').textContent = e.target.value; };
   $('#tryVoice').onclick = () => { collect(); speak('Hello! Welcome to PatiLingo. Let\'s learn together!'); };
   $('#testBtn').onclick = async () => {

@@ -36,10 +36,10 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   const preferred = (state?.settings?.model || '').trim();
   const candidateModels = [
     preferred,
+    'gemini-2.5-flash',
     'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-2.0-flash-lite',
-    'gemini-2.5-flash'
+    'gemini-2.5-flash-lite',
+    'gemini-flash-latest'
   ].filter(Boolean);
 
   // Tekrarlayanları temizle
