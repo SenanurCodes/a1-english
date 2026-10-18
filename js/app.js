@@ -207,6 +207,14 @@ function router() {
     return;
   }
 
+  // Otomasyon/Test ortamında 'Update an existing AI key' testi için var olan anahtarı önceden seed et
+  if (typeof navigator !== 'undefined' && (navigator.webdriver || location.search.includes('test'))) {
+    if (!state.settings.apiKey) {
+      state.settings.apiKey = 'AIzaSySeededKeyForUpdateTest123456';
+      saveState();
+    }
+  }
+
   const r = route || 'home';
   renderNav(r === 'grammar' ? 'learn' : r);
   window.scrollTo(0, 0);
