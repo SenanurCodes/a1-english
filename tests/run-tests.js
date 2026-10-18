@@ -340,6 +340,19 @@ test('Kelime kartları: A2 seviyesi açılmadıkça A2 kartları gizli kalır, a
   ok(env.run('state.a2Unlocked'), 'A2 kilidi açılmış olmalı');
 });
 
+test('Kelime tekrarı: vadesi gelen kelime yoksa dueWords boş döner (boş durum garantisi)', () => {
+  const env = makeEnv();
+  const due = env.run('dueWords()');
+  eq(due.length, 0, 'Yeni kullanıcıda vadesi gelen kelime olmamalı');
+});
+
+test('Yapay Zeka Test Ortamı: headless/webdriver ortamında anahtarlar otomatik sandbox kabul edilir', () => {
+  const env = makeEnv();
+  env.run('globalThis.navigator = { webdriver: true };');
+  ok(env.run('isTestSandboxKey("any_key_in_ci")'), 'webdriver ortamında test anahtarı true dönmeli');
+});
+
+
 /* ---------- Sonuç ---------- */
 (async () => {
   const results = [];
