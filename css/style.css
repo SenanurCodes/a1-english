@@ -1138,6 +1138,52 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 .setup-card { background: var(--card-bg, #fff); border: 2px solid var(--line); color: var(--text); }
 .steps li { margin-bottom: 8px; font-weight: 600; line-height: 1.5; }
+
+/* AI Durum Kartı & Rozeti */
+.ai-status-card {
+  margin-bottom: 16px;
+  padding: 12px 18px;
+  background: color-mix(in srgb, var(--success, #10b981) 6%, var(--card-bg, #fff));
+  border: 1.5px solid color-mix(in srgb, var(--success, #10b981) 30%, var(--line, var(--border, #e2e8f0)));
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.05);
+}
+.ai-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--success, #10b981) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--success, #10b981) 35%, transparent);
+  color: var(--success, #10b981);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.ai-pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--success, #10b981);
+  box-shadow: 0 0 8px var(--success, #10b981);
+  display: inline-block;
+  flex-shrink: 0;
+  animation: ai-pulse 2s infinite ease-in-out;
+}
+@keyframes ai-pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.25); opacity: 1; }
+}
+.ai-key-chip {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--line, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  font-family: monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
 .ai-report { margin-top: 14px; }
 .ai-report h4 { font-size: 1.15rem; margin: 18px 0 6px; color: var(--purple-d); }
 .ai-report ul { padding-left: 22px; margin: 6px 0; }

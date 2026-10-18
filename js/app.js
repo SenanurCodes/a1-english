@@ -1948,11 +1948,14 @@ function screenAI() {
       <header class="page-head"><div><h1>🤖 AI Öğretmen</h1><p class="muted">Seviyeni takip eden kişisel öğretmenin.</p></div></header>
 
       <!-- AI Anahtar Yönetimi & Durum Kartı (Test ve Anahtar Güncelleme Desteği) -->
-      <div class="card ai-status-card" style="margin-bottom:16px;padding:12px 16px;background:color-mix(in srgb, var(--success,#10b981) 8%, var(--card-bg,#fff));border:1px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span class="badge" style="background:#10b981;color:#fff;font-weight:700;">🟢 AI Öğretmen Etkinleştirildi (Active)</span>
-            <span class="muted small">Anahtar: <code>${maskKey(getApiKey())}</code></span>
+      <div class="card ai-status-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span class="badge ai-status-pill" aria-label="AI Öğretmen Etkinleştirildi (Active)">
+              <span class="ai-pulse-dot"></span>
+              AI Öğretmen Etkinleştirildi (Active)
+            </span>
+            <span class="muted small" style="display:inline-flex;align-items:center;gap:4px;">Anahtar: <code class="ai-key-chip">${maskKey(getApiKey())}</code></span>
           </div>
           <button class="btn btn-ghost sm" id="changeKeyToggleBtn" aria-label="API Anahtarını Değiştir">🔑 Anahtarı Güncelle</button>
         </div>
