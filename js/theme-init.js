@@ -20,17 +20,7 @@
     }
   } catch(e) {}
 
-  var isTestRunner = typeof navigator !== 'undefined' && (navigator.webdriver || location.search.indexOf('test=') !== -1 || window.__TEST__);
-  if (isTestRunner && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(regs) {
-      for (var i = 0; i < regs.length; i++) regs[i].unregister();
-    });
-    if (typeof caches !== 'undefined') {
-      caches.keys().then(function(names) {
-        for (var i = 0; i < names.length; i++) caches.delete(names[i]);
-      });
-    }
-  } else if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     // Yeni sürüm bekliyorsa ekranın altında "Güncelle" bandı göster
     var showUpdateBanner = function(worker) {
       if (!worker || document.getElementById('sw-update-banner')) return;

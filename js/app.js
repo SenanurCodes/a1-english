@@ -207,14 +207,6 @@ function router() {
     return;
   }
 
-  // Otomasyon/Test ortamında 'Update an existing AI key' testi için var olan anahtarı önceden seed et
-  if (typeof navigator !== 'undefined' && (navigator.webdriver || location.search.includes('test'))) {
-    if (!state.settings.apiKey) {
-      state.settings.apiKey = 'AIzaSySeededKeyForUpdateTest123456';
-      saveState();
-    }
-  }
-
   const r = route || 'home';
   renderNav(r === 'grammar' ? 'learn' : r);
   window.scrollTo(0, 0);
@@ -654,9 +646,11 @@ function screenHome() {
           <div class="ac-emoji">🔁</div>
           <div class="ac-body">
             <div class="muted small">Akıllı Aralıklı Tekrar</div>
-            <h3>${due > 0 ? `${due} kelime tekrar bekliyor` : '3 kelime tekrar bekliyor'}</h3>
-            <p class="muted small">${due > 0 ? 'Unutma eğrisine giren kelimeleri taze tut!' : 'Kalıcı hafıza için aralıklı tekrar seansı hazır.'}</p>
-            <div class="ac-actions" style="margin-top:10px;"><a class="btn btn-primary" id="dashReviewBtn" href="#/review">🔁 Tekrar Et</a></div>
+            <h3>${due > 0 ? `${due} kelime tekrar bekliyor` : 'Tekrar edilecek kelime yok'}</h3>
+            <p class="muted small">${due > 0 ? 'Unutma eğrisine giren kelimeleri taze tut!' : 'Yeni dersler tamamladıkça tekrar kelimeleri burada görünecek.'}</p>
+            <div class="ac-actions" style="margin-top:10px;">${due > 0
+              ? '<a class="btn btn-primary" id="dashReviewBtn" href="#/review">🔁 Tekrar Et</a>'
+              : '<a class="btn btn-ghost" href="#/review">Tekrar Sayfasını Gör</a>'}</div>
           </div>
         </div>
 
@@ -1569,24 +1563,11 @@ function screenLesson(id) {
    ============================================================ */
 function screenReview() {
   const reviewLimit = Math.max(5, parseInt(state.settings.reviewLimit, 10) || 25);
-  let words = dueWords();
-  const dueCount = words.length;
-
-  // TestSprite ve otomasyon testleri için deterministik tekrar kelimeleri sağla
-  if (words.length === 0) {
-    const firstVocab = (UNITS.find(u => u.type === 'vocab')?.words || []).slice(0, 3);
-    const fallbackWords = firstVocab.length ? firstVocab : (ALL_WORDS || []).slice(0, 3);
-    fallbackWords.forEach(w => {
-      state.words[w.key] = { box: 1, due: Date.now() - 60000, right: 1, wrong: 0 };
-    });
-    saveState();
-    words = dueWords();
-  }
+  const allDue = dueWords();
+  const dueCount = allDue.length;
 
   // Günlük tekrar kelime üst sınırı (Varsayılan 25, Ayarlar'dan değiştirilebilir)
-  if (words.length > reviewLimit) {
-    words = words.slice(0, reviewLimit);
-  }
+  const words = dueCount > reviewLimit ? allDue.slice(0, reviewLimit) : allDue;
 
   const start = () => runLesson({
     title: `🔁 Akıllı Tekrar (${words.length} Kelime)`,
@@ -1597,32 +1578,39 @@ function screenReview() {
     onFinish: (results, { correct }) => { const xp = correct * 8; addXP(xp); return { xp, exitTo: '#/home' }; }
   });
 
-  view().innerHTML = `
-    <div class="page">
+  const header = `
       <header class="page-head">
         <div>
           <h1>🔁 Akıllı Tekrar (Spaced Repetition)</h1>
           <p class="muted">Hafıza eğrisine göre aralıklı tekrar ile kelimeleri kalıcı öğren.</p>
         </div>
-      </header>
+      </header>`;
 
-      <!-- Tekrar Durumu & Bilgi Kartı -->
-      <div class="card review-status-card" id="reviewStatusCard" style="margin-bottom:16px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-          <div>
-            <h2 style="margin:0;font-size:1.15rem;">🌱 Tekrar Durumu</h2>
-            <div class="muted small">${dueCount === 0 ? 'Tekrar edilecek kelime yok (No words due). Hafızanı tazelemek için otomatik tekrar destesi hazırlandı.' : `${dueCount} kelimenin tekrar vadesi doldu.`}</div>
+  if (dueCount === 0) {
+    view().innerHTML = `
+      <div class="page">
+        ${header}
+        <div class="card review-status-card" id="reviewStatusCard" style="text-align:center; padding: 32px 20px; max-width: 560px; margin: 0 auto;">
+          <div style="font-size: 3rem; margin-bottom: 12px;">✅</div>
+          <h2>Tekrar edilecek kelime yok</h2>
+          <p class="muted" style="margin: 8px auto 20px;">Şu anda vadesi gelmiş kelime bulunmuyor. Yeni dersler tamamladıkça veya zorlandığın kelimeler vadesine geldikçe burada görünecek.</p>
+          <div style="display:flex; flex-direction:column; gap:12px; max-width:320px; margin:0 auto;">
+            <a class="btn btn-primary" href="#/cards">🃏 Kelime Kartlarına Git</a>
+            <a class="btn btn-ghost" href="#/home">Panoya Dön</a>
           </div>
-          <span class="badge ${dueCount > 0 ? 'badge-due' : ''}">${dueCount > 0 ? `⏰ ${dueCount} Vadesi Dolmuş` : '✅ Vadesi Dolmuş Kelime Yok'}</span>
         </div>
-      </div>
+      </div>`;
+    return;
+  }
 
-      <!-- Spaced-Repetition Review Card -->
+  view().innerHTML = `
+    <div class="page">
+      ${header}
       <div class="card review-hero-card" id="spacedRepetitionCard" style="text-align:center; padding: 32px 20px; max-width: 560px; margin: 0 auto;">
         <div style="font-size: 3rem; margin-bottom: 12px;">🧠</div>
         <h2>Tekrar Seansı Hazır!</h2>
         <p class="muted" style="margin: 8px auto 20px;">
-          Kalıcı hafızana aktarılmak üzere <b>${words.length} kelime</b> seçildi.
+          <b>${dueCount} kelimenin</b> tekrar vadesi doldu${dueCount > words.length ? ` (bu seansta ${words.length} tanesi)` : ''}.
         </p>
 
         <div class="stats-row" style="display:flex; justify-content:center; gap:24px; margin-bottom:24px;">
@@ -1919,10 +1907,6 @@ function maskKey(k) {
 }
 
 function screenAI() {
-  const isAutomated = (typeof navigator !== 'undefined' && navigator.webdriver) || location.search.includes('test');
-  const currentKey = getApiKey();
-  const fixtureKey = currentKey || (isAutomated ? 'AIzaSyMockTestKey123456789' : '');
-
   if (!hasAI()) {
     view().innerHTML = `
       <div class="page">
@@ -1936,28 +1920,18 @@ function screenAI() {
           </ol>
           <label class="lbl" style="font-weight:700;margin-bottom:6px;display:block;">Google Gemini API Anahtarı:</label>
           <div class="type-row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-            <input id="keyIn" class="text-input" placeholder="AIzaSy..." value="${esc(fixtureKey)}" autocomplete="off" style="flex:1;min-width:200px;" aria-label="Gemini API Anahtarı" />
+            <input id="keyIn" class="text-input" placeholder="AIzaSy..." value="" autocomplete="off" style="flex:1;min-width:200px;" aria-label="Gemini API Anahtarı" />
             <button class="btn btn-primary" id="saveKey">Kaydet ve Test Et</button>
           </div>
-          <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <button type="button" class="btn btn-secondary sm" id="useMockKeyBtn">🧪 Test / Demo Anahtarı Kullan</button>
-            <span class="muted small">🔒 Anahtarın sadece tarayıcında saklanır. Test/CI ortamında anında onaylanır.</span>
-          </div>
+          <p class="muted small" style="margin-top:10px;">🔒 Anahtarın sadece tarayıcında saklanır.</p>
         </div>
       </div>`;
 
-    if ($('#useMockKeyBtn')) {
-      $('#useMockKeyBtn').onclick = () => {
-        $('#keyIn').value = 'AIzaSyMockTestKey123456789';
-        toast('Test anahtarı yerleştirildi 🧪');
-      };
-    }
-
     $('#saveKey').onclick = async () => {
-      let k = $('#keyIn').value.trim();
+      const k = $('#keyIn').value.trim();
       if (!k) {
-        k = 'AIzaSyMockTestKey123456789';
-        $('#keyIn').value = k;
+        toast('Lütfen bir Gemini API anahtarı gir.');
+        return;
       }
       state.settings.apiKey = k;
       saveState();
@@ -2023,7 +1997,12 @@ function screenAI() {
   const updateBtn = $('#updateKeyBtn');
   if (updateBtn) {
     updateBtn.onclick = async () => {
-      let newK = ($('#newKeyIn')?.value || '').trim() || 'AIzaSyMockUpdatedKey123456789';
+      const newK = ($('#newKeyIn')?.value || '').trim();
+      if (!newK) {
+        toast('Lütfen yeni bir Gemini API anahtarı gir.');
+        return;
+      }
+      const previousKey = state.settings.apiKey;
       state.settings.apiKey = newK;
       saveState();
       updateBtn.disabled = true;
@@ -2033,6 +2012,8 @@ function screenAI() {
         toast('API Anahtarı başarıyla güncellendi! 🎉');
         screenAI();
       } catch (e) {
+        state.settings.apiKey = previousKey;
+        saveState();
         toast('Hata: ' + e.message);
         updateBtn.disabled = false;
         updateBtn.textContent = 'Güncelle ve Test Et';
@@ -2265,8 +2246,7 @@ function screenSettings() {
         <p class="muted small">Ücretsiz anahtar: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a></p>
         <label class="lbl">API Anahtarı</label>
         <div style="display:flex;gap:8px;align-items:center;">
-          <input id="setKey" class="text-input" type="password" value="${esc(s.apiKey || ((typeof navigator !== 'undefined' && navigator.webdriver) ? 'AIzaSyMockTestKey123456789' : ''))}" placeholder="AIza..." autocomplete="off" style="flex:1;" />
-          <button type="button" class="btn btn-ghost sm" id="settingsTestKeyBtn" title="Test Ortamı İçin Sahte Anahtar Doldur">🧪 Test Anahtarı</button>
+          <input id="setKey" class="text-input" type="password" value="${esc(s.apiKey || '')}" placeholder="AIza..." autocomplete="off" style="flex:1;" />
         </div>
         <label class="lbl">Model</label>
         <input id="setModel" class="text-input" value="${esc(s.model)}" list="models" />
@@ -2355,18 +2335,7 @@ function screenSettings() {
   };
   $('#setRate').oninput = e => { $('#rateVal').textContent = e.target.value; };
   $('#tryVoice').onclick = () => { collect(); speak('Hello! Welcome to PatiLingo. Let\'s learn together!'); };
-  if ($('#settingsTestKeyBtn')) {
-    $('#settingsTestKeyBtn').onclick = () => {
-      $('#setKey').value = 'AIzaSyMockTestKey123456789';
-      toast('Test anahtarı yerleştirildi 🧪');
-    };
-  }
   $('#testBtn').onclick = async () => {
-    let k = $('#setKey').value.trim();
-    if (!k && ((typeof navigator !== 'undefined' && navigator.webdriver) || location.search.includes('test'))) {
-      k = 'AIzaSyMockTestKey123456789';
-      $('#setKey').value = k;
-    }
     collect();
     $('#testOut').textContent = 'Test ediliyor...';
     try { const r = await aiTest(); $('#testOut').textContent = '✅ ' + r.trim(); }
@@ -2638,7 +2607,7 @@ function openAuthModal() {
 }
 
 /* ---------- Service Worker Kaydı (Çevrim Dışı Destek) ---------- */
-if (typeof navigator !== 'undefined' && !navigator.webdriver && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').then(reg => {
       console.log('PatiLingo Service Worker aktif:', reg.scope);

@@ -14,7 +14,7 @@ const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js', 'js/firebase.js', '
 const SOURCES = FILES.map(f => [f, fs.readFileSync(path.join(ROOT, f), 'utf8')]);
 
 /* ---------- Sahte tarayıcı ortamı ---------- */
-function makeEnv(initialStorage = {}) {
+function makeEnv(initialStorage = {}, options = {}) {
   const store = { ...initialStorage };
   const warnings = [];
   const localStorage = {
@@ -45,6 +45,7 @@ function makeEnv(initialStorage = {}) {
   };
   ctx.window = ctx;
   ctx.addEventListener = () => {};
+  if (options.fetch) ctx.fetch = options.fetch;
   vm.createContext(ctx);
   for (const [file, src] of SOURCES) vm.runInContext(src, ctx, { filename: file });
   const run = code => vm.runInContext(code, ctx);
@@ -284,14 +285,48 @@ test('Gemini API: anahtar yoksa dürüstçe NO_KEY hatası fırlatır', async ()
   ok(threw, 'Anahtar yokken hata fırlatılmalı');
 });
 
-test('Gemini API sandbox anahtarları: TESTKEY/TEST_KEY/dummy içeren anahtarlar test koşucusu için onaylanır', async () => {
-  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: 'AIzaSyTEST_dummyKey1234567890' } }) });
-  ok(env.run('isTestSandboxKey("AIzaSyTESTKEY_1234567890")'), 'AIzaSyTESTKEY_ true dönmeli');
-  ok(env.run('isTestSandboxKey("AIza_TEST_KEY_FOR_TESTING")'), 'AIza_TEST_KEY_ true dönmeli');
-  ok(env.run('isTestSandboxKey("AIzaSyTEST_dummyKey1234567890")'), 'AIzaSyTEST_dummyKey true dönmeli');
-  ok(!env.run('isTestSandboxKey("AIzaSyRealLiveProdKey98765")'), 'Gerçek anahtar false dönmeli');
+/* Google Gemini API'si uygulama kodunda değil, burada (test tarafında) mock'lanır. */
+function mockFetch(status, body) {
+  const calls = [];
+  const fn = async (url, opts) => {
+    calls.push({ url, headers: (opts && opts.headers) || {} });
+    return { status, ok: status >= 200 && status < 300, json: async () => body };
+  };
+  fn.calls = calls;
+  return fn;
+}
+function envWithKey(key, fetchImpl, extraNavigator) {
+  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: key } }) }, { fetch: fetchImpl });
+  if (extraNavigator) env.run(`globalThis.navigator = ${JSON.stringify(extraNavigator)};`);
+  return env;
+}
+
+test('Gemini API: geçerli anahtar, Google yanıtı 200 dönünce aiTest başarılı olur ve anahtar istekle gönderilir', async () => {
+  const f = mockFetch(200, { candidates: [{ content: { parts: [{ text: 'Hello! I am ready to help you learn English.' }] } }] });
+  const env = envWithKey('AIzaSyValidKey1234567890', f);
   const res = await env.run('aiTest()');
-  ok(res.includes('ready to help'), 'Sandbox anahtarıyla aiTest başarılı dönmeli');
+  ok(res.includes('ready to help'), 'Geçerli anahtarla aiTest yanıt döndürmeli');
+  ok(f.calls.length >= 1, 'Gerçekten ağ isteği yapılmalı');
+  eq(f.calls[0].headers['x-goog-api-key'], 'AIzaSyValidKey1234567890', 'Anahtar x-goog-api-key başlığıyla gitmeli');
+});
+
+test('Gemini API: geçersiz anahtar (HTTP 400) BAD_KEY hatası verir, AIzaSy ile başlasa da sahte onay yok', async () => {
+  const f = mockFetch(400, { error: { message: 'API key not valid.' } });
+  const env = envWithKey('AIzaSyInvalidKey1234567890', f);
+  let err = null;
+  try { await env.run('aiTest()'); } catch (e) { err = e; }
+  ok(err, 'Geçersiz anahtarda hata fırlatılmalı');
+  eq(err.code, 'BAD_KEY', 'Hata kodu BAD_KEY olmalı');
+});
+
+test('Gemini API: yetkisiz anahtar (HTTP 403) BAD_KEY verir, ortam (webdriver/test) davranışı değiştirmez', async () => {
+  const f = mockFetch(403, { error: { message: 'Permission denied.' } });
+  const env = envWithKey('AIzaSyTEST_dummyKey1234567890', f, { webdriver: true });
+  let err = null;
+  try { await env.run('aiTest()'); } catch (e) { err = e; }
+  ok(err, 'webdriver ve "test" içeren anahtarda da gerçek doğrulama yapılmalı');
+  eq(err.code, 'BAD_KEY', 'Hata kodu BAD_KEY olmalı');
+  ok(f.calls.length >= 1, 'Anahtar adı ne olursa olsun ağ isteği yapılmalı');
 });
 
 test('Landing dashboard bileşenleri: index.html Günlük, hedef, sonraki ders ve Genel Kurs İlerlemesi özeti içerir', () => {
@@ -365,10 +400,16 @@ test('Kelime tekrarı: vadesi gelen kelime yoksa dueWords boş döner (boş duru
   eq(due.length, 0, 'Yeni kullanıcıda vadesi gelen kelime olmamalı');
 });
 
-test('Yapay Zeka Test Ortamı: headless/webdriver ortamında anahtarlar otomatik sandbox kabul edilir', () => {
-  const env = makeEnv();
-  env.run('globalThis.navigator = { webdriver: true };');
-  ok(env.run('isTestSandboxKey("any_key_in_ci")'), 'webdriver ortamında test anahtarı true dönmeli');
+test('Üretim kodu saflığı: js/ altında test ortamı algılama veya sahte anahtar bulunmaz', () => {
+  const fs = require('fs');
+  const forbidden = ['navigator.webdriver', '__TEST__', 'isTestSandboxKey', 'MockTestKey', 'MockUpdatedKey', 'SeededKeyForUpdateTest'];
+  const jsDir = path.join(ROOT, 'js');
+  for (const f of fs.readdirSync(jsDir).filter(n => n.endsWith('.js'))) {
+    const src = fs.readFileSync(path.join(jsDir, f), 'utf8');
+    for (const token of forbidden) {
+      ok(!src.includes(token), `js/${f} içinde yasaklı test hilesi var: ${token}`);
+    }
+  }
 });
 
 

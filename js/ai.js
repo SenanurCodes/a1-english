@@ -26,40 +26,11 @@ function getApiKey() {
   return '';
 }
 
-function isTestSandboxKey(key) {
-  if (!key) return false;
-  if (typeof navigator !== 'undefined' && navigator.webdriver) return true;
-  if (typeof window !== 'undefined' && (window.__TEST__ || window.location?.search?.includes('test'))) return true;
-  const k = key.trim().toLowerCase();
-  return k.includes('test') || k.includes('dummy') || k.includes('mock') || k.includes('fake') || k.includes('sample') || k.includes('ci') || k.startsWith('aizasytest') || k.startsWith('aizasymock');
-}
-
 function hasAI() { return !!getApiKey(); }
 
 async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   const key = getApiKey();
   if (!key) throw new AIError('NO_KEY', 'API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
-
-  // Otomasyon ve E2E test koşucularının gönderdiği sandbox test anahtarları
-  if (isTestSandboxKey(key)) {
-    if (json) {
-      return JSON.stringify({
-        title: "A1 Pratik Alıştırması",
-        questions: [
-          { t: "mc", q: "I ___ a student. (am/is/are)", o: ["am", "is", "are"], a: "am", h: "I öznesi ile am kullanılır." },
-          { t: "order", s: "We study English every day", tr: "Biz her gün İngilizce çalışırız." },
-          { t: "mc", q: "She ___ to school. (go/goes)", o: ["goes", "go"], a: "goes", h: "He/She/It ile fiil -s alır." }
-        ]
-      });
-    }
-    if (system && (system.includes('öğretmensin') || system.includes('raporu'))) {
-      return `### 🎯 Tahmini Seviye\nA1.2 (Temel Başlangıç Seviyesi)\n\n### 💪 Güçlü Yönlerin\nTemel kelimeleri ve selamlaşma kalıplarını başarıyla kavradın.\n\n### 🛠️ Geliştirilmesi Gerekenler\nCümle lokomotifi sıralamasına ve zaman zarflarına dikkat et.\n\n### 📋 Sana Özel Öneri\nGünde 10 dakika pratikle A2 seviyesine çok rahat geçebilirsin!`;
-    }
-    if (system && system.includes('Sunny')) {
-      return "Hello! I am Sunny, your AI English practice partner. What is your favorite food?";
-    }
-    return "Hello! I am ready to help you learn English.";
-  }
 
   // Kullanıcının seçtiği model ve yedek kararlı modeller sırası
   const preferred = (state?.settings?.model || '').trim();
@@ -103,19 +74,6 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
           throw new AIError('RATE_LIMIT', 'Google Gemini ücretsiz kullanım sınırına ulaşıldı. Biraz bekleyip tekrar dene.', err);
         }
         if (res.status === 400 || res.status === 403) {
-          // Upstream endpoint mock fallback: Eğer otomasyon testinde veya AIzaSy formatında anahtarsa mock dön
-          if (key.startsWith('AIzaSy') || isTestSandboxKey(key)) {
-            if (json) {
-              return JSON.stringify({
-                title: "A1 Pratik Alıştırması",
-                questions: [
-                  { t: "mc", q: "I ___ a student. (am/is/are)", o: ["am", "is", "are"], a: "am", h: "I öznesi ile am kullanılır." },
-                  { t: "order", s: "We study English every day", tr: "Biz her gün İngilizce çalışırız." }
-                ]
-              });
-            }
-            return "Hello! I am ready to help you learn English.";
-          }
           throw new AIError('BAD_KEY', `API anahtarı geçersiz veya yetkisiz: ${msg}`, err);
         }
         throw new AIError('UNKNOWN', msg, err);
@@ -264,21 +222,6 @@ async function aiChat(userText) {
 async function aiTest() {
   const key = getApiKey();
   if (!key) throw new AIError('NO_KEY', 'API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
-
-  if (isTestSandboxKey(key)) {
-    return 'Hello! I am ready to help you learn English.';
-  }
-
-  try {
-    return await gemini({ contents: [{ role: 'user', parts: [{ text: 'Say "Hello! I am ready to help you learn English." in one line.' }] }], temperature: 0 });
-  } catch (err) {
-    // Upstream validation mock: Eğer test/otomasyon ortamıysa veya anahtar Google API Key formatındaysa (AIzaSy...),
-    // upstream servis (Google) 400/403 dönse dahi otomasyon testini engellememek için mock onay dönüyoruz.
-    if (key.startsWith('AIzaSy') || key.length >= 20 || isTestSandboxKey(key) || (typeof navigator !== 'undefined' && navigator.webdriver)) {
-      console.warn('Upstream Gemini validation endpoint mocked for automation runner:', err.message);
-      return 'Hello! I am ready to help you learn English.';
-    }
-    throw err;
-  }
+  return gemini({ contents: [{ role: 'user', parts: [{ text: 'Say "Hello! I am ready to help you learn English." in one line.' }] }], temperature: 0 });
 }
 
