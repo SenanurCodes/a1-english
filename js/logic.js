@@ -45,6 +45,135 @@ const LOKOMOTIF_EXAMPLES = [
   }
 ];
 
+const LOGIC_SIMULATORS = {
+  mindset: {
+    id: 'mindset',
+    title: '🚂 İngilizce Cümle Lokomotifi',
+    badge: '⚡ CÜMLE DİZİLİM SİMÜLATÖRÜ',
+    desc: 'İngilizce tren gibi düz gider: Özne ve Eylem hemen öne bağlanır, yer ve zaman vagonları arkaya dizilir!',
+    examples: LOKOMOTIF_EXAMPLES
+  },
+  culture: {
+    id: 'culture',
+    title: '🤝 Nezaket & İletişim Simülatörü',
+    badge: '⚡ NEZAKET & KÜLTÜR SİMÜLATÖRÜ',
+    desc: 'Kaba emir kipleri yerine İngiliz/Amerikan kültüründeki sihirli yumuşatıcıları ve nezaket kalıplarını deneyimle!',
+    examples: [
+      {
+        tr: 'Bir su alabilir miyim lütfen? (Bana su ver yerine)',
+        explanation: 'Kaba "Give me water" yerine "Can I have..." + "please" kalıbı İngilizce kültüründe altın kuraldır.',
+        cars: [
+          { role: '🎩 Yumuşatıcı', en: 'Can I have', tr: 'Alabilir miyim', color: 'var(--cat-mantik)' },
+          { role: '💧 İstenen', en: 'a water,', tr: 'bir su,', color: 'var(--cat-kelime)' },
+          { role: '🙏 Sihirli Kelime', en: 'please?', tr: 'lütfen?', color: 'var(--success)' }
+        ],
+        fullEn: 'Can I have a water, please?'
+      },
+      {
+        tr: 'Bir kahve rica ediyorum.',
+        explanation: '"I want" çocuksu ve talepkardır. "I would like (I\'d like)" yetişkin ve kibar sipariş verme standardıdır.',
+        cars: [
+          { role: '🎩 Kibar İstek', en: "I'd like", tr: 'İsterdim / Rica ediyorum', color: 'var(--cat-mantik)' },
+          { role: '☕ İstenen', en: 'a coffee,', tr: 'bir kahve,', color: 'var(--cat-kelime)' },
+          { role: '🙏 Sihirli Kelime', en: 'please.', tr: 'lütfen.', color: 'var(--success)' }
+        ],
+        fullEn: "I'd like a coffee, please."
+      },
+      {
+        tr: 'Affedersiniz, bana yardımcı olabilir misiniz?',
+        explanation: 'Bir yabancıya soru sormadan önce mutlaka "Excuse me" ile dikkat çekilir ve "could you" ile rica edilir.',
+        cars: [
+          { role: '📢 Hitap', en: 'Excuse me,', tr: 'Affedersiniz,', color: 'var(--warning)' },
+          { role: '🎩 Kibar Rica', en: 'could you', tr: 'yapabilir misiniz', color: 'var(--cat-mantik)' },
+          { role: '🤝 Eylem', en: 'help me?', tr: 'bana yardım etmek?', color: 'var(--cat-kelime)' }
+        ],
+        fullEn: 'Excuse me, could you help me?'
+      }
+    ]
+  },
+  traps: {
+    id: 'traps',
+    title: '⚠️ Türk Düşünce Tuzağı Simülatörü',
+    badge: '⚡ DOĞRU / YANLIŞ MANTIK SİMÜLATÖRÜ',
+    desc: 'Kafanda Türkçe düşünüp çevirince oluşan komik hataları ve doğru İngilizce karşılıklarını test et!',
+    examples: [
+      {
+        tr: 'Ben sana katılıyorum. (I am agree değil!)',
+        explanation: '"Agree" bir sıfat değil, doğrudan fiildir. Bu yüzden "am" kullanılmaz, doğrudan "I agree" denir.',
+        cars: [
+          { role: '👤 Özne', en: 'I', tr: 'Ben', color: 'var(--role-subject)' },
+          { role: '✅ Fiil', en: 'agree', tr: 'katılıyorum', color: 'var(--role-verb)' },
+          { role: '👥 Kime', en: 'with you.', tr: 'seninle / sana.', color: 'var(--role-with)' }
+        ],
+        fullEn: 'I agree with you.'
+      },
+      {
+        tr: 'Ben 20 yaşındayım. (I have 20 years değil!)',
+        explanation: 'İngilizcede yaş sahip olunan bir eşya değildir, bulunulan durumdur. "Have" yerine "am/is/are" kullanılır.',
+        cars: [
+          { role: '👤 Özne', en: 'I', tr: 'Ben', color: 'var(--role-subject)' },
+          { role: '⚡ Durum', en: 'am', tr: 'yım/yim', color: 'var(--role-verb)' },
+          { role: '🎂 Yaş', en: '20 years old.', tr: '20 yaşında.', color: 'var(--cat-kelime)' }
+        ],
+        fullEn: 'I am 20 years old.'
+      },
+      {
+        tr: 'Işığı kapat lütfen. (Close the light değil!)',
+        explanation: 'Düğmeli aletler kapı gibi "close" edilmez! Açmak için "turn on", kapatmak için "turn off" denir.',
+        cars: [
+          { role: '⚡ Eylem', en: 'Turn off', tr: 'Kapat', color: 'var(--role-verb)' },
+          { role: '💡 Nesne', en: 'the light,', tr: 'ışığı,', color: 'var(--role-object)' },
+          { role: '🙏 Nezaket', en: 'please.', tr: 'lütfen.', color: 'var(--success)' }
+        ],
+        fullEn: 'Turn off the light, please.'
+      }
+    ]
+  },
+  survival: {
+    id: 'survival',
+    title: '🛡️ Hayatta Kalma Kalıbı Simülatörü',
+    badge: '⚡ REFLEKS KALIP SİMÜLATÖRÜ',
+    desc: 'Düşünmeden refleks olarak kullanman gereken en kritik hayatta kalma cümleleri!',
+    examples: [
+      {
+        tr: 'Bu ne kadar / Kaç para?',
+        explanation: 'Fiyat sorarken en hızlı ve doğrudan uluslararası kalıp.',
+        cars: [
+          { role: '❓ Ne kadar', en: 'How much', tr: 'Ne kadar', color: 'var(--cat-mantik)' },
+          { role: '⚡ Durum', en: 'is', tr: 'dır', color: 'var(--role-verb)' },
+          { role: '👉 Bu', en: 'this?', tr: 'bu?', color: 'var(--role-object)' }
+        ],
+        fullEn: 'How much is this?'
+      },
+      {
+        tr: 'Tuvalet nerede acaba?',
+        explanation: '"Toilet" yerine "restroom" demek yurt dışında çok daha kibar ve yaygındır.',
+        cars: [
+          { role: '📍 Nerede', en: 'Where', tr: 'Nerede', color: 'var(--role-place)' },
+          { role: '⚡ Durum', en: 'is', tr: 'dir', color: 'var(--role-verb)' },
+          { role: '🚻 Yer', en: 'the restroom?', tr: 'tuvalet?', color: 'var(--cat-kelime)' }
+        ],
+        fullEn: 'Where is the restroom?'
+      },
+      {
+        tr: 'Tekrar söyleyebilir misiniz lütfen?',
+        explanation: 'Karşı taraf hızlı konuştuğunda çekinmeden kullanacağın hayat kurtarıcı kalıp.',
+        cars: [
+          { role: '🎩 Rica', en: 'Could you', tr: 'Yapabilir misiniz', color: 'var(--cat-mantik)' },
+          { role: '🗣️ Eylem', en: 'say that again,', tr: 'bunu tekrar söylemek,', color: 'var(--role-verb)' },
+          { role: '🙏 Nezaket', en: 'please?', tr: 'lütfen?', color: 'var(--success)' }
+        ],
+        fullEn: 'Could you say that again, please?'
+      }
+    ]
+  }
+};
+
+function getSimulatorForCategory(catId) {
+  if (catId && LOGIC_SIMULATORS[catId]) return LOGIC_SIMULATORS[catId];
+  return LOGIC_SIMULATORS.mindset;
+}
+
 const LOGIC_CATEGORIES = [
   { id: 'all', label: '🌟 Tümü' },
   { id: 'mindset', label: '🚂 Cümle Lokomotifi' },

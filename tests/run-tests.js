@@ -253,6 +253,25 @@ test('Lokomotif Simülatörü: Örnek 1, 2 ve 3 eksiksiz vagon ve mapping verisi
   });
 });
 
+test('Kategoriye Özel Simülatörler: Her kategori (mindset, culture, traps, survival) 3 örnek ve token haritasına sahip', () => {
+  const { run } = makeEnv();
+  const sims = run('LOGIC_SIMULATORS');
+  ok(sims && sims.mindset && sims.culture && sims.traps && sims.survival, 'Tüm kategorilerin simülatörü olmalı');
+  ['mindset', 'culture', 'traps', 'survival'].forEach(cat => {
+    const s = sims[cat];
+    ok(s.title && s.badge && s.desc, `${cat} simülatör başlık ve açıklamaları içermeli`);
+    ok(Array.isArray(s.examples) && s.examples.length >= 3, `${cat} en az 3 simülatör örneği içermeli`);
+    s.examples.forEach((ex, i) => {
+      ok(ex.tr && ex.fullEn && ex.explanation, `${cat} Örnek ${i + 1} metin alanları eksiksiz olmalı`);
+      ok(Array.isArray(ex.cars) && ex.cars.length >= 3, `${cat} Örnek ${i + 1} token/vagonları içermeli`);
+    });
+  });
+  const cultSim = run('getSimulatorForCategory("culture")');
+  ok(cultSim.id === 'culture' && cultSim.title.includes('Nezaket'), 'Nezaket kategorisi doğru simülatörü döndürmeli');
+  const allSim = run('getSimulatorForCategory("all")');
+  ok(allSim.id === 'mindset', 'Tümü seçeneği varsayılan Lokomotif simülatörünü döndürmeli');
+});
+
 test('Gemini API: anahtar yoksa dürüstçe NO_KEY hatası fırlatır', async () => {
   const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: '' } }) });
   let threw = false;

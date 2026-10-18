@@ -723,10 +723,23 @@ let currentLogicTab = 'all';
 let currentLocoIdx = 0;
 
 function screenLogic() {
-  currentLocoIdx = 0; // Her girişinde Örnek 1 ile başla
   const isAll = currentLogicTab === 'all';
   const filtered = isAll ? LOGIC_GUIDES : LOGIC_GUIDES.filter(g => g.category === currentLogicTab);
-  const activeLoco = (typeof LOKOMOTIF_EXAMPLES !== 'undefined' && LOKOMOTIF_EXAMPLES[currentLocoIdx]) || (typeof LOKOMOTIF_EXAMPLES !== 'undefined' ? LOKOMOTIF_EXAMPLES[0] : null);
+  
+  // Aktif kategoriye ait simülatör ve örnekleri
+  const curSim = (typeof getSimulatorForCategory === 'function' ? getSimulatorForCategory(currentLogicTab) : (typeof LOGIC_SIMULATORS !== 'undefined' ? (LOGIC_SIMULATORS[currentLogicTab] || LOGIC_SIMULATORS.mindset) : null)) || {
+    id: 'mindset',
+    title: '🚂 İngilizce Cümle Lokomotifi',
+    badge: '⚡ CÜMLE DİZİLİM SİMÜLATÖRÜ',
+    desc: 'İngilizce tren gibi düz gider: Özne ve Eylem hemen öne bağlanır, yer ve zaman vagonları arkaya dizilir!',
+    examples: (typeof LOKOMOTIF_EXAMPLES !== 'undefined' ? LOKOMOTIF_EXAMPLES : [])
+  };
+
+  const simExamples = curSim.examples || [];
+  if (currentLocoIdx < 0 || currentLocoIdx >= simExamples.length) {
+    currentLocoIdx = 0;
+  }
+  const activeLoco = simExamples[currentLocoIdx] || simExamples[0];
 
   view().innerHTML = `
     <div class="page">
@@ -737,30 +750,44 @@ function screenLogic() {
         </div>
       </header>
 
-      <!-- Kategori Filtre Butonları -->
-      <div class="logic-tabs-bar">
+      <!-- Kategori Filtre Butonları (Kategori seçimi doğrudan simülatörü de günceller) -->
+      <div class="logic-tabs-bar" role="tablist" aria-label="Mantık ve Rehber Kategorileri">
         ${LOGIC_CATEGORIES.map(c => `
-          <button class="logic-tab-pill ${currentLogicTab === c.id ? 'active' : ''}" data-cat="${c.id}" aria-label="${c.label} kategorisi">
+          <button class="logic-tab-pill ${currentLogicTab === c.id ? 'active' : ''}" 
+                  data-cat="${c.id}" 
+                  id="logic-tab-${c.id}"
+                  role="tab"
+                  aria-selected="${currentLogicTab === c.id ? 'true' : 'false'}"
+                  aria-label="${esc(c.label)} kategorisi">
             ${c.label}
           </button>
         `).join('')}
       </div>
 
-      <!-- İnteraktif Lokomotif Cümle Simülatörü -->
+      <!-- İnteraktif Kategori & Cümle Simülatörü -->
       ${activeLoco ? `
-        <div class="card loco-simulator-card">
+        <div class="card loco-simulator-card" id="logicSimulatorCard" data-category="${curSim.id || currentLogicTab}">
           <div class="loco-head">
             <div>
-              <span class="badge-loco">⚡ İNTERAKTİF SİMÜLATÖR</span>
-              <h2 style="margin:8px 0 4px;">🚂 İngilizce Cümle Lokomotifi</h2>
-              <p class="muted small" style="margin:0;">İngilizce tren gibi düz gider: Özne ve Eylem hemen öne bağlanır, yer ve zaman vagonları arkaya dizilir!</p>
+              <span class="badge-loco" id="simBadge">${esc(curSim.badge || '⚡ İNTERAKTİF SİMÜLATÖR')}</span>
+              <h2 style="margin:8px 0 4px;" id="simTitle">${esc(curSim.title || '🚂 İngilizce Cümle Lokomotifi')}</h2>
+              <p class="muted small" style="margin:0;" id="simDesc">${esc(curSim.desc || '')}</p>
             </div>
-            <div class="loco-nav-btns" role="tablist" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-              ${LOKOMOTIF_EXAMPLES.map((ex, idx) => `
-                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}" data-example="${idx + 1}" id="loco-example-${idx + 1}" aria-label="Örnek ${idx + 1}" aria-pressed="${currentLocoIdx === idx ? 'true' : 'false'}" role="tab">Örnek ${idx + 1}</button>
+            <div class="loco-nav-btns" role="tablist" aria-label="Simülatör Örnekleri" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              ${simExamples.map((ex, idx) => `
+                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" 
+                        data-lidx="${idx}" 
+                        data-example="${idx + 1}" 
+                        id="loco-example-${idx + 1}" 
+                        aria-label="Örnek ${idx + 1}" 
+                        aria-pressed="${currentLocoIdx === idx ? 'true' : 'false'}" 
+                        aria-selected="${currentLocoIdx === idx ? 'true' : 'false'}" 
+                        role="tab">
+                  Örnek ${idx + 1}
+                </button>
               `).join('')}
               <select class="loco-sel-dropdown" id="locoExampleSelect" aria-label="Örnek Cümle Seçici" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:0.85rem;font-weight:600;">
-                ${LOKOMOTIF_EXAMPLES.map((ex, idx) => `
+                ${simExamples.map((ex, idx) => `
                   <option value="${idx}" ${currentLocoIdx === idx ? 'selected' : ''}>Örnek ${idx + 1}</option>
                 `).join('')}
               </select>
@@ -770,17 +797,17 @@ function screenLogic() {
           <div class="loco-box">
             <div class="loco-tr-row">
               <span class="loco-tr-label">🇹🇷 Türkçe Cümle:</span>
-              <span class="loco-tr-text">"${activeLoco.tr}"</span>
+              <span class="loco-tr-text" id="locoTrText">"${esc(activeLoco.tr)}"</span>
             </div>
 
-            <!-- Lokomotif Vagonları -->
-            <div class="loco-train-track">
+            <!-- Simülatör Parçaları / Token Haritası -->
+            <div class="loco-train-track" id="locoTrainTrack">
               ${activeLoco.cars.map((car, i) => `
                 <div class="loco-wagon-wrapper">
                   <div class="loco-wagon" style="--c:${car.color};">
-                    <div class="wagon-tag">${car.role}</div>
-                    <div class="wagon-en">${car.en}</div>
-                    <div class="wagon-tr">${car.tr}</div>
+                    <div class="wagon-tag">${esc(car.role)}</div>
+                    <div class="wagon-en">${esc(car.en)}</div>
+                    <div class="wagon-tr">${esc(car.tr)}</div>
                   </div>
                   ${i < activeLoco.cars.length - 1 ? '<div class="wagon-connector">➔</div>' : ''}
                 </div>
@@ -790,13 +817,13 @@ function screenLogic() {
             <!-- Sonuç ve Sesli Dinleme -->
             <div class="loco-result-row">
               <div class="loco-result-text">
-                <b>🇬🇧 İngilizce Sıralama:</b> <span class="loco-en-full">${activeLoco.fullEn}</span>
+                <b>🇬🇧 İngilizce Sıralama:</b> <span class="loco-en-full" id="locoEnFull">${esc(activeLoco.fullEn)}</span>
               </div>
-              <button class="btn btn-primary sm" data-say="${esc(activeLoco.fullEn)}" aria-label="Cümleyi sesli dinle">🔊 Sesli Dinle</button>
+              <button class="btn btn-primary sm" id="locoSpeakBtn" data-say="${esc(activeLoco.fullEn)}" aria-label="Cümleyi sesli dinle">🔊 Sesli Dinle</button>
             </div>
 
-            <div class="loco-tip">
-              💡 <b>Püf Noktası:</b> ${activeLoco.explanation}
+            <div class="loco-tip" id="locoTip">
+              💡 <b>Püf Noktası:</b> ${esc(activeLoco.explanation)}
             </div>
           </div>
         </div>
@@ -852,9 +879,11 @@ function screenLogic() {
     </div>`;
 
   function updateLocoSimulator(idx) {
-    if (typeof LOKOMOTIF_EXAMPLES === 'undefined' || !LOKOMOTIF_EXAMPLES.length) return;
-    currentLocoIdx = Math.max(0, Math.min(idx, LOKOMOTIF_EXAMPLES.length - 1));
-    const activeLoco = LOKOMOTIF_EXAMPLES[currentLocoIdx];
+    const curSim = (typeof getSimulatorForCategory === 'function' ? getSimulatorForCategory(currentLogicTab) : (typeof LOGIC_SIMULATORS !== 'undefined' ? (LOGIC_SIMULATORS[currentLogicTab] || LOGIC_SIMULATORS.mindset) : null)) || { examples: (typeof LOKOMOTIF_EXAMPLES !== 'undefined' ? LOKOMOTIF_EXAMPLES : []) };
+    const list = curSim.examples || [];
+    if (!list.length) return;
+    currentLocoIdx = Math.max(0, Math.min(idx, list.length - 1));
+    const activeLoco = list[currentLocoIdx];
     if (!activeLoco) return;
 
     $$('.loco-sel-btn').forEach(btn => {
@@ -875,16 +904,16 @@ function screenLogic() {
       box.innerHTML = `
         <div class="loco-tr-row">
           <span class="loco-tr-label">🇹🇷 Türkçe Cümle:</span>
-          <span class="loco-tr-text">"${activeLoco.tr}"</span>
+          <span class="loco-tr-text" id="locoTrText">"${esc(activeLoco.tr)}"</span>
         </div>
 
-        <div class="loco-train-track">
+        <div class="loco-train-track" id="locoTrainTrack">
           ${activeLoco.cars.map((car, i) => `
             <div class="loco-wagon-wrapper">
               <div class="loco-wagon" style="--c:${car.color};">
-                <div class="wagon-tag">${car.role}</div>
-                <div class="wagon-en">${car.en}</div>
-                <div class="wagon-tr">${car.tr}</div>
+                <div class="wagon-tag">${esc(car.role)}</div>
+                <div class="wagon-en">${esc(car.en)}</div>
+                <div class="wagon-tr">${esc(car.tr)}</div>
               </div>
               ${i < activeLoco.cars.length - 1 ? '<div class="wagon-connector">➔</div>' : ''}
             </div>
@@ -893,13 +922,13 @@ function screenLogic() {
 
         <div class="loco-result-row">
           <div class="loco-result-text">
-            <b>🇬🇧 İngilizce Sıralama:</b> <span class="loco-en-full">${activeLoco.fullEn}</span>
+            <b>🇬🇧 İngilizce Sıralama:</b> <span class="loco-en-full" id="locoEnFull">${esc(activeLoco.fullEn)}</span>
           </div>
-          <button class="btn btn-primary sm" data-say="${esc(activeLoco.fullEn)}" aria-label="Cümleyi sesli dinle">🔊 Sesli Dinle</button>
+          <button class="btn btn-primary sm" id="locoSpeakBtn" data-say="${esc(activeLoco.fullEn)}" aria-label="Cümleyi sesli dinle">🔊 Sesli Dinle</button>
         </div>
 
-        <div class="loco-tip">
-          💡 <b>Püf Noktası:</b> ${activeLoco.explanation}
+        <div class="loco-tip" id="locoTip">
+          💡 <b>Püf Noktası:</b> ${esc(activeLoco.explanation)}
         </div>
       `;
       box.querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
@@ -908,10 +937,11 @@ function screenLogic() {
 
   window.updateLocoSimulator = updateLocoSimulator;
 
-  // Kategori Butonları
+  // Kategori Butonları: Kategori değiştiğinde örneği sıfırla ve yeniden render et
   $$('.logic-tab-pill').forEach(btn => {
     btn.onclick = () => {
       currentLogicTab = btn.dataset.cat;
+      currentLocoIdx = 0; // Kategori değiştiğinde 1. örnekle başla
       screenLogic();
     };
   });
