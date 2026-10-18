@@ -1,0 +1,31 @@
+name: PatiLingo CI & Automated Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  verify-and-test:
+    name: Syntax, Purity & Automated Test Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify JS syntax across all modules
+        run: |
+          for f in js/*.js sw.js; do
+            node --check "$f"
+          done
+
+      - name: Run automated unit, integration & code purity tests
+        run: node tests/run-tests.js
