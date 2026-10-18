@@ -275,13 +275,15 @@ test('Gemini API sandbox anahtarları: TESTKEY/TEST_KEY/dummy içeren anahtarlar
   ok(res.includes('ready to help'), 'Sandbox anahtarıyla aiTest başarılı dönmeli');
 });
 
-test('Landing dashboard bileşenleri: index.html Günlük, hedef, sonraki ders ve Kurs İlerlemesi içerir', () => {
+test('Landing dashboard bileşenleri: index.html Günlük, hedef, sonraki ders ve Genel Kurs İlerlemesi özeti içerir', () => {
   const fs = require('fs');
   const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   ok(html.includes('Günlük'), 'index.html "Günlük" kelimesini içermeli');
   ok(html.includes('hedef'), 'index.html "hedef" kelimesini içermeli');
   ok(html.includes('Sonraki ders') || html.includes('sonraki ders'), 'index.html "Sonraki ders" ibaresini içermeli');
   ok(html.includes('Kurs İlerlemesi'), 'index.html "Kurs İlerlemesi" progress card içermeli');
+  ok(html.includes('Genel Kurs Tamamlama Özeti') || html.includes('Overall Completion'), 'index.html overall progress summary içermeli');
+  ok(html.includes('href="#/lesson/u1"'), 'index.html derse başlama butonu doğrudan #/lesson/u1 rotasına gitmeli');
 });
 
 test('Firebase Auth fallback: operation-not-allowed veya çevrimdışıyken çökmeden yerel oturum açar', async () => {

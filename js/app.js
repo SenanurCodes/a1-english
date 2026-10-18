@@ -293,7 +293,7 @@ function screenOnboarding() {
           <a class="btn btn-ghost sm" href="#/progress" aria-label="Kurs İlerlemesi ve Başarı Kartı">📊 Kurs İlerlemesi</a>
           <a class="btn btn-ghost sm" href="#/cards" aria-label="Kelime Kartları ve Konu Kütüphanesi">🃏 Kelime Kartları</a>
           <a class="btn btn-ghost sm" href="#/logic" aria-label="Cümle Lokomotifi Simülatörü">🚂 Cümle Lokomotifi</a>
-          <a class="btn btn-ghost sm" href="#/learn" aria-label="Ders Müfredatı">📚 A1 Dersleri</a>
+          <a class="btn btn-ghost sm" href="#/lesson/u1" id="onboardLessonShortcutBtn" aria-label="A1 Dersine Başla">📖 A1 Dersine Başla</a>
         </div>
       </div>
 
@@ -309,7 +309,7 @@ function screenOnboarding() {
           <div class="muted small" style="font-weight:700;margin-bottom:4px;">📖 Sonraki ders:</div>
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
             <div><b>Sonraki ders:</b> 👋 Selamlaşma & Tanışma (A1 Başlangıç)</div>
-            <a class="btn btn-primary sm" href="#/lesson/u1">▶ Sonraki Derse Başla (+15 XP)</a>
+            <a class="btn btn-primary sm" id="onboardNextLessonBtn" href="#/lesson/u1" aria-label="Sonraki Derse Başla">▶ Sonraki Derse Başla (+15 XP)</a>
           </div>
         </div>
       </div>
@@ -317,8 +317,16 @@ function screenOnboarding() {
       <!-- Kurs İlerlemesi & Ünite Başarı Kartı (Course Progress Card) -->
       <div class="card onboard-progress-card" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi</h2>
+          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi (Course Progress Summary)</h2>
           <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm İlerlemeyi Gör">Tüm İlerleme ➔</a>
+        </div>
+        <div class="course-progress-summary" style="background:var(--card-hover);padding:14px;border-radius:10px;margin-bottom:14px;border:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+            <span style="font-weight:700;">📊 Genel Kurs Tamamlama Özeti:</span>
+            <span class="badge" style="font-weight:800;background:var(--primary);color:#fff;">%0 Tamamlandı</span>
+          </div>
+          <div class="progress thick" style="margin-bottom:6px;"><div class="bar rainbow" style="width:0%;"></div></div>
+          <div class="muted small">Toplam ünite tamamlama durumu: <b>0 / ${UNITS.length} Ünite (%0)</b> tamamlandı.</div>
         </div>
         <p class="muted small" style="margin-bottom:14px;">Giriş yapmadan misafir olarak üniteleri ve kelimeleri doğrudan inceleyebilirsin:</p>
         <div class="unit-bars">
@@ -571,7 +579,7 @@ function screenHome() {
                 ${nu.type === 'grammar' 
                   ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu Özeti</a>` 
                   : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kelimeler</a>`}
-                <a class="btn btn-primary mission-play-btn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 XP)</a>
+                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 XP)</a>
               </div>
             </div>
           ` : `
@@ -585,10 +593,26 @@ function screenHome() {
                 </div>
               </div>
               <div class="mission-unit-btns">
-                <a class="btn btn-primary mission-play-btn" href="#/learn">🗺️ Macera Haritasına Git</a>
+                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/u1">▶ Dersi Tekrar Et (+15 XP)</a>
               </div>
             </div>
           `}
+        </div>
+      </div>
+
+      <!-- Genel Kurs İlerlemesi Özeti (Top-Level Course Progress Summary Card) -->
+      <div class="card course-progress-card" style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi (Course Progress Summary)</h2>
+          <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm Kurs İlerlemesini Gör">Tümünü Gör ➔</a>
+        </div>
+        <div class="course-progress-summary" style="background:var(--card-hover);padding:14px;border-radius:10px;margin-bottom:14px;border:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+            <span style="font-weight:700;">📊 Genel Kurs Tamamlama Özeti:</span>
+            <span class="badge" style="font-weight:800;background:var(--primary);color:#fff;">%${lvl.pct} Tamamlandı</span>
+          </div>
+          <div class="progress thick" style="margin-bottom:6px;"><div class="bar rainbow" style="width:${lvl.pct}%;"></div></div>
+          <div class="muted small">Toplam ünite tamamlama durumu: <b>${lvl.done} / ${UNITS.length} Ünite (%${lvl.pct})</b> tamamlandı.</div>
         </div>
       </div>
 
@@ -699,6 +723,7 @@ let currentLogicTab = 'all';
 let currentLocoIdx = 0;
 
 function screenLogic() {
+  currentLocoIdx = 0; // Her girişinde Örnek 1 ile başla
   const isAll = currentLogicTab === 'all';
   const filtered = isAll ? LOGIC_GUIDES : LOGIC_GUIDES.filter(g => g.category === currentLogicTab);
   const activeLoco = (typeof LOKOMOTIF_EXAMPLES !== 'undefined' && LOKOMOTIF_EXAMPLES[currentLocoIdx]) || (typeof LOKOMOTIF_EXAMPLES !== 'undefined' ? LOKOMOTIF_EXAMPLES[0] : null);
@@ -730,10 +755,15 @@ function screenLogic() {
               <h2 style="margin:8px 0 4px;">🚂 İngilizce Cümle Lokomotifi</h2>
               <p class="muted small" style="margin:0;">İngilizce tren gibi düz gider: Özne ve Eylem hemen öne bağlanır, yer ve zaman vagonları arkaya dizilir!</p>
             </div>
-            <div class="loco-nav-btns">
+            <div class="loco-nav-btns" role="tablist" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
               ${LOKOMOTIF_EXAMPLES.map((ex, idx) => `
-                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}" data-example="${idx + 1}" id="loco-example-${idx + 1}" aria-label="Örnek ${idx + 1}" aria-pressed="${currentLocoIdx === idx ? 'true' : 'false'}">Örnek ${idx + 1}</button>
+                <button class="loco-sel-btn ${currentLocoIdx === idx ? 'active' : ''}" data-lidx="${idx}" data-example="${idx + 1}" id="loco-example-${idx + 1}" aria-label="Örnek ${idx + 1}" aria-pressed="${currentLocoIdx === idx ? 'true' : 'false'}" role="tab">Örnek ${idx + 1}</button>
               `).join('')}
+              <select class="loco-sel-dropdown" id="locoExampleSelect" aria-label="Örnek Cümle Seçici" style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:0.85rem;font-weight:600;">
+                ${LOKOMOTIF_EXAMPLES.map((ex, idx) => `
+                  <option value="${idx}" ${currentLocoIdx === idx ? 'selected' : ''}>Örnek ${idx + 1}</option>
+                `).join('')}
+              </select>
             </div>
           </div>
 
@@ -832,7 +862,13 @@ function screenLogic() {
       const isActive = bIdx === currentLocoIdx;
       btn.classList.toggle('active', isActive);
       btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
     });
+
+    const selectEl = $('#locoExampleSelect');
+    if (selectEl && selectEl.value !== String(currentLocoIdx)) {
+      selectEl.value = String(currentLocoIdx);
+    }
 
     const box = $('.loco-box');
     if (box) {
@@ -870,6 +906,8 @@ function screenLogic() {
     }
   }
 
+  window.updateLocoSimulator = updateLocoSimulator;
+
   // Kategori Butonları
   $$('.logic-tab-pill').forEach(btn => {
     btn.onclick = () => {
@@ -878,7 +916,7 @@ function screenLogic() {
     };
   });
 
-  // Lokomotif Örnek Seçici (Delegasyon ve doğrudan tıklama desteği)
+  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama ve select desteği)
   const navBtns = $('.loco-nav-btns');
   if (navBtns) {
     navBtns.onclick = e => {
@@ -895,6 +933,14 @@ function screenLogic() {
       if (!isNaN(idx)) updateLocoSimulator(idx);
     };
   });
+
+  const selectEl = $('#locoExampleSelect');
+  if (selectEl) {
+    selectEl.onchange = (e) => {
+      const idx = parseInt(e.target.value, 10);
+      if (!isNaN(idx)) updateLocoSimulator(idx);
+    };
+  }
 
   // Sesli Telaffuz Butonları
   $$('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
