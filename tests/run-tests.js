@@ -412,6 +412,20 @@ test('Üretim kodu saflığı: js/ altında test ortamı algılama veya sahte an
   }
 });
 
+test('Ana sayfa kısayolları: AI Öğretmen kurulum butonu (#dashAiSetupBtn) ve Kelime Tekrarı kısayolu (#dashReviewBtn) tanımlı', () => {
+  const fs = require('fs');
+  const appSrc = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
+  const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+
+  ok(appSrc.includes('id="dashReviewCard"') && appSrc.includes('id="dashReviewBtn"'), 'app.js içinde #dashReviewCard ve #dashReviewBtn bulunmalı');
+  ok(appSrc.includes('id="dashAiCard"') && appSrc.includes('id="dashAiSetupBtn"') && appSrc.includes('id="dashAiHowtoBtn"'), 'app.js içinde #dashAiCard, #dashAiSetupBtn ve #dashAiHowtoBtn bulunmalı');
+  ok(appSrc.includes('AI Öğretmeni Kur (Gemini API Ayarları)'), 'AI kartında doğrudan Gemini API kurulum butonu metni bulunmalı');
+  ok(appSrc.includes('Akıllı Tekrar Sayfasına Git') && appSrc.includes('Kelime Tekrarı'), 'Tekrar kartında Akıllı Tekrar (Spaced Repetition) kısayolu bulunmalı');
+
+  ok(htmlSrc.includes('id="dashReviewBtn"') && htmlSrc.includes('href="#/review"'), 'index.html içinde #/review kısayolu bulunmalı');
+  ok(htmlSrc.includes('id="dashAiSetupBtn"') && htmlSrc.includes('href="#/ai"'), 'index.html içinde #/ai kurulum kısayolu bulunmalı');
+});
+
 
 /* ---------- Sonuç ---------- */
 (async () => {

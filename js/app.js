@@ -291,6 +291,8 @@ function screenOnboarding() {
 
         <div class="onboard-nav-links" style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--border);display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
           <a class="btn btn-ghost sm" href="#/progress" aria-label="Kurs İlerlemesi ve Başarı Kartı">📊 Kurs İlerlemesi</a>
+          <a class="btn btn-ghost sm" href="#/review" id="onboardReviewShortcutBtn" aria-label="Akıllı Tekrar (Spaced Repetition) Sayfası">🔁 Akıllı Tekrar</a>
+          <a class="btn btn-ghost sm" href="#/ai" id="onboardAiShortcutBtn" aria-label="AI Öğretmen Kurulumu ve Gemini API Ayarları">🤖 AI Öğretmen Kurulumu</a>
           <a class="btn btn-ghost sm" href="#/cards" aria-label="Kelime Kartları ve Konu Kütüphanesi">🃏 Kelime Kartları</a>
           <a class="btn btn-ghost sm" href="#/logic" aria-label="Cümle Lokomotifi Simülatörü">🚂 Cümle Lokomotifi</a>
           <a class="btn btn-ghost sm" href="#/lesson/u1" id="onboardLessonShortcutBtn" aria-label="A1 Dersine Başla">📖 A1 Dersine Başla</a>
@@ -311,6 +313,30 @@ function screenOnboarding() {
             <div><b>Sonraki ders:</b> 👋 Selamlaşma & Tanışma (A1 Başlangıç)</div>
             <a class="btn btn-primary sm" id="onboardNextLessonBtn" href="#/lesson/u1" aria-label="Sonraki Derse Başla">▶ Sonraki Derse Başla (+15 XP)</a>
           </div>
+        </div>
+      </div>
+
+      <!-- Akıllı Tekrar (Spaced Repetition) & Kelime Tekrarı Kısayol Kartı -->
+      <div class="card action-card onboard-review-card" id="onboardReviewCard" style="--c:#20C997;margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
+        <div class="ac-emoji">🔁</div>
+        <div class="ac-body">
+          <div class="muted small">Akıllı Tekrar (Spaced Repetition)</div>
+          <h3>Kelime Tekrarı</h3>
+          <p class="muted small">Aralıklı tekrar sistemi (SRS) ile öğrendiğin kelimeleri kalıcı hafızaya taşı.</p>
+          <div class="ac-actions" style="margin-top:10px;">
+            <a class="btn btn-primary sm" id="onboardReviewCardBtn" href="#/review" aria-label="Akıllı Tekrar (Spaced Repetition) sayfasını aç">🔁 Akıllı Tekrar Sayfasına Git</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Öğretmen & Gemini API Kurulum Kısayol Kartı -->
+      <div class="card ai-teaser onboard-ai-card" id="onboardAiCard" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
+        <div class="muted small">${icon('bot', '', 16)} AI Öğretmen & Kişisel Rehber</div>
+        <h3>Yapay zeka öğretmenini etkinleştir</h3>
+        <p class="muted">Ücretsiz bir Gemini API anahtarıyla sana özel seviye analizi, alıştırma ve sohbet pratiği.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          <a class="btn btn-primary sm" id="onboardAiSetupBtn" href="#/ai" aria-label="AI Öğretmeni Kur: Gemini API anahtarı ayarları">🔑 AI Öğretmeni Kur (Gemini API Ayarları)</a>
+          <a class="btn btn-ghost sm" id="onboardAiHowtoBtn" href="#/ai">Nasıl yapılır?</a>
         </div>
       </div>
 
@@ -642,15 +668,15 @@ function screenHome() {
       })()}
 
       <div class="grid-2">
-        <div class="card action-card" style="--c:#20C997">
+        <div class="card action-card" id="dashReviewCard" style="--c:#20C997">
           <div class="ac-emoji">🔁</div>
           <div class="ac-body">
-            <div class="muted small">Akıllı Aralıklı Tekrar</div>
-            <h3>${due > 0 ? `${due} kelime tekrar bekliyor` : 'Tekrar edilecek kelime yok'}</h3>
-            <p class="muted small">${due > 0 ? 'Unutma eğrisine giren kelimeleri taze tut!' : 'Yeni dersler tamamladıkça tekrar kelimeleri burada görünecek.'}</p>
-            <div class="ac-actions" style="margin-top:10px;">${due > 0
-              ? '<a class="btn btn-primary" id="dashReviewBtn" href="#/review">🔁 Tekrar Et</a>'
-              : '<a class="btn btn-ghost" href="#/review">Tekrar Sayfasını Gör</a>'}</div>
+            <div class="muted small">Akıllı Tekrar (Spaced Repetition)</div>
+            <h3>${due > 0 ? `Kelime Tekrarı (${due} kelime bekliyor)` : 'Kelime Tekrarı'}</h3>
+            <p class="muted small">${due > 0 ? 'Unutma eğrisine giren kelimeleri aralıklı tekrarla taze tut!' : 'Tekrar edilecek kelime yok. Akıllı Tekrar (Spaced Repetition) sayfasını ve kelime havuzunu inceleyebilirsin.'}</p>
+            <div class="ac-actions" style="margin-top:10px;">
+              <a class="btn btn-primary" id="dashReviewBtn" href="#/review" aria-label="Akıllı Tekrar (Spaced Repetition) sayfasını aç">🔁 ${due > 0 ? `Kelime Tekrarını Başlat (${due})` : 'Akıllı Tekrar Sayfasına Git'}</a>
+            </div>
           </div>
         </div>
 
@@ -667,11 +693,15 @@ function screenHome() {
         </div>
       </div>
 
-      <div class="card ai-teaser mt-4">
+      <div class="card ai-teaser mt-4" id="dashAiCard">
         <div class="muted small">${icon('bot', '', 16)} AI Öğretmen & Kişisel Rehber</div>
         <h3>${hasAI() ? 'Seviyeni analiz etmemi ister misin?' : 'Yapay zeka öğretmenini etkinleştir'}</h3>
-        <p class="muted">${hasAI() ? 'Hatalarına bakıp sana özel plan ve alıştırma hazırlarım.' : 'Ücretsiz bir Gemini anahtarıyla sana özel analiz, alıştırma ve sohbet pratiği.'}</p>
-        <a class="btn btn-secondary" href="#/ai">${hasAI() ? 'AI Öğretmene Git' : 'Nasıl yapılır?'}</a>
+        <p class="muted">${hasAI() ? 'Hatalarına bakıp sana özel plan ve alıştırma hazırlarım.' : 'Ücretsiz bir Gemini API anahtarıyla sana özel analiz, alıştırma ve sohbet pratiği.'}</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          ${hasAI()
+            ? '<a class="btn btn-primary" id="dashAiBtn" href="#/ai">🤖 AI Öğretmene Git</a><a class="btn btn-secondary" id="dashAiSetupBtn" href="#/ai" aria-label="Gemini API Anahtarı Ayarları">🔑 Gemini API Ayarları</a>'
+            : '<a class="btn btn-primary" id="dashAiSetupBtn" href="#/ai" aria-label="AI Öğretmeni Kur: Gemini API anahtarı ayarları">🔑 AI Öğretmeni Kur (Gemini API Ayarları)</a><a class="btn btn-ghost" id="dashAiHowtoBtn" href="#/ai">Nasıl yapılır?</a>'}
+        </div>
       </div>
     </div>`;
 
