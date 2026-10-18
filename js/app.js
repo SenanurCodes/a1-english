@@ -722,7 +722,26 @@ function screenHome() {
 let currentLogicTab = 'all';
 let currentLocoIdx = 0;
 
-function screenLogic() {
+function screenLogic(param) {
+  // URL parametresi veya hash parametresi varsa kategoriye ata
+  if (param && LOGIC_CATEGORIES.some(c => c.id === param)) {
+    currentLogicTab = param;
+    currentLocoIdx = 0;
+  } else {
+    const hashQuery = location.hash.includes('?') ? location.hash.split('?')[1] : '';
+    const q = new URLSearchParams(hashQuery || location.search);
+    const catQ = q.get('cat') || q.get('category') || q.get('tab');
+    if (catQ && LOGIC_CATEGORIES.some(c => c.id === catQ)) {
+      currentLogicTab = catQ;
+      currentLocoIdx = 0;
+    }
+    const exQ = q.get('example') || q.get('ex');
+    if (exQ) {
+      const pIdx = parseInt(exQ, 10) - 1;
+      if (!isNaN(pIdx) && pIdx >= 0) currentLocoIdx = pIdx;
+    }
+  }
+
   const isAll = currentLogicTab === 'all';
   const filtered = isAll ? LOGIC_GUIDES : LOGIC_GUIDES.filter(g => g.category === currentLogicTab);
   
@@ -766,7 +785,7 @@ function screenLogic() {
 
       <!-- İnteraktif Kategori & Cümle Simülatörü -->
       ${activeLoco ? `
-        <div class="card loco-simulator-card" id="logicSimulatorCard" data-category="${curSim.id || currentLogicTab}">
+        <div class="card loco-simulator-card" id="logicSimulatorCard" data-category="${curSim.id || currentLogicTab}" data-example="${currentLocoIdx + 1}">
           <div class="loco-head">
             <div>
               <span class="badge-loco" id="simBadge">${esc(curSim.badge || '⚡ İNTERAKTİF SİMÜLATÖR')}</span>
@@ -886,6 +905,12 @@ function screenLogic() {
     const activeLoco = list[currentLocoIdx];
     if (!activeLoco) return;
 
+    const card = $('#logicSimulatorCard');
+    if (card) {
+      card.setAttribute('data-example', String(currentLocoIdx + 1));
+      card.setAttribute('data-category', curSim.id || currentLogicTab);
+    }
+
     $$('.loco-sel-btn').forEach(btn => {
       const bIdx = parseInt(btn.dataset.lidx, 10);
       const isActive = bIdx === currentLocoIdx;
@@ -937,39 +962,46 @@ function screenLogic() {
 
   window.updateLocoSimulator = updateLocoSimulator;
 
-  // Kategori Butonları: Kategori değiştiğinde örneği sıfırla ve yeniden render et
+  // Kategori Değiştirme Fonksiyonu
+  const onCategoryChange = (cat) => {
+    if (!cat) return;
+    currentLogicTab = cat;
+    currentLocoIdx = 0; // Kategori değiştiğinde 1. örnekle başla
+    screenLogic();
+  };
+
+  const tabsBar = $('.logic-tabs-bar');
+  if (tabsBar) {
+    tabsBar.addEventListener('click', e => {
+      const btn = e.target.closest('.logic-tab-pill');
+      if (btn && btn.dataset.cat) onCategoryChange(btn.dataset.cat);
+    });
+  }
   $$('.logic-tab-pill').forEach(btn => {
-    btn.onclick = () => {
-      currentLogicTab = btn.dataset.cat;
-      currentLocoIdx = 0; // Kategori değiştiğinde 1. örnekle başla
-      screenLogic();
-    };
+    btn.onclick = () => onCategoryChange(btn.dataset.cat);
   });
 
-  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama ve select desteği)
+  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama, pointer ve select desteği)
+  const onExampleSelect = (idx) => {
+    if (!isNaN(idx)) updateLocoSimulator(idx);
+  };
+
   const navBtns = $('.loco-nav-btns');
   if (navBtns) {
-    navBtns.onclick = e => {
+    navBtns.addEventListener('click', e => {
       const btn = e.target.closest('.loco-sel-btn');
-      if (btn) {
-        const idx = parseInt(btn.dataset.lidx, 10);
-        if (!isNaN(idx)) updateLocoSimulator(idx);
-      }
-    };
+      if (btn) onExampleSelect(parseInt(btn.dataset.lidx, 10));
+    });
   }
   $$('.loco-sel-btn').forEach(btn => {
-    btn.onclick = () => {
-      const idx = parseInt(btn.dataset.lidx, 10);
-      if (!isNaN(idx)) updateLocoSimulator(idx);
-    };
+    btn.onclick = () => onExampleSelect(parseInt(btn.dataset.lidx, 10));
+    btn.onpointerdown = () => onExampleSelect(parseInt(btn.dataset.lidx, 10));
   });
 
   const selectEl = $('#locoExampleSelect');
   if (selectEl) {
-    selectEl.onchange = (e) => {
-      const idx = parseInt(e.target.value, 10);
-      if (!isNaN(idx)) updateLocoSimulator(idx);
-    };
+    selectEl.onchange = (e) => onExampleSelect(parseInt(e.target.value, 10));
+    selectEl.oninput = (e) => onExampleSelect(parseInt(e.target.value, 10));
   }
 
   // Sesli Telaffuz Butonları
