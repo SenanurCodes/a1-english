@@ -348,13 +348,24 @@ function screenOnboarding() {
           <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi (Course Progress Summary)</h2>
           <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm İlerlemeyi Gör">Tüm İlerleme ➔</a>
         </div>
-        <div class="course-progress-summary" style="background:var(--card-hover);padding:14px;border-radius:10px;margin-bottom:14px;border:1px solid var(--border);">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-            <span style="font-weight:700;">📊 Genel Kurs Tamamlama Özeti:</span>
-            <span class="badge" style="font-weight:800;background:var(--primary);color:#fff;">%0 Tamamlandı</span>
+        <div class="course-progress-summary">
+          <div class="cps-head">
+            <div class="cps-title">
+              <span class="cps-icon">📊</span>
+              <div>
+                <div class="cps-heading">Genel Kurs Tamamlama Özeti</div>
+                <div class="cps-sub muted">Tüm A1 &amp; A2 müfredatı ilerleme durumu</div>
+              </div>
+            </div>
+            <div class="cps-badge-wrap">
+              <span class="cps-badge">%0 Tamamlandı</span>
+            </div>
           </div>
-          <div class="progress thick" style="margin-bottom:6px;"><div class="bar rainbow" style="width:0%;"></div></div>
-          <div class="muted small">Toplam ünite tamamlama durumu: <b>0 / ${UNITS.length} Ünite (%0)</b> tamamlandı.</div>
+          <div class="progress cps-progress"><div class="bar rainbow" style="width:0%;"></div></div>
+          <div class="cps-foot">
+            <span>🎯 Tamamlanan: <b>0 / ${UNITS.length} Ünite</b></span>
+            <span class="muted">${UNITS.length} ünite seni bekliyor</span>
+          </div>
         </div>
         <p class="muted small" style="margin-bottom:14px;">Giriş yapmadan misafir olarak üniteleri ve kelimeleri doğrudan inceleyebilirsin:</p>
         <div class="unit-bars">
@@ -767,13 +778,24 @@ function screenHome() {
           <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi (Course Progress Summary)</h2>
           <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm Kurs İlerlemesini Gör">Tümünü Gör ➔</a>
         </div>
-        <div class="course-progress-summary" style="background:var(--card-hover);padding:14px;border-radius:10px;margin-bottom:14px;border:1px solid var(--border);">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-            <span style="font-weight:700;">📊 Genel Kurs Tamamlama Özeti:</span>
-            <span class="badge" style="font-weight:800;background:var(--primary);color:#fff;">%${lvl.pct} Tamamlandı</span>
+        <div class="course-progress-summary">
+          <div class="cps-head">
+            <div class="cps-title">
+              <span class="cps-icon">📊</span>
+              <div>
+                <div class="cps-heading">Genel Kurs Tamamlama Özeti</div>
+                <div class="cps-sub muted">Tüm A1 &amp; A2 müfredatı ilerleme durumu</div>
+              </div>
+            </div>
+            <div class="cps-badge-wrap">
+              <span class="cps-badge">%${lvl.pct} Tamamlandı</span>
+            </div>
           </div>
-          <div class="progress thick" style="margin-bottom:6px;"><div class="bar rainbow" style="width:${lvl.pct}%;"></div></div>
-          <div class="muted small">Toplam ünite tamamlama durumu: <b>${lvl.done} / ${UNITS.length} Ünite (%${lvl.pct})</b> tamamlandı.</div>
+          <div class="progress cps-progress"><div class="bar rainbow" style="width:${Math.max(lvl.pct, 3)}%;"></div></div>
+          <div class="cps-foot">
+            <span>🎯 Tamamlanan: <b>${lvl.done} / ${UNITS.length} Ünite</b></span>
+            <span class="muted">${UNITS.length - lvl.done} ünite kaldı</span>
+          </div>
         </div>
       </div>
 
@@ -2176,12 +2198,12 @@ function screenProgress() {
         ${topTraps.length ? `
           <div class="trap-list" style="display:flex;flex-direction:column;gap:10px;">
             ${topTraps.map(t => `
-              <div class="trap-stat-row" style="background:var(--card-subtle,#f8f9fa);border-left:4px solid var(--primary,#6C5CE7);border-radius:8px;padding:12px 14px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                  <span style="font-weight:700;font-size:0.95rem;">${t.icon} ${esc(t.label)}</span>
-                  <span class="badge" style="background:var(--danger-soft,rgba(255,107,107,0.15));color:var(--danger,#ff6b6b);font-weight:700;font-size:0.75rem;">${t.count} kez takıldın</span>
+              <div class="trap-stat-row">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap;">
+                  <span class="trap-stat-name">${t.icon} ${esc(t.label)}</span>
+                  <span class="trap-count-pill">${t.count} kez takıldın</span>
                 </div>
-                <p class="muted small" style="margin:0;line-height:1.45;">💡 <b>Çözüm Mantığı:</b> ${esc(t.tip)}</p>
+                <p class="trap-stat-tip">💡 <b>Çözüm Mantığı:</b> ${esc(t.tip)}</p>
               </div>
             `).join('')}
           </div>
