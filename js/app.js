@@ -87,8 +87,8 @@ function renderNav(active) {
         <span class="mh-title">PatiLingo</span>
       </a>
       <div class="mh-stats">
-        <a href="#/progress" class="mh-badge streak" title="Günlük Seri">🔥 ${currentStreak()}</a>
-        <a href="#/progress" class="mh-badge xp" title="Toplam XP">⭐ ${state.xp}</a>
+        <a href="#/progress" class="mh-badge streak" title="Çalışma Ritmi">🌿 ${currentStreak()}</a>
+        <a href="#/progress" class="mh-badge xp" title="Toplam Palamut (XP)">🌰 ${state.xp}</a>
         <button type="button" class="mh-btn" id="mobileAuthBtn" title="Hesap & Eşitleme" style="background:none;border:none;cursor:pointer;font-size:1.1rem;padding:0 4px;">${isGuest ? icon('user', '', 20) : '🟢'}</button>
         <a href="#/settings" class="mh-btn" title="Ayarlar" aria-label="Ayarlar">${icon('settings', '', 20)}</a>
       </div>
@@ -118,8 +118,8 @@ function renderNav(active) {
       </div>
       <div class="nav-foot" style="flex-direction:column;gap:8px;padding:8px 6px;">
         <div style="display:flex;gap:6px;width:100%;">
-          <div class="mini-stat" style="flex:1;">🔥 ${currentStreak()} gün</div>
-          <div class="mini-stat" style="flex:1;">⭐ ${state.xp} XP</div>
+          <div class="mini-stat" style="flex:1;" title="Sakin Çalışma Ritmi">🌿 ${currentStreak()} gün</div>
+          <div class="mini-stat" style="flex:1;" title="Toplanan Palamut (XP)">🌰 ${state.xp} XP</div>
         </div>
         ${isGuest 
           ? `<button class="btn btn-secondary sm" id="navAuthBtn" style="width:100%;font-size:0.82rem;padding:7px 10px;">${icon('user', '', 16)} Giriş Yap / Eşitle</button>`
@@ -631,7 +631,7 @@ function screenHome() {
       <header class="page-head" style="margin-bottom:14px;">
         <div>
           <h1>${greet}, ${esc(state.name)}! 👋</h1>
-          <p class="muted">Bugün <b>${todayXP} XP</b> kazandın. ${todayXP >= 50 ? '🎉 Günlük hedefin tamamlandı!' : `Günlük hedefe <b>${50 - todayXP} XP</b> kaldı.`}</p>
+          <p class="muted">Bugün zulaya <b>${todayXP} 🌰 Palamut</b> kattın. ${todayXP >= 50 ? '🎉 Günlük hedefin tamamlandı!' : `Günlük hedefe <b>${50 - todayXP} palamut</b> kaldı.`}</p>
         </div>
       </header>
 
@@ -639,7 +639,7 @@ function screenHome() {
         <div class="guest-banner">
           <div>
             <div class="gb-title">✨ Misafir Modundasın</div>
-            <div class="gb-sub">İlerlemen şu anda bu cihazda tutuluyor. Puanlarını kaybetmemek için Google hesabını bağlayabilirsin.</div>
+            <div class="gb-sub">İlerlemen şu anda bu cihazda tutuluyor. Palamutlarını kaybetmemek için Google hesabını bağlayabilirsin.</div>
           </div>
           <button class="btn btn-primary sm" id="homeLinkAuthBtn">🚀 Hesaba Bağla</button>
         </div>
@@ -661,7 +661,7 @@ function screenHome() {
               <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
                 <div class="progress" id="squirrelGrowthBar" style="height:6px;flex:1;max-width:190px;margin:0;"><div class="bar rainbow" style="width:${sq.stagePct}%;"></div></div>
                 <span class="muted small" style="font-size:0.74rem;font-weight:700;">
-                  ${sq.nextXP !== null ? `Sonraki evre: ${sq.xpLeft} XP (%${sq.stagePct})` : '👑 Maksimum Evre'}
+                  ${sq.nextXP !== null ? `Sonraki evre: ${sq.xpLeft} Palamut (%${sq.stagePct})` : '👑 Maksimum Evre'}
                 </span>
               </div>
             </div>
@@ -678,20 +678,20 @@ function screenHome() {
         <div id="squirrelHelperOutput" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb, var(--primary) 10%, var(--card));border:1px solid var(--border);font-size:0.86rem;"></div>
       </div>
 
-      <!-- Kompakt Metrik Şeridi (Modern haplar) -->
+      <!-- Kompakt Metrik Şeridi (Sakin Motivasyon & Palamut) -->
       <div class="metrics-strip">
-        <div class="metric-pill">
-          <div class="mp-icon">🔥</div>
+        <div class="metric-pill" title="Sakin çalışma ritmi - Baskı yok!">
+          <div class="mp-icon">🌿</div>
           <div class="mp-content">
             <div class="mp-val">${currentStreak()} <span class="mp-unit">Gün</span></div>
-            <div class="mp-lbl">Günlük Seri</div>
+            <div class="mp-lbl">${currentStreak() > 0 ? 'Çalışma Ritmi' : 'Fındık Seni Bekliyor'}</div>
           </div>
         </div>
         <div class="metric-pill">
-          <div class="mp-icon">⭐</div>
+          <div class="mp-icon">🌰</div>
           <div class="mp-content">
-            <div class="mp-val">${state.xp} <span class="mp-unit">XP</span></div>
-            <div class="mp-lbl">Toplam Puan · Lv ${xl.level}</div>
+            <div class="mp-val">${state.xp} <span class="mp-unit">Palamut</span></div>
+            <div class="mp-lbl">Toplam Birikim · Lv ${xl.level}</div>
           </div>
         </div>
         <div class="metric-pill">
@@ -713,8 +713,8 @@ function screenHome() {
           
           <div class="mission-goal-bar-wrap">
             <div class="mission-goal-info">
-              <span class="mgi-title"><b>Günlük Hedef:</b> <b>${Math.min(todayXP, 50)} / 50 XP</b></span>
-              <span class="mgi-sub muted small">${todayXP >= 50 ? '🎉 Günlük Hedef Tamamlandı!' : `Günlük hedefe ${50 - todayXP} XP kaldı`}</span>
+              <span class="mgi-title"><b>Günlük Hedef:</b> <b>${Math.min(todayXP, 50)} / 50 🌰 Palamut</b></span>
+              <span class="mgi-sub muted small">${todayXP >= 50 ? '🎉 Günlük Hedef Tamamlandı!' : `Günlük hedefe ${50 - todayXP} palamut kaldı`}</span>
             </div>
             <div class="progress thick"><div class="bar rainbow" style="width:${Math.min(100, (todayXP / 50) * 100)}%;"></div></div>
           </div>
@@ -733,14 +733,14 @@ function screenHome() {
                 <div class="mission-unit-text">
                   <div class="mission-step-tag">Sonraki ders · ${nu.type === 'vocab' ? 'Kelime Dünyası' : 'Gramer Mantığı'}</div>
                   <h2 class="mission-unit-name">Sonraki ders: ${esc(nu.title)}</h2>
-                  <div class="mission-unit-desc">${esc(nu.desc || 'Konuyu pekiştir, yeni kelimeler öğren ve XP topla!')}</div>
+                  <div class="mission-unit-desc">${esc(nu.desc || 'Konuyu pekiştir, yeni kelimeler öğren ve zulaya palamut topla!')}</div>
                 </div>
               </div>
               <div class="mission-unit-btns">
                 ${nu.type === 'grammar' 
                   ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu Özeti</a>` 
                   : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kelimeler</a>`}
-                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 XP)</a>
+                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 🌰)</a>
               </div>
             </div>
           ` : `
@@ -754,7 +754,7 @@ function screenHome() {
                 </div>
               </div>
               <div class="mission-unit-btns">
-                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/u1">▶ Dersi Tekrar Et (+15 XP)</a>
+                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/u1">▶ Dersi Tekrar Et (+15 🌰)</a>
               </div>
             </div>
           `}
@@ -785,10 +785,10 @@ function screenHome() {
         const topRival = rivals[0];
         const diff = state.xp - topRival.xp;
         let rivalryMsg = diff > 0 
-          ? `🔥 <b>${esc(topRival.name)}</b>'ın <b>${diff} XP</b> önündesin! Liderliği bırakma!` 
+          ? `🔥 <b>${esc(topRival.name)}</b>'ın <b>${diff} 🌰</b> önündesin! Liderliği bırakma!` 
           : diff < 0 
-          ? `⚡ <b>${esc(topRival.name)}</b> <b>${Math.abs(diff)} XP</b> ile önünde! Hemen bir ders yapıp yetiş!` 
-          : `🤝 <b>${esc(topRival.name)}</b> ile kafa kafayasınız! (İkiniz de ${state.xp} XP)`;
+          ? `⚡ <b>${esc(topRival.name)}</b> <b>${Math.abs(diff)} 🌰</b> ile önünde! Hemen bir ders yapıp yetiş!` 
+          : `🤝 <b>${esc(topRival.name)}</b> ile kafa kafayasınız! (İkiniz de ${state.xp} 🌰)`;
         return `
         <div class="card rivalry-card" style="margin-bottom:20px;">
           <div class="rivalry-head">
@@ -804,13 +804,13 @@ function screenHome() {
 
       <div class="grid-2">
         <div class="card action-card" id="dashReviewCard" style="--c:#20C997">
-          <div class="ac-emoji">🔁</div>
+          <div class="ac-emoji">🌰</div>
           <div class="ac-body">
-            <div class="muted small">Akıllı Tekrar (Spaced Repetition)</div>
-            <h3>${due > 0 ? `Kelime Tekrarı (${due} kelime bekliyor)` : 'Kelime Tekrarı'}</h3>
-            <p class="muted small">${due > 0 ? 'Unutma eğrisine giren kelimeleri aralıklı tekrarla taze tut!' : 'Tekrar edilecek kelime yok. Akıllı Tekrar (Spaced Repetition) sayfasını ve kelime havuzunu inceleyebilirsin.'}</p>
+            <div class="muted small">Fındık'ın Palamut Zulası (Aralıklı Tekrar)</div>
+            <h3>${due > 0 ? `Zuladaki Kelimeler (${due} palamut bekliyor)` : 'Fındık\'ın Palamut Zulası'}</h3>
+            <p class="muted small">${due > 0 ? 'Sincaplar gömdükleri palamutları unutur! Fındık bu kelimeleri unutmadan zuladan çıkarıp tazeleyelim.' : 'Fındık tüm gömdüğü kelimeleri çok iyi hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.'}</p>
             <div class="ac-actions" style="margin-top:10px;">
-              <a class="btn btn-primary" id="dashReviewBtn" href="#/review" aria-label="Akıllı Tekrar (Spaced Repetition) sayfasını aç">🔁 ${due > 0 ? `Kelime Tekrarını Başlat (${due})` : 'Akıllı Tekrar Sayfasına Git'}</a>
+              <a class="btn btn-primary" id="dashReviewBtn" href="#/review" aria-label="Akıllı Tekrar sayfasını aç">🌰 ${due > 0 ? `Zulayı Tazelemeye Başla (${due})` : 'Zuladaki Kelimeleri Gör'}</a>
             </div>
           </div>
         </div>
@@ -1879,7 +1879,7 @@ function screenLesson(id) {
 }
 
 /* ============================================================
-   Tekrar
+   Tekrar: Fındık'ın Palamut Zulası (Aralıklı Tekrar - SRS)
    ============================================================ */
 function screenReview() {
   const reviewLimit = Math.max(5, parseInt(state.settings.reviewLimit, 10) || 25);
@@ -1893,10 +1893,10 @@ function screenReview() {
   const studiedPool = ALL_WORDS.filter(w => state.words[w.key]);
   const practiceWords = (studiedPool.length >= 4 ? studiedPool : (UNITS[0]?.words || ALL_WORDS)).slice(0, Math.min(10, reviewLimit));
 
-  const startWithPool = (pool, labelPrefix = 'Akıllı Tekrar') => {
+  const startWithPool = (pool, labelPrefix = 'Zulayı Tazelemeye Başla') => {
     const targetPool = pool && pool.length ? pool : practiceWords;
     const runSession = () => runLesson({
-      title: `🔁 ${labelPrefix} (${targetPool.length} Kelime)`,
+      title: `🌰 ${labelPrefix} (${targetPool.length} Kelime Palamudu)`,
       questions: buildReviewLesson(targetPool),
       color: '#20C997',
       exitTo: '#/home',
@@ -1909,8 +1909,8 @@ function screenReview() {
   const header = `
       <header class="page-head">
         <div>
-          <h1>🔁 Akıllı Tekrar (Spaced Repetition)</h1>
-          <p class="muted">Hafıza eğrisine göre aralıklı tekrar ile kelimeleri kalıcı öğren.</p>
+          <h1>🌰 Fındık'ın Palamut Zulası</h1>
+          <p class="muted">Sincaplar kış için gömdükleri palamutları zamanla unutur. Aralıklı tekrar yaparak Fındık'ın gömdüğü kelimeleri kalıcı hafızaya kazı!</p>
         </div>
       </header>`;
 
@@ -1919,19 +1919,19 @@ function screenReview() {
       <div class="page">
         ${header}
         <div class="card review-status-card" id="reviewStatusCard" style="text-align:center; padding: 32px 20px; max-width: 560px; margin: 0 auto;">
-          <div style="font-size: 3rem; margin-bottom: 12px;">✅</div>
-          <h2>Tekrar edilecek kelime yok</h2>
-          <p class="muted" style="margin: 8px auto 20px;">Şu anda vadesi gelmiş tekrar kelimesi bulunmuyor. Dilersen temel kelimelerle hemen bir serbest tekrar seansı başlatabilir veya kelime kartlarını inceleyebilirsin.</p>
+          <div style="font-size: 3rem; margin-bottom: 12px;">🐿️ ✨</div>
+          <h2>Palamut Zulan Güvende!</h2>
+          <p class="muted" style="margin: 8px auto 20px;">Şu anda unutulma riski olan vadesi dolmuş kelime bulunmuyor. Fındık tüm palamutların yerini çok iyi hatırlıyor! İstersen zuladaki temel kelimelerle serbest bir hafıza tazeleme seansı başlatabilirsin.</p>
           <div style="display:flex; flex-direction:column; gap:12px; max-width:340px; margin:0 auto;">
-            <button class="btn btn-primary btn-lg" id="startReviewBtn" aria-label="Serbest Kelime Tekrarı Seansını Başlat">
-              🚀 Serbest Tekrar Seansı Başlat (${practiceWords.length} Kelime)
+            <button class="btn btn-primary btn-lg" id="startReviewBtn" aria-label="Serbest Tekrar Seansı Başlat">
+              🌰 Serbest Tekrar Seansı Başlat (${practiceWords.length} Kelime)
             </button>
             <a class="btn btn-secondary" href="#/cards/u1">🃏 1. Ünite Kelime Kartlarını Çalış</a>
             <a class="btn btn-ghost" href="#/home">Panoya Dön</a>
           </div>
         </div>
       </div>`;
-    $('#startReviewBtn').onclick = () => startWithPool(practiceWords, 'Serbest Kelime Tekrarı');
+    $('#startReviewBtn').onclick = () => startWithPool(practiceWords, 'Serbest Hafıza Tazeleme');
     return;
   }
 
@@ -1939,20 +1939,20 @@ function screenReview() {
     <div class="page">
       ${header}
       <div class="card review-hero-card" id="spacedRepetitionCard" style="text-align:center; padding: 32px 20px; max-width: 560px; margin: 0 auto;">
-        <div style="font-size: 3rem; margin-bottom: 12px;">🧠</div>
-        <h2>Tekrar Seansı Hazır!</h2>
+        <div style="font-size: 3rem; margin-bottom: 12px;">🌰 🔍</div>
+        <h2>Palamutları Çıkarma Vakti!</h2>
         <p class="muted" style="margin: 8px auto 20px;">
-          <b>${dueCount} kelimenin</b> tekrar vadesi doldu${dueCount > words.length ? ` (bu seansta ${words.length} tanesi)` : ''}.
+          Fındık toprağa gömdüğü <b>${dueCount} kelime palamudunu</b> unutmak üzere${dueCount > words.length ? ` (bu seansta ${words.length} tanesini çıkaracağız)` : ''}. Hafızasını tazeleyip kelimeleri kalıcı kılalım!
         </p>
 
         <div class="stats-row" style="display:flex; justify-content:center; gap:24px; margin-bottom:24px;">
-          <div class="stat"><div class="stat-num" style="color:var(--success,#20C997);">${words.length}</div><div class="stat-label">Hazır Kelime</div></div>
-          <div class="stat"><div class="stat-num">${Object.keys(state.words).length}</div><div class="stat-label">Kayıtlı Kelime</div></div>
+          <div class="stat"><div class="stat-num" style="color:var(--success,#20C997);">${words.length}</div><div class="stat-label">Tazelenecek Kelime</div></div>
+          <div class="stat"><div class="stat-num">${Object.keys(state.words).length}</div><div class="stat-label">Toplam Zula (SRS)</div></div>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:12px; max-width:320px; margin:0 auto;">
           <button class="btn btn-primary btn-lg" id="startReviewBtn" aria-label="Tekrar Seansını Başlat">
-            🚀 Tekrarı Başlat (${words.length} Kelime)
+            🌰 Palamutları Tazelemeye Başla (${words.length} Kelime)
           </button>
           <a class="btn btn-ghost" href="#/home" aria-label="Panoya Dön">Panoya Dön</a>
         </div>
@@ -1960,7 +1960,7 @@ function screenReview() {
     </div>
   `;
 
-  $('#startReviewBtn').onclick = () => startWithPool(words, 'Akıllı Tekrar');
+  $('#startReviewBtn').onclick = () => startWithPool(words, 'Zula Tazelemeyi Başlat');
 }
 
 
@@ -2140,18 +2140,20 @@ function screenProgress() {
   const practiced = UNITS.filter(u => unitStats(u.id).attempts);
   const weakUnits = practiced.filter(u => unitStats(u.id).best < 80).sort((a, b) => unitStats(a.id).best - unitStats(b.id).best).slice(0, 4);
 
+  const topTraps = typeof getTopTurkishTraps === 'function' ? getTopTurkishTraps() : [];
+
   view().innerHTML = `
     <div class="page">
-      <header class="page-head"><div><h1>📊 İlerlemen</h1><p class="muted">${lvl.label} · ${lvl.desc}</p></div></header>
+      <header class="page-head"><div><h1>📊 İlerlemen & Öğrenme Analizi</h1><p class="muted">${lvl.label} · ${lvl.desc}</p></div></header>
 
       <div class="grid-4">
-        <div class="stat-card grad-1"><div class="sc-icon">🔥</div><div class="sc-val">${currentStreak()}</div><div class="sc-lbl">gün seri</div></div>
-        <div class="stat-card grad-2"><div class="sc-icon">⭐</div><div class="sc-val">${state.xp}</div><div class="sc-lbl">XP</div></div>
+        <div class="stat-card grad-1"><div class="sc-icon">🌿</div><div class="sc-val">${currentStreak()}</div><div class="sc-lbl">gün ritim</div></div>
+        <div class="stat-card grad-2"><div class="sc-icon">🌰</div><div class="sc-val">${state.xp}</div><div class="sc-lbl">palamut</div></div>
         <div class="stat-card grad-3 pos-relative">
           <button class="metric-info-btn" id="wordInfoBtn" title="Nasıl hesaplanır?" aria-label="Kelime istatistiği bilgisi">${icon('info', '', 14)}</button>
-          <div class="sc-icon">🧠</div>
+          <div class="sc-icon">🐿️</div>
           <div class="sc-val">${startedWords}</div>
-          <div class="sc-lbl">öğrenilen kelime</div>
+          <div class="sc-lbl">zulalanan kelime</div>
           <div class="sc-sub mt-1">⭐ Ustalaşılan: <b>${masteredWords}</b> kelime</div>
         </div>
         <div class="stat-card grad-4 pos-relative">
@@ -2161,6 +2163,33 @@ function screenProgress() {
           <div class="sc-lbl">${state.a2Unlocked ? 'A2 ilerlemesi' : 'A1 tamamlandı'}</div>
           <div class="sc-sub mt-1">🌱 A1: <b>${lvl.doneA1}/27</b> · 🚀 A2: <b>${lvl.doneA2}/25</b></div>
         </div>
+      </div>
+
+      <div class="card trap-report-card" id="turkishTrapRadarCard">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <span style="font-size:2.2rem;">🪤</span>
+          <div>
+            <h3 style="margin:0;">Türk Beyni vs İngilizce Tuzak Radarı</h3>
+            <p class="muted small" style="margin:2px 0 0;">Türkçe düşünmekten kaynaklanan alışkanlıklarını tespit edip özel Lokomotif ve gramer çözümleri sunuyoruz.</p>
+          </div>
+        </div>
+        ${topTraps.length ? `
+          <div class="trap-list" style="display:flex;flex-direction:column;gap:10px;">
+            ${topTraps.map(t => `
+              <div class="trap-stat-row" style="background:var(--card-subtle,#f8f9fa);border-left:4px solid var(--primary,#6C5CE7);border-radius:8px;padding:12px 14px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                  <span style="font-weight:700;font-size:0.95rem;">${t.icon} ${esc(t.label)}</span>
+                  <span class="badge" style="background:var(--danger-soft,rgba(255,107,107,0.15));color:var(--danger,#ff6b6b);font-weight:700;font-size:0.75rem;">${t.count} kez takıldın</span>
+                </div>
+                <p class="muted small" style="margin:0;line-height:1.45;">💡 <b>Çözüm Mantığı:</b> ${esc(t.tip)}</p>
+              </div>
+            `).join('')}
+          </div>
+        ` : `
+          <div style="text-align:center;padding:16px 0;">
+            <p class="muted" style="margin:0;">Henüz belirgin bir Türk tuzağına yakalanmadın! Ders yaptıkça Türkçe ve İngilizce söz dizimi veya kalıp farkları burada analiz edilecek. 🎯</p>
+          </div>
+        `}
       </div>
 
       <div class="grid-2">
@@ -2203,8 +2232,16 @@ function screenProgress() {
 
       ${state.mistakes.length ? `
       <div class="card">
-        <h3>❌ Son Hataların</h3>
-        ${state.mistakes.slice(0, 10).map(m => `<div class="wrong-row"><span>${esc(m.q)} <i class="muted">(sen: ${esc(m.given || '—')})</i></span><b>${esc(m.correct)}</b></div>`).join('')}
+        <h3>❌ Son Hataların & Tuzak Tanıları</h3>
+        ${state.mistakes.slice(0, 10).map(m => `
+          <div class="wrong-row">
+            <div>
+              <span>${esc(m.q)} <i class="muted">(sen: ${esc(m.given || '—')})</i></span>
+              ${m.trapLabel ? `<span class="badge" style="font-size:0.7rem;margin-left:6px;background:var(--primary-soft,#eee);color:var(--primary,#6C5CE7);">${esc(m.trapLabel)}</span>` : ''}
+            </div>
+            <b>${esc(m.correct)}</b>
+          </div>
+        `).join('')}
       </div>` : ''}
     </div>`;
 

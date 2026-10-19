@@ -668,8 +668,95 @@ function weakWords(limit = 10) {
     .map(([k, w]) => ({ ...WORD_BY_KEY[k], stats: w }));
 }
 
+function classifyTurkishTrap(m = {}) {
+  const metaFor = (type, label, tip, icon = '🪤') => ({
+    type,
+    trap: type,
+    label,
+    trapTitle: label,
+    tip,
+    trapTip: tip,
+    icon
+  });
+
+  if (m.trap && m.trapTitle) {
+    return metaFor(m.trap, m.trapTitle, m.trapTip || '', m.icon || '🪤');
+  }
+  const given = String(m.given || '').trim().toLowerCase();
+  const correct = String(m.correct || '').trim().toLowerCase();
+  const qText = String(m.q || '').trim().toLowerCase();
+
+  // 1. Lokomotif / Söz Dizimi (Özne + Fiil + Nesne) Tuzağı
+  if (m.kind === 'order' || (given.includes(' ') && correct.includes(' ') && given.split(/\s+/).length >= 3)) {
+    const gWords = given.split(/\s+/);
+    const cWords = correct.split(/\s+/);
+    if (gWords.length === cWords.length && gWords.slice().sort().join(' ') === cWords.slice().sort().join(' ')) {
+      return metaFor(
+        'word_order',
+        '🚂 Lokomotif Söz Dizimi Tuzağı (Türkçe Sıralama)',
+        'Türkçede yüklem en sonda durur ama İngilizcede Özne (Lokomotif) hemen arkasına Fiili (1. Vagonu) ister!',
+        '🚂'
+      );
+    }
+  }
+
+  // 2. am / is / are + Yalın Fiil Fazlalığı ("I am agree", "She is go")
+  if (/\b(am|is|are)\s+(agree|go|like|want|know|work|live|need|have|speak|drink|eat)\b/.test(given) ||
+      (/(am|is|are)/.test(given) && !/(am|is|are)/.test(correct) && correct.length > 0)) {
+    return metaFor(
+      'extra_be',
+      '🪤 Gereksiz am/is/are Fazlalığı',
+      'Türkçedeki "-dir / -yim" ekini her cümleye "am/is/are" olarak koymaya çalışma; eylem (fiil) varsa "am/is/are" gelmez!',
+      '🪤'
+    );
+  }
+
+  // 3. Geniş Zaman 3. Tekil Şahıs (-s / does / is) Unutulması (He/She/It)
+  if ((/\b(he|she|it)\b/.test(qText) || /\b(he|she|it)\b/.test(correct)) &&
+      (/\b(is|does|has)\b/.test(correct) || /s\b/.test(correct))) {
+    return metaFor(
+      'he_she_it_s',
+      '⚡ He / She / It "-s" & Yardımcı Fiil Tuzağı',
+      'Türkçede "O gider / Ben giderim" derken fiil değişmez ama İngilizcede He/She/It tek başına kalınca fiil "-s" (is/does/has) ister!',
+      '⚡'
+    );
+  }
+
+  // 4. Edat (in / on / at / to) Birebir Çeviri Tuzağı
+  if (/\b(in|on|at|to|for|from|with)\b/.test(correct) || /\b(in|on|at|to|for|from|with)\b/.test(given)) {
+    return metaFor(
+      'preposition_literal',
+      '🧭 Edat (-de/-da/-e) Birebir Çeviri Tuzağı',
+      'Türkçedeki tek bir "-de/-da" eki İngilizcede zamana ve mekana göre "in, on, at" olarak ayrılır.',
+      '🧭'
+    );
+  }
+
+  // 5. Kelime / Kavram Eşleştirme & Birebir Çeviri Tuzağı
+  return metaFor(
+    'vocab_recall',
+    '🌰 Kelime & Birebir Düşünme Tuzağı',
+    'Kelimeyi Türkçe karşılığıyla değil, Fındık\'ın palamut zulasındaki sesi ve resmiyle eşleştirerek hatırla!',
+    '🌰'
+  );
+}
+
+function getTopTurkishTraps() {
+  const counts = {};
+  const meta = {};
+  (state.mistakes || []).forEach(m => {
+    const info = classifyTurkishTrap(m);
+    counts[info.trap] = (counts[info.trap] || 0) + 1;
+    meta[info.trap] = info;
+  });
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([key, count]) => ({ key, count, ...meta[key] }));
+}
+
 function recordMistake(m) {
-  state.mistakes.unshift({ ...m, at: Date.now() });
+  const trapInfo = classifyTurkishTrap(m);
+  state.mistakes.unshift({ ...m, ...trapInfo, at: Date.now() });
   state.mistakes = state.mistakes.slice(0, 60);
 }
 

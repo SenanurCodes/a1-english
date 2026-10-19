@@ -151,12 +151,38 @@ function getSquirrelQuestionClue(q) {
   return 'Sorudaki anahtar kelimelere odaklan, Fındık sana güveniyor! 🐿️';
 }
 
+function getUnitLogicBanner(title = '') {
+  const t = String(title || '').toLowerCase();
+  let badge = '🧠 Türk Beyni için İngilizce İpucu';
+  let trWay = 'Türkçeden kelime kelime çeviri yapmak ("I am agree" gibi) en büyük tuzaktır.';
+  let enWay = 'Her yeni kelimeyi Fındık\'ın gömdüğü bir palamut (🌰) gibi düşün; cümle kurarken önce 🚂 Kim? + 🚃 Ne yapıyor? sırasını izle!';
+
+  if (t.includes('be') || t.includes('tanışma') || t.includes('selam') || t.includes('aile') || t.includes('meslek')) {
+    badge = '🧠 Türk Beyni vs İngilizce Mantığı';
+    trWay = 'Türkçede "Ben öğrenciyim" derken fiil kullanmayız, ismin sonuna "-yim" eki takarız.';
+    enWay = 'İngilizcede ise cümle fiilsiz olmaz! Lokomotifin (I/You/He) hemen arkasına "am / is / are" bağlanır: "I am a student."';
+  } else if (t.includes('geniş') || t.includes('rutin') || t.includes('fiil') || t.includes('zaman')) {
+    badge = '🚂 Lokomotif Kuralı · Söz Dizimi';
+    trWay = 'Türkçede yüklemi en sona saklarız: "Ben her sabah kahve içerim."';
+    enWay = 'İngilizcede eylem (fiil) bekletilmez! Özne (🚂 I) + Eylem (🚃 drink) hemen birleşir: "I drink coffee every morning."';
+  }
+
+  return {
+    badge,
+    title: badge,
+    trWay,
+    enWay,
+    body: `${trWay} ${enWay}`
+  };
+}
+
 function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onFinish, retry }) {
   const view = $('#view');
   document.body.classList.add('focus-mode');
   let idx = 0;
   const results = [];
   const sqGrowth = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : { title: 'Minik Yavru Sincap', badge: '🍼 Evre 1/5' };
+  const logicInfo = getUnitLogicBanner(title);
 
   view.innerHTML = `
     <div class="lesson" style="--accent:${color}">
@@ -166,6 +192,14 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         <div class="lesson-count" id="lcount"></div>
       </div>
       <div class="lesson-title">${esc(title)}</div>
+      <div class="lesson-logic-card" id="lessonLogicBanner" style="padding:10px 14px;margin-bottom:10px;border-radius:12px;background:color-mix(in srgb, var(--primary, #7c3aed) 10%, var(--card-bg, #151c2c));border-left:4px solid var(--primary, #7c3aed);font-size:0.82rem;line-height:1.45;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px;">
+          <b style="color:var(--primary, #a78bfa);">${esc(logicInfo.badge)}</b>
+          <span class="muted small" style="font-size:0.72rem;">30 sn Mantık Kartı</span>
+        </div>
+        <div>🇹🇷 <b>Türkçe Düşünüş:</b> ${esc(logicInfo.trWay)}</div>
+        <div style="margin-top:2px;">🇬🇧 <b>İngilizce Mantığı:</b> ${esc(logicInfo.enWay)}</div>
+      </div>
       <div class="lesson-squirrel-bar" id="lessonSquirrelHelper" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:12px;background:color-mix(in srgb, var(--primary, #4F46E5) 8%, var(--card-bg, #fff));border:1px dashed var(--border, #e2e8f0);flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.86rem;">
           <span style="font-size:1.25rem;">🐿️</span>
@@ -189,6 +223,10 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
   function updateProgress() {
     $('#pbar').style.width = `${(idx / questions.length) * 100}%`;
     $('#lcount').textContent = `${Math.min(idx + 1, questions.length)}/${questions.length}`;
+    const logicBannerEl = $('#lessonLogicBanner');
+    if (logicBannerEl) {
+      logicBannerEl.style.display = idx === 0 ? 'block' : 'none';
+    }
   }
 
   function show() {
@@ -222,11 +260,16 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
   }
 
   function finish(q, ok, { given = '', correct = q.answer || '', skipped = false } = {}) {
-    results.push({ q, ok, given, correct, skipped });
-    if (q.wordKey && !skipped) recordWord(q.wordKey, ok);
+    let trapMeta = null;
     if (!ok && !skipped && q.kind !== 'match') {
-      recordMistake({ q: q.rawQ || stripTags(q.prompt || q.tr || q.speak || ''), given, correct, unit: q.unit || title });
+      const mistakeObj = { q: q.rawQ || stripTags(q.prompt || q.tr || q.speak || ''), given, correct, unit: q.unit || title, kind: q.kind };
+      if (typeof classifyTurkishTrap === 'function') {
+        trapMeta = classifyTurkishTrap(mistakeObj);
+      }
+      recordMistake(mistakeObj);
     }
+    results.push({ q, ok, given, correct, skipped, trapMeta });
+    if (q.wordKey && !skipped) recordWord(q.wordKey, ok);
     if (skipped) {
       sfx.good();
     } else {
@@ -242,8 +285,9 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
     fb.innerHTML = `
       <div class="fb-inner">
         <div class="fb-text">
-          <div class="fb-title">${skipped ? 'Tamamlandı (+10 XP) ⏩' : (ok ? pickOne(['Harika! 🎉', 'Süper! ⭐', 'Doğru! ✅', 'Mükemmel! 🌟', 'Aferin! 👏']) : 'Olmadı 😕')}</div>
+          <div class="fb-title">${skipped ? 'Tamamlandı (+10 🌰 Palamut) ⏩' : (ok ? pickOne(['Harika! 🌰 +1 Palamut Zulada!', 'Süper! ⭐', 'Doğru! ✅', 'Mükemmel! 🌟', 'Aferin! 👏']) : 'Küçük Bir Tuzak! 🪤')}</div>
           ${skipped ? `<div class="muted small" style="font-weight:700;margin-top:2px;">Mikrofon pas geçildi, tam puanın eklendi! Doğrusu: <b>${esc(correct)}</b></div>` : (!ok && correct ? `<div class="fb-correct">Doğru cevap: <b>${esc(correct)}</b></div>` : '')}
+          ${(!ok && trapMeta) ? `<div class="fb-explain" style="margin-top:4px;"><b>${esc(trapMeta.trapTitle)}:</b> ${esc(trapMeta.trapTip)}</div>` : ''}
           ${q.explain ? `<div class="fb-explain">💡 ${esc(q.explain)}</div>` : ''}
         </div>
         <button class="btn btn-big ${ok ? 'btn-green' : 'btn-red'}" id="nextBtn">Devam →</button>
@@ -266,16 +310,22 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
     const wrong = results.filter(r => !r.ok && !r.skipped && r.q.kind !== 'match');
     $('#view').innerHTML = `
       <div class="lesson-end" style="--accent:${color}">
-        <div class="end-emoji">${pct === 100 ? '🏆' : pct >= 70 ? '🎉' : '💪'}</div>
-        <h1>${pct === 100 ? 'Kusursuz!' : pct >= 70 ? 'Ders tamamlandı!' : 'Biraz daha pratik!'}</h1>
+        <div class="end-emoji">${pct === 100 ? '🏆' : pct >= 70 ? '🎉' : '🌱'}</div>
+        <h1>${pct === 100 ? 'Kusursuz! Palamutlar Zulada!' : pct >= 70 ? 'Ders tamamlandı!' : 'Fındık seninle! Birlikte pekiştirelim'}</h1>
         ${out.message ? `<p class="end-msg">${out.message}</p>` : ''}
         <div class="end-stats">
           <div class="stat-pill" style="--c:#51CF66"><span>Doğru</span><b>${correct}/${totalCount}</b></div>
           <div class="stat-pill" style="--c:#339AF0"><span>Başarı</span><b>%${pct}</b></div>
-          <div class="stat-pill" style="--c:#FCC419"><span>XP</span><b>+${xp}</b></div>
+          <div class="stat-pill" style="--c:#FCC419"><span>🌰 Palamut (XP)</span><b>+${xp}</b></div>
         </div>
-        ${wrong.length ? `<div class="card end-wrong"><h3>Tekrar etmen gerekenler</h3>
-          ${wrong.map(r => `<div class="wrong-row"><span>${esc(r.q.rawQ || stripTags(r.q.prompt || r.q.tr || r.q.speak || ''))}</span><b>${esc(r.correct)}</b></div>`).join('')}</div>` : ''}
+        ${wrong.length ? `<div class="card end-wrong"><h3>🪤 Dikkat Edeceğimiz Türk Tuzakları</h3>
+          ${wrong.map(r => `<div class="wrong-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <div style="display:flex;justify-content:space-between;width:100%;gap:8px;">
+              <span>${esc(r.q.rawQ || stripTags(r.q.prompt || r.q.tr || r.q.speak || ''))} <i class="muted">(sen: ${esc(r.given || '—')})</i></span>
+              <b>${esc(r.correct)}</b>
+            </div>
+            ${r.trapMeta ? `<div class="muted small">💡 ${esc(r.trapMeta.trapTitle)}</div>` : ''}
+          </div>`).join('')}</div>` : ''}
         <div class="end-actions">
           ${retry ? '<button class="btn btn-ghost" id="retryBtn">🔁 Tekrar Dene</button>' : ''}
           <button class="btn btn-big btn-primary" id="doneBtn">Devam →</button>
@@ -586,25 +636,42 @@ const RENDERERS = {
 
   order(q, area, done) {
     area.innerHTML = `
-      <div class="q-head"><div class="q-prompt">Cümleyi oluştur ✍️<div class="q-sub">"${esc(q.tr)}"</div></div></div>
-      <div class="order-answer" id="oAns"></div>
-      <div class="order-bank" id="oBank">${q.words.map((w, i) => `<button class="chip" data-i="${i}">${esc(w)}</button>`).join('')}</div>
-      <div class="center"><button class="btn btn-primary" id="checkBtn" disabled>Kontrol Et</button></div>`;
+      <div class="q-head">
+        <div class="q-prompt">🚂 Cümle Trenini Kur (Lokomotif Kuralı) ✍️
+          <div class="q-sub">🇹🇷 "${esc(q.tr)}"</div>
+          <div class="muted small" style="margin-top:4px;font-size:0.78rem;">İpucu: <b>1. Vagon = 🚂 Özne (Lokomotif)</b> · <b>2. Vagon = 🚃 Eylem (Fiil)</b> · Sonraki Vagonlar = Nesne/Yer/Zaman</div>
+        </div>
+      </div>
+      <div class="order-answer loco-order-track" id="oAns" data-empty-hint="Vagonları sırasıyla buraya diz (🚂 Özne ➔ 🚃 Fiil ➔ 🚋 Nesne)..."></div>
+      <div class="order-bank" id="oBank">${q.words.map((w, i) => `<button class="chip wagon-chip" data-i="${i}" data-word="${esc(w)}">${esc(w)}</button>`).join('')}</div>
+      <div class="center"><button class="btn btn-primary" id="checkBtn" disabled>🚂 Treni Hareket Ettir (Kontrol Et)</button></div>`;
     const ans = $('#oAns'), bank = $('#oBank'), btn = $('#checkBtn');
     let answered = false;
-    const refresh = () => { btn.disabled = ans.children.length === 0; };
+    const updateWagonBadges = () => {
+      $$('.chip', ans).forEach((c, idx) => {
+        c.setAttribute('data-wagon-role', idx === 0 ? '🚂 Özne' : idx === 1 ? '🚃 Fiil' : `🚋 Vagon ${idx + 1}`);
+        c.classList.toggle('wagon-loco', idx === 0);
+        c.classList.toggle('wagon-verb', idx === 1);
+      });
+      $$('.chip', bank).forEach(c => {
+        c.removeAttribute('data-wagon-role');
+        c.classList.remove('wagon-loco', 'wagon-verb');
+      });
+      btn.disabled = ans.children.length === 0;
+    };
     area.addEventListener('click', e => {
       const chip = e.target.closest('.chip');
       if (!chip || answered) return;
       (chip.parentElement === bank ? ans : bank).appendChild(chip);
-      refresh();
+      updateWagonBadges();
     });
     const check = () => {
       if (answered || btn.disabled) return;
       answered = true;
-      const given = $$('.chip', ans).map(c => c.textContent).join(' ');
+      const given = $$('.chip', ans).map(c => c.dataset.word || c.textContent).join(' ');
       const ok = normalize(given) === normalize(q.answer);
       ans.classList.add(ok ? 'ok' : 'bad');
+      if (ok) ans.classList.add('train-depart');
       q.speakAfter = q.answer;
       done(ok, { given, correct: q.answer });
     };
