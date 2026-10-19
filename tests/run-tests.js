@@ -464,6 +464,12 @@ test('Sincap Yoldaş (Fındık): Yavrudan Ustaya 5 büyüme evresi ve ders/kelim
 
   const clue = env.run('getSquirrelQuestionClue({ kind: "mc", prompt: "She ___ my sister.", answer: "is" })');
   ok(clue.includes('He / She / It'), 'Tekil özne sorusunda gramer ipucu vermeli');
+
+  const fs = require('fs');
+  const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const appSrc = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
+  ok(htmlSrc.includes('id="shimeji-root"'), 'index.html içinde Shimeji ekran dostu katmanı (#shimeji-root) bulunmalı');
+  ok(appSrc.includes('function initShimejiCompanion()') && appSrc.includes('id="shimejiPet"'), 'js/app.js içinde yürüyen Shimeji sincap kontrolcüsü (initShimejiCompanion) bulunmalı');
 });
 
 
