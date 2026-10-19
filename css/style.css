@@ -2173,24 +2173,60 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   50% { transform: scale(0.96) rotate(-3deg); }
 }
 
-/* Minik Efsaneler (Little Legends) Yıldız & Kombo Rozeti */
+/* Minik Efsaneler (Little Legends) Yıldız & Seviye Rozeti (Tooltip Destekli) */
 .shimeji-legend-badge {
   position: absolute;
   bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.92);
   color: #FACC15;
-  border: 1.5px solid rgba(250, 204, 21, 0.7);
+  border: 1px solid rgba(250, 204, 21, 0.65);
   border-radius: 99px;
-  padding: 1px 8px;
-  font-size: 0.66rem;
+  padding: 2px 9px;
+  font-size: 0.68rem;
   font-weight: 800;
   white-space: nowrap;
-  pointer-events: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
+  pointer-events: auto;
+  cursor: help;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
   letter-spacing: 0.3px;
-  z-index: 3;
+  z-index: 5;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.shimeji-legend-badge:hover,
+.shimeji-legend-badge:focus-visible {
+  transform: translateX(-50%) scale(1.06);
+  border-color: #FACC15;
+  outline: none;
+}
+
+.shimeji-legend-badge::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+}
+
+.shimeji-legend-badge:hover::after,
+.shimeji-legend-badge:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Baş Üstü Duygu Efekti (Dans Notaları / Üzüntü Damlası / Kalp) */
@@ -2217,130 +2253,351 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   50% { transform: translateX(-50%) translateY(-8px) scale(1.14); }
 }
 
-/* Shimeji Baş Üstü Konuşma ve Yardım Balonu */
+/* Shimeji Konuşma Baloncuğu (Koyu Tema & Mor Vurgu, İnce Zarif Çerçeve, Konuşma Kuyruğu) */
 .shimeji-bubble {
-  display: none;
   position: absolute;
-  bottom: 88px;
+  bottom: 92px;
   left: 50%;
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: 280px;
-  min-width: 220px;
-  background: var(--card, #1e293b);
+  transform: translateX(-50%) translateY(6px) scale(0.96);
+  width: 288px;
+  max-width: calc(100vw - 32px);
+  background: color-mix(in srgb, var(--card, #151c2c) 96%, #0f172a);
   color: var(--text, #f8fafc);
-  border: 2px solid var(--primary, #6366f1);
-  border-radius: 16px;
-  padding: 12px 13px;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
-  font-size: 0.83rem;
-  line-height: 1.45;
-  pointer-events: auto;
+  border: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 42%, rgba(255, 255, 255, 0.12));
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 20px 42px rgba(2, 6, 23, 0.52), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
   z-index: 950;
-  animation: shimejiBubblePop 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.18s;
 }
 
 .shimeji-bubble.visible {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Baloncuktan Maskota İşaret Eden Konuşma Kuyruğu (Tail) */
+.shimeji-bubble-tail {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  width: 13px;
+  height: 13px;
+  background: color-mix(in srgb, var(--card, #151c2c) 96%, #0f172a);
+  border-right: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 42%, rgba(255, 255, 255, 0.12));
+  border-bottom: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 42%, rgba(255, 255, 255, 0.12));
+  transform: translateX(-50%) rotate(45deg);
+  pointer-events: none;
 }
 
 .shimeji-bubble.mood-dance {
-  border-color: #10B981;
-  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.28);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 20px 42px rgba(16, 185, 129, 0.22);
+}
+.shimeji-bubble.mood-dance .shimeji-bubble-tail {
+  border-color: rgba(16, 185, 129, 0.6);
 }
 
 .shimeji-bubble.mood-sad {
-  border-color: #F59E0B;
-  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.28);
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 20px 42px rgba(245, 158, 11, 0.22);
+}
+.shimeji-bubble.mood-sad .shimeji-bubble-tail {
+  border-color: rgba(245, 158, 11, 0.6);
 }
 
-/* Ekranın üst kenarında gezinirken balon aşağıya doğru açılsın */
+/* Ekranın üst kenarında gezinirken balon aşağıya doğru açılsın ve kuyruk yukarı baksın */
 .shimeji-pet.near-top .shimeji-bubble {
   bottom: auto;
-  top: 86px;
+  top: 90px;
+}
+.shimeji-pet.near-top .shimeji-bubble-tail {
+  bottom: auto;
+  top: -7px;
+  transform: translateX(-50%) rotate(225deg);
 }
 
-/* Ekranın sol veya sağ köşesindeyken balon taşmasın */
+/* Ekranın sol veya sağ kenarına yaklaştığında balon taşmasın */
 .shimeji-pet.near-left .shimeji-bubble {
   left: 0;
-  transform: none;
+  transform: translateY(6px) scale(0.96);
+}
+.shimeji-pet.near-left .shimeji-bubble.visible {
+  transform: translateY(0) scale(1);
+}
+.shimeji-pet.near-left .shimeji-bubble-tail {
+  left: 38px;
 }
 
 .shimeji-pet.near-right .shimeji-bubble {
   left: auto;
   right: 0;
-  transform: none;
+  transform: translateY(6px) scale(0.96);
+}
+.shimeji-pet.near-right .shimeji-bubble.visible {
+  transform: translateY(0) scale(1);
+}
+.shimeji-pet.near-right .shimeji-bubble-tail {
+  left: auto;
+  right: 32px;
+  transform: rotate(45deg);
 }
 
-.shimeji-bubble-head {
+/* Kişisel Selamlama Satırı + Gizli/Hover Türkçe Çeviri */
+.shimeji-greet-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-right: 36px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.shimeji-greet-wrap:focus-visible {
+  outline: 2px solid var(--primary, #7c3aed);
+  outline-offset: 2px;
+}
+
+.shimeji-greet-en {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--text, #f8fafc);
+  letter-spacing: -0.01em;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.35);
+  padding-bottom: 1px;
+}
+
+.shimeji-greet-tr {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--muted, #94a3b8);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease, opacity 0.2s ease, margin-top 0.2s ease;
+}
+
+.shimeji-greet-wrap:hover .shimeji-greet-tr,
+.shimeji-greet-wrap:focus-visible .shimeji-greet-tr,
+.shimeji-greet-wrap.tr-open .shimeji-greet-tr {
+  max-height: 28px;
+  opacity: 0.9;
+  margin-top: 3px;
+}
+
+/* 44x44px Erişilebilir Kapatma (X) Butonu */
+.shimeji-bubble-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: var(--muted, #94a3b8);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.shimeji-bubble-close:hover {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text, #f8fafc);
+}
+
+.shimeji-bubble-close:focus-visible {
+  outline: 2px solid var(--primary, #7c3aed);
+  outline-offset: -2px;
+}
+
+/* Mesaj Gövdesi & İnce Günlük Hedef İlerleme Çubuğu */
+.shimeji-msg-text {
+  color: var(--text, #f1f5f9);
+  font-size: 0.84rem;
+  line-height: 1.48;
+  margin-bottom: 10px;
+}
+
+.shimeji-goal-wrap {
+  margin-bottom: 14px;
+}
+
+.shimeji-goal-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--muted, #94a3b8);
+  margin-bottom: 5px;
+}
+
+.shimeji-goal-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(148, 163, 184, 0.18);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.shimeji-goal-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary, #7c3aed), #a855f7);
+  border-radius: 99px;
+  transition: width 0.35s ease;
+}
+
+/* Eylem Hiyerarşisi: 1 Tam Genişlikte Mor Birincil Buton + 1 İkincil Buton */
+.shimeji-primary-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.shimeji-cta-primary {
+  flex: 1.6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--primary, #7c3aed);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary, #7c3aed) 40%, transparent);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.shimeji-cta-primary:hover {
+  background: var(--primary-d, #6d28d9);
+  transform: translateY(-1px);
+}
+
+.shimeji-cta-secondary {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 38%, rgba(148, 163, 184, 0.25));
+  background: color-mix(in srgb, var(--primary, #7c3aed) 12%, transparent);
+  color: var(--text, #f8fafc);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.shimeji-cta-secondary:hover {
+  background: color-mix(in srgb, var(--primary, #7c3aed) 22%, transparent);
+  border-color: var(--primary, #7c3aed);
+}
+
+.shimeji-cta-primary:focus-visible,
+.shimeji-cta-secondary:focus-visible,
+.shimeji-icon-btn:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 2px;
+}
+
+/* Alt Sıra: Minimal Vektörel İkon-Butonlar + Tooltip */
+.shimeji-icon-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  font-weight: 800;
-  font-size: 0.77rem;
-  color: var(--primary, #6366f1);
-  margin-bottom: 5px;
-  padding-right: 18px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
 }
 
-.shimeji-bubble-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  color: var(--muted, #94a3b8);
-  cursor: pointer;
-  font-size: 0.88rem;
-  padding: 2px 5px;
-  line-height: 1;
-}
-
-.shimeji-bubble-actions {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-/* Tema ile %100 Uyumlu, Yüksek Kontrastlı Shimeji Butonları */
-.shimeji-mini-btn {
+.shimeji-icon-btn {
+  position: relative;
   flex: 1;
-  min-width: 64px;
-  padding: 6px 8px;
-  border-radius: 9px;
-  border: 1px solid color-mix(in srgb, var(--primary, #6366f1) 38%, var(--border, #334155));
-  background: color-mix(in srgb, var(--primary, #6366f1) 16%, var(--card, #1e293b));
-  color: var(--text, #f8fafc);
-  font-family: inherit;
-  font-size: 0.73rem;
-  font-weight: 800;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--muted, #cbd5e1);
   cursor: pointer;
-  text-align: center;
-  transition: all 0.16s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.shimeji-mini-btn.primary {
-  background: var(--primary, #6366f1);
-  color: #ffffff;
-  border-color: var(--primary, #6366f1);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary, #6366f1) 35%, transparent);
+.shimeji-icon-btn:hover {
+  background: color-mix(in srgb, var(--primary, #7c3aed) 18%, transparent);
+  color: var(--text, #ffffff);
+  border-color: color-mix(in srgb, var(--primary, #7c3aed) 45%, transparent);
 }
 
-.shimeji-mini-btn.accent-warm {
-  background: color-mix(in srgb, #F59E0B 18%, var(--card, #1e293b));
-  border-color: color-mix(in srgb, #F59E0B 45%, var(--border, #334155));
+.shimeji-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.shimeji-mini-btn:hover {
-  background: color-mix(in srgb, var(--primary, #6366f1) 28%, var(--card, #1e293b));
-  border-color: var(--primary, #6366f1);
-  transform: translateY(-1px);
+.shimeji-icon-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease, transform 0.14s ease;
+  z-index: 30;
 }
 
-.shimeji-mini-btn.primary:hover {
-  background: var(--primary-d, #4f46e5);
+.shimeji-icon-btn:hover::after,
+.shimeji-icon-btn:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Hareket Azaltma (prefers-reduced-motion) Desteği */
+@media (prefers-reduced-motion: reduce) {
+  .shimeji-bubble,
+  .shimeji-pet,
+  .shimeji-pet .squirrel-stage-svg,
+  .shimeji-pet .sq-foot-l,
+  .shimeji-pet .sq-foot-r,
+  .shimeji-pet .sq-tail,
+  .shimeji-emote-fx.active {
+    animation: none !important;
+    transition: opacity 0.1s linear !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -2350,6 +2607,7 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
     height: 68px;
   }
 }
+
 
 
 

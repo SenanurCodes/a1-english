@@ -2987,9 +2987,13 @@ function initShimejiCompanion() {
     return;
   }
 
-  let posX = Math.max(24, Math.min((window.innerWidth || 800) - 110, 140));
-  let posY = 0; // 0 = alt kenar, yüksek değer = üst kenar veya köşe
-  let roamZone = 'bottom'; // 'bottom' (Alt Kenar) | 'top' (Üst Kenar) | 'corners' (Köşeler)
+  // Masaüstünde sol menünün (Seri "0 gün", XP ve "Giriş Yap / Eşitle") üstüne binmemesi için güvenli yatay sınır
+  const getSafeMinX = () => ((window.innerWidth || 800) > 768 ? 290 : 18);
+  const getSafeMaxX = () => Math.max(getSafeMinX() + 40, (window.innerWidth || 800) - 96);
+
+  let posX = Math.max(getSafeMinX(), Math.min(getSafeMaxX(), (window.innerWidth || 800) > 768 ? 340 : 120));
+  let posY = 0; // 0 = alt kenar, yüksek değer = üst kenar
+  let roamZone = 'bottom'; // 'bottom' | 'top' | 'corners'
   let dir = 1; // 1 = sağa, -1 = sola
   let mode = 'walk'; // 'walk' | 'idle' | 'munch' | 'jump' | 'dance' | 'sad' | 'sleep' | 'dragging'
   let currentMood = 'normal'; // 'normal' | 'dance' | 'sad' | 'sleep'
@@ -2998,20 +3002,115 @@ function initShimejiCompanion() {
   let bubbleTimer = null;
 
   const starsText = (stageNum) => '★'.repeat(Math.max(1, Math.min(5, stageNum || 1)));
+  const starTooltipText = (s) => `Seviye ${s.stage || 1}/5 (${s.title || 'Minik Sincap'}) · XP kazandıkça yıldız seviyesi artar`;
+
+  // Saate göre kişisel selamlama (05-12 Good morning, 12-18 Good afternoon, 18-05 Good evening)
+  function getPersonalGreeting() {
+    const hr = new Date().getHours();
+    const rawName = (state && state.name && state.name.trim()) ? state.name.trim() : 'Öğrenci';
+    const uName = esc(rawName);
+    if (hr >= 5 && hr < 12) {
+      return {
+        en: `☀️ Good morning, ${uName}!`,
+        tr: `Günaydın, ${uName}!`,
+        speakEn: `Good morning ${rawName}!`
+      };
+    }
+    if (hr >= 12 && hr < 18) {
+      return {
+        en: `🌤️ Good afternoon, ${uName}!`,
+        tr: `Tünaydın, ${uName}!`,
+        speakEn: `Good afternoon ${rawName}!`
+      };
+    }
+    return {
+      en: `🌙 Good evening, ${uName}!`,
+      tr: `İyi akşamlar, ${uName}!`,
+      speakEn: `Good evening ${rawName}!`
+    };
+  }
+
+  // Bağlama duyarlı mesaj ve günlük hedef ilerleme durumu (state.daily, currentStreak)
+  function getContextGoalData() {
+    const targetWords = 5; // Günlük hedef: 5 kelime (50 XP eşdeğeri)
+    const todayXP = (state && state.daily && typeof todayStr === 'function')
+      ? (state.daily[todayStr()] || 0)
+      : 0;
+    const doneWords = Math.min(targetWords, Math.floor(todayXP / 10));
+    const remainingWords = Math.max(0, targetWords - doneWords);
+    const pct = Math.min(100, Math.round((doneWords / targetWords) * 100));
+    const streakCount = typeof currentStreak === 'function' ? currentStreak() : 0;
+
+    let message = '';
+    if (mode === 'sleep') {
+      message = '💤 Fındık şu an mışıl mışıl dinleniyor. Birlikte çalışmaya devam etmek için onu uyandırabilirsin.';
+    } else if (doneWords >= targetWords) {
+      message = 'Bugünün hedefi tamam! 🎉 Fındık seninle gurur duyuyor.';
+    } else if (doneWords > 0) {
+      message = `Harika gidiyorsun! <b>${remainingWords} kelime</b> kaldı.`;
+    } else if (streakCount === 0) {
+      message = `Bugün serini başlatmak için <b>${targetWords} kelime</b> yeter!`;
+    } else {
+      message = `${streakCount} günlük serini korumak için bugün <b>${targetWords} kelime</b> tamamlayalım!`;
+    }
+
+    return {
+      targetWords,
+      doneWords,
+      remainingWords,
+      pct,
+      streakCount,
+      isComplete: doneWords >= targetWords,
+      message
+    };
+  }
+
+  // Tek renkli minimal vektörel SVG ikonlar
+  const svgIcons = {
+    dance: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+    feed: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3"/><path d="M7 7c0-1.7 2.2-3 5-3s5 1.3 5 3H7z"/><path d="M8 7c0 6 1.5 11 4 14 2.5-3 4-8 4-14"/></svg>',
+    remind: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>',
+    sleep: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    wake: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>'
+  };
+
+  const initialGreet = getPersonalGreeting();
+  const initialGoal = getContextGoalData();
 
   root.innerHTML = `
     <div id="shimejiPet" class="shimeji-pet state-walk" style="left:${posX}px;--shimeji-scale:${curScale};" role="region" aria-label="Eğitim Yoldaşı Minik Efsane Fındık">
       <div id="shimejiEmoteFx" class="shimeji-emote-fx" aria-hidden="true"></div>
-      <div id="shimejiBubble" class="shimeji-bubble" role="status">
-        <button type="button" class="shimeji-bubble-close" id="shimejiBubbleClose" aria-label="Balonu kapat">✕</button>
-        <div class="shimeji-bubble-head" id="shimejiStageLabel">🐿️ Fındık · ${esc(sq.title)}</div>
-        <div id="shimejiBubbleBody">${esc(sq.desc)}</div>
-        <div class="shimeji-bubble-actions">
-          <button type="button" class="shimeji-mini-btn primary" id="shimejiHintBtn">💡 İpucu</button>
-          <button type="button" class="shimeji-mini-btn" id="shimejiDanceBtn">💃 Dans</button>
-          <button type="button" class="shimeji-mini-btn" id="shimejiFeedBtn">🌰 Besle</button>
-          <button type="button" class="shimeji-mini-btn" id="shimejiZoneBtn" title="Gezinme Bölgesi: Alt / Üst / Köşe">🧭 Alt</button>
-          <button type="button" class="shimeji-mini-btn" id="shimejiSleepBtn">😴 Uyut</button>
+      <div id="shimejiBubble" class="shimeji-bubble" role="dialog" aria-label="Fındık Eğitim Yoldaşı Mesajı">
+        <div class="shimeji-bubble-tail" aria-hidden="true"></div>
+        <button type="button" class="shimeji-bubble-close" id="shimejiBubbleClose" aria-label="Kapat">✕</button>
+
+        <div class="shimeji-greet-wrap" id="shimejiGreetWrap" tabindex="0" role="button" aria-label="Türkçe karşılığını görmek için tıkla veya üzerine gel">
+          <span class="shimeji-greet-en" id="shimejiGreetEn">${initialGreet.en}</span>
+          <span class="shimeji-greet-tr" id="shimejiGreetTr">${initialGreet.tr}</span>
+        </div>
+
+        <div class="shimeji-msg-text" id="shimejiBubbleBody">${initialGoal.message}</div>
+
+        <div class="shimeji-goal-wrap" id="shimejiGoalWrap">
+          <div class="shimeji-goal-meta">
+            <span>Günlük Hedef</span>
+            <span id="shimejiGoalLabel">${initialGoal.doneWords}/${initialGoal.targetWords} kelime</span>
+          </div>
+          <div class="shimeji-goal-track" role="progressbar" aria-valuemin="0" aria-valuemax="${initialGoal.targetWords}" aria-valuenow="${initialGoal.doneWords}" id="shimejiGoalTrack">
+            <div class="shimeji-goal-fill" id="shimejiGoalFill" style="width:${initialGoal.pct}%;"></div>
+          </div>
+        </div>
+
+        <div class="shimeji-primary-row">
+          <button type="button" class="shimeji-cta-primary" id="shimejiPrimaryCta">${initialGoal.isComplete ? 'Tekrar yap' : 'Derse başla'}</button>
+          <button type="button" class="shimeji-cta-secondary" id="shimejiHintBtn">İpucu</button>
+        </div>
+
+        <div class="shimeji-icon-toolbar" role="group" aria-label="Fındık Etkileşimleri">
+          <button type="button" class="shimeji-icon-btn" id="shimejiDanceBtn" aria-label="Dans" data-tooltip="Dans">${svgIcons.dance}</button>
+          <button type="button" class="shimeji-icon-btn" id="shimejiFeedBtn" aria-label="Besle" data-tooltip="Besle">${svgIcons.feed}</button>
+          <button type="button" class="shimeji-icon-btn" id="shimejiRemindBtn" aria-label="Hatırlat" data-tooltip="Hatırlat">${svgIcons.remind}</button>
+          <button type="button" class="shimeji-icon-btn" id="shimejiSleepBtn" aria-label="Uyut" data-tooltip="Uyut">${svgIcons.sleep}</button>
         </div>
       </div>
       <div id="shimejiSpriteWrap" class="shimeji-sprite-wrap" title="Fındık (Tıkla veya İstediğin Köşeye Sürükle)">
@@ -3019,7 +3118,7 @@ function initShimejiCompanion() {
           ${renderSquirrelStageSVG(sq.id, 'normal')}
         </div>
       </div>
-      <div id="shimejiLegendBadge" class="shimeji-legend-badge">${starsText(sq.stage)} Fındık</div>
+      <div id="shimejiLegendBadge" class="shimeji-legend-badge" tabindex="0" data-tooltip="${esc(starTooltipText(sq))}" title="${esc(starTooltipText(sq))}" aria-label="${esc(starTooltipText(sq))}">${starsText(sq.stage)} Fındık</div>
     </div>
   `;
 
@@ -3028,18 +3127,26 @@ function initShimejiCompanion() {
   const badgeEl = $('#shimejiLegendBadge');
   const bubbleEl = $('#shimejiBubble');
   const bubbleBodyEl = $('#shimejiBubbleBody');
-  const bubbleHeadEl = $('#shimejiStageLabel');
+  const greetWrapEl = $('#shimejiGreetWrap');
+  const greetEnEl = $('#shimejiGreetEn');
+  const greetTrEl = $('#shimejiGreetTr');
+  const goalLabelEl = $('#shimejiGoalLabel');
+  const goalTrackEl = $('#shimejiGoalTrack');
+  const goalFillEl = $('#shimejiGoalFill');
+  const primaryCtaEl = $('#shimejiPrimaryCta');
+  const hintBtnEl = $('#shimejiHintBtn');
   const spriteWrapEl = $('#shimejiSpriteWrap');
   const spriteInnerEl = $('#shimejiSpriteInner');
-  const zoneBtnEl = $('#shimejiZoneBtn');
+  const remindBtnEl = $('#shimejiRemindBtn');
   const sleepBtnEl = $('#shimejiSleepBtn');
 
   function syncViewportEdgeClasses() {
     if (!petEl) return;
     const winW = window.innerWidth || 800;
     const winH = window.innerHeight || 600;
+    const minEdge = getSafeMinX() + 70;
     petEl.classList.toggle('near-top', posY > winH * 0.52);
-    petEl.classList.toggle('near-left', posX < 135);
+    petEl.classList.toggle('near-left', posX < minEdge);
     petEl.classList.toggle('near-right', posX > winW - 210);
   }
 
@@ -3047,9 +3154,46 @@ function initShimejiCompanion() {
     if (!badgeEl) return;
     const latestSq = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : sq;
     const stars = starsText(latestSq.stage);
+    const tip = starTooltipText(latestSq);
     badgeEl.textContent = lessonCombo >= 2
       ? `${stars} Fındık · 🔥 ${lessonCombo}x`
       : `${stars} Fındık`;
+    badgeEl.setAttribute('data-tooltip', tip);
+    badgeEl.setAttribute('title', tip);
+    badgeEl.setAttribute('aria-label', tip);
+  }
+
+  // Baloncuk içindeki selamlama, hedef çubuğu ve bağlamsal birincil butonu canlı verilerle günceller
+  function syncBubbleContextUI(customMessageHtml = null) {
+    const gr = getPersonalGreeting();
+    const goal = getContextGoalData();
+    if (greetEnEl) greetEnEl.innerHTML = gr.en;
+    if (greetTrEl) greetTrEl.innerHTML = gr.tr;
+    if (bubbleBodyEl) {
+      bubbleBodyEl.innerHTML = customMessageHtml !== null ? customMessageHtml : goal.message;
+    }
+    if (goalLabelEl) goalLabelEl.textContent = `${goal.doneWords}/${goal.targetWords} kelime`;
+    if (goalTrackEl) goalTrackEl.setAttribute('aria-valuenow', String(goal.doneWords));
+    if (goalFillEl) goalFillEl.style.width = `${goal.pct}%`;
+
+    // Bağlamsal Odak: Fındık uyuyorsa birincil mor buton "Uyandır" olur, uyanıksa "Derse başla" / "Tekrar yap"
+    if (primaryCtaEl) {
+      if (mode === 'sleep') {
+        primaryCtaEl.textContent = 'Uyandır';
+        primaryCtaEl.setAttribute('aria-label', 'Fındık\'ı Uyandır');
+      } else {
+        const label = goal.isComplete ? 'Tekrar yap' : 'Derse başla';
+        primaryCtaEl.textContent = label;
+        primaryCtaEl.setAttribute('aria-label', label);
+      }
+    }
+
+    if (sleepBtnEl) {
+      const isSleeping = mode === 'sleep';
+      sleepBtnEl.innerHTML = isSleeping ? svgIcons.wake : svgIcons.sleep;
+      sleepBtnEl.setAttribute('aria-label', isSleeping ? 'Uyandır' : 'Uyut');
+      sleepBtnEl.setAttribute('data-tooltip', isSleeping ? 'Uyandır' : 'Uyut');
+    }
   }
 
   function setEmote(text = '') {
@@ -3077,6 +3221,7 @@ function initShimejiCompanion() {
     }
     if (petEl) petEl.style.setProperty('--shimeji-scale', nextScale);
     updateLegendBadge();
+    syncBubbleContextUI(bubbleEl && bubbleEl.classList.contains('visible') ? bubbleBodyEl.innerHTML : null);
   }
 
   function setMode(newMode, durationTicks = 60, moodOverride = null) {
@@ -3107,16 +3252,21 @@ function initShimejiCompanion() {
     else setEmote('');
   }
 
-  function showBubble(htmlContent, headTitle = null, autoHideMs = 8500, bubbleMood = '') {
+  function closeBubble() {
+    if (!bubbleEl) return;
+    bubbleEl.classList.remove('visible');
+    if (bubbleTimer) {
+      clearTimeout(bubbleTimer);
+      bubbleTimer = null;
+    }
+  }
+
+  function showBubble(htmlContent = null, _headTitle = null, autoHideMs = 9000, bubbleMood = '') {
     if (!bubbleEl || !bubbleBodyEl) return;
     syncViewportEdgeClasses();
-    const latestSq = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : sq;
-    if (bubbleHeadEl) {
-      bubbleHeadEl.textContent = headTitle || `🐿️ Fındık · ${latestSq.title}`;
-    }
     bubbleEl.classList.remove('mood-dance', 'mood-sad');
     if (bubbleMood) bubbleEl.classList.add(`mood-${bubbleMood}`);
-    bubbleBodyEl.innerHTML = htmlContent;
+    syncBubbleContextUI(htmlContent);
     bubbleEl.classList.add('visible');
     if (bubbleTimer) clearTimeout(bubbleTimer);
     if (autoHideMs > 0) {
@@ -3127,67 +3277,20 @@ function initShimejiCompanion() {
     }
   }
 
-  function applyRoamZone(newZone, announce = true) {
-    roamZone = newZone;
-    const winW = window.innerWidth || 800;
-    const winH = window.innerHeight || 600;
-    const topEdgeBottom = Math.max(120, winH - 96);
-
-    if (petEl) petEl.style.transition = 'left 0.35s ease, bottom 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
-    if (roamZone === 'bottom') {
-      posY = 0;
-      if (petEl) petEl.style.bottom = '';
-      if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Alt';
-      if (announce) showBubble('🐾 Şimdi ekranın <b>alt kenarında</b> yürüyerek sana eşlik ediyorum!', '🧭 Gezinme: Alt Kenar', 4500);
-    } else if (roamZone === 'top') {
-      posY = topEdgeBottom;
-      if (petEl) petEl.style.bottom = `${Math.round(posY)}px`;
-      if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Üst';
-      if (announce) showBubble('🐿️ Ekranın <b>üst kenarına</b> tırmandım! Sen ders çalışırken yukarıdan seni izleyip ipucu vereceğim!', '🧭 Gezinme: Üst Kenar', 5000);
-    } else {
-      // Köşe modu: Sağ veya sol köşeye yerleşir
-      posX = posX < winW / 2 ? 20 : Math.max(80, winW - 96);
-      posY = posY > winH * 0.4 ? topEdgeBottom : 0;
-      if (petEl) {
-        petEl.style.left = `${Math.round(posX)}px`;
-        petEl.style.bottom = posY > 0 ? `${Math.round(posY)}px` : '';
+  // İngilizce selamlamaya tıklayınca veya Enter/Space basınca Türkçe karşılığını aç/kapat (hover/focus zaten CSS ile çalışır)
+  if (greetWrapEl) {
+    greetWrapEl.onclick = (e) => {
+      e.stopPropagation();
+      greetWrapEl.classList.toggle('tr-open');
+      const gr = getPersonalGreeting();
+      if (typeof speak === 'function' && gr.speakEn) speak(gr.speakEn, 'en');
+    };
+    greetWrapEl.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        e.stopPropagation();
+        greetWrapEl.classList.toggle('tr-open');
       }
-      if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Köşe';
-      if (announce) showBubble('📐 Köşeme yerleştim! Dikkatini dağıtmadan buradan her soruda seninle sevinip sana ipucu vereceğim!', '🧭 Gezinme: Köşe Modu', 5000);
-    }
-    syncViewportEdgeClasses();
-    const t = setTimeout(() => { if (petEl) petEl.style.transition = ''; }, 440);
-    if (t && typeof t.unref === 'function') t.unref();
-  }
-
-  function getTimeOfDayGreeting() {
-    const hr = new Date().getHours();
-    const uName = esc(state.name || 'Ortak');
-    if (hr >= 5 && hr < 12) {
-      return {
-        head: '☀️ Günaydın · Good Morning!',
-        body: `☀️ <b>Good morning, ${uName}! (Günaydın!)</b> Harika bir sabah! Güne taze bir İngilizce kelimeyle başlamaya hazır mısın?`,
-        speakEn: `Good morning ${state.name || ''}! Let's learn together!`
-      };
-    }
-    if (hr >= 12 && hr < 18) {
-      return {
-        head: '🌤️ Tünaydın · Good Afternoon!',
-        body: `🌤️ <b>Good afternoon, ${uName}! (Tünaydın!)</b> Günün nasıl geçiyor? Bugünkü kelime hedefimize birlikte ulaşalım!`,
-        speakEn: `Good afternoon ${state.name || ''}! Ready to collect new words?`
-      };
-    }
-    if (hr >= 18 && hr < 22) {
-      return {
-        head: '🌆 İyi Akşamlar · Good Evening!',
-        body: `🌆 <b>Good evening, ${uName}! (İyi akşamlar!)</b> Günün yorgunluğunu 5 dakikalık keyifli bir pratikle atalım mı?`,
-        speakEn: `Good evening ${state.name || ''}! You are doing great!`
-      };
-    }
-    return {
-      head: '🌙 İyi Geceler · Good Night!',
-      body: `🌙 <b>Good night, ${uName}! (İyi geceler!)</b> Bu saatte bile azimle çalışıyorsun, seninle gurur duyuyorum! Yorulursan beni uyutabilirsin 😴`,
-      speakEn: `Good night ${state.name || ''}! Keep shining!`
     };
   }
 
@@ -3196,7 +3299,7 @@ function initShimejiCompanion() {
   function giveSmartHelp() {
     if (window.currentActiveLessonQuestion && typeof getSquirrelQuestionClue === 'function') {
       const clue = getSquirrelQuestionClue(window.currentActiveLessonQuestion);
-      showBubble(clue, '💡 Ders İpucu · Fındık', 10000);
+      showBubble(clue, null, 10000);
       setMode('jump', 20);
       if (window.currentActiveLessonQuestion.speak && typeof speak === 'function') {
         speak(window.currentActiveLessonQuestion.speak);
@@ -3206,20 +3309,18 @@ function initShimejiCompanion() {
     if (!state.companion) state.companion = { fedCount: 0, lastHintIdx: 0, lastGrammarIdx: 0 };
     hintCallCounter++;
 
-    // Her 3 tıklamada 2 kez yeni kelime, 1 kez yeni gramer tüyosu (asla üst üste aynı kelime gelmez!)
     if (hintCallCounter % 3 !== 0) {
       const vocabUnits = UNITS.filter(u => u.type === 'vocab' && (u.level === 'A1' || state.a2Unlocked));
       const pool = vocabUnits.flatMap(u => (u.words || []).map(w => ({ ...w, unitTitle: u.title })));
       if (pool.length > 0) {
-        // Sabit ama karışık sıra ile her seferinde yepyeni bir kelime seç
         const cursor = (state.companion.lastHintIdx || 0);
-        const stepPrime = 7; // Aralarında asal adımla tüm kelimeleri tekrarsız gezer
+        const stepPrime = 7;
         const w = pool[(cursor * stepPrime) % pool.length];
         state.companion.lastHintIdx = cursor + 1;
         saveState();
         showBubble(
-          `${w.emoji || '🌰'} <b>"${esc(w.en)}"</b> Türkçede <b>"${esc(w.tr)}"</b> demektir! <span class="muted small">(${esc(w.unitTitle || 'Kelime')})</span><br>🔊 Telaffuzunu senin için seslendirdim.`,
-          `🌰 Yeni Kelime (#${cursor + 1})`,
+          `${w.emoji || '🌰'} <b>"${esc(w.en)}"</b> Türkçede <b>"${esc(w.tr)}"</b> demektir! <span class="muted small">(${esc(w.unitTitle || 'Kelime')})</span>`,
+          null,
           9000
         );
         setMode('jump', 18);
@@ -3238,82 +3339,141 @@ function initShimejiCompanion() {
     const tipHtml = typeof tip === 'object'
       ? `<b>${esc(tip.title)}:</b> ${esc(tip.rule)}<br><span class="muted small">🗣️ Örnek: <b>"${esc(tip.en)}"</b> (${esc(tip.tr)})</span>`
       : String(tip);
-    showBubble(tipHtml, '📘 Fındık\'tan Gramer Tüyosu', 10000);
+    showBubble(tipHtml, null, 10000);
     setMode('idle', 50);
     if (tip && typeof tip === 'object' && tip.en && typeof speak === 'function') {
       speak(tip.en, 'en');
     }
   }
 
-  // Buton Etkileşimleri
+  // Kapatma (X) Butonu
   if ($('#shimejiBubbleClose')) {
     $('#shimejiBubbleClose').onclick = (e) => {
       e.stopPropagation();
-      bubbleEl.classList.remove('visible');
+      closeBubble();
     };
   }
 
-  if ($('#shimejiHintBtn')) {
-    $('#shimejiHintBtn').onclick = (e) => {
+  // Birincil Buton: Uyuyorsa "Uyandır", uyanıksa "Derse başla" veya "Tekrar yap"
+  if (primaryCtaEl) {
+    primaryCtaEl.onclick = (e) => {
+      e.stopPropagation();
+      if (mode === 'sleep') {
+        mode = 'idle';
+        setMode('dance', 30, 'dance');
+        showBubble(null, null, 7000);
+        return;
+      }
+      const goal = getContextGoalData();
+      closeBubble();
+      if (goal.isComplete) {
+        location.hash = '#/review';
+      } else {
+        const targetUnit = typeof nextUnit === 'function' ? nextUnit() : (UNITS && UNITS[0]);
+        location.hash = targetUnit ? `#/lesson/${targetUnit.id}` : '#/home';
+      }
+    };
+  }
+
+  // İkincil Buton: İpucu
+  if (hintBtnEl) {
+    hintBtnEl.onclick = (e) => {
       e.stopPropagation();
       giveSmartHelp();
     };
   }
 
+  // İkon Araç Çubuğu: 1. Dans
   if ($('#shimejiDanceBtn')) {
     $('#shimejiDanceBtn').onclick = (e) => {
       e.stopPropagation();
+      if (mode === 'sleep') mode = 'idle';
       setMode('dance', 55, 'dance');
       const cheers = [
         '💃 <b>Minik Efsane Dansı!</b> Doğru cevap verdikçe senin için böyle dans edeceğim!',
         '🎵 <b>La la la!</b> Birlikte İngilizce öğrenmek çok eğlenceli!',
         '🐿️ Beni ekranın altına, üstüne veya istediğin köşeye sürükleyebilirsin!'
       ];
-      showBubble(cheers[Math.floor(Math.random() * cheers.length)], '🎉 Dans Eden Fındık', 6500, 'dance');
+      showBubble(cheers[Math.floor(Math.random() * cheers.length)], null, 6500, 'dance');
     };
   }
 
+  // İkon Araç Çubuğu: 2. Besle
   if ($('#shimejiFeedBtn')) {
     $('#shimejiFeedBtn').onclick = (e) => {
       e.stopPropagation();
+      if (mode === 'sleep') mode = 'idle';
       if (!state.companion) state.companion = { fedCount: 0, lastHintIdx: 0, lastGrammarIdx: 0 };
       state.companion.fedCount = (state.companion.fedCount || 0) + 1;
       saveState();
       setMode('munch', 45);
       showBubble(
-        `🌰 <b>Hart hurt!</b> Meşe palamudu çok lezzetliydi! (Toplam <b>${state.companion.fedCount}</b> kez besledin). XP kazandıkça yıldız seviyem yükseliyor!`,
-        '🧡 Fındık Çok Mutlu!',
+        `🌰 <b>Hart hurt!</b> Meşe palamudu çok lezzetliydi! (Toplam <b>${state.companion.fedCount}</b> kez besledin).`,
+        null,
         7000
       );
     };
   }
 
-  if (zoneBtnEl) {
-    zoneBtnEl.onclick = (e) => {
+  // İkon Araç Çubuğu: 3. Hatırlat (Çalar saat ikonu — günlük hedef hatırlatıcısı)
+  if (remindBtnEl) {
+    remindBtnEl.onclick = (e) => {
       e.stopPropagation();
-      const nextZone = roamZone === 'bottom' ? 'top' : roamZone === 'top' ? 'corners' : 'bottom';
-      applyRoamZone(nextZone, true);
+      const goal = getContextGoalData();
+      if (typeof toggleReminder === 'function') {
+        toggleReminder(true, state.reminderTime || '20:00');
+      }
+      setMode('jump', 22);
+      const msg = goal.isComplete
+        ? `⏰ Günlük hatırlatıcın aktif (<b>${esc(state.reminderTime || '20:00')}</b>)! Yarın da serini sürdürmen için seni haberdar edeceğim.`
+        : `⏰ Hatırlatıcı kuruldu! Bugünkü hedefin için <b>${goal.remainingWords} kelime</b> kaldı, birlikte tamamlayalım!`;
+      showBubble(msg, null, 7000);
     };
   }
 
+  // İkon Araç Çubuğu: 4. Uyut / Uyandır
   if (sleepBtnEl) {
     sleepBtnEl.onclick = (e) => {
       e.stopPropagation();
       if (mode === 'sleep') {
         mode = 'idle';
         setMode('dance', 30, 'dance');
-        sleepBtnEl.textContent = '😴 Uyut';
-        const gr = getTimeOfDayGreeting();
-        showBubble(gr.body, gr.head, 6000);
+        showBubble(null, null, 6500);
       } else {
         setMode('sleep', 999999, 'sleep');
-        sleepBtnEl.textContent = '☀️ Uyandır';
-        showBubble('💤 Ben köşede sessizce uyuyorum. İstediğin zaman üstüme tıklayıp uyandırabilirsin!', '😴 Fındık Dinleniyor', 4500);
+        showBubble(null, null, 5500);
       }
     };
   }
 
-  // Sürükle-Bırak (Alt, Üst veya Köşelere Bırakabilme!) ve Tıklama
+  // Escape tuşu ve dışarı tıklama baloncuğu kapatsın
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && bubbleEl && bubbleEl.classList.contains('visible')) {
+      closeBubble();
+    }
+  });
+
+  document.addEventListener('pointerdown', (e) => {
+    if (!bubbleEl || !bubbleEl.classList.contains('visible')) return;
+    if (petEl && !petEl.contains(e.target)) {
+      closeBubble();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    const minX = getSafeMinX();
+    const maxX = getSafeMaxX();
+    if (posX < minX) {
+      posX = minX;
+      if (petEl) petEl.style.left = `${Math.round(posX)}px`;
+    } else if (posX > maxX) {
+      posX = maxX;
+      if (petEl) petEl.style.left = `${Math.round(posX)}px`;
+    }
+    syncViewportEdgeClasses();
+  });
+
+  // Sürükle-Bırak ve Tıklama
   let isDragging = false;
   let dragMoved = false;
   let startPointerX = 0;
@@ -3344,9 +3504,10 @@ function initShimejiCompanion() {
           dragMoved = true;
           setMode('dragging', 999);
         }
-        const maxW = Math.max(120, (window.innerWidth || 800) - 86);
+        const minW = getSafeMinX();
+        const maxW = getSafeMaxX();
         const maxH = Math.max(120, (window.innerHeight || 600) - 96);
-        posX = Math.max(8, Math.min(maxW, startPetX + dx));
+        posX = Math.max(minW, Math.min(maxW, startPetX + dx));
         posY = Math.max(0, Math.min(maxH, startPetBottom + dy));
         petEl.style.left = `${Math.round(posX)}px`;
         petEl.style.bottom = `${Math.round(posY)}px`;
@@ -3367,14 +3528,12 @@ function initShimejiCompanion() {
           roamZone = 'top';
           posY = Math.max(120, winH - 96);
           petEl.style.bottom = `${Math.round(posY)}px`;
-          if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Üst';
-          showBubble('🐿️ Hop! Ekranın <b>üst kenarına</b> tutundum, buradan dersine eşlik edeceğim!', '🐿️ Üst Kenar Yoldaşı', 4500);
+          showBubble('🐿️ Ekranın <b>üst kenarına</b> tutundum, buradan dersine eşlik edeceğim!', null, 4500);
         } else {
           roamZone = 'bottom';
           posY = 0;
           petEl.style.bottom = '';
-          if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Alt';
-          showBubble('🪂 Vuuu! Beni ekranın altına, üstüne veya istediğin köşeye taşıyabilirsin!', '🐿️ Uçan Sincap Fındık', 4500);
+          showBubble(null, null, 4500);
         }
         syncViewportEdgeClasses();
         const fallTimer = setTimeout(() => {
@@ -3383,17 +3542,16 @@ function initShimejiCompanion() {
         }, 430);
         if (fallTimer && typeof fallTimer.unref === 'function') fallTimer.unref();
       } else {
-        // Sadece tıklandı: Konuşma balonunu aç veya her tıklamada yeni bir ipucu ver
+        // Sadece tıklandı: Baloncuk kapalıysa bağlamsal mesajı aç, açıksa yeni ipucu ver
         if (bubbleEl.classList.contains('visible')) {
           giveSmartHelp();
         } else {
           if (window.currentActiveLessonQuestion && typeof getSquirrelQuestionClue === 'function') {
-            showBubble(getSquirrelQuestionClue(window.currentActiveLessonQuestion), '💡 Ders İpucu · Fındık', 10000);
+            showBubble(getSquirrelQuestionClue(window.currentActiveLessonQuestion), null, 10000);
           } else {
-            const gr = getTimeOfDayGreeting();
-            showBubble(gr.body, gr.head, 9000);
+            showBubble(null, null, 9000);
           }
-          setMode('jump', 16);
+          if (mode !== 'sleep') setMode('jump', 16);
         }
       }
     };
@@ -3402,19 +3560,28 @@ function initShimejiCompanion() {
     spriteWrapEl.onpointercancel = endDrag;
   }
 
-  // Uygulama ilk açıldığında saat dilimine göre sıcak bir selamlama (Günaydın / Tünaydın / İyi Akşamlar) göster
+  // Davranış Kuralı: Baloncuk günde yalnızca BİR KEZ otomatik açılsın (localStorage ile kontrol edilir)
   if (state.onboarded) {
-    const welcomeTimer = setTimeout(() => {
-      if (mode !== 'sleep' && !window.currentActiveLessonQuestion) {
-        const gr = getTimeOfDayGreeting();
-        showBubble(gr.body, gr.head, 7000);
-        setMode('jump', 18);
-      }
-    }, 900);
-    if (welcomeTimer && typeof welcomeTimer.unref === 'function') welcomeTimer.unref();
+    const AUTO_BUBBLE_KEY = 'patilingo_shimeji_auto_date';
+    const todayKey = typeof todayStr === 'function' ? todayStr() : new Date().toISOString().slice(0, 10);
+    let alreadyShownToday = false;
+    try {
+      alreadyShownToday = localStorage.getItem(AUTO_BUBBLE_KEY) === todayKey;
+    } catch (_) {}
+
+    if (!alreadyShownToday) {
+      const welcomeTimer = setTimeout(() => {
+        if (mode !== 'sleep' && !window.currentActiveLessonQuestion) {
+          try { localStorage.setItem(AUTO_BUBBLE_KEY, todayKey); } catch (_) {}
+          showBubble(null, null, 8000);
+          setMode('jump', 18);
+        }
+      }, 900);
+      if (welcomeTimer && typeof welcomeTimer.unref === 'function') welcomeTimer.unref();
+    }
   }
 
-  // Otonom, Doğal Shimeji / Little Legends Gezinme Döngüsü (Kısa tatlı yürüyüşler + sakin dinlenme molaları)
+  // Otonom, Doğal Shimeji / Little Legends Gezinme Döngüsü (Sol menünün üstüne binmez)
   const timerId = setInterval(() => {
     if (!document.body.contains(petEl)) return;
     if (isDragging || mode === 'sleep') return;
@@ -3426,7 +3593,6 @@ function initShimejiCompanion() {
       if (roamZone === 'corners') {
         setMode(roll < 0.78 ? 'idle' : 'munch', 70 + Math.floor(Math.random() * 80));
       } else if (mode === 'walk') {
-        // Yürüdükten sonra mutlaka sakin bir mola ver (sürekli duvarlar arası mekik dokumasın)
         setMode(roll < 0.75 ? 'idle' : 'munch', 75 + Math.floor(Math.random() * 95));
       } else if (roll < 0.48) {
         if (Math.random() < 0.45) dir = dir * -1;
@@ -3439,8 +3605,8 @@ function initShimejiCompanion() {
     }
 
     if (mode === 'walk' && roamZone !== 'corners') {
-      const minX = 20;
-      const maxX = Math.max(90, (window.innerWidth || 800) - 96);
+      const minX = getSafeMinX();
+      const maxX = getSafeMaxX();
       posX += dir * 1.15;
       if (posX >= maxX) {
         posX = maxX;
@@ -3456,19 +3622,22 @@ function initShimejiCompanion() {
   }, 45);
   if (timerId && typeof timerId.unref === 'function') timerId.unref();
 
+  syncViewportEdgeClasses();
+
   shimejiController = {
     timerId,
     lastStageId: sq.id,
     lastMood: 'normal',
     refreshAppearance,
     showBubble,
+    closeBubble,
     setMode,
     giveSmartHelp
   };
 
   window.shimejiSay = (htmlText, badgeTitle = '🐿️ Fındık') => {
     showBubble(htmlText, badgeTitle, 8500);
-    setMode('jump', 20);
+    if (mode !== 'sleep') setMode('jump', 20);
   };
 
   // Oyunlaştırma (Gamification): Doğru cevapta dans et & kutla, yanlış cevapta üzül & ipucu/moral ver!
@@ -3487,7 +3656,7 @@ function initShimejiCompanion() {
       ];
       showBubble(
         praises[Math.floor(Math.random() * praises.length)],
-        `🎉 Fındık Dans Ediyor!${lessonCombo >= 2 ? ` · 🔥 ${lessonCombo}x` : ''}`,
+        null,
         4600,
         'dance'
       );
@@ -3506,7 +3675,7 @@ function initShimejiCompanion() {
         : '';
       showBubble(
         `${moralIntro}${cluePart}`,
-        '🥺 Fındık Moral & İpucu Veriyor',
+        null,
         9000,
         'sad'
       );
