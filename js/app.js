@@ -2200,7 +2200,7 @@ function screenProgress() {
             ${topTraps.map(t => `
               <div class="trap-stat-row">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap;">
-                  <span class="trap-stat-name">${t.icon} ${esc(t.label)}</span>
+                  <span class="trap-stat-name">${esc(t.label)}</span>
                   <span class="trap-count-pill">${t.count} kez takıldın</span>
                 </div>
                 <p class="trap-stat-tip">💡 <b>Çözüm Mantığı:</b> ${esc(t.tip)}</p>
