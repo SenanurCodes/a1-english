@@ -548,12 +548,6 @@ test('Türk Beyni vs İngilizce: Türk Tuzağı sınıflandırması ve Lokomotif
   eq(orderQ.answer, 'I drink coffee');
   eq(orderQ.tr, 'Ben kahve içerim');
   ok(Array.isArray(orderQ.words) && orderQ.words.length === 3, 'Kelimeler dizi halinde üretilmeli');
-
-  // 9. Orman Arkadaşı: Bilge Baykuş SVG üretimi
-  const owlSvg = env.run('renderOwlSVG("think", 64)');
-  ok(owlSvg.includes('class="owl-svg') && owlSvg.includes('mood-think'), 'Bilge Baykuş think SVG üretilmeli');
-  const owlHappy = env.run('renderOwlSVG("happy", 64)');
-  ok(owlHappy.includes('mood-happy'), 'Bilge Baykuş happy SVG üretilmeli');
 });
 
 

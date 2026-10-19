@@ -2690,99 +2690,13 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   font-size: 0.9rem;
 }
 
-/* 30 Saniyelik Türk Beyni vs İngilizce Mantığı & Bilge Baykuş Kartı */
+/* 30 Saniyelik Türk Beyni vs İngilizce Mantığı Ders Açılış Kartı */
 .lesson-logic-card {
   border-radius: 14px;
   background: linear-gradient(135deg, rgba(108, 92, 231, 0.12), rgba(32, 201, 151, 0.08));
   border: 1px solid rgba(108, 92, 231, 0.25);
-  padding: 14px 16px;
-  margin-bottom: 14px;
-}
-
-.owl-logic-card {
-  display: flex !important;
-  align-items: center;
-  gap: 14px;
-  background: color-mix(in srgb, var(--primary, #7c3aed) 8%, var(--card-bg, #161f33));
-  border: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 28%, var(--border, #28354d));
-  border-left: 4px solid var(--primary, #7c3aed) !important;
-}
-
-[data-mode="dark"] .owl-logic-card {
-  background: color-mix(in srgb, var(--primary, #7c3aed) 12%, var(--card-bg, #161f33)) !important;
-  border-color: rgba(167, 139, 250, 0.25) !important;
-  border-left-color: #a78bfa !important;
-}
-
-.owl-slot {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  animation: owlFloat 3.5s ease-in-out infinite;
-}
-
-.owl-slot:hover {
-  transform: scale(1.08) rotate(-2deg);
-}
-
-@keyframes owlFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-.owl-svg {
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
-}
-
-.owl-svg.mood-happy .owl-wing-l {
-  animation: owlFlapL 0.6s ease infinite alternate;
-  transform-origin: 24px 60px;
-}
-
-.owl-svg.mood-happy .owl-wing-r {
-  animation: owlFlapR 0.6s ease infinite alternate;
-  transform-origin: 96px 60px;
-}
-
-@keyframes owlFlapL {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-15deg); }
-}
-
-@keyframes owlFlapR {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(15deg); }
-}
-
-.owl-bubble {
-  flex: 1;
-  font-size: 0.84rem;
-  line-height: 1.48;
-  color: var(--text, #0f172a);
-}
-
-[data-mode="dark"] .owl-bubble {
-  color: #f8fafc !important;
-}
-
-.owl-bubble-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.owl-bubble-head b {
-  color: var(--primary, #6366f1);
-  font-size: 0.88rem;
-}
-
-[data-mode="dark"] .owl-bubble-head b {
-  color: #a78bfa !important;
+  padding: 16px 18px;
+  margin-bottom: 20px;
 }
 
 .lesson-logic-header {
