@@ -2979,7 +2979,7 @@ function initShimejiCompanion() {
   const sq = typeof getSquirrelGrowth === 'function'
     ? getSquirrelGrowth()
     : { stage: 1, id: 'baby', title: 'Minik Yavru Sincap', badge: '🌱 Evre 1 · Yavru', desc: 'Cik cik! Birlikte kelime toplayalım!' };
-  const scaleMap = { baby: 0.88, explorer: 0.94, student: 1, scholar: 1.03, master: 1.06 };
+  const scaleMap = { baby: 0.96, explorer: 1.0, student: 1.05, scholar: 1.09, master: 1.14 };
   const curScale = scaleMap[sq.id] || 1;
 
   if (shimejiController) {
@@ -3261,7 +3261,7 @@ function initShimejiCompanion() {
     }
   }
 
-  function showBubble(htmlContent = null, _headTitle = null, autoHideMs = 9000, bubbleMood = '') {
+  function showBubble(htmlContent = null, _headTitle = null, autoHideMs = 15000, bubbleMood = '') {
     if (!bubbleEl || !bubbleBodyEl) return;
     syncViewportEdgeClasses();
     bubbleEl.classList.remove('mood-dance', 'mood-sad');
@@ -3299,8 +3299,8 @@ function initShimejiCompanion() {
   function giveSmartHelp() {
     if (window.currentActiveLessonQuestion && typeof getSquirrelQuestionClue === 'function') {
       const clue = getSquirrelQuestionClue(window.currentActiveLessonQuestion);
-      showBubble(clue, null, 10000);
-      setMode('jump', 20);
+      showBubble(clue, null, 15000);
+      setMode('jump', 24);
       if (window.currentActiveLessonQuestion.speak && typeof speak === 'function') {
         speak(window.currentActiveLessonQuestion.speak);
       }
@@ -3321,9 +3321,9 @@ function initShimejiCompanion() {
         showBubble(
           `${w.emoji || '🌰'} <b>"${esc(w.en)}"</b> Türkçede <b>"${esc(w.tr)}"</b> demektir! <span class="muted small">(${esc(w.unitTitle || 'Kelime')})</span>`,
           null,
-          9000
+          14000
         );
-        setMode('jump', 18);
+        setMode('jump', 22);
         if (typeof speak === 'function') speak(w.en, 'en');
         return;
       }
@@ -3339,8 +3339,8 @@ function initShimejiCompanion() {
     const tipHtml = typeof tip === 'object'
       ? `<b>${esc(tip.title)}:</b> ${esc(tip.rule)}<br><span class="muted small">🗣️ Örnek: <b>"${esc(tip.en)}"</b> (${esc(tip.tr)})</span>`
       : String(tip);
-    showBubble(tipHtml, null, 10000);
-    setMode('idle', 50);
+    showBubble(tipHtml, null, 15000);
+    setMode('idle', 60);
     if (tip && typeof tip === 'object' && tip.en && typeof speak === 'function') {
       speak(tip.en, 'en');
     }
@@ -3360,8 +3360,8 @@ function initShimejiCompanion() {
       e.stopPropagation();
       if (mode === 'sleep') {
         mode = 'idle';
-        setMode('dance', 30, 'dance');
-        showBubble(null, null, 7000);
+        closeBubble();
+        setMode('dance', 90, 'dance');
         return;
       }
       const goal = getContextGoalData();
@@ -3383,22 +3383,17 @@ function initShimejiCompanion() {
     };
   }
 
-  // İkon Araç Çubuğu: 1. Dans
+  // İkon Araç Çubuğu: 1. Dans (Baloncuğu hemen gizle ve 5.5 saniye neşeyle dans et)
   if ($('#shimejiDanceBtn')) {
     $('#shimejiDanceBtn').onclick = (e) => {
       e.stopPropagation();
       if (mode === 'sleep') mode = 'idle';
-      setMode('dance', 55, 'dance');
-      const cheers = [
-        '💃 <b>Minik Efsane Dansı!</b> Doğru cevap verdikçe senin için böyle dans edeceğim!',
-        '🎵 <b>La la la!</b> Birlikte İngilizce öğrenmek çok eğlenceli!',
-        '🐿️ Beni ekranın altına, üstüne veya istediğin köşeye sürükleyebilirsin!'
-      ];
-      showBubble(cheers[Math.floor(Math.random() * cheers.length)], null, 6500, 'dance');
+      closeBubble();
+      setMode('dance', 125, 'dance');
     };
   }
 
-  // İkon Araç Çubuğu: 2. Besle
+  // İkon Araç Çubuğu: 2. Besle (Baloncuğu hemen gizle ve 5 saniye meşe palamudu kemir)
   if ($('#shimejiFeedBtn')) {
     $('#shimejiFeedBtn').onclick = (e) => {
       e.stopPropagation();
@@ -3406,12 +3401,11 @@ function initShimejiCompanion() {
       if (!state.companion) state.companion = { fedCount: 0, lastHintIdx: 0, lastGrammarIdx: 0 };
       state.companion.fedCount = (state.companion.fedCount || 0) + 1;
       saveState();
-      setMode('munch', 45);
-      showBubble(
-        `🌰 <b>Hart hurt!</b> Meşe palamudu çok lezzetliydi! (Toplam <b>${state.companion.fedCount}</b> kez besledin).`,
-        null,
-        7000
-      );
+      closeBubble();
+      setMode('munch', 115);
+      if (typeof toast === 'function') {
+        toast(`🌰 Fındık afiyetle beslendi! (Toplam ${state.companion.fedCount}. kez)`);
+      }
     };
   }
 
@@ -3423,25 +3417,24 @@ function initShimejiCompanion() {
       if (typeof toggleReminder === 'function') {
         toggleReminder(true, state.reminderTime || '20:00');
       }
-      setMode('jump', 22);
+      setMode('jump', 26);
       const msg = goal.isComplete
         ? `⏰ Günlük hatırlatıcın aktif (<b>${esc(state.reminderTime || '20:00')}</b>)! Yarın da serini sürdürmen için seni haberdar edeceğim.`
         : `⏰ Hatırlatıcı kuruldu! Bugünkü hedefin için <b>${goal.remainingWords} kelime</b> kaldı, birlikte tamamlayalım!`;
-      showBubble(msg, null, 7000);
+      showBubble(msg, null, 12000);
     };
   }
 
-  // İkon Araç Çubuğu: 4. Uyut / Uyandır
+  // İkon Araç Çubuğu: 4. Uyut / Uyandır (Baloncuğu hemen gizle ve uykuya/dansa geç)
   if (sleepBtnEl) {
     sleepBtnEl.onclick = (e) => {
       e.stopPropagation();
+      closeBubble();
       if (mode === 'sleep') {
         mode = 'idle';
-        setMode('dance', 30, 'dance');
-        showBubble(null, null, 6500);
+        setMode('dance', 95, 'dance');
       } else {
         setMode('sleep', 999999, 'sleep');
-        showBubble(null, null, 5500);
       }
     };
   }

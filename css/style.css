@@ -2017,10 +2017,10 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 
 .shimeji-pet {
   position: absolute;
-  bottom: 8px;
+  bottom: 10px;
   left: 72%;
-  width: 78px;
-  height: 78px;
+  width: 92px;
+  height: 92px;
   pointer-events: auto;
   cursor: grab;
   user-select: none;
@@ -2256,7 +2256,7 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 /* Shimeji Konuşma Baloncuğu (Koyu Tema & Mor Vurgu, İnce Zarif Çerçeve, Konuşma Kuyruğu) */
 .shimeji-bubble {
   position: absolute;
-  bottom: 92px;
+  bottom: 106px;
   left: 50%;
   transform: translateX(-50%) translateY(6px) scale(0.96);
   width: 288px;
