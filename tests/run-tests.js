@@ -508,22 +508,46 @@ test('Türk Beyni vs İngilizce: Türk Tuzağı sınıflandırması ve Lokomotif
   const trap3 = env.run('classifyTurkishTrap({ correct: "I read books every day", given: "I every day books read" })');
   eq(trap3.type, 'word_order');
 
-  // 4. Mistake kaydetme ve getTopTurkishTraps
+  // 4. Edat birebir çevirisi
+  const trap4 = env.run('classifyTurkishTrap({ correct: "I live in Istanbul", given: "I live at Istanbul" })');
+  eq(trap4.type, 'preposition_literal');
+
+  // 5. Kelime & Birebir Düşünme Tuzağı
+  const trap5 = env.run('classifyTurkishTrap({ correct: "I drink water", given: "I tea" })');
+  eq(trap5.type, 'vocab_recall');
+
+  // 6. Mistake kaydetme, localStorage kalıcılığı ve getTopTurkishTraps
   env.run(`
     recordMistake({ q: "Ben katılıyorum", correct: "I agree", given: "I am agree" });
     recordMistake({ q: "O sever", correct: "She likes", given: "She like" });
     recordMistake({ q: "Ben katılıyorum 2", correct: "I agree with this", given: "I am agree with this" });
   `);
 
+  const storeKey = env.run('STORE_KEY');
+  const rawStorage = env.localStorage.getItem(storeKey);
+  ok(rawStorage && rawStorage.includes('extra_be'), 'recordMistake hataları localStorage içine kalıcı kaydetmeli');
+
   const topTraps = env.run('getTopTurkishTraps()');
-  ok(topTraps.length >= 1, 'En az 1 tuzak türü listelenmeli');
+  ok(topTraps.length >= 2, 'En az 2 farklı tuzak türü listelenmeli');
   eq(topTraps[0].type, 'extra_be', 'En çok yapılan tuzak extra_be olmalı (2 kez)');
   eq(topTraps[0].count, 2);
+  eq(topTraps[1].type, 'he_she_it_s');
+  eq(topTraps[1].count, 1);
 
-  // 5. Ders açılışı 30 saniyelik Türk vs İngilizce mantık kartı
-  const banner = env.run('getUnitLogicBanner("Temel Selamlaşma")');
-  ok(banner && banner.title && banner.body, 'Mantık kartı başlık ve gövde içermeli');
-  ok(banner.body.length > 20, 'Mantık açıklaması dolu olmalı');
+  // 7. Ders açılışı 30 saniyelik Türk vs İngilizce mantık kartı
+  const bannerBe = env.run('getUnitLogicBanner("Temel Selamlaşma & Be Fiili")');
+  ok(bannerBe && bannerBe.title && bannerBe.body, 'Be fiili mantık kartı başlık ve gövde içermeli');
+  ok(bannerBe.body.includes('am / is / are') || bannerBe.body.includes('fiilsiz'), 'Be fiili mantık açıklaması am/is/are içermeli');
+
+  const bannerPresent = env.run('getUnitLogicBanner("Geniş Zaman & Rutinler")');
+  ok(bannerPresent.body.includes('Lokomotif') || bannerPresent.body.includes('drink'), 'Geniş zaman mantık açıklaması Lokomotif veya fiil sırası içermeli');
+
+  // 8. Lokomotif Order Soru Üretimi
+  const orderQ = env.run('qOrder({ en: "test", order: [["I drink coffee", "Ben kahve içerim"]] }, ["I drink coffee", "Ben kahve içerim"])');
+  eq(orderQ.kind, 'order');
+  eq(orderQ.answer, 'I drink coffee');
+  eq(orderQ.tr, 'Ben kahve içerim');
+  ok(Array.isArray(orderQ.words) && orderQ.words.length === 3, 'Kelimeler dizi halinde üretilmeli');
 });
 
 
