@@ -758,6 +758,7 @@ function recordMistake(m) {
   const trapInfo = classifyTurkishTrap(m);
   state.mistakes.unshift({ ...m, ...trapInfo, at: Date.now() });
   state.mistakes = state.mistakes.slice(0, 60);
+  store.save();
 }
 
 /* ============================================================
