@@ -15,8 +15,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=2.9.9" />
-  <script src="js/theme-init.js?v=2.9.9"></script>
+  <link rel="stylesheet" href="css/style.css?v=2.9.10" />
+  <script src="js/theme-init.js?v=2.9.10"></script>
 </head>
 <body>
   <div class="bg-blobs"><span></span><span></span><span></span></div>
@@ -68,13 +68,24 @@
             <h3 style="margin:0;">🧩 Kurs İlerlemesi (Course Progress Summary)</h3>
             <a href="#/progress" class="btn btn-ghost sm">Tümünü Gör ➔</a>
           </div>
-          <div class="course-progress-summary" style="background:var(--card-hover,#f1f5f9);padding:14px;border-radius:10px;margin-bottom:14px;border:1px solid var(--border,#e2e8f0);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
-              <span style="font-weight:700;">📊 Genel Kurs Tamamlama Özeti:</span>
-              <span class="badge" style="font-weight:800;background:var(--primary,#4F46E5);color:#fff;">%0 Tamamlandı</span>
+          <div class="course-progress-summary">
+            <div class="cps-head">
+              <div class="cps-title">
+                <span class="cps-icon">📊</span>
+                <div>
+                  <div class="cps-heading">Genel Kurs Tamamlama Özeti</div>
+                  <div class="cps-sub muted">Tüm A1 &amp; A2 müfredatı ilerleme durumu</div>
+                </div>
+              </div>
+              <div class="cps-badge-wrap">
+                <span class="cps-badge">%0 Tamamlandı</span>
+              </div>
             </div>
-            <div class="progress thick" style="margin-bottom:6px;"><div class="bar rainbow" style="width:0%;"></div></div>
-            <div class="muted small">Toplam ünite tamamlama durumu: <b>0 / 27 Ünite (%0)</b> tamamlandı.</div>
+            <div class="progress cps-progress"><div class="bar rainbow" style="width:0%;"></div></div>
+            <div class="cps-foot">
+              <span>🎯 Tamamlanan: <b>0 / 27 Ünite</b></span>
+              <span class="muted">27 ünite seni bekliyor</span>
+            </div>
           </div>
           <p class="muted small">A1 İngilizce müfredat ve ünite başarıları:</p>
           <div class="unit-bars">
@@ -98,14 +109,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-database-compat.js"></script>
 
-  <script src="js/data.js?v=2.9.9"></script>
-  <script src="js/logic.js?v=2.9.9"></script>
-  <script src="js/storage.js?v=2.9.9"></script>
-  <script src="js/firebase.js?v=2.9.9"></script>
-  <script src="js/icons.js?v=2.9.9"></script>
-  <script src="js/utils.js?v=2.9.9"></script>
-  <script src="js/ai.js?v=2.9.9"></script>
-  <script src="js/exercises.js?v=2.9.9"></script>
-  <script src="js/app.js?v=2.9.9"></script>
+  <script src="js/data.js?v=2.9.10"></script>
+  <script src="js/logic.js?v=2.9.10"></script>
+  <script src="js/storage.js?v=2.9.10"></script>
+  <script src="js/firebase.js?v=2.9.10"></script>
+  <script src="js/icons.js?v=2.9.10"></script>
+  <script src="js/utils.js?v=2.9.10"></script>
+  <script src="js/ai.js?v=2.9.10"></script>
+  <script src="js/exercises.js?v=2.9.10"></script>
+  <script src="js/app.js?v=2.9.10"></script>
 </body>
 </html>

@@ -1867,6 +1867,12 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 [data-mode="dark"] .bg-blobs span:nth-child(2) { background: #06B6D4; opacity: 0.12; }
 [data-mode="dark"] .bg-blobs span:nth-child(3) { background: #8B5CF6; opacity: 0.15; }
 
+/* Koyu Modda İlerleme Çubuğu Zemin Rengi (Bembeyaz zemin parlamasını engeller) */
+[data-mode="dark"] .progress {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 /* Koyu Modda Kelime Kartları & AI Sekmeleri Kesin Kontrast Kuralları */
 [data-mode="dark"] .unit-tile,
 [data-theme="cyber"] .unit-tile,
@@ -2733,16 +2739,167 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 
 .trap-report-card {
-  border-left: 4px solid #f59e0b;
+  border-left: 4px solid var(--cat-mantik, #f59e0b) !important;
 }
 
 .trap-stat-row {
-  transition: transform 0.15s ease;
+  background: rgba(148, 163, 184, 0.08);
+  border-left: 4px solid var(--primary, #6366f1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  border-right: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+[data-mode="dark"] .trap-stat-row {
+  background: color-mix(in srgb, var(--card-bg, #161f33) 80%, var(--bg, #0b0f19)) !important;
+  border-color: var(--line, rgba(255, 255, 255, 0.08)) !important;
+  border-left: 4px solid var(--primary, #6366f1) !important;
 }
 
 .trap-stat-row:hover {
   transform: translateX(3px);
 }
+
+.trap-stat-name {
+  color: var(--text, #0f172a);
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-mode="dark"] .trap-stat-name {
+  color: #f8fafc !important;
+}
+
+.trap-stat-tip {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.48;
+  color: var(--text-muted, var(--muted, #64748b));
+}
+
+[data-mode="dark"] .trap-stat-tip {
+  color: #cbd5e1 !important;
+}
+
+.trap-count-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+[data-mode="dark"] .trap-count-pill {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+/* ============================================================
+   Genel Kurs Tamamlama Özeti (Course Progress Summary)
+   ============================================================ */
+.course-progress-summary {
+  background: rgba(148, 163, 184, 0.08);
+  padding: 16px 18px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+[data-mode="dark"] .course-progress-summary {
+  background: color-mix(in srgb, var(--card-bg, #161f33) 80%, var(--bg, #0b0f19)) !important;
+  border-color: var(--line, rgba(255, 255, 255, 0.08)) !important;
+}
+
+.cps-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cps-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cps-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.cps-heading {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text, #0f172a);
+}
+
+[data-mode="dark"] .cps-heading {
+  color: #f8fafc !important;
+}
+
+.cps-sub {
+  font-size: 0.76rem;
+  margin-top: 1px;
+}
+
+.cps-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.2px;
+  background: linear-gradient(135deg, var(--primary, #6366f1), var(--primary-d, #4f46e5));
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary, #6366f1) 35%, transparent);
+}
+
+.cps-progress {
+  height: 12px !important;
+  background: rgba(148, 163, 184, 0.16) !important;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 8px !important;
+}
+
+[data-mode="dark"] .cps-progress {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cps-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted, var(--muted, #64748b));
+}
+
+[data-mode="dark"] .cps-foot {
+  color: #94a3b8 !important;
+}
+
+[data-mode="dark"] .cps-foot b {
+  color: #f8fafc !important;
+}
+
 
 
 
