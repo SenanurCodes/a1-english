@@ -121,11 +121,42 @@ function buildA2BossTest() {
 let lessonKeyHandler = null;
 document.addEventListener('keydown', e => { if (lessonKeyHandler) lessonKeyHandler(e); });
 
+function getSquirrelQuestionClue(q) {
+  if (!q) return 'Soruyu dikkatlice oku, özne ve zaman ipuçlarına bak! 🌰';
+  if (q.explain) return q.explain;
+  if (q.kind === 'order' && q.answer) {
+    const parts = q.answer.split(' ');
+    const starter = parts.slice(0, Math.min(2, parts.length)).join(' ');
+    return `İngilizce cümle diziliminde önce Özne + Yüklem gelir. Cümleye <b>"${esc(starter)}..."</b> ile başlayabilirsin!`;
+  }
+  if (q.kind === 'match' && Array.isArray(q.pairs) && q.pairs.length > 0) {
+    const p = q.pairs[0];
+    return `Eşleştirme ipucu: <b>"${esc(p[0])}"</b> ifadesinin karşılığı <b>"${esc(p[1])}"</b>!`;
+  }
+  const ans = String(q.answer || q.speak || '').trim();
+  const promptText = stripTags(q.prompt || '');
+  if (promptText.includes('___')) {
+    if (/\b(She|He|It)\b/.test(promptText)) {
+      return `Cümlede tekil özne (<b>He / She / It</b>) var! Tekil yardımcı fiil (<b>is / does / has</b>) veya fiilde <b>-s</b> takısı ara. (Cevap <b>"${esc(ans[0] || '')}..."</b> ile başlıyor)`;
+    }
+    if (/\b(They|We|You)\b/.test(promptText)) {
+      return `Cümlede çoğul özne (<b>You / We / They</b>) var! Çoğul yardımcı fiil (<b>are / do / have</b>) veya yalın fiil düşün. (Cevap <b>"${esc(ans[0] || '')}..."</b> ile başlıyor)`;
+    }
+  }
+  if (ans) {
+    const firstChar = ans[0].toUpperCase();
+    const wordCount = ans.split(/\s+/).length;
+    return `Aradığımız ifade <b>"${esc(firstChar)}..."</b> harfiyle başlıyor (${ans.length} karakter, ${wordCount} kelime). Telaffuzu dinlemek için 🔊 butonuna da basabilirsin!`;
+  }
+  return 'Sorudaki anahtar kelimelere odaklan, Fındık sana güveniyor! 🐿️';
+}
+
 function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onFinish, retry }) {
   const view = $('#view');
   document.body.classList.add('focus-mode');
   let idx = 0;
   const results = [];
+  const sqGrowth = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : { title: 'Minik Yavru Sincap', badge: '🍼 Evre 1/5' };
 
   view.innerHTML = `
     <div class="lesson" style="--accent:${color}">
@@ -135,6 +166,14 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         <div class="lesson-count" id="lcount"></div>
       </div>
       <div class="lesson-title">${esc(title)}</div>
+      <div class="lesson-squirrel-bar" id="lessonSquirrelHelper" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:12px;background:color-mix(in srgb, var(--primary, #4F46E5) 8%, var(--card-bg, #fff));border:1px dashed var(--border, #e2e8f0);flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.86rem;">
+          <span style="font-size:1.25rem;">🐿️</span>
+          <span><b>Fındık (${esc(sqGrowth.title)}):</b> Takıldığın yerde sana ipucu verebilirim!</span>
+        </div>
+        <button type="button" class="btn btn-ghost sm" id="lessonSquirrelBtn" aria-label="Fındık'tan soru ipucu al" style="font-weight:800;">🌰 Fındık'tan İpucu Al</button>
+      </div>
+      <div id="lessonSquirrelClueBox" style="display:none;padding:10px 14px;margin-bottom:14px;border-radius:12px;background:color-mix(in srgb, #F59E0B 12%, var(--card-bg, #fff));border:1px solid rgba(245, 158, 11, 0.35);font-size:0.88rem;line-height:1.45;"></div>
       <div class="q-area" id="qarea"></div>
       <div class="feedback" id="feedback"></div>
     </div>`;
@@ -156,6 +195,20 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
     const q = questions[idx];
     const area = $('#qarea');
     const fb = $('#feedback');
+    const clueBox = $('#lessonSquirrelClueBox');
+    if (clueBox) { clueBox.style.display = 'none'; clueBox.innerHTML = ''; }
+    const sqBtn = $('#lessonSquirrelBtn');
+    if (sqBtn) {
+      sqBtn.onclick = () => {
+        if (!clueBox) return;
+        const clueHtml = getSquirrelQuestionClue(q);
+        clueBox.style.display = 'block';
+        clueBox.innerHTML = `🐿️ <b>Fındık'ın İpucu:</b> ${clueHtml}`;
+        if (q.speak || q.answer) {
+          speak(String(q.speak || q.answer), 'en');
+        }
+      };
+    }
     fb.className = 'feedback'; fb.innerHTML = '';
     area.innerHTML = '';
     area.classList.remove('pop'); void area.offsetWidth; area.classList.add('pop');
@@ -228,7 +281,14 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
   show();
 }
 
-function stripTags(s) { const d = document.createElement('div'); d.innerHTML = s; return d.textContent; }
+function stripTags(s) {
+  if (typeof document !== 'undefined' && typeof document.createElement === 'function') {
+    const d = document.createElement('div');
+    d.innerHTML = s;
+    return d.textContent;
+  }
+  return String(s || '').replace(/<[^>]*>/g, '');
+}
 function pickOne(a) { return a[Math.floor(Math.random() * a.length)]; }
 function same(a, b) { return normalize(a).replace(/[-\s]/g, '') === normalize(b).replace(/[-\s]/g, ''); }
 

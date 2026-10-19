@@ -923,6 +923,21 @@ const ALL_WORDS = Object.values(WORD_BY_KEY);
 /* ---------- Yoldaş Hayvanlar (Mascots) ---------- */
 const MASCOTS = [
   {
+    id: 'squirrel',
+    name: 'Fındık',
+    animal: 'Sincap',
+    icon: '🐿️',
+    motto: 'Yavrudan büyüyen, kelime ve gramerde sana yardım eden akıllı sincap yoldaşın!',
+    perk: 'Canlı Ders & Kelime Yardımı',
+    encouragements: [
+      { en: "Ready to collect new words today? Let's grow together! 🌰", tr: "Fındık hazır! Sen yeni kelimeler öğrendikçe ben de büyüyorum ve sana yardım ediyorum!" },
+      { en: "Need a hint on a tricky word or grammar rule? Just ask me! 🐿️", tr: "Zor bir kelimede veya gramer kuralında takılırsan bana tıkla, hemen ipucu vereyim!" },
+      { en: "Quick thinking shines with daily practice! You rock! ⚡", tr: "Pratik zeka pratik yaparak parlar! Sen harikasın!" },
+      { en: "English becomes fluent with just five minutes a day! 🚀", tr: "İngilizce her gün sadece 5 dakikayla akıcı hale gelir!" },
+      { en: "Together we add every new word into our acorn chest! 🌰", tr: "Öğrendiğin her yeni kelimeyi palamut sandığımıza ekliyoruz!" }
+    ]
+  },
+  {
     id: 'cat',
     name: 'Pamuk',
     animal: 'Kedi',
@@ -977,24 +992,103 @@ const MASCOTS = [
       { en: "Every new word opens a new world, relax and enjoy! 🌸", tr: "Her kelime yeni bir dünya açar, rahat ol ve öğren!" },
       { en: "Consistency is your superpower! Step by step to the top! 🌟", tr: "İstikrar en büyük süper gücün! Adım adım zirveye!" }
     ]
-  },
-  {
-    id: 'squirrel',
-    name: 'Fındık',
-    animal: 'Sincap',
-    icon: '🐿️',
-    motto: 'Hızlı kelime toplayıcı, pratik zeka!',
-    perk: 'Kelime sandığı',
-    encouragements: [
-      { en: "Ready to collect new words today? Let's go! 🌰", tr: "Fındık hazır! Hadi bugün 1 ders yapıp fındıkları toplayalım!" },
-      { en: "Quick thinking shines with daily practice! You rock! ⚡", tr: "Pratik zeka pratik yaparak parlar! Sen harikasın!" },
-      { en: "English becomes fluent with just five minutes a day! 🚀", tr: "İngilizce her gün sadece 5 dakikayla akıcı hale gelir!" },
-      { en: "This is a great moment to complete your daily goal! 🎯", tr: "Bugünkü hedefini tamamlamak için harika bir an!" },
-      { en: "Together we add new words into our treasure chest! 🐿️", tr: "Birlikte her gün yeni kelimeleri cebe atıyoruz!" }
-    ]
   }
 ];
 const MASCOT_BY_ID = Object.fromEntries(MASCOTS.map(m => [m.id, m]));
+
+/* ---------- Sincap Yoldaş (Fındık) 5 Doğal Büyüme Evresi (Yavrudan Ustaya) ---------- */
+const SQUIRREL_STAGES = [
+  {
+    stage: 1,
+    id: 'baby',
+    title: 'Minik Yavru Sincap',
+    badge: '🍼 Evre 1/5',
+    minXP: 0,
+    nextXP: 100,
+    perkTitle: 'Kelime & Telaffuz Fısıltısı',
+    desc: 'Yuvasından yeni çıktı! İlk İngilizce kelimeleri seninle keşfediyor ve telaffuz ipuçları veriyor.'
+  },
+  {
+    stage: 2,
+    id: 'explorer',
+    title: 'Meraklı Toplayıcı Sincap',
+    badge: '🌰 Evre 2/5',
+    minXP: 100,
+    nextXP: 300,
+    perkTitle: 'Kelime & Örnek Cümle Sepeti',
+    desc: 'Büyüdü ve palamut sepetini eline aldı! Öğrendiğin kelimeleri biriktirip örnek kalıplarla pekiştiriyor.'
+  },
+  {
+    stage: 3,
+    id: 'student',
+    title: 'Okullu Çırak Sincap',
+    badge: '🎒 Evre 3/5',
+    minXP: 300,
+    nextXP: 700,
+    perkTitle: 'Gramer & Soru İpucu Rehberi',
+    desc: 'Çantasını ve fularını taktı! Derslerde takıldığın sorularda sana gramer mantığını açıklıyor.'
+  },
+  {
+    stage: 4,
+    id: 'scholar',
+    title: 'Bilgin Rehber Sincap',
+    badge: '👓 Evre 4/5',
+    minXP: 700,
+    nextXP: 1500,
+    perkTitle: 'Zayıf Kelime & Hata Dedektifi',
+    desc: 'Bilgin gözlüğünü taktı! Zorlandığın kelimeleri takip edip unutmaman için özel tekrar yaptırıyor.'
+  },
+  {
+    stage: 5,
+    id: 'master',
+    title: 'Usta Profesör Sincap',
+    badge: '👑 Evre 5/5',
+    minXP: 1500,
+    nextXP: null,
+    perkTitle: 'Tam İngilizce & Sınav Ustası',
+    desc: 'Altın Meşe Tacını taktı! En ileri seviye cümlelerde ve sınavlarda bile senin başdanışmanın!'
+  }
+];
+
+const SQUIRREL_GRAMMAR_TIPS = [
+  {
+    title: '🧩 am / is / are Kuralı (To Be)',
+    rule: 'Cümlede fiil yoksa "-im, -sin, -dir" anlamı için: I -> am, He/She/It -> is, You/We/They -> are kullanılır.',
+    en: 'I am happy, she is a teacher, they are friends.',
+    tr: 'Ben mutluyum, o bir öğretmen, onlar arkadaşlar.'
+  },
+  {
+    title: '⚡ Geniş Zamanda "-s" Takısı (Present Simple)',
+    rule: 'Geniş zamanda He / She / It öznelerinden sonra fiile "-s" takısı eklenir (Olumsuzda doesn\'t gelir ve -s düşer!).',
+    en: 'She likes coffee, but she does not like tea.',
+    tr: 'O kahveyi sever ama çayı sevmez.'
+  },
+  {
+    title: '📍 Yer ve Zaman Edatları: in / on / at',
+    rule: 'Saatlerde "at" (at 7:00), günlerde "on" (on Monday), aylarda/şehirlerde/odaların içinde "in" (in May, in Istanbul) kullanılır.',
+    en: 'I wake up at 8 o\'clock on Monday in Istanbul.',
+    tr: 'İstanbul\'da Pazartesi günü saat 8\'de uyanırım.'
+  },
+  {
+    title: '💪 Yetenek & İzin: can / can\'t',
+    rule: '"-ebilmek" anlamı katar. Özne ne olursa olsun (I, He, They) "can" değişmez ve arkasından gelen fiil yalın kalır!',
+    en: 'Squirrels can climb trees very fast!',
+    tr: 'Sincaplar ağaçlara çok hızlı tırmanabilir!'
+  },
+  {
+    title: '⏪ Geçmiş Zaman İpucu (Past Simple)',
+    rule: 'Geçmişte bitmiş olaylar için düzenli fiillere "-ed" gelir (walk -> walked). Sorularda ve olumsuzda "did / didn\'t" yardımcı olur.',
+    en: 'Yesterday I learned ten new English words!',
+    tr: 'Dün on yeni İngilizce kelime öğrendim!'
+  },
+  {
+    title: '🔮 Gelecek Planları: going to vs. will',
+    rule: 'Önceden planladığın işler için "am/is/are going to", konuşma anında verdiğin ani kararlar ve tahminler için "will" kullanılır.',
+    en: 'I am going to study English tonight. I will help you!',
+    tr: 'Bu akşam İngilizce çalışacağım. Sana yardım edeceğim!'
+  }
+];
+
 
 /* ---------- Özel Renk Paletleri (Themes) ---------- */
 const PALETTES = [
