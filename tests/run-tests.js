@@ -491,6 +491,41 @@ test('Sincap Yoldaş (Fındık): Yavrudan Ustaya 5 büyüme evresi ve ders/kelim
   ok(appSrc.includes('id="shimejiGreetWrap"') && appSrc.includes('id="shimejiGoalWrap"') && appSrc.includes('id="shimejiPrimaryCta"') && appSrc.includes('id="shimejiRemindBtn"'), 'Yenilenen konuşma baloncuğunda kişisel selam, günlük hedef çubuğu, birincil aksiyon ve Hatırlat ikonu bulunmalı');
 });
 
+test('Türk Beyni vs İngilizce: Türk Tuzağı sınıflandırması ve Lokomotif mantık kartı çalışır', () => {
+  const env = makeEnv();
+
+  // 1. Extra be ("I am agree") tuzağı
+  const trap1 = env.run('classifyTurkishTrap({ correct: "I agree with you", given: "I am agree with you" })');
+  eq(trap1.type, 'extra_be');
+  ok(trap1.label.includes('am/is/are Fazlalığı'), 'extra_be etiketi am/is/are Fazlalığı içermeli');
+  ok(trap1.tip.includes('am/is/are') || trap1.tip.includes('fiil'), 'extra_be ipucu mantıklı olmalı');
+
+  // 2. He/She/It -s takısı eksikliği
+  const trap2 = env.run('classifyTurkishTrap({ correct: "She likes ice cream", given: "She like ice cream" })');
+  eq(trap2.type, 'he_she_it_s');
+
+  // 3. Lokomotif söz dizimi (Word order)
+  const trap3 = env.run('classifyTurkishTrap({ correct: "I read books every day", given: "I every day books read" })');
+  eq(trap3.type, 'word_order');
+
+  // 4. Mistake kaydetme ve getTopTurkishTraps
+  env.run(`
+    recordMistake({ q: "Ben katılıyorum", correct: "I agree", given: "I am agree" });
+    recordMistake({ q: "O sever", correct: "She likes", given: "She like" });
+    recordMistake({ q: "Ben katılıyorum 2", correct: "I agree with this", given: "I am agree with this" });
+  `);
+
+  const topTraps = env.run('getTopTurkishTraps()');
+  ok(topTraps.length >= 1, 'En az 1 tuzak türü listelenmeli');
+  eq(topTraps[0].type, 'extra_be', 'En çok yapılan tuzak extra_be olmalı (2 kez)');
+  eq(topTraps[0].count, 2);
+
+  // 5. Ders açılışı 30 saniyelik Türk vs İngilizce mantık kartı
+  const banner = env.run('getUnitLogicBanner("Temel Selamlaşma")');
+  ok(banner && banner.title && banner.body, 'Mantık kartı başlık ve gövde içermeli');
+  ok(banner.body.length > 20, 'Mantık açıklaması dolu olmalı');
+});
+
 
 /* ---------- Sonuç ---------- */
 (async () => {

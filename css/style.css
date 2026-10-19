@@ -2608,6 +2608,143 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   }
 }
 
+/* ============================================================
+   Lokomotif Cümle Dizimi & Vagon Stilleri (Order Exercises)
+   ============================================================ */
+.loco-order-track {
+  position: relative;
+  border-radius: 14px;
+  background: var(--card-subtle, rgba(255, 255, 255, 0.04));
+  border: 2px dashed rgba(108, 92, 231, 0.35);
+  padding: 14px 16px 16px;
+  margin-bottom: 16px;
+  transition: all 0.25s ease;
+}
+
+.loco-order-track::before {
+  content: "🚂 Raylar & Vagon Dizilimi (Özne ➔ Fiil ➔ Tümleç)";
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--muted, #94a3b8);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.train-depart {
+  animation: trainDepartAnim 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes trainDepartAnim {
+  0% { transform: translateX(0); opacity: 1; }
+  40% { transform: translateX(15px); }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+.wagon-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  position: relative;
+}
+
+.wagon-chip:hover {
+  transform: translateY(-2px);
+}
+
+/* Lokomotif (Özne) */
+.wagon-loco {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #ffffff !important;
+  border: 1px solid #b45309 !important;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+}
+
+.wagon-loco::before {
+  content: "🚂";
+  font-size: 0.9rem;
+}
+
+/* 1. Vagon (Fiil) */
+.wagon-verb {
+  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+  color: #ffffff !important;
+  border: 1px solid #4338ca !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.wagon-verb::before {
+  content: "🚃";
+  font-size: 0.9rem;
+}
+
+/* 30 Saniyelik Türk Beyni vs İngilizce Mantığı Ders Açılış Kartı */
+.lesson-logic-card {
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.12), rgba(32, 201, 151, 0.08));
+  border: 1px solid rgba(108, 92, 231, 0.25);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+
+.lesson-logic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.lesson-logic-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--primary, #6c5ce7);
+}
+
+.lesson-logic-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: var(--primary, #6c5ce7);
+  color: #ffffff;
+}
+
+.lesson-logic-body {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text, #f8fafc);
+}
+
+/* Türk Tuzağı Rozeti ve Rapor Kartı */
+.trap-badge {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  font-weight: 700;
+}
+
+.trap-report-card {
+  border-left: 4px solid #f59e0b;
+}
+
+.trap-stat-row {
+  transition: transform 0.15s ease;
+}
+
+.trap-stat-row:hover {
+  transform: translateX(3px);
+}
+
+
 
 
 
