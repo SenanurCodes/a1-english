@@ -491,16 +491,23 @@ function screenPlacement() {
    ============================================================ */
 let companionEncouragementIdx = 0;
 
-function renderSquirrelStageSVG(stageId = 'baby') {
+function renderSquirrelStageSVG(stageId = 'baby', mood = 'normal') {
   const isBaby = stageId === 'baby';
   const isExplorer = stageId === 'explorer';
   const isStudent = stageId === 'student';
   const isScholar = stageId === 'scholar';
   const isMaster = stageId === 'master';
+  const isDance = mood === 'dance';
+  const isSad = mood === 'sad';
+  const isSleep = mood === 'sleep';
   const scale = isBaby ? 0.88 : isExplorer ? 0.94 : 1;
 
+  // Kulak açıları (Üzgünken kulaklar yana düşer, dans ederken dikleşir)
+  const leftEarTransform = isSad ? 'rotate(-42 32 34)' : isDance ? 'rotate(-6 35 28)' : 'rotate(-14 35 30)';
+  const rightEarTransform = isSad ? 'rotate(42 76 34)' : isDance ? 'rotate(6 73 28)' : 'rotate(14 73 30)';
+
   return `
-    <svg class="squirrel-stage-svg stage-${esc(stageId)}" viewBox="0 0 120 120" width="76" height="76" role="img" aria-label="Fındık Sincap Yoldaş (${esc(stageId)})" style="transform:scale(${scale});transition:transform 0.3s ease;overflow:visible;">
+    <svg class="squirrel-stage-svg stage-${esc(stageId)} mood-${esc(mood)}" viewBox="0 0 120 120" width="76" height="76" role="img" aria-label="Fındık Sincap Yoldaş (${esc(stageId)})" style="transform:scale(${scale});transition:transform 0.3s ease;overflow:visible;">
       <defs>
         <linearGradient id="sqTailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#FB923C" />
@@ -524,32 +531,59 @@ function renderSquirrelStageSVG(stageId = 'baby') {
         <path d="M35 66 Q54 76 73 66 L68 75 Q54 82 40 75 Z" fill="#2563EB" />
       ` : ''}
       <!-- Kulaklar -->
-      <ellipse cx="35" cy="30" rx="8" ry="13" transform="rotate(-14 35 30)" fill="#EA580C" />
-      <ellipse cx="35" cy="31" rx="4.5" ry="8" transform="rotate(-14 35 31)" fill="#FDBA74" />
-      <ellipse cx="73" cy="30" rx="8" ry="13" transform="rotate(14 73 30)" fill="#EA580C" />
-      <ellipse cx="73" cy="31" rx="4.5" ry="8" transform="rotate(14 73 31)" fill="#FDBA74" />
+      <ellipse cx="35" cy="30" rx="8" ry="13" transform="${leftEarTransform}" fill="#EA580C" />
+      <ellipse cx="35" cy="31" rx="4.5" ry="8" transform="${leftEarTransform}" fill="#FDBA74" />
+      <ellipse cx="73" cy="30" rx="8" ry="13" transform="${rightEarTransform}" fill="#EA580C" />
+      <ellipse cx="73" cy="31" rx="4.5" ry="8" transform="${rightEarTransform}" fill="#FDBA74" />
       <!-- Baş -->
       <circle cx="54" cy="48" r="24" fill="url(#sqBodyGrad)" />
       <!-- Tombul Yanaklar -->
       <ellipse cx="38" cy="54" rx="10" ry="8" fill="#FFEDD5" />
       <ellipse cx="70" cy="54" rx="10" ry="8" fill="#FFEDD5" />
-      <circle cx="35" cy="55" r="4.5" fill="#FB7185" opacity="0.45" />
-      <circle cx="73" cy="55" r="4.5" fill="#FB7185" opacity="0.45" />
-      <!-- Parlak Gözler -->
-      <circle cx="44" cy="45" r="${isBaby ? 5.5 : 4.8}" fill="#1E1B4B" />
-      <circle cx="64" cy="45" r="${isBaby ? 5.5 : 4.8}" fill="#1E1B4B" />
-      <circle cx="42.5" cy="43" r="1.8" fill="#FFFFFF" />
-      <circle cx="62.5" cy="43" r="1.8" fill="#FFFFFF" />
+      <circle cx="35" cy="55" r="${isDance ? 5.5 : 4.5}" fill="#FB7185" opacity="${isDance ? 0.7 : 0.45}" />
+      <circle cx="73" cy="55" r="${isDance ? 5.5 : 4.5}" fill="#FB7185" opacity="${isDance ? 0.7 : 0.45}" />
+      <!-- Gözler (Duygu Durumuna Göre Değişir) -->
+      ${isDance ? `
+        <!-- Sevinçten Gülen Gözler (^ ^) -->
+        <path d="M39 46 Q44 39 49 46" stroke="#1E1B4B" stroke-width="3" stroke-linecap="round" fill="none" />
+        <path d="M59 46 Q64 39 69 46" stroke="#1E1B4B" stroke-width="3" stroke-linecap="round" fill="none" />
+      ` : isSleep ? `
+        <!-- Uyuyan Gözler -->
+        <path d="M39 45 Q44 50 49 45" stroke="#1E1B4B" stroke-width="2.6" stroke-linecap="round" fill="none" />
+        <path d="M59 45 Q64 50 69 45" stroke="#1E1B4B" stroke-width="2.6" stroke-linecap="round" fill="none" />
+      ` : `
+        <!-- Parlak Gözler -->
+        <circle cx="44" cy="45" r="${isBaby ? 5.5 : 4.8}" fill="#1E1B4B" />
+        <circle cx="64" cy="45" r="${isBaby ? 5.5 : 4.8}" fill="#1E1B4B" />
+        <circle cx="42.5" cy="43" r="1.8" fill="#FFFFFF" />
+        <circle cx="62.5" cy="43" r="1.8" fill="#FFFFFF" />
+        ${isSad ? `
+          <!-- Üzgün Kaşlar ve Gözyaşı Damlası -->
+          <path d="M38 39 L47 41" stroke="#431407" stroke-width="2.2" stroke-linecap="round" />
+          <path d="M70 39 L61 41" stroke="#431407" stroke-width="2.2" stroke-linecap="round" />
+          <path d="M70 49 C73 53, 73 57, 70 57 C67 57, 67 53, 70 49 Z" fill="#38BDF8" />
+        ` : ''}
+      `}
       ${(isScholar || isMaster) ? `
         <!-- Bilgin Gözlüğü -->
         <circle cx="44" cy="45" r="8.5" fill="none" stroke="#FBBF24" stroke-width="2.6" />
         <circle cx="64" cy="45" r="8.5" fill="none" stroke="#FBBF24" stroke-width="2.6" />
         <line x1="52.5" y1="45" x2="55.5" y2="45" stroke="#FBBF24" stroke-width="2.6" />
       ` : ''}
-      <!-- Burun ve Sevimli Sincap Dişi -->
+      <!-- Burun ve Ağız İfadesi -->
       <ellipse cx="54" cy="52" rx="4" ry="3" fill="#431407" />
-      <path d="M48 57 Q54 62 60 57" stroke="#431407" stroke-width="2.2" fill="none" stroke-linecap="round" />
-      <rect x="52" y="58.5" width="4" height="4.2" rx="1" fill="#FFFFFF" stroke="#431407" stroke-width="1" />
+      ${isSad ? `
+        <!-- Üzgün Ağız -->
+        <path d="M48 61 Q54 56 60 61" stroke="#431407" stroke-width="2.3" fill="none" stroke-linecap="round" />
+      ` : isDance ? `
+        <!-- Coşkulu Sevinç Gülümsemesi -->
+        <path d="M46 56 Q54 66 62 56 Z" fill="#991B1B" stroke="#431407" stroke-width="1.8" />
+        <rect x="52" y="56.5" width="4" height="3.5" rx="1" fill="#FFFFFF" />
+      ` : `
+        <!-- Sevimli Sincap Gülümsemesi ve Dişi -->
+        <path d="M48 57 Q54 62 60 57" stroke="#431407" stroke-width="2.2" fill="none" stroke-linecap="round" />
+        <rect x="52" y="58.5" width="4" height="4.2" rx="1" fill="#FFFFFF" stroke="#431407" stroke-width="1" />
+      `}
       ${isBaby ? `
         <!-- Yavru Filiz Yaprağı -->
         <path d="M54 24 Q54 14 63 14 Q58 22 54 24 Z" fill="#22C55E" />
@@ -2946,7 +2980,7 @@ function openAuthModal() {
 }
 
 /* ============================================================
-   Shimeji Ekran Dostu: Fındık (Yürüyen & Büyüyen Sincap Yoldaş)
+   Shimeji & Minik Efsaneler (Little Legends) Eğitim Yoldaşı: Fındık
    ============================================================ */
 let shimejiController = null;
 
@@ -2956,79 +2990,144 @@ function initShimejiCompanion() {
 
   const sq = typeof getSquirrelGrowth === 'function'
     ? getSquirrelGrowth()
-    : { id: 'baby', title: 'Minik Yavru Sincap', badge: '🌱 Evre 1 · Yavru', desc: 'Cik cik! Birlikte kelime toplayalım!' };
+    : { stage: 1, id: 'baby', title: 'Minik Yavru Sincap', badge: '🌱 Evre 1 · Yavru', desc: 'Cik cik! Birlikte kelime toplayalım!' };
   const scaleMap = { baby: 0.88, explorer: 0.94, student: 1, scholar: 1.03, master: 1.06 };
   const curScale = scaleMap[sq.id] || 1;
 
   if (shimejiController) {
-    // Mevcut ekran dostunun evresini ve ölçeğini güncelle
-    const spriteEl = $('#shimejiSpriteInner');
-    const nameEl = $('#shimejiStageLabel');
-    const petEl = $('#shimejiPet');
-    if (spriteEl && shimejiController.lastStageId !== sq.id) {
-      spriteEl.innerHTML = renderSquirrelStageSVG(sq.id);
-      shimejiController.lastStageId = sq.id;
-    }
-    if (nameEl) nameEl.textContent = `🐿️ Fındık · ${sq.title}`;
-    if (petEl) petEl.style.setProperty('--shimeji-scale', curScale);
+    shimejiController.refreshAppearance();
     return;
   }
 
-  let posX = Math.max(24, Math.min((window.innerWidth || 800) - 110, 120));
-  let posY = 0; // 0 = ekranın alt kenarında yürür
+  let posX = Math.max(24, Math.min((window.innerWidth || 800) - 110, 140));
+  let posY = 0; // 0 = alt kenar, yüksek değer = üst kenar veya köşe
+  let roamZone = 'bottom'; // 'bottom' (Alt Kenar) | 'top' (Üst Kenar) | 'corners' (Köşeler)
   let dir = 1; // 1 = sağa, -1 = sola
-  let mode = 'walk'; // 'walk' | 'idle' | 'munch' | 'jump' | 'sleep' | 'dragging'
+  let mode = 'walk'; // 'walk' | 'idle' | 'munch' | 'jump' | 'dance' | 'sad' | 'sleep' | 'dragging'
+  let currentMood = 'normal'; // 'normal' | 'dance' | 'sad' | 'sleep'
   let modeTicks = 0;
+  let lessonCombo = 0;
   let bubbleTimer = null;
 
+  const starsText = (stageNum) => '★'.repeat(Math.max(1, Math.min(5, stageNum || 1)));
+
   root.innerHTML = `
-    <div id="shimejiPet" class="shimeji-pet state-walk" style="left:${posX}px;--shimeji-scale:${curScale};" role="region" aria-label="Ekran Dostu Sincap Fındık">
+    <div id="shimejiPet" class="shimeji-pet state-walk" style="left:${posX}px;--shimeji-scale:${curScale};" role="region" aria-label="Eğitim Yoldaşı Minik Efsane Fındık">
+      <div id="shimejiEmoteFx" class="shimeji-emote-fx" aria-hidden="true"></div>
       <div id="shimejiBubble" class="shimeji-bubble" role="status">
         <button type="button" class="shimeji-bubble-close" id="shimejiBubbleClose" aria-label="Balonu kapat">✕</button>
         <div class="shimeji-bubble-head" id="shimejiStageLabel">🐿️ Fındık · ${esc(sq.title)}</div>
         <div id="shimejiBubbleBody">${esc(sq.desc)}</div>
         <div class="shimeji-bubble-actions">
-          <button type="button" class="shimeji-mini-btn primary" id="shimejiHintBtn">💡 İpucu Ver</button>
+          <button type="button" class="shimeji-mini-btn primary" id="shimejiHintBtn">💡 İpucu</button>
+          <button type="button" class="shimeji-mini-btn" id="shimejiDanceBtn">💃 Dans</button>
           <button type="button" class="shimeji-mini-btn" id="shimejiFeedBtn">🌰 Besle</button>
-          <button type="button" class="shimeji-mini-btn" id="shimejiJumpBtn">🤸 Zıpla</button>
-          <button type="button" class="shimeji-mini-btn" id="shimejiSleepBtn">😴 Dinlen</button>
+          <button type="button" class="shimeji-mini-btn" id="shimejiZoneBtn" title="Gezinme Bölgesi: Alt / Üst / Köşe">🧭 Alt</button>
+          <button type="button" class="shimeji-mini-btn" id="shimejiSleepBtn">😴 Uyut</button>
         </div>
       </div>
-      <div id="shimejiSpriteWrap" class="shimeji-sprite-wrap" title="Fındık (Tıkla veya Sürükle)">
+      <div id="shimejiSpriteWrap" class="shimeji-sprite-wrap" title="Fındık (Tıkla veya İstediğin Köşeye Sürükle)">
         <div id="shimejiSpriteInner" style="width:100%;height:100%;transform:scale(${curScale});transform-origin:bottom center;transition:transform 0.3s ease;">
-          ${renderSquirrelStageSVG(sq.id)}
+          ${renderSquirrelStageSVG(sq.id, 'normal')}
         </div>
       </div>
-      <div class="shimeji-shadow"></div>
+      <div id="shimejiLegendBadge" class="shimeji-legend-badge">${starsText(sq.stage)} Fındık</div>
     </div>
   `;
 
   const petEl = $('#shimejiPet');
+  const emoteEl = $('#shimejiEmoteFx');
+  const badgeEl = $('#shimejiLegendBadge');
   const bubbleEl = $('#shimejiBubble');
   const bubbleBodyEl = $('#shimejiBubbleBody');
   const bubbleHeadEl = $('#shimejiStageLabel');
   const spriteWrapEl = $('#shimejiSpriteWrap');
+  const spriteInnerEl = $('#shimejiSpriteInner');
+  const zoneBtnEl = $('#shimejiZoneBtn');
   const sleepBtnEl = $('#shimejiSleepBtn');
 
-  function setMode(newMode, durationTicks = 60) {
+  function syncViewportEdgeClasses() {
+    if (!petEl) return;
+    const winW = window.innerWidth || 800;
+    const winH = window.innerHeight || 600;
+    petEl.classList.toggle('near-top', posY > winH * 0.52);
+    petEl.classList.toggle('near-left', posX < 135);
+    petEl.classList.toggle('near-right', posX > winW - 210);
+  }
+
+  function updateLegendBadge() {
+    if (!badgeEl) return;
+    const latestSq = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : sq;
+    const stars = starsText(latestSq.stage);
+    badgeEl.textContent = lessonCombo >= 2
+      ? `${stars} Fındık · 🔥 ${lessonCombo}x`
+      : `${stars} Fındık`;
+  }
+
+  function setEmote(text = '') {
+    if (!emoteEl) return;
+    if (!text) {
+      emoteEl.textContent = '';
+      emoteEl.classList.remove('active');
+    } else {
+      emoteEl.textContent = text;
+      emoteEl.classList.add('active');
+    }
+  }
+
+  function refreshAppearance(forcedMood = null) {
+    const latestSq = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : sq;
+    const nextScale = scaleMap[latestSq.id] || 1;
+    const targetMood = forcedMood || currentMood;
+    if (spriteInnerEl && (shimejiController?.lastStageId !== latestSq.id || shimejiController?.lastMood !== targetMood)) {
+      spriteInnerEl.innerHTML = renderSquirrelStageSVG(latestSq.id, targetMood);
+      spriteInnerEl.style.transform = `scale(${nextScale})`;
+      if (shimejiController) {
+        shimejiController.lastStageId = latestSq.id;
+        shimejiController.lastMood = targetMood;
+      }
+    }
+    if (petEl) petEl.style.setProperty('--shimeji-scale', nextScale);
+    updateLegendBadge();
+  }
+
+  function setMode(newMode, durationTicks = 60, moodOverride = null) {
     if (mode === 'sleep' && newMode !== 'sleep' && newMode !== 'idle') return;
     mode = newMode;
     modeTicks = durationTicks;
     if (!petEl) return;
-    petEl.classList.remove('state-walk', 'state-idle', 'state-munch', 'state-jump', 'state-sleep', 'dragging');
+    petEl.classList.remove('state-walk', 'state-idle', 'state-munch', 'state-jump', 'state-dance', 'state-sad', 'state-sleep', 'dragging');
     if (newMode === 'dragging') {
       petEl.classList.add('dragging');
     } else {
       petEl.classList.add(`state-${newMode}`);
     }
+
+    const nextMood = moodOverride || (
+      newMode === 'dance' ? 'dance'
+      : newMode === 'sad' ? 'sad'
+      : newMode === 'sleep' ? 'sleep'
+      : 'normal'
+    );
+    currentMood = nextMood;
+    refreshAppearance(nextMood);
+
+    if (newMode === 'dance') setEmote('🎵 ✨ 🎉');
+    else if (newMode === 'sad') setEmote('🥺 💧 💪');
+    else if (newMode === 'munch') setEmote('🌰 🧡');
+    else if (newMode === 'sleep') setEmote('💤');
+    else setEmote('');
   }
 
-  function showBubble(htmlContent, headTitle = null, autoHideMs = 8500) {
+  function showBubble(htmlContent, headTitle = null, autoHideMs = 8500, bubbleMood = '') {
     if (!bubbleEl || !bubbleBodyEl) return;
+    syncViewportEdgeClasses();
     const latestSq = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : sq;
     if (bubbleHeadEl) {
       bubbleHeadEl.textContent = headTitle || `🐿️ Fındık · ${latestSq.title}`;
     }
+    bubbleEl.classList.remove('mood-dance', 'mood-sad');
+    if (bubbleMood) bubbleEl.classList.add(`mood-${bubbleMood}`);
     bubbleBodyEl.innerHTML = htmlContent;
     bubbleEl.classList.add('visible');
     if (bubbleTimer) clearTimeout(bubbleTimer);
@@ -3040,8 +3139,40 @@ function initShimejiCompanion() {
     }
   }
 
+  function applyRoamZone(newZone, announce = true) {
+    roamZone = newZone;
+    const winW = window.innerWidth || 800;
+    const winH = window.innerHeight || 600;
+    const topEdgeBottom = Math.max(120, winH - 96);
+
+    if (petEl) petEl.style.transition = 'left 0.35s ease, bottom 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    if (roamZone === 'bottom') {
+      posY = 0;
+      if (petEl) petEl.style.bottom = '';
+      if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Alt';
+      if (announce) showBubble('🐾 Şimdi ekranın <b>alt kenarında</b> yürüyerek sana eşlik ediyorum!', '🧭 Gezinme: Alt Kenar', 4500);
+    } else if (roamZone === 'top') {
+      posY = topEdgeBottom;
+      if (petEl) petEl.style.bottom = `${Math.round(posY)}px`;
+      if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Üst';
+      if (announce) showBubble('🐿️ Ekranın <b>üst kenarına</b> tırmandım! Sen ders çalışırken yukarıdan seni izleyip ipucu vereceğim!', '🧭 Gezinme: Üst Kenar', 5000);
+    } else {
+      // Köşe modu: Sağ veya sol köşeye yerleşir
+      posX = posX < winW / 2 ? 20 : Math.max(80, winW - 96);
+      posY = posY > winH * 0.4 ? topEdgeBottom : 0;
+      if (petEl) {
+        petEl.style.left = `${Math.round(posX)}px`;
+        petEl.style.bottom = posY > 0 ? `${Math.round(posY)}px` : '';
+      }
+      if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Köşe';
+      if (announce) showBubble('📐 Köşeme yerleştim! Dikkatini dağıtmadan buradan her soruda seninle sevinip sana ipucu vereceğim!', '🧭 Gezinme: Köşe Modu', 5000);
+    }
+    syncViewportEdgeClasses();
+    const t = setTimeout(() => { if (petEl) petEl.style.transition = ''; }, 440);
+    if (t && typeof t.unref === 'function') t.unref();
+  }
+
   function giveSmartHelp() {
-    // Eğer kullanıcı şu an bir dersin içindeyse aktif sorunun ipucunu ver!
     if (window.currentActiveLessonQuestion && typeof getSquirrelQuestionClue === 'function') {
       const clue = getSquirrelQuestionClue(window.currentActiveLessonQuestion);
       showBubble(clue, '💡 Ders İpucu · Fındık', 10000);
@@ -3051,7 +3182,6 @@ function initShimejiCompanion() {
       }
       return;
     }
-    // Ders dışındaysa rastgele kelime veya gramer ipucu ver
     if (Math.random() < 0.6) {
       const vocabUnits = UNITS.filter(u => u.type === 'vocab' && (u.level === 'A1' || state.a2Unlocked));
       const pool = vocabUnits.flatMap(u => u.words || []);
@@ -3088,6 +3218,19 @@ function initShimejiCompanion() {
     };
   }
 
+  if ($('#shimejiDanceBtn')) {
+    $('#shimejiDanceBtn').onclick = (e) => {
+      e.stopPropagation();
+      setMode('dance', 55, 'dance');
+      const cheers = [
+        '💃 <b>Minik Efsane Dansı!</b> Doğru cevap verdikçe senin için böyle dans edeceğim!',
+        '🎵 <b>La la la!</b> Birlikte İngilizce öğrenmek çok eğlenceli!',
+        '🐿️ Beni ekranın altına, üstüne veya istediğin köşeye sürükleyebilirsin!'
+      ];
+      showBubble(cheers[Math.floor(Math.random() * cheers.length)], '🎉 Dans Eden Fındık', 6500, 'dance');
+    };
+  }
+
   if ($('#shimejiFeedBtn')) {
     $('#shimejiFeedBtn').onclick = (e) => {
       e.stopPropagation();
@@ -3096,23 +3239,18 @@ function initShimejiCompanion() {
       saveState();
       setMode('munch', 45);
       showBubble(
-        `🌰 <b>Hart hurt!</b> Meşe palamudu çok lezzetliydi! (Toplam <b>${state.companion.fedCount}</b> kez besledin). Ders yaptıkça seninle büyümeye devam edeceğim!`,
+        `🌰 <b>Hart hurt!</b> Meşe palamudu çok lezzetliydi! (Toplam <b>${state.companion.fedCount}</b> kez besledin). XP kazandıkça yıldız seviyem yükseliyor!`,
         '🧡 Fındık Çok Mutlu!',
         7000
       );
     };
   }
 
-  if ($('#shimejiJumpBtn')) {
-    $('#shimejiJumpBtn').onclick = (e) => {
+  if (zoneBtnEl) {
+    zoneBtnEl.onclick = (e) => {
       e.stopPropagation();
-      setMode('jump', 24);
-      const cheers = [
-        '🎉 Yaşasın! Bugün İngilizce öğrenmek için harika bir gün!',
-        '🚀 Zıpla zıpla! Yeni kelimeler öğrenmeye hazır mıyız?',
-        '🐿️ Beni ekranın istediğin yerine fareyle tutup sürükleyebilirsin!'
-      ];
-      showBubble(cheers[Math.floor(Math.random() * cheers.length)], '🤸 Neşeli Fındık', 6000);
+      const nextZone = roamZone === 'bottom' ? 'top' : roamZone === 'top' ? 'corners' : 'bottom';
+      applyRoamZone(nextZone, true);
     };
   }
 
@@ -3121,18 +3259,18 @@ function initShimejiCompanion() {
       e.stopPropagation();
       if (mode === 'sleep') {
         mode = 'idle';
-        setMode('jump', 20);
-        sleepBtnEl.textContent = '😴 Dinlen';
+        setMode('dance', 30, 'dance');
+        sleepBtnEl.textContent = '😴 Uyut';
         showBubble('☀️ Günaydın! Tekrar yürümeye ve sana yardım etmeye hazırım!', '🐿️ Fındık Uyandı', 5000);
       } else {
-        setMode('sleep', 999999);
+        setMode('sleep', 999999, 'sleep');
         sleepBtnEl.textContent = '☀️ Uyandır';
         showBubble('💤 Ben köşede sessizce uyuyorum. İstediğin zaman üstüme tıklayıp uyandırabilirsin!', '😴 Fındık Dinleniyor', 4500);
       }
     };
   }
 
-  // Sürükle-Bırak (Mouse & Dokunmatik Ekran Desteği) ve Tıklama
+  // Sürükle-Bırak (Alt, Üst veya Köşelere Bırakabilme!) ve Tıklama
   let isDragging = false;
   let dragMoved = false;
   let startPointerX = 0;
@@ -3164,11 +3302,12 @@ function initShimejiCompanion() {
           setMode('dragging', 999);
         }
         const maxW = Math.max(120, (window.innerWidth || 800) - 86);
-        const maxH = Math.max(120, (window.innerHeight || 600) - 110);
+        const maxH = Math.max(120, (window.innerHeight || 600) - 96);
         posX = Math.max(8, Math.min(maxW, startPetX + dx));
         posY = Math.max(0, Math.min(maxH, startPetBottom + dy));
         petEl.style.left = `${Math.round(posX)}px`;
         petEl.style.bottom = `${Math.round(posY)}px`;
+        syncViewportEdgeClasses();
       }
     };
 
@@ -3179,18 +3318,30 @@ function initShimejiCompanion() {
         try { spriteWrapEl.releasePointerCapture(e.pointerId); } catch (_) {}
       }
       if (dragMoved) {
-        // Bırakıldığında yumuşakça ekranın alt kenarına geri zıplasın (Yerçekimi!)
+        const winH = window.innerHeight || 600;
+        // Eğer kullanıcı ekranın üst kısmına sürükleyip bıraktıysa üst kenara tutunsun, alta bıraktıysa alt kenara insin!
         petEl.style.transition = 'bottom 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        posY = 0;
-        petEl.style.bottom = '';
+        if (posY > winH * 0.55) {
+          roamZone = 'top';
+          posY = Math.max(120, winH - 96);
+          petEl.style.bottom = `${Math.round(posY)}px`;
+          if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Üst';
+          showBubble('🐿️ Hop! Ekranın <b>üst kenarına</b> tutundum, buradan dersine eşlik edeceğim!', '🐿️ Üst Kenar Yoldaşı', 4500);
+        } else {
+          roamZone = 'bottom';
+          posY = 0;
+          petEl.style.bottom = '';
+          if (zoneBtnEl) zoneBtnEl.textContent = '🧭 Alt';
+          showBubble('🪂 Vuuu! Beni ekranın altına, üstüne veya istediğin köşeye taşıyabilirsin!', '🐿️ Uçan Sincap Fındık', 4500);
+        }
+        syncViewportEdgeClasses();
         const fallTimer = setTimeout(() => {
           if (petEl) petEl.style.transition = '';
           setMode('jump', 18);
         }, 430);
         if (fallTimer && typeof fallTimer.unref === 'function') fallTimer.unref();
-        showBubble('🪂 Vuuu! Beni istediğin yere taşıyabilirsin!', '🐿️ Uçan Sincap Fındık', 4500);
       } else {
-        // Sürüklenmediyse sadece tıklandı: Konuşma balonunu aç/kapat veya ipucu ver
+        // Sadece tıklandı: Konuşma balonunu aç veya ders ipucu ver
         if (bubbleEl.classList.contains('visible')) {
           giveSmartHelp();
         } else {
@@ -3199,7 +3350,7 @@ function initShimejiCompanion() {
             showBubble(getSquirrelQuestionClue(window.currentActiveLessonQuestion), '💡 Ders İpucu · Fındık', 10000);
           } else {
             showBubble(
-              `Merhaba <b>${esc(state.name)}</b>! Ben <b>${esc(curSq.title)}</b> (${esc(curSq.badge)}). Aşağıdaki butonlardan benden kelime/soru ipucu isteyebilir veya beni besleyebilirsin!`,
+              `Merhaba <b>${esc(state.name)}</b>! Ben <b>${esc(curSq.title)}</b> (${esc(curSq.badge)}). Ders çalışırken doğru cevaplarında seninle <b>dans edeceğim</b>, zorlandığında ise <b>ipucu ve moral</b> vereceğim!`,
               `🐿️ Fındık · ${curSq.title}`,
               9000
             );
@@ -3213,7 +3364,7 @@ function initShimejiCompanion() {
     spriteWrapEl.onpointercancel = endDrag;
   }
 
-  // Otonom Shimeji Yürüme ve Davranış Döngüsü
+  // Otonom Shimeji / Little Legends Gezinme ve Davranış Döngüsü
   const timerId = setInterval(() => {
     if (!document.body.contains(petEl)) return;
     if (isDragging || mode === 'sleep') return;
@@ -3221,9 +3372,11 @@ function initShimejiCompanion() {
     if (modeTicks > 0) {
       modeTicks--;
     } else {
-      // Rastgele yeni bir davranış seç: yürü, etrafa bak, fındık kemir
       const roll = Math.random();
-      if (roll < 0.58) {
+      if (roamZone === 'corners') {
+        // Köşe modunda olduğu yerde nefes alır veya fındık kemirir
+        setMode(roll < 0.72 ? 'idle' : 'munch', 50 + Math.floor(Math.random() * 60));
+      } else if (roll < 0.58) {
         if (Math.random() < 0.35) dir = dir * -1;
         setMode('walk', 55 + Math.floor(Math.random() * 85));
       } else if (roll < 0.85) {
@@ -3233,7 +3386,7 @@ function initShimejiCompanion() {
       }
     }
 
-    if (mode === 'walk') {
+    if (mode === 'walk' && roamZone !== 'corners') {
       const minX = 14;
       const maxX = Math.max(80, (window.innerWidth || 800) - 96);
       posX += dir * 1.45;
@@ -3246,6 +3399,7 @@ function initShimejiCompanion() {
       }
       petEl.style.left = `${Math.round(posX)}px`;
       petEl.classList.toggle('face-left', dir === -1);
+      syncViewportEdgeClasses();
     }
   }, 55);
   if (timerId && typeof timerId.unref === 'function') timerId.unref();
@@ -3253,6 +3407,8 @@ function initShimejiCompanion() {
   shimejiController = {
     timerId,
     lastStageId: sq.id,
+    lastMood: 'normal',
+    refreshAppearance,
     showBubble,
     setMode,
     giveSmartHelp
@@ -3263,21 +3419,45 @@ function initShimejiCompanion() {
     setMode('jump', 20);
   };
 
+  // Oyunlaştırma (Gamification): Doğru cevapta dans et & kutla, yanlış cevapta üzül & ipucu/moral ver!
   window.shimejiOnLessonAnswer = (isCorrect, q) => {
     if (mode === 'sleep') return;
     if (isCorrect) {
-      setMode('jump', 22);
-      if (Math.random() < 0.45) {
-        const praises = [
-          '🎉 Harika bildin! Seninle gurur duyuyorum!',
-          '🌰 Süpersin! Bir fındık daha kazandık!',
-          '⭐ Tam isabet! Böyle devam et!'
-        ];
-        showBubble(praises[Math.floor(Math.random() * praises.length)], '🐿️ Fındık Kutluyor!', 3800);
-      }
-    } else if (q && typeof getSquirrelQuestionClue === 'function') {
-      setMode('idle', 45);
-      showBubble(getSquirrelQuestionClue(q), '🐿️ Üzülme, Fındık Yardıma Geldi!', 7500);
+      lessonCombo++;
+      updateLegendBadge();
+      setMode('dance', 52, 'dance');
+      const comboTag = lessonCombo >= 2 ? ` <b>(🔥 ${lessonCombo}x Kombo!)</b>` : '';
+      const praises = [
+        `💃 <b>Harika bildin!</b> Senin için zafer dansı yapıyorum!${comboTag}`,
+        `🎉 <b>Süpersin!</b> Bir altın palamut daha kazandık, böyle devam et!${comboTag}`,
+        `⭐ <b>Tam isabet!</b> İngilizcen her soruda daha da güçleniyor!${comboTag}`,
+        `🎵 <b>Muhteşem!</b> Seninle gurur duyuyorum ortak!${comboTag}`
+      ];
+      showBubble(
+        praises[Math.floor(Math.random() * praises.length)],
+        `🎉 Fındık Dans Ediyor!${lessonCombo >= 2 ? ` · 🔥 ${lessonCombo}x` : ''}`,
+        4600,
+        'dance'
+      );
+    } else {
+      lessonCombo = 0;
+      updateLegendBadge();
+      setMode('sad', 65, 'sad');
+      const morals = [
+        '🥺 <b>Hiç üzülme!</b> Hata yaparak öğrenmek en kalıcı yoldur. Bak sana küçük bir sır vereyim:',
+        '💧 <b>Canın sağ olsun ortak!</b> Birlikte doğrusunu hemen kavrayacağız:',
+        '💪 <b>Pes etmek yok!</b> Ben yanındayım, bu sorunun püf noktası şöyle:'
+      ];
+      const moralIntro = morals[Math.floor(Math.random() * morals.length)];
+      const cluePart = (q && typeof getSquirrelQuestionClue === 'function')
+        ? `<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);">${getSquirrelQuestionClue(q)}</div>`
+        : '';
+      showBubble(
+        `${moralIntro}${cluePart}`,
+        '🥺 Fındık Moral & İpucu Veriyor',
+        9000,
+        'sad'
+      );
     }
   };
 }
