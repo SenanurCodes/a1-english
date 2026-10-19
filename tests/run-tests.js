@@ -471,7 +471,7 @@ test('Sincap Yoldaş (Fındık): Yavrudan Ustaya 5 büyüme evresi ve ders/kelim
   ok(htmlSrc.includes('id="shimeji-root"'), 'index.html içinde Shimeji ekran dostu katmanı (#shimeji-root) bulunmalı');
   ok(appSrc.includes('function initShimejiCompanion()') && appSrc.includes('id="shimejiPet"'), 'js/app.js içinde yürüyen Shimeji sincap kontrolcüsü (initShimejiCompanion) bulunmalı');
   ok(appSrc.includes('id="shimejiLegendBadge"') && appSrc.includes("setMode('dance'") && appSrc.includes("setMode('sad'"), 'Minik Efsaneler (Little Legends) yıldız rozeti, doğru cevapta dans ve yanlış cevapta üzülme/moral tepkisi bulunmalı');
-  ok(appSrc.includes('function applyRoamZone('), 'Ekranın altında, üstünde ve köşelerinde gezinme (roamZone) desteği bulunmalı');
+  ok(appSrc.includes('id="shimejiGreetWrap"') && appSrc.includes('id="shimejiGoalWrap"') && appSrc.includes('id="shimejiPrimaryCta"') && appSrc.includes('id="shimejiRemindBtn"'), 'Yenilenen konuşma baloncuğunda kişisel selam, günlük hedef çubuğu, birincil aksiyon ve Hatırlat ikonu bulunmalı');
 });
 
 
