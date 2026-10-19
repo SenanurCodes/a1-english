@@ -181,6 +181,7 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
   $('#quit').onclick = () => {
     if (idx === 0 || confirm('Dersten çıkmak istiyor musun? İlerleme kaydedilmeyecek.')) {
       lessonKeyHandler = null;
+      if (typeof window !== 'undefined') window.currentActiveLessonQuestion = null;
       location.hash = exitTo;
     }
   };
@@ -193,6 +194,7 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
   function show() {
     updateProgress();
     const q = questions[idx];
+    if (typeof window !== 'undefined') window.currentActiveLessonQuestion = q;
     const area = $('#qarea');
     const fb = $('#feedback');
     const clueBox = $('#lessonSquirrelClueBox');
@@ -204,6 +206,9 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         const clueHtml = getSquirrelQuestionClue(q);
         clueBox.style.display = 'block';
         clueBox.innerHTML = `🐿️ <b>Fındık'ın İpucu:</b> ${clueHtml}`;
+        if (typeof window !== 'undefined' && typeof window.shimejiSay === 'function') {
+          window.shimejiSay(clueHtml, '💡 Soru İpucu');
+        }
         if (q.speak || q.answer) {
           speak(String(q.speak || q.answer), 'en');
         }
@@ -226,6 +231,9 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
       sfx.good();
     } else {
       ok ? sfx.good() : sfx.bad();
+    }
+    if (typeof window !== 'undefined' && typeof window.shimejiOnLessonAnswer === 'function') {
+      window.shimejiOnLessonAnswer(ok || skipped, q);
     }
     if (q.speakAfter) setTimeout(() => speak(q.speakAfter), 250);
 

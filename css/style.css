@@ -2003,3 +2003,234 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 .flash-pill-btn:hover { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff)); }
 .flash-indicator { font-weight: 900; font-size: 1rem; color: var(--muted); min-width: 80px; text-align: center; }
 
+/* ============================================================
+   Shimeji Ekran Dostu (Fındık Sincap - Masaüstü / Ekran Evcil Hayvanı)
+   ============================================================ */
+.shimeji-stage {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 940;
+  overflow: hidden;
+}
+
+.shimeji-pet {
+  position: absolute;
+  bottom: 8px;
+  left: 72%;
+  width: 78px;
+  height: 78px;
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition: left 0.08s linear, bottom 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
+}
+
+.shimeji-pet.dragging {
+  cursor: grabbing;
+  transition: none !important;
+  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.28));
+}
+
+.shimeji-sprite-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center bottom;
+}
+
+.shimeji-pet.face-left .shimeji-sprite-wrap {
+  transform: scaleX(-1);
+}
+
+.shimeji-pet.face-right .shimeji-sprite-wrap {
+  transform: scaleX(1);
+}
+
+/* Yürüme pıtı-pıtı zıplaması */
+.shimeji-pet.state-walk .squirrel-stage-svg {
+  animation: shimejiWalkBob 0.42s infinite ease-in-out;
+}
+
+/* Dururken nefes alma ve kuyruk sallama */
+.shimeji-pet.state-idle .squirrel-stage-svg {
+  animation: shimejiIdleBreathe 2.4s infinite ease-in-out;
+}
+
+/* Palamut kemirme (Munch) */
+.shimeji-pet.state-munch .squirrel-stage-svg {
+  animation: shimejiMunch 0.32s infinite ease-in-out;
+}
+
+/* Sevinç zıplaması / Takla */
+.shimeji-pet.state-jump .squirrel-stage-svg {
+  animation: shimejiCheerJump 0.65s ease-out;
+}
+
+/* Fareyle tutulduğunda havada çırpınma */
+.shimeji-pet.dragging .squirrel-stage-svg {
+  animation: shimejiDangle 0.35s infinite ease-in-out;
+}
+
+/* Uyku modu */
+.shimeji-pet.state-sleep {
+  opacity: 0.88;
+}
+.shimeji-pet.state-sleep .squirrel-stage-svg {
+  animation: shimejiSleepPulse 3s infinite ease-in-out;
+}
+
+@keyframes shimejiWalkBob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-7px) rotate(4deg); }
+}
+
+@keyframes shimejiIdleBreathe {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-2px) scaleY(1.03); }
+}
+
+@keyframes shimejiMunch {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  50% { transform: scale(1.06, 0.95) rotate(3deg); }
+}
+
+@keyframes shimejiCheerJump {
+  0% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-28px) scale(1.1) rotate(-8deg); }
+  65% { transform: translateY(-18px) scale(1.05) rotate(8deg); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes shimejiDangle {
+  0%, 100% { transform: rotate(-10deg) translateY(-4px); }
+  50% { transform: rotate(10deg) translateY(-2px); }
+}
+
+@keyframes shimejiSleepPulse {
+  0%, 100% { transform: scale(0.92) rotate(-6deg); }
+  50% { transform: scale(0.96) rotate(-4deg); }
+}
+
+/* Shimeji Baş Üstü Konuşma ve Yardım Balonu */
+.shimeji-bubble {
+  position: absolute;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 260px;
+  min-width: 190px;
+  background: var(--card-bg, #ffffff);
+  color: var(--text, #1e293b);
+  border: 2px solid var(--primary, #4F46E5);
+  border-radius: 16px;
+  padding: 10px 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.16);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  pointer-events: auto;
+  z-index: 950;
+  animation: shimejiBubblePop 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.shimeji-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: var(--card-bg, #ffffff);
+  border-right: 2px solid var(--primary, #4F46E5);
+  border-bottom: 2px solid var(--primary, #4F46E5);
+}
+
+@keyframes shimejiBubblePop {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px) scale(0.9); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.shimeji-bubble-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 0.76rem;
+  color: var(--primary, #4F46E5);
+  margin-bottom: 4px;
+}
+
+.shimeji-bubble-close {
+  background: none;
+  border: none;
+  color: var(--muted, #64748b);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.shimeji-bubble-text {
+  font-weight: 700;
+  margin-bottom: 8px;
+  word-wrap: break-word;
+}
+
+.shimeji-bubble-actions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.shimeji-mini-btn {
+  flex: 1;
+  min-width: 68px;
+  padding: 5px 7px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--card-hover, #f1f5f9);
+  color: var(--text, #1e293b);
+  font-family: inherit;
+  font-size: 0.73rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.15s;
+}
+
+.shimeji-mini-btn:hover {
+  border-color: var(--primary, #4F46E5);
+  background: color-mix(in srgb, var(--primary, #4F46E5) 14%, var(--card-bg, #fff));
+}
+
+.shimeji-status-pill {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  background: var(--card-bg, #fff);
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 99px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .shimeji-pet {
+    bottom: 68px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+
