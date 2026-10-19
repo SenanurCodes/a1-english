@@ -1544,10 +1544,57 @@ function screenLearn() {
   const doneA1 = UNITS.filter(u => u.level === 'A1' && unitStats(u.id).done).length;
   const doneA2 = UNITS.filter(u => u.level === 'A2' && unitStats(u.id).done).length;
   const pctA1 = Math.round((doneA1 / 27) * 100);
-  const pctA2 = Math.round((doneA2 / 20) * 100);
+  const pctA2 = Math.round((doneA2 / 25) * 100);
   const curMascot = mascotService.getActive();
   const isA1 = currentLearnWorld === 'A1';
   const unitsToShow = UNITS.filter(u => u.level === (isA1 ? 'A1' : 'A2'));
+
+  // Pedagojik Yol Aşamaları & Yoldaş Rehberler (Öğrenme odaklı kilometre taşları)
+  const STAGE_DIVIDERS = isA1 ? {
+    0: {
+      tag: 'Aşama 1 / 3 · A1 Temelleri',
+      title: '🌱 İlk Cümleler & Temel İletişim',
+      sub: 'Tanışma, günlük nesneler ve "to be" / varlık cümlelerinin mantığı.',
+      guideIcon: '🐿️',
+      guideName: 'Fındık Rehberliğinde'
+    },
+    9: {
+      tag: 'Aşama 2 / 3 · Rutinler & Zaman',
+      title: '🏡 Günlük Yaşam & Alışkanlıklar',
+      sub: 'Geniş zaman (Present Simple), saatler, sayılar ve rutin aktiviteler.',
+      guideIcon: '🐱',
+      guideName: 'Pamuk Rehberliğinde'
+    },
+    18: {
+      tag: 'Aşama 3 / 3 · Sosyal Hayat',
+      title: '💬 Akıcı Diyaloglar & Soru Kalıpları',
+      sub: 'Soru sorma, yer-yön tarifleri, tercihler ve A1 Final Hazırlığı.',
+      guideIcon: '🐶',
+      guideName: 'Dost Rehberliğinde'
+    }
+  } : {
+    0: {
+      tag: 'Aşama 1 / 3 · Geçmiş Zaman',
+      title: '⏳ Geçmiş Zaman (Past Tense) & Anılar',
+      sub: 'Was/were, düzenli ve düzensiz geçmiş fiillerle olay anlatımı.',
+      guideIcon: '🐼',
+      guideName: 'Bambu Rehberliğinde'
+    },
+    9: {
+      tag: 'Aşama 2 / 3 · Gelecek & Seyahat',
+      title: '✈️ Gelecek Planları & Seyahat İngilizcesi',
+      sub: 'Will, be going to, bilet alma, otel & restoranda akıcı konuşma.',
+      guideIcon: '🦉',
+      guideName: 'Bilge Rehberliğinde'
+    },
+    18: {
+      tag: 'Aşama 3 / 3 · İleri A2 Ustalığı',
+      title: '🏆 İleri Kalıplar & Seviye Tamamlama',
+      sub: 'Karşılaştırmalar (Comparatives), bağlaçlar, zarflar ve A2 Finali.',
+      guideIcon: '👑',
+      guideName: 'Ustalık Aşaması'
+    }
+  };
 
   view().innerHTML = `
     <div class="page">
@@ -1623,7 +1670,19 @@ function screenLearn() {
           const s = unitStats(u.id);
           const unlocked = isUnlocked(u.index);
           const offset = Math.round(Math.sin(i * 0.9) * 110);
+          const stage = STAGE_DIVIDERS[i];
+          const stageHtml = stage ? `
+            <div class="path-stage-divider">
+              <div class="psd-header">
+                <span class="psd-tag">${stage.tag}</span>
+                <span class="psd-guide">${stage.guideIcon} ${stage.guideName}</span>
+              </div>
+              <div class="psd-title">${stage.title}</div>
+              <div class="psd-sub">${stage.sub}</div>
+            </div>
+          ` : '';
           return `
+            ${stageHtml}
             <div class="path-row" style="--x:${offset}px">
               <button class="node ${unlocked ? '' : 'locked'} ${s.done ? 'done' : ''} ${nextUnit()?.id === u.id ? 'current' : ''}" data-id="${u.id}" style="--c:${u.color}" aria-label="${esc(u.title)} ünitesi (${unlocked ? (s.done ? 'tamamlandı' : 'açık') : 'kilitli'})">
                 <span class="node-emoji">${unlocked ? u.emoji : '🔒'}</span>
