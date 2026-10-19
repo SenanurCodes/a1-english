@@ -176,6 +176,54 @@ function getUnitLogicBanner(title = '') {
   };
 }
 
+/* ---------- Orman Arkadaşı: Bilge Baykuş (Fındık ile aynı çizim dili) ---------- */
+function renderOwlSVG(mood = 'normal', size = 64) {
+  const isHappy = mood === 'happy';
+  const isThink = mood === 'think';
+  const eye = (cx) => isHappy
+    ? `<path d="M${cx - 7} 53 Q${cx} 45 ${cx + 7} 53" stroke="#1E1B4B" stroke-width="3" stroke-linecap="round" fill="none" />`
+    : `<circle cx="${cx}" cy="52" r="9.5" fill="#F59E0B" />
+       <circle cx="${cx + (isThink ? 1.5 : 0)}" cy="${isThink ? 49.5 : 52}" r="5.2" fill="#1E1B4B" />
+       <circle cx="${cx - 2.5}" cy="${isThink ? 47.5 : 49.5}" r="1.9" fill="#FFFFFF" />`;
+  return `
+    <svg class="owl-svg mood-${esc(mood)}" viewBox="0 0 120 120" width="${size}" height="${size}" role="img" aria-label="Bilge Baykuş" style="overflow:visible;">
+      <defs>
+        <linearGradient id="owlBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#8B7CF6" />
+          <stop offset="100%" stop-color="#5B4BC4" />
+        </linearGradient>
+      </defs>
+      <g class="owl-body">
+        <!-- Kulak tüyleri -->
+        <path d="M32 34 L22 10 L48 26 Z" fill="#5B4BC4" />
+        <path d="M88 34 L98 10 L72 26 Z" fill="#5B4BC4" />
+        <!-- Gövde -->
+        <ellipse cx="60" cy="68" rx="38" ry="42" fill="url(#owlBodyGrad)" />
+        <!-- Göğüs ve tüy desenleri -->
+        <ellipse cx="60" cy="84" rx="23" ry="24" fill="#EDE9FE" />
+        <path d="M50 80 q4 4 8 0 M62 80 q4 4 8 0 M56 90 q4 4 8 0 M50 99 q4 4 8 0 M62 99 q4 4 8 0" stroke="#C4B5FD" stroke-width="2" fill="none" stroke-linecap="round" />
+        <!-- Kanatlar -->
+        <path class="owl-wing-l" d="M24 60 C10 76, 14 98, 32 104 C29 88, 30 74, 24 60 Z" fill="#4C3DB0" />
+        <path class="owl-wing-r" d="M96 60 C110 76, 106 98, 88 104 C91 88, 90 74, 96 60 Z" fill="#4C3DB0" />
+        <!-- Yüz diski -->
+        <circle cx="45" cy="52" r="15" fill="#F5F3FF" />
+        <circle cx="75" cy="52" r="15" fill="#F5F3FF" />
+        <!-- Gözler -->
+        <g class="owl-eyes">${eye(45)}${eye(75)}</g>
+        ${isThink ? `<path d="M66 38 L84 41" stroke="#3730A3" stroke-width="2.4" stroke-linecap="round" />` : ''}
+        <!-- Bilge gözlüğü -->
+        <circle cx="45" cy="52" r="13" fill="none" stroke="#FBBF24" stroke-width="2.6" />
+        <circle cx="75" cy="52" r="13" fill="none" stroke="#FBBF24" stroke-width="2.6" />
+        <line x1="58" y1="51" x2="62" y2="51" stroke="#FBBF24" stroke-width="2.6" />
+        <!-- Gaga -->
+        <path d="M55.5 61 L64.5 61 L60 71 Z" fill="#F97316" />
+        <!-- Ayaklar -->
+        <ellipse cx="48" cy="109" rx="7" ry="3.8" fill="#F97316" />
+        <ellipse cx="72" cy="109" rx="7" ry="3.8" fill="#F97316" />
+      </g>
+    </svg>`;
+}
+
 function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onFinish, retry }) {
   const view = $('#view');
   document.body.classList.add('focus-mode');
@@ -192,13 +240,16 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         <div class="lesson-count" id="lcount"></div>
       </div>
       <div class="lesson-title">${esc(title)}</div>
-      <div class="lesson-logic-card" id="lessonLogicBanner" style="padding:10px 14px;margin-bottom:10px;border-radius:12px;background:color-mix(in srgb, var(--primary, #7c3aed) 10%, var(--card-bg, #151c2c));border-left:4px solid var(--primary, #7c3aed);font-size:0.82rem;line-height:1.45;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px;">
-          <b style="color:var(--primary, #a78bfa);">${esc(logicInfo.badge)}</b>
-          <span class="muted small" style="font-size:0.72rem;">30 sn Mantık Kartı</span>
+      <div class="lesson-logic-card owl-logic-card" id="lessonLogicBanner">
+        <div class="owl-slot" id="lessonOwl" title="Bilge Baykuş">${renderOwlSVG('think', 64)}</div>
+        <div class="owl-bubble">
+          <div class="owl-bubble-head">
+            <b>🦉 Bilge Baykuş · ${esc(logicInfo.badge)}</b>
+            <span class="muted small">30 sn</span>
+          </div>
+          <div>🇹🇷 <b>Türkçe Düşünüş:</b> ${esc(logicInfo.trWay)}</div>
+          <div style="margin-top:3px;">🇬🇧 <b>İngilizce Mantığı:</b> ${esc(logicInfo.enWay)}</div>
         </div>
-        <div>🇹🇷 <b>Türkçe Düşünüş:</b> ${esc(logicInfo.trWay)}</div>
-        <div style="margin-top:2px;">🇬🇧 <b>İngilizce Mantığı:</b> ${esc(logicInfo.enWay)}</div>
       </div>
       <div class="lesson-squirrel-bar" id="lessonSquirrelHelper" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:12px;background:color-mix(in srgb, var(--primary, #4F46E5) 8%, var(--card-bg, #fff));border:1px dashed var(--border, #e2e8f0);flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.86rem;">
@@ -225,8 +276,18 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
     $('#lcount').textContent = `${Math.min(idx + 1, questions.length)}/${questions.length}`;
     const logicBannerEl = $('#lessonLogicBanner');
     if (logicBannerEl) {
-      logicBannerEl.style.display = idx === 0 ? 'block' : 'none';
+      logicBannerEl.style.display = idx === 0 ? 'flex' : 'none';
     }
+  }
+
+  const owlSlot = $('#lessonOwl');
+  if (owlSlot) {
+    let owlMood = 'think';
+    owlSlot.onclick = () => {
+      owlMood = owlMood === 'think' ? 'happy' : 'think';
+      owlSlot.innerHTML = renderOwlSVG(owlMood, 64);
+      owlSlot.setAttribute('title', owlMood === 'happy' ? 'Bilge Baykuş (Mutlu!) 🦉✨' : 'Bilge Baykuş (Düşünüyor...) 🦉');
+    };
   }
 
   function show() {
