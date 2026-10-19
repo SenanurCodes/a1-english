@@ -406,6 +406,7 @@ class ThemeService {
     root.style.setProperty('--card', palette.colors.cardBg);
     root.style.setProperty('--card-bg', palette.colors.cardBg);
     root.style.setProperty('--surface', palette.colors.cardBg);
+    root.style.setProperty('--card-hover', palette.isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(15, 23, 42, 0.05)');
     root.style.setProperty('--text', palette.colors.text);
     root.style.setProperty('--muted', palette.colors.muted);
     root.style.setProperty('--text-muted', palette.colors.muted);

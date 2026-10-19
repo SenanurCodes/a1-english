@@ -59,6 +59,7 @@
   --bg: var(--background);
   --card: var(--surface);
   --card-bg: var(--surface);
+  --card-hover: rgba(92, 124, 250, 0.08);
   --muted: var(--text-muted);
   --line: var(--border);
   --radius: var(--radius-lg);
@@ -2025,14 +2026,14 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
-  transition: left 0.08s linear, bottom 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
+  will-change: left, bottom;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.22));
 }
 
 .shimeji-pet.dragging {
   cursor: grabbing;
   transition: none !important;
-  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.32));
 }
 
 .shimeji-sprite-wrap {
@@ -2042,6 +2043,7 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   align-items: center;
   justify-content: center;
   transform-origin: center bottom;
+  transition: transform 0.18s ease;
 }
 
 .shimeji-pet.face-left .shimeji-sprite-wrap {
@@ -2052,19 +2054,32 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   transform: scaleX(1);
 }
 
-/* Yürüme pıtı-pıtı zıplaması */
+/* Doğal Yürüme Animasyonu (Adım atan patiler + sallanan kuyruk + yumuşak yaylanma) */
 .shimeji-pet.state-walk .squirrel-stage-svg {
-  animation: shimejiWalkBob 0.42s infinite ease-in-out;
+  animation: shimejiWalkStride 0.48s infinite ease-in-out;
+}
+.shimeji-pet.state-walk .sq-foot-l {
+  animation: sqFootStepL 0.48s infinite ease-in-out;
+  transform-origin: center;
+}
+.shimeji-pet.state-walk .sq-foot-r {
+  animation: sqFootStepR 0.48s infinite ease-in-out;
+  transform-origin: center;
+}
+.shimeji-pet.state-walk .sq-tail,
+.shimeji-pet.state-idle .sq-tail {
+  animation: sqTailSway 1.6s infinite ease-in-out;
+  transform-origin: 76px 86px;
 }
 
 /* Dururken nefes alma ve kuyruk sallama */
 .shimeji-pet.state-idle .squirrel-stage-svg {
-  animation: shimejiIdleBreathe 2.4s infinite ease-in-out;
+  animation: shimejiIdleBreathe 2.6s infinite ease-in-out;
 }
 
 /* Palamut kemirme (Munch) */
 .shimeji-pet.state-munch .squirrel-stage-svg {
-  animation: shimejiMunch 0.32s infinite ease-in-out;
+  animation: shimejiMunch 0.36s infinite ease-in-out;
 }
 
 /* Sevinç zıplaması / Takla */
@@ -2095,34 +2110,52 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   animation: shimejiSleepPulse 3s infinite ease-in-out;
 }
 
-@keyframes shimejiWalkBob {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-7px) rotate(4deg); }
+@keyframes shimejiWalkStride {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-3.5px) rotate(1.2deg); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(-3.5px) rotate(-1.2deg); }
+}
+
+@keyframes sqFootStepL {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-5px) translateX(2px); }
+  50% { transform: translateY(0) translateX(0); }
+}
+
+@keyframes sqFootStepR {
+  0%, 50%, 100% { transform: translateY(0) translateX(0); }
+  75% { transform: translateY(-5px) translateX(2px); }
+}
+
+@keyframes sqTailSway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(5deg); }
 }
 
 @keyframes shimejiIdleBreathe {
   0%, 100% { transform: translateY(0) scaleY(1); }
-  50% { transform: translateY(-3px) scaleY(1.04); }
+  50% { transform: translateY(-2px) scaleY(1.03); }
 }
 
 @keyframes shimejiMunch {
   0%, 100% { transform: scale(1) rotate(-2deg); }
-  50% { transform: scale(1.06, 0.95) rotate(3deg); }
+  50% { transform: scale(1.05, 0.96) rotate(2deg); }
 }
 
 @keyframes shimejiCheerJump {
   0% { transform: translateY(0) scale(1); }
-  35% { transform: translateY(-28px) scale(1.1) rotate(-8deg); }
-  65% { transform: translateY(-18px) scale(1.05) rotate(8deg); }
+  35% { transform: translateY(-24px) scale(1.08) rotate(-6deg); }
+  65% { transform: translateY(-14px) scale(1.04) rotate(6deg); }
   100% { transform: translateY(0) scale(1); }
 }
 
 @keyframes shimejiVictoryDance {
-  0% { transform: translateY(0) rotate(-12deg) scale(1.05); }
-  25% { transform: translateY(-16px) rotate(0deg) scale(1.12, 0.94); }
-  50% { transform: translateY(0) rotate(12deg) scale(1.05); }
-  75% { transform: translateY(-14px) rotate(0deg) scale(1.1, 0.95); }
-  100% { transform: translateY(0) rotate(-12deg) scale(1.05); }
+  0% { transform: translateY(0) rotate(-10deg) scale(1.04); }
+  25% { transform: translateY(-14px) rotate(0deg) scale(1.1, 0.95); }
+  50% { transform: translateY(0) rotate(10deg) scale(1.04); }
+  75% { transform: translateY(-12px) rotate(0deg) scale(1.08, 0.96); }
+  100% { transform: translateY(0) rotate(-10deg) scale(1.04); }
 }
 
 @keyframes shimejiSadDroop {
@@ -2131,13 +2164,13 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 
 @keyframes shimejiDangle {
-  0%, 100% { transform: rotate(-10deg) translateY(-4px); }
-  50% { transform: rotate(10deg) translateY(-2px); }
+  0%, 100% { transform: rotate(-8deg) translateY(-4px); }
+  50% { transform: rotate(8deg) translateY(-2px); }
 }
 
 @keyframes shimejiSleepPulse {
-  0%, 100% { transform: scale(0.92) rotate(-6deg); }
-  50% { transform: scale(0.96) rotate(-4deg); }
+  0%, 100% { transform: scale(0.92) rotate(-5deg); }
+  50% { transform: scale(0.96) rotate(-3deg); }
 }
 
 /* Minik Efsaneler (Little Legends) Yıldız & Kombo Rozeti */
@@ -2146,16 +2179,16 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(15, 23, 42, 0.86);
+  background: rgba(15, 23, 42, 0.9);
   color: #FACC15;
-  border: 1.5px solid rgba(250, 204, 21, 0.65);
+  border: 1.5px solid rgba(250, 204, 21, 0.7);
   border-radius: 99px;
-  padding: 1px 7px;
+  padding: 1px 8px;
   font-size: 0.66rem;
   font-weight: 800;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
   letter-spacing: 0.3px;
   z-index: 3;
 }
@@ -2192,16 +2225,16 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   left: 50%;
   transform: translateX(-50%);
   width: max-content;
-  max-width: 275px;
-  min-width: 210px;
-  background: var(--card-bg, #ffffff);
-  color: var(--text, #1e293b);
-  border: 2px solid var(--primary, #4F46E5);
+  max-width: 280px;
+  min-width: 220px;
+  background: var(--card, #1e293b);
+  color: var(--text, #f8fafc);
+  border: 2px solid var(--primary, #6366f1);
   border-radius: 16px;
-  padding: 10px 12px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
-  font-size: 0.82rem;
-  line-height: 1.42;
+  padding: 12px 13px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
+  font-size: 0.83rem;
+  line-height: 1.45;
   pointer-events: auto;
   z-index: 950;
   animation: shimejiBubblePop 0.22s cubic-bezier(0.18, 0.89, 0.32, 1.28);
@@ -2213,12 +2246,12 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 
 .shimeji-bubble.mood-dance {
   border-color: #10B981;
-  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.28);
 }
 
 .shimeji-bubble.mood-sad {
   border-color: #F59E0B;
-  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.28);
 }
 
 /* Ekranın üst kenarında gezinirken balon aşağıya doğru açılsın */
@@ -2245,10 +2278,10 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   justify-content: space-between;
   gap: 6px;
   font-weight: 800;
-  font-size: 0.76rem;
-  color: var(--primary, #4F46E5);
+  font-size: 0.77rem;
+  color: var(--primary, #6366f1);
   margin-bottom: 5px;
-  padding-right: 16px;
+  padding-right: 18px;
 }
 
 .shimeji-bubble-close {
@@ -2257,45 +2290,57 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   right: 8px;
   background: none;
   border: none;
-  color: var(--muted, #64748b);
+  color: var(--muted, #94a3b8);
   cursor: pointer;
-  font-size: 0.85rem;
-  padding: 2px 4px;
+  font-size: 0.88rem;
+  padding: 2px 5px;
   line-height: 1;
 }
 
 .shimeji-bubble-actions {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
+/* Tema ile %100 Uyumlu, Yüksek Kontrastlı Shimeji Butonları */
 .shimeji-mini-btn {
   flex: 1;
-  min-width: 62px;
-  padding: 5px 7px;
-  border-radius: 8px;
-  border: 1px solid var(--border, #e2e8f0);
-  background: var(--card-hover, #f1f5f9);
-  color: var(--text, #1e293b);
+  min-width: 64px;
+  padding: 6px 8px;
+  border-radius: 9px;
+  border: 1px solid color-mix(in srgb, var(--primary, #6366f1) 38%, var(--border, #334155));
+  background: color-mix(in srgb, var(--primary, #6366f1) 16%, var(--card, #1e293b));
+  color: var(--text, #f8fafc);
   font-family: inherit;
-  font-size: 0.72rem;
+  font-size: 0.73rem;
   font-weight: 800;
   cursor: pointer;
   text-align: center;
-  transition: 0.15s;
+  transition: all 0.16s ease;
 }
 
 .shimeji-mini-btn.primary {
-  background: var(--primary, #4F46E5);
-  color: #fff;
-  border-color: var(--primary, #4F46E5);
+  background: var(--primary, #6366f1);
+  color: #ffffff;
+  border-color: var(--primary, #6366f1);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--primary, #6366f1) 35%, transparent);
+}
+
+.shimeji-mini-btn.accent-warm {
+  background: color-mix(in srgb, #F59E0B 18%, var(--card, #1e293b));
+  border-color: color-mix(in srgb, #F59E0B 45%, var(--border, #334155));
 }
 
 .shimeji-mini-btn:hover {
-  border-color: var(--primary, #4F46E5);
-  filter: brightness(1.05);
+  background: color-mix(in srgb, var(--primary, #6366f1) 28%, var(--card, #1e293b));
+  border-color: var(--primary, #6366f1);
+  transform: translateY(-1px);
+}
+
+.shimeji-mini-btn.primary:hover {
+  background: var(--primary-d, #4f46e5);
 }
 
 @media (max-width: 768px) {
@@ -2305,6 +2350,7 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
     height: 68px;
   }
 }
+
 
 
 
