@@ -236,12 +236,12 @@ function closeModal() { $('#modal-root').innerHTML = ''; }
 function screenOnboarding() {
   document.body.classList.remove('focus-mode');
   renderNav('');
-  let selectedMascot = state.mascot || 'cat';
+  let selectedMascot = state.mascot || 'squirrel';
   let selectedTheme = state.theme || 'nordic';
 
   view().innerHTML = `
     <div class="onboard" style="width:100%;max-width:640px;margin:0 auto;padding-bottom:32px;">
-      <div class="onboard-hero">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾'}</div>
+      <div class="onboard-hero">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
       <h1 class="rainbow-text">PatiLingo</h1>
       <p class="lead">Sana özel yoldaşın ve renklerinle İngilizce öğrenmeye başla! 🎈</p>
       
@@ -489,6 +489,84 @@ function screenPlacement() {
    ============================================================ */
 let companionEncouragementIdx = 0;
 
+function renderSquirrelStageSVG(stageId = 'baby') {
+  const isBaby = stageId === 'baby';
+  const isExplorer = stageId === 'explorer';
+  const isStudent = stageId === 'student';
+  const isScholar = stageId === 'scholar';
+  const isMaster = stageId === 'master';
+  const scale = isBaby ? 0.88 : isExplorer ? 0.94 : 1;
+
+  return `
+    <svg class="squirrel-stage-svg stage-${esc(stageId)}" viewBox="0 0 120 120" width="76" height="76" role="img" aria-label="Fındık Sincap Yoldaş (${esc(stageId)})" style="transform:scale(${scale});transition:transform 0.3s ease;overflow:visible;">
+      <defs>
+        <linearGradient id="sqTailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FB923C" />
+          <stop offset="100%" stop-color="#C2410C" />
+        </linearGradient>
+        <linearGradient id="sqBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F97316" />
+          <stop offset="100%" stop-color="#EA580C" />
+        </linearGradient>
+      </defs>
+      <!-- Kabarık Sincap Kuyruğu -->
+      <path d="M78 88 C112 85, 118 42, 92 26 C74 16, 64 36, 74 52 C66 58, 66 76, 78 88 Z" fill="url(#sqTailGrad)" />
+      <path d="M88 36 C100 42, 98 62, 84 72" stroke="#FFEDD5" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.55" />
+      ${isMaster ? `<path d="M30 68 L16 102 L90 102 L76 68 Z" fill="#7C3AED" opacity="0.9" />` : ''}
+      <!-- Gövde -->
+      <ellipse cx="54" cy="82" rx="24" ry="22" fill="url(#sqBodyGrad)" />
+      <ellipse cx="54" cy="84" rx="15" ry="15" fill="#FFEDD5" />
+      ${isStudent ? `
+        <!-- Okul Çantası Askıları ve Mavi Fular -->
+        <path d="M36 68 L34 94 M72 68 L74 94" stroke="#DC2626" stroke-width="5" stroke-linecap="round" />
+        <path d="M35 66 Q54 76 73 66 L68 75 Q54 82 40 75 Z" fill="#2563EB" />
+      ` : ''}
+      <!-- Kulaklar -->
+      <ellipse cx="35" cy="30" rx="8" ry="13" transform="rotate(-14 35 30)" fill="#EA580C" />
+      <ellipse cx="35" cy="31" rx="4.5" ry="8" transform="rotate(-14 35 31)" fill="#FDBA74" />
+      <ellipse cx="73" cy="30" rx="8" ry="13" transform="rotate(14 73 30)" fill="#EA580C" />
+      <ellipse cx="73" cy="31" rx="4.5" ry="8" transform="rotate(14 73 31)" fill="#FDBA74" />
+      <!-- Baş -->
+      <circle cx="54" cy="48" r="24" fill="url(#sqBodyGrad)" />
+      <!-- Tombul Yanaklar -->
+      <ellipse cx="38" cy="54" rx="10" ry="8" fill="#FFEDD5" />
+      <ellipse cx="70" cy="54" rx="10" ry="8" fill="#FFEDD5" />
+      <circle cx="35" cy="55" r="4.5" fill="#FB7185" opacity="0.45" />
+      <circle cx="73" cy="55" r="4.5" fill="#FB7185" opacity="0.45" />
+      <!-- Parlak Gözler -->
+      <circle cx="44" cy="45" r="${isBaby ? 5.5 : 4.8}" fill="#1E1B4B" />
+      <circle cx="64" cy="45" r="${isBaby ? 5.5 : 4.8}" fill="#1E1B4B" />
+      <circle cx="42.5" cy="43" r="1.8" fill="#FFFFFF" />
+      <circle cx="62.5" cy="43" r="1.8" fill="#FFFFFF" />
+      ${(isScholar || isMaster) ? `
+        <!-- Bilgin Gözlüğü -->
+        <circle cx="44" cy="45" r="8.5" fill="none" stroke="#FBBF24" stroke-width="2.6" />
+        <circle cx="64" cy="45" r="8.5" fill="none" stroke="#FBBF24" stroke-width="2.6" />
+        <line x1="52.5" y1="45" x2="55.5" y2="45" stroke="#FBBF24" stroke-width="2.6" />
+      ` : ''}
+      <!-- Burun ve Sevimli Sincap Dişi -->
+      <ellipse cx="54" cy="52" rx="4" ry="3" fill="#431407" />
+      <path d="M48 57 Q54 62 60 57" stroke="#431407" stroke-width="2.2" fill="none" stroke-linecap="round" />
+      <rect x="52" y="58.5" width="4" height="4.2" rx="1" fill="#FFFFFF" stroke="#431407" stroke-width="1" />
+      ${isBaby ? `
+        <!-- Yavru Filiz Yaprağı -->
+        <path d="M54 24 Q54 14 63 14 Q58 22 54 24 Z" fill="#22C55E" />
+        <path d="M54 24 Q50 16 44 17 Q48 23 54 24 Z" fill="#4ADE80" />
+      ` : ''}
+      ${isMaster ? `
+        <!-- Profesör Altın Tacı -->
+        <polygon points="38,26 43,12 54,21 65,12 70,26" fill="#FACC15" stroke="#CA8A04" stroke-width="1.8" />
+        <circle cx="54" cy="20" r="2.5" fill="#EF4444" />
+      ` : ''}
+      ${(isExplorer || isStudent || isScholar || isMaster) ? `
+        <!-- Patilerde Altın Meşe Palamudu -->
+        <ellipse cx="54" cy="85" rx="8" ry="9" fill="#D97706" />
+        <path d="M45 81 Q54 74 63 81 L61 84 Q54 79 47 84 Z" fill="#78350F" />
+        <line x1="54" y1="74" x2="54" y2="77" stroke="#78350F" stroke-width="2" stroke-linecap="round" />
+      ` : ''}
+    </svg>`;
+}
+
 function screenHome() {
   const lvl = levelInfo();
   const xl = xpLevel();
@@ -505,6 +583,8 @@ function screenHome() {
   const enQuote = typeof curEncouragement === 'object' ? curEncouragement.en : curEncouragement;
   const trQuote = typeof curEncouragement === 'object' ? curEncouragement.tr : '';
   const isGuest = state.auth ? state.auth.isGuest : true;
+  const sq = getSquirrelGrowth();
+  const allStages = (typeof SQUIRREL_STAGES !== 'undefined' && Array.isArray(SQUIRREL_STAGES)) ? SQUIRREL_STAGES : [];
 
   view().innerHTML = `
     <div class="page">
@@ -525,22 +605,59 @@ function screenHome() {
         </div>
       ` : ''}
 
-      <!-- İnteraktif Yoldaş Alanı -->
-      <div class="card companion-hero-card" id="mascotHeroCard">
-        <div class="companion-avatar-wrap" id="mascotAvatarWrap" title="${esc(curMascot.name)}'a dokun, moral versin!">
-          <div class="companion-avatar-icon" id="mascotIconEl">${curMascot.icon}</div>
-          <span class="companion-status-dot" title="Aktif ve Hazır"></span>
-        </div>
-        <div class="companion-speech-bubble" id="mascotBubbleEl">
-          <div class="companion-bubble-header">
-            <span class="companion-name-badge">${curMascot.icon} ${esc(curMascot.name)} · <span class="muted small">${esc(curMascot.animal)}</span></span>
-            <button class="speak-btn sm" id="mascotSpeakBtn" title="İngilizce Dinle" aria-label="Yoldaşını İngilizce Dinle">🔊</button>
+      <!-- İnteraktif Sincap Yoldaş & Büyüme Alanı (Yavrudan Ustaya) -->
+      <div class="card companion-hero-card" id="mascotHeroCard" style="flex-direction:column;align-items:stretch;gap:14px;">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div class="companion-avatar-wrap" id="mascotAvatarWrap" title="${esc(curMascot.name)}'a dokun, moral versin!" style="min-width:84px;min-height:84px;display:flex;align-items:center;justify-content:center;">
+            <div class="companion-avatar-icon" id="mascotIconEl" style="display:flex;align-items:center;justify-content:center;">
+              ${curMascot.id === 'squirrel' ? renderSquirrelStageSVG(sq.id) : curMascot.icon}
+            </div>
+            <span class="companion-status-dot" title="Aktif ve Yardıma Hazır"></span>
           </div>
-          <div class="companion-speech-en" id="mascotSpeechEn" style="font-weight:800;font-size:1.02rem;color:var(--text);margin-bottom:4px;line-height:1.4;">"${esc(enQuote)}"</div>
-          ${trQuote ? `<div class="companion-speech-tr muted small" id="mascotSpeechTr" style="font-weight:600;color:color-mix(in srgb, var(--text) 72%, transparent);">${esc(trQuote)}</div>` : ''}
-          <div class="companion-bubble-hint">💡 Yoldaşına tıkla: sana özel yeni motivasyon versin!</div>
+          <div class="companion-speech-bubble" id="mascotBubbleEl" style="flex:1;min-width:220px;">
+            <div class="companion-bubble-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+              <span class="companion-name-badge">🐿️ <b>Fındık</b> · <span class="badge" id="squirrelStageBadge" style="background:var(--primary);color:#fff;font-weight:800;padding:2px 8px;border-radius:99px;font-size:0.76rem;">${esc(sq.badge)} · ${esc(sq.title)}</span></span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="badge" id="squirrelAcornBadge" title="Öğrendiğin kelimelerden ve XP'den biriken palamutlar" style="background:color-mix(in srgb, #F59E0B 16%, var(--card-bg, #fff));color:var(--text);font-weight:800;">🌰 ${sq.acorns} Palamut</span>
+                <button class="speak-btn sm" id="mascotSpeakBtn" title="İngilizce Dinle" aria-label="Yoldaşını İngilizce Dinle">🔊</button>
+              </div>
+            </div>
+            <div class="companion-speech-en" id="mascotSpeechEn" style="font-weight:800;font-size:1.02rem;color:var(--text);margin-bottom:4px;line-height:1.4;">"${esc(enQuote)}"</div>
+            ${trQuote ? `<div class="companion-speech-tr muted small" id="mascotSpeechTr" style="font-weight:600;color:color-mix(in srgb, var(--text) 72%, transparent);">${esc(trQuote)}</div>` : ''}
+            <div class="companion-bubble-hint" style="margin-top:4px;">✨ <b>Özel Yetenek (${esc(sq.perkTitle)}):</b> ${esc(sq.desc)}</div>
+          </div>
         </div>
-        <a class="btn btn-ghost sm companion-switch-btn" href="#/settings" title="Yoldaşı Değiştir">🔄 Değiştir</a>
+
+        <!-- Sincap Büyüme Çubuğu & 5 Evre Yol Haritası -->
+        <div id="squirrelCompanionPanel" style="background:var(--card-hover, #f8fafc);padding:12px 14px;border-radius:12px;border:1px solid var(--border, #e2e8f0);">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;font-size:0.84rem;">
+            <span style="font-weight:800;">🌱 Fındık'ın Büyüme Durumu (${esc(sq.title)})</span>
+            <span class="muted small" style="font-weight:700;">
+              ${sq.nextXP !== null ? `Sonraki evreye: <b>${sq.xpLeft} XP</b> kaldı (%${sq.stagePct})` : '👑 Maksimum Evreye Ulaştın!'}
+            </span>
+          </div>
+          <div class="progress thick" id="squirrelGrowthBar" style="margin-bottom:10px;"><div class="bar rainbow" style="width:${sq.stagePct}%;"></div></div>
+
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+            ${allStages.map(st => {
+              const reached = state.xp >= st.minXP;
+              const isCurrent = st.id === sq.id;
+              return `<span class="badge" style="font-size:0.73rem;padding:4px 8px;border-radius:8px;font-weight:${isCurrent ? '800' : '600'};background:${isCurrent ? 'var(--primary)' : (reached ? 'color-mix(in srgb, var(--primary) 15%, var(--card-bg, #fff))' : 'var(--card-bg, #fff)')};color:${isCurrent ? '#fff' : (reached ? 'var(--text)' : 'var(--muted)')};border:1px solid ${isCurrent ? 'var(--primary)' : 'var(--border)'};">
+                ${reached ? '✅' : '🔒'} ${st.stage}. ${esc(st.title)}
+              </span>`;
+            }).join('')}
+          </div>
+
+          <!-- Canlı Yardımcı Eylemler: Kelime Yardımı, Gramer Tüyosu, Palamut Ver -->
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <button type="button" class="btn btn-primary sm" id="squirrelWordHelpBtn" aria-label="Fındık'tan Kelime Yardımı Al">🌰 Kelime Yardımı Al</button>
+            <button type="button" class="btn btn-secondary sm" id="squirrelGrammarHelpBtn" aria-label="Fındık'tan Gramer Tüyosu Al">🧩 Gramer Tüyosu Al</button>
+            <button type="button" class="btn btn-ghost sm" id="squirrelFeedBtn" aria-label="Fındık'a Palamut Ver ve Sev">🐿️ Palamut Ver &amp; Sev</button>
+            <a class="btn btn-ghost sm" href="#/settings" title="Yoldaşı Değiştir" style="margin-left:auto;">🔄 Ayarlar</a>
+          </div>
+
+          <div id="squirrelHelperOutput" style="display:none;margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--card-bg, #fff);border:1px solid var(--border, #e2e8f0);font-size:0.9rem;line-height:1.5;"></div>
+        </div>
       </div>
 
       <!-- Kompakt Metrik Şeridi (Modern haplar) -->
@@ -742,6 +859,88 @@ function screenHome() {
       const currentMsg = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
       const say = typeof currentMsg === 'object' ? currentMsg.en : (mascotEnEl ? mascotEnEl.textContent.replace(/^"|"$/g, '') : curMascot.motto);
       speak(say, 'en');
+    };
+  }
+
+  const helperOut = $('#squirrelHelperOutput');
+  const wordHelpBtn = $('#squirrelWordHelpBtn');
+  const grammarHelpBtn = $('#squirrelGrammarHelpBtn');
+  const feedBtn = $('#squirrelFeedBtn');
+  const acornBadge = $('#squirrelAcornBadge');
+
+  if (wordHelpBtn) {
+    wordHelpBtn.onclick = () => {
+      if (!state.companion) state.companion = { fedCount: 0, lastHintIdx: 0, lastGrammarIdx: 0 };
+      const weak = weakWords(5);
+      const targetUnit = nu && nu.words && nu.words.length > 0 ? nu : UNITS.find(u => u.words && u.words.length > 0) || UNITS[0];
+      const pool = weak.length > 0 ? weak : (targetUnit.words || allWords);
+      const idx = (state.companion.lastHintIdx || 0) % pool.length;
+      state.companion.lastHintIdx = (state.companion.lastHintIdx || 0) + 1;
+      saveState();
+      const w = pool[idx];
+      const isWeakWord = weak.length > 0;
+      if (helperOut && w) {
+        helperOut.style.display = 'block';
+        helperOut.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div>
+              <div class="muted small" style="font-weight:700;">🐿️ ${isWeakWord ? 'Fındık Zorlandığın Kelimeyi Yakaladı:' : `Fındık'ın Kelime İpucu (${esc(targetUnit.title)}):`}</div>
+              <div style="font-size:1.1rem;font-weight:800;margin-top:2px;">${w.emoji || '🌰'} <span style="color:var(--primary);">${esc(w.en)}</span> = <b>${esc(w.tr)}</b></div>
+              <div class="muted small" style="margin-top:4px;">💡 <b>Akılda Tutma Tüyosu:</b> "${esc(w.en)}" kelimesini yüksek sesle 2 kez tekrar et ve cümlede kullan!</div>
+            </div>
+            <button type="button" class="speak-btn" id="squirrelHelperSpeakWordBtn" title="Telaffuzu Dinle" aria-label="Kelime telaffuzunu dinle">🔊</button>
+          </div>`;
+        const spkBtn = $('#squirrelHelperSpeakWordBtn');
+        if (spkBtn) spkBtn.onclick = () => speak(w.en, 'en');
+        speak(w.en, 'en');
+      }
+      triggerCompanionReaction(false);
+    };
+  }
+
+  if (grammarHelpBtn) {
+    grammarHelpBtn.onclick = () => {
+      if (!state.companion) state.companion = { fedCount: 0, lastHintIdx: 0, lastGrammarIdx: 0 };
+      const tips = (typeof SQUIRREL_GRAMMAR_TIPS !== 'undefined' && Array.isArray(SQUIRREL_GRAMMAR_TIPS) && SQUIRREL_GRAMMAR_TIPS.length > 0)
+        ? SQUIRREL_GRAMMAR_TIPS
+        : [{ title: '🧩 İngilizce Cümle Mantığı', rule: 'İngilizcede cümleler her zaman Özne + Yüklem + Nesne sırasıyla kurulur.', en: 'I learn English every day.', tr: 'Ben her gün İngilizce öğrenirim.' }];
+      const idx = (state.companion.lastGrammarIdx || 0) % tips.length;
+      state.companion.lastGrammarIdx = (state.companion.lastGrammarIdx || 0) + 1;
+      saveState();
+      const tip = tips[idx];
+      if (helperOut && tip) {
+        helperOut.style.display = 'block';
+        helperOut.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+            <div>
+              <div style="font-weight:800;color:var(--primary);margin-bottom:4px;">${esc(tip.title)}</div>
+              <div style="margin-bottom:6px;">${esc(tip.rule)}</div>
+              <div style="padding:8px 10px;border-radius:8px;background:var(--card-hover);font-size:0.86rem;">
+                <b>Örnek:</b> "${esc(tip.en)}" <span class="muted">(${esc(tip.tr)})</span>
+              </div>
+            </div>
+            <button type="button" class="speak-btn sm" id="squirrelHelperSpeakGrammarBtn" title="Örnek Cümleyi Dinle" aria-label="Örnek cümleyi dinle">🔊</button>
+          </div>`;
+        const spkBtn = $('#squirrelHelperSpeakGrammarBtn');
+        if (spkBtn) spkBtn.onclick = () => speak(tip.en, 'en');
+        speak(tip.en, 'en');
+      }
+      triggerCompanionReaction(false);
+    };
+  }
+
+  if (feedBtn) {
+    feedBtn.onclick = () => {
+      if (!state.companion) state.companion = { fedCount: 0, lastHintIdx: 0, lastGrammarIdx: 0 };
+      state.companion.fedCount = (state.companion.fedCount || 0) + 1;
+      saveState();
+      const updatedSq = getSquirrelGrowth();
+      if (acornBadge) acornBadge.textContent = `🌰 ${updatedSq.acorns} Palamut`;
+      if (helperOut) {
+        helperOut.style.display = 'block';
+        helperOut.innerHTML = `🎉 <b>Fındık çok mutlu oldu!</b> (Toplam <b>${state.companion.fedCount}</b> kez besledin · <b>${esc(updatedSq.title)}</b> seninle büyümeye devam ediyor!)`;
+      }
+      triggerCompanionReaction(true);
     };
   }
 

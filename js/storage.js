@@ -13,8 +13,13 @@ function defaultState() {
     userId: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
     onboarded: false,
     name: 'Öğrenci',
-    mascot: 'cat',         // 'cat', 'dog', 'owl', 'panda', 'squirrel'
+    mascot: 'squirrel',    // 'squirrel', 'cat', 'dog', 'owl', 'panda'
     theme: 'nordic',       // 'nordic', 'cyber', 'sunset', 'ocean'
+    companion: {
+      fedCount: 0,
+      lastHintIdx: 0,
+      lastGrammarIdx: 0
+    },
     auth: {
       isGuest: true,
       user: null,          // { uid, email, displayName, photoURL }
@@ -121,7 +126,7 @@ class AppStore {
       const d = defaultState();
       const cleanFriends = (s.friends || []).filter(f => f && !f.isBot);
       const userId = s.userId || d.userId;
-      const mascot = s.mascot || 'cat';
+      const mascot = s.mascot || 'squirrel';
       const theme = s.theme || 'nordic';
 
       // Doğal Candy Crush / Duolingo kilit mekanizması:
@@ -150,6 +155,7 @@ class AppStore {
         userId,
         mascot,
         theme,
+        companion: { ...d.companion, ...(s.companion || {}) },
         auth: { ...d.auth, ...(s.auth || {}) },
         leagueRoomId: s.leagueRoomId || null,
         leagueMembers: s.leagueMembers || {},
@@ -443,7 +449,7 @@ class MascotService {
   }
 
   getActive() {
-    const id = this.store.state.mascot || 'cat';
+    const id = this.store.state.mascot || 'squirrel';
     return (MASCOT_BY_ID && MASCOT_BY_ID[id]) || MASCOTS[0];
   }
 
@@ -457,12 +463,42 @@ class MascotService {
     return list[Math.floor(Math.random() * list.length)];
   }
 
+  getSquirrelGrowth(customXP) {
+    const xp = typeof customXP === 'number' ? Math.max(0, customXP) : Math.max(0, this.store.state.xp || 0);
+    const wordsCount = Object.keys(this.store.state.words || {}).length;
+    const acorns = wordsCount + Math.floor(xp / 15) + ((this.store.state.companion && this.store.state.companion.fedCount) || 0);
+    const stages = (typeof SQUIRREL_STAGES !== 'undefined' && Array.isArray(SQUIRREL_STAGES)) ? SQUIRREL_STAGES : [];
+    let current = stages[0] || { stage: 1, id: 'baby', title: 'Minik Yavru Sincap', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Kelime Fısıltısı', desc: '' };
+    for (const st of stages) {
+      if (xp >= st.minXP) current = st;
+    }
+    let stagePct = 100;
+    let xpLeft = 0;
+    if (current.nextXP !== null) {
+      const span = Math.max(1, current.nextXP - current.minXP);
+      stagePct = Math.min(100, Math.max(0, Math.round(((xp - current.minXP) / span) * 100)));
+      xpLeft = Math.max(0, current.nextXP - xp);
+    }
+    return {
+      ...current,
+      xp,
+      wordsCount,
+      acorns,
+      stagePct,
+      xpLeft,
+      totalStages: stages.length || 5
+    };
+  }
+
   select(id) {
     this.store.setMascot(id);
   }
 }
 
 const mascotService = new MascotService(store);
+function getSquirrelGrowth(customXP) {
+  return mascotService.getSquirrelGrowth(customXP);
+}
 
 /* ============================================================
    OOP: ProgressionManager (Candy Crush Harita & Kilit Motoru)

@@ -435,6 +435,37 @@ test('Bölüm ilerlemesi, boş tekrar seansı ve AI kurulum kalıcılığı bile
   ok(appSrc.includes('id="aiSetupSuccessBanner"') && appSrc.includes('id="aiPingBtn"'), 'AI kurulumunda kalıcı kayıt onayı ve ayrı bağlantı testi butonu bulunmalı');
 });
 
+test('Sincap Yoldaş (Fındık): Yavrudan Ustaya 5 büyüme evresi ve ders/kelime yardımcısı çalışır', () => {
+  const env = makeEnv();
+  eq(env.run('state.mascot'), 'squirrel', 'Varsayılan yoldaş sincap (squirrel) olmalı');
+  eq(env.run('mascotService.getActive().name'), 'Fındık', 'Aktif yoldaş adı Fındık olmalı');
+
+  const st1 = env.run('getSquirrelGrowth(0)');
+  eq(st1.stage, 1, '0 XP de 1. evre (Minik Yavru Sincap) olmalı');
+  eq(st1.id, 'baby');
+  ok(st1.title.includes('Yavru Sincap'), '1. evre başlığı Yavru Sincap içermeli');
+
+  const st2 = env.run('getSquirrelGrowth(150)');
+  eq(st2.stage, 2, '150 XP de 2. evre (Meraklı Toplayıcı Sincap) olmalı');
+  eq(st2.id, 'explorer');
+
+  const st3 = env.run('getSquirrelGrowth(450)');
+  eq(st3.stage, 3, '450 XP de 3. evre (Okullu Çırak Sincap) olmalı');
+  eq(st3.id, 'student');
+
+  const st4 = env.run('getSquirrelGrowth(900)');
+  eq(st4.stage, 4, '900 XP de 4. evre (Bilgin Rehber Sincap) olmalı');
+  eq(st4.id, 'scholar');
+
+  const st5 = env.run('getSquirrelGrowth(1600)');
+  eq(st5.stage, 5, '1600 XP de 5. evre (Usta Profesör Sincap) olmalı');
+  eq(st5.id, 'master');
+  eq(st5.xpLeft, 0, 'Son evrede kalan XP 0 olmalı');
+
+  const clue = env.run('getSquirrelQuestionClue({ kind: "mc", prompt: "She ___ my sister.", answer: "is" })');
+  ok(clue.includes('He / She / It'), 'Tekil özne sorusunda gramer ipucu vermeli');
+});
+
 
 /* ---------- Sonuç ---------- */
 (async () => {

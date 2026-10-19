@@ -17,17 +17,18 @@
 - **Smart Spaced Repetition (`Akıllı Tekrar` - SRS):** Box-based memory retention system (Boxes 1–5) that schedules vocabulary reviews based on learner performance, plus an on-demand practice review session when no scheduled words are currently due.
 - **AI Teacher & Personal Tutor (`AI Öğretmen`):** Optional Google Gemini integration (`gemini-2.5-flash` / `gemini-2.0-flash`) offering personalized level analysis, custom 10-question practice generation, and voice/text conversation practice with **Sunny**.
 - **Cross-Device Sync & Live Leagues:** Firebase Auth / Realtime Database integration with offline-resilient local fallback and shareable sync codes.
-- **Customizable Companions & Themes:** 4 interactive animal companions (`Pati`, ` Leo`, `Bambi`, `Maviş`) and 6 color palettes (including dark mode).
+- **Interactive Squirrel Companion (`Fındık` · 5 Growth Stages & Live Helper):** Starts directly as a **Baby Squirrel (`Minik Yavru Sincap`)** and grows through 5 stages (`Baby` → `Explorer` → `Student` → `Scholar` → `Master Professor`) as you collect XP and vocabulary acorns (`🌰`). Actively helps learners via on-demand **Vocabulary Hints**, **Grammar Tips**, and **In-Lesson Question Clues** (`getSquirrelQuestionClue`) without spoiling answers.
+- **Customizable Companions & Themes:** 5 interactive animal companions (`Fındık`, `Pamuk`, `Dost`, `Bilge`, `Bambu`) and 5 color palettes (including dark mode).
 
 ---
 
 ## 🧪 What Our Test Suite Covers (TestSprite E2E + Automated CI)
 
-Our verification pipeline combines **TestSprite 3.0 E2E browser testing** against the live deployment with a **33-test automated Node/CI suite** ([`tests/run-tests.js`](tests/run-tests.js)) executed on every push and Pull Request via [GitHub Actions](.github/workflows/ci.yml).
+Our verification pipeline combines **TestSprite 3.0 E2E browser testing** against the live deployment with a **34-test automated Node/CI suite** ([`tests/run-tests.js`](tests/run-tests.js)) executed on every push and Pull Request via [GitHub Actions](.github/workflows/ci.yml).
 
 | Test Area | Covered User Flows & Assertions |
 | :--- | :--- |
-| **1. Home Dashboard & Navigation** | • Rendering Daily Goal (`50 XP`), Streak, and Next Lesson (`#/lesson/u1`) CTAs<br>• Top-level Course Progress Summary card (`Genel Kurs Tamamlama Özeti`)<br>• Direct dashboard shortcuts to **Smart Review (`#/review`)** and **AI Teacher Setup (`#/ai`)**<br>• Desktop sidebar & mobile bottom-bar / sheet navigation across all routes |
+| **1. Home Dashboard & Squirrel Companion** | • Rendering Daily Goal (`50 XP`), Streak, and Next Lesson (`#/lesson/u1`) CTAs<br>• **Squirrel Companion (`Fındık`)** 5-stage growth progression (`getSquirrelGrowth`), custom stage SVG, vocabulary/grammar helper actions (`#squirrelWordHelpBtn`, `#squirrelGrammarHelpBtn`, `#squirrelFeedBtn`), and in-lesson clue helper (`#lessonSquirrelBtn`)<br>• Top-level Course Progress Summary card (`Genel Kurs Tamamlama Özeti`)<br>• Direct dashboard shortcuts to **Smart Review (`#/review`)** and **AI Teacher Setup (`#/ai`)** |
 | **2. Language Logic Simulator (`#/logic`)** | • Switching between Simulator examples (`Örnek 1`, `Örnek 2`, `Örnek 3`) with immediate DOM & token-mapping re-render<br>• Category filtering (`Tümü`, `Düşünce Yapısı`, `Nezaket & Kültür`, `Klasik Tuzaklar`, `Hayatta Kalma`)<br>• Interactive wagon/token selection and Web Speech TTS playback |
 | **3. Smart Review / Spaced Repetition (`#/review`)** | • Accurate SRS box progression (`recordWord`, `syncUnitWordsToBox1`, `dueWords`)<br>• Honest empty-state rendering when `0` scheduled words are due, with a direct **Practice Review Session** launcher (`#startReviewBtn`)<br>• Configurable daily review word limit (`reviewLimit`) |
 | **4. Course Map, Units & Flashcards (`#/learn`, `#/cards`)** | • 52-unit curriculum integrity (27 A1 + 25 A2 units) and `>= 70%` unlock progression<br>• **Chapter Progression (`#chapterProgressionCard`)** rendered on both unlocked and locked grammar/vocabulary unit pages<br>• Interactive 3D flip flashcards, shuffle, audio pronunciation, and A1/A2 level filtering |
@@ -40,7 +41,7 @@ Our verification pipeline combines **TestSprite 3.0 E2E browser testing** agains
 # 1. Check JavaScript syntax across all modules
 node --check js/app.js
 
-# 2. Run the 33-test automated verification suite
+# 2. Run the 34-test automated verification suite
 node tests/run-tests.js
 ```
 
