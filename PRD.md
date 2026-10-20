@@ -23,8 +23,9 @@
 - **State Management:** Single source of truth reactive `AppStore` with `Proxy` fallback, versioned schema migrations (`schemaVersion`), and `localStorage` persistence (`a1english_v2`).
 - **AI Integration:** Google Gemini API (`gemini-2.5-flash` / `gemini-2.0-flash`) for personalized proficiency analysis, mistake analysis, and exercise generation.
 - **Database & Sync:** Firebase Realtime Database for friend rivalry leagues and cross-device profile sync, plus offline-first manual JSON export/import.
-- **Offline / PWA:** Service Worker with versioned pre-caching (`v2.7.2`) and non-intrusive update banner.
+- **Offline / PWA:** Service Worker with versioned pre-caching (`v2.9.14`) and non-intrusive update banner.
 - **Accessibility:** WCAG AA contrast ratio compliance (≥ 4.5:1), responsive layout, and `prefers-reduced-motion` animation suppression.
+- **Curriculum Scope:** 52 units total (27 A1 + 25 A2), divided into 6 pedagogical stages with milestone companion guides (Fındık, Pamuk, Dost, Bambu, Bilge).
 
 ---
 
@@ -90,3 +91,4 @@
 - **Performance:** 100% client-side execution, sub-second route transitions.
 - **Resilience:** Graceful error handling for missing network connections and missing API keys.
 - **Data Integrity:** Fully validated import/export mechanism; schema migrations preserve 100% of existing user XP, streaks, and unit progress.
+- **Automated Verification:** 35/35 automated unit and end-to-end integration tests (`tests/run-tests.js`) running in isolated virtual environments with zero mocks or test-only bypasses.
