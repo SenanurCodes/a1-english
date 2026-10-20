@@ -807,7 +807,10 @@ function screenHome() {
       <div class="card course-progress-card" style="margin-bottom:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi (Course Progress Summary)</h2>
-          <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm Kurs İlerlemesini Gör">Tümünü Gör ➔</a>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <a href="#/lesson/${nu ? nu.id : 'u1'}" class="btn btn-primary sm" id="dashCourseMapPlayBtn" aria-label="Sonraki Derse Başla">▶ Derse Devam Et</a>
+            <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm Kurs İlerlemesini Gör">Tümünü Gör ➔</a>
+          </div>
         </div>
         <div class="course-progress-summary">
           <div class="cps-head">

@@ -203,9 +203,9 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
       <div class="lesson-squirrel-bar" id="lessonSquirrelHelper" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:12px;background:color-mix(in srgb, var(--primary, #4F46E5) 8%, var(--card-bg, #fff));border:1px dashed var(--border, #e2e8f0);flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.86rem;">
           <span style="font-size:1.25rem;">🐿️</span>
-          <span><b>Fındık (${esc(sqGrowth.title)}):</b> Takıldığın yerde sana ipucu verebilirim!</span>
+          <span><b>${(typeof mascotService !== 'undefined') ? esc(mascotService.getActive().name) : 'Fındık'} (${esc(sqGrowth.title)}):</b> Takıldığın yerde sana ipucu verebilirim!</span>
         </div>
-        <button type="button" class="btn btn-ghost sm" id="lessonSquirrelBtn" aria-label="Fındık'tan soru ipucu al" style="font-weight:800;">🌰 Fındık'tan İpucu Al</button>
+        <button type="button" class="btn btn-ghost sm" id="lessonSquirrelBtn" aria-label="${(typeof mascotService !== 'undefined') ? esc(mascotService.getActive().name) : 'Fındık'}'tan soru ipucu al" style="font-weight:800;">💡 ${(typeof mascotService !== 'undefined') ? esc(mascotService.getActive().name) : 'Fındık'}'tan İpucu Al</button>
       </div>
       <div id="lessonSquirrelClueBox" style="display:none;padding:10px 14px;margin-bottom:14px;border-radius:12px;background:color-mix(in srgb, #F59E0B 12%, var(--card-bg, #fff));border:1px solid rgba(245, 158, 11, 0.35);font-size:0.88rem;line-height:1.45;"></div>
       <div class="q-area" id="qarea"></div>

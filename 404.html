@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>PatiLingo</title>
+  <script>
+    (function() {
+      var path = window.location.pathname;
+      var repo = '/a1-english';
+      if (path.startsWith(repo)) {
+        path = path.slice(repo.length);
+      }
+      path = path.replace(/^\/+/, '');
+      var search = window.location.search || '';
+      var hash = window.location.hash || '';
+      var target = repo + '/#/' + path + (search ? (hash ? search + hash : search) : hash);
+      window.location.replace(target);
+    })();
+  </script>
+</head>
+<body>
+  <p>Yönlendiriliyor...</p>
+</body>
+</html>
