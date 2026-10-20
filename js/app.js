@@ -643,6 +643,310 @@ function renderSquirrelStageSVG(stageId = 'baby', mood = 'normal') {
     </svg>`;
 }
 
+
+function renderCatStageSVG(stageId = 'baby', mood = 'normal') {
+  const isBaby = stageId === 'baby';
+  const isExplorer = stageId === 'explorer';
+  const isStudent = stageId === 'student';
+  const isScholar = stageId === 'scholar';
+  const isMaster = stageId === 'master';
+  const isDance = mood === 'dance';
+  const isSad = mood === 'sad';
+  const isSleep = mood === 'sleep';
+  const scale = isBaby ? 0.88 : isExplorer ? 0.94 : 1;
+
+  const leftEarRot = isSad ? 'rotate(-36 34 26)' : isDance ? 'rotate(-6 34 26)' : 'rotate(-16 34 26)';
+  const rightEarRot = isSad ? 'rotate(36 74 26)' : isDance ? 'rotate(6 74 26)' : 'rotate(16 74 26)';
+
+  return `
+    <svg class="cat-stage-svg stage-${esc(stageId)} mood-${esc(mood)}" viewBox="0 0 120 120" width="76" height="76" role="img" aria-label="Pamuk Kedi Yoldaş (${esc(stageId)})" style="transform:scale(${scale});transition:transform 0.3s ease;overflow:visible;">
+      <defs>
+        <linearGradient id="catBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#FFFFFF" />
+          <stop offset="100%" stop-color="#F8FAFC" />
+        </linearGradient>
+        <linearGradient id="yarnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#F43F5E" />
+          <stop offset="100%" stop-color="#BE123C" />
+        </linearGradient>
+      </defs>
+
+      <!-- Kıvrık Kedi Kuyruğu -->
+      <path d="M78 84 C98 80, 108 58, 102 44 C98 38, 92 40, 94 46 C98 56, 88 72, 76 78 Z" fill="url(#catBodyGrad)" stroke="#CBD5E1" stroke-width="1.4" />
+
+      <!-- Sivri Kedi Kulakları -->
+      <polygon points="26,38 35,16 48,34" fill="url(#catBodyGrad)" stroke="#E2E8F0" stroke-width="1.2" transform="${leftEarRot}" />
+      <polygon points="30,34 35,21 44,32" fill="#FDA4AF" transform="${leftEarRot}" />
+      <polygon points="82,38 73,16 60,34" fill="url(#catBodyGrad)" stroke="#E2E8F0" stroke-width="1.2" transform="${rightEarRot}" />
+      <polygon points="78,34 73,21 64,32" fill="#FDA4AF" transform="${rightEarRot}" />
+
+      <!-- Gövde -->
+      <ellipse cx="54" cy="82" rx="24" ry="22" fill="url(#catBodyGrad)" stroke="#E2E8F0" stroke-width="1.2" />
+      <ellipse cx="54" cy="84" rx="14" ry="14" fill="#FFFFFF" />
+
+      <!-- Beyaz Minik Ayaklar / Patiler -->
+      <ellipse class="sq-foot-l" cx="40" cy="102" rx="7" ry="4.5" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+      <ellipse class="sq-foot-r" cx="68" cy="102" rx="7" ry="4.5" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+
+      <!-- Baş -->
+      <circle cx="54" cy="48" r="23" fill="url(#catBodyGrad)" stroke="#E2E8F0" stroke-width="1.2" />
+
+      <!-- Yanaklar ve Bıyıklar -->
+      <circle cx="36" cy="55" r="${isDance ? 5 : 4}" fill="#FB7185" opacity="${isDance ? 0.7 : 0.45}" />
+      <circle cx="72" cy="55" r="${isDance ? 5 : 4}" fill="#FB7185" opacity="${isDance ? 0.7 : 0.45}" />
+
+      <!-- Sevimli Kedi Bıyıkları -->
+      <line x1="33" y1="51" x2="16" y2="48" stroke="#94A3B8" stroke-width="1.4" stroke-linecap="round" />
+      <line x1="33" y1="55" x2="14" y2="55" stroke="#94A3B8" stroke-width="1.4" stroke-linecap="round" />
+      <line x1="75" y1="51" x2="92" y2="48" stroke="#94A3B8" stroke-width="1.4" stroke-linecap="round" />
+      <line x1="75" y1="55" x2="94" y2="55" stroke="#94A3B8" stroke-width="1.4" stroke-linecap="round" />
+
+      <!-- Gözler -->
+      ${isDance ? `
+        <path d="M39 46 Q44 40 49 46" stroke="#0F172A" stroke-width="2.6" stroke-linecap="round" fill="none" />
+        <path d="M59 46 Q64 40 69 46" stroke="#0F172A" stroke-width="2.6" stroke-linecap="round" fill="none" />
+      ` : isSleep ? `
+        <path d="M39 45 Q44 50 49 45" stroke="#0F172A" stroke-width="2.4" stroke-linecap="round" fill="none" />
+        <path d="M59 45 Q64 50 69 45" stroke="#0F172A" stroke-width="2.4" stroke-linecap="round" fill="none" />
+      ` : `
+        <circle cx="44" cy="45" r="${isBaby ? 5.2 : 4.6}" fill="#0F172A" />
+        <circle cx="64" cy="45" r="${isBaby ? 5.2 : 4.6}" fill="#0F172A" />
+        <circle cx="42.5" cy="43.5" r="1.8" fill="#FFFFFF" />
+        <circle cx="62.5" cy="43.5" r="1.8" fill="#FFFFFF" />
+        <circle cx="45.5" cy="46" r="0.8" fill="#FFFFFF" />
+        <circle cx="65.5" cy="46" r="0.8" fill="#FFFFFF" />
+        ${isSad ? `
+          <path d="M38 39 L46 41" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+          <path d="M70 39 L62 41" stroke="#64748B" stroke-width="2" stroke-linecap="round" />
+          <path d="M70 49 C73 53, 73 56, 70 56 C68 56, 68 53, 70 49 Z" fill="#38BDF8" />
+        ` : ''}
+      `}
+
+      <!-- Minik Pembe Burun ve Kedi Ağzı :3 -->
+      <polygon points="52,52 56,52 54,55" fill="#F43F5E" />
+      ${isSad ? `
+        <path d="M49 60 Q54 56 59 60" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" />
+      ` : isDance ? `
+        <path d="M48 56 Q54 65 60 56 Z" fill="#BE123C" stroke="#0F172A" stroke-width="1.5" />
+      ` : `
+        <path d="M49 56 Q51.5 59 54 56 Q56.5 59 59 56" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" />
+      `}
+
+      ${isStudent ? `
+        <!-- Sevimli Mavi Kedi Tasması & Çan -->
+        <path d="M37 66 Q54 75 71 66" stroke="#3B82F6" stroke-width="4.5" stroke-linecap="round" fill="none" />
+        <circle cx="54" cy="72" r="3.5" fill="#FACC15" stroke="#CA8A04" stroke-width="1" />
+      ` : ''}
+
+      ${isScholar ? `
+        <!-- Asil Papyon / Kravat -->
+        <polygon points="46,65 54,70 46,75" fill="#8B5CF6" />
+        <polygon points="62,65 54,70 62,75" fill="#8B5CF6" />
+        <circle cx="54" cy="70" r="2.5" fill="#EDE9FE" />
+      ` : ''}
+
+      ${isMaster ? `
+        <!-- Efsanevi Pati Tacı -->
+        <polygon points="40,24 45,12 54,20 63,12 68,24" fill="#FACC15" stroke="#CA8A04" stroke-width="1.6" />
+        <circle cx="54" cy="18" r="2.2" fill="#EC4899" />
+      ` : ''}
+
+      <!-- Ayaklarında Oynadığı Tüy/Yün Yumağı -->
+      <g class="cat-yarn-hold">
+        <!-- Dağılan İplik Kıvrımı -->
+        <path d="M64 89 Q76 94 72 103 Q66 109 56 104 Q50 99 57 95" stroke="#F43F5E" stroke-width="2" fill="none" stroke-linecap="round" />
+        <!-- Yün Yumağı Küresi -->
+        <circle cx="54" cy="85" r="9.5" fill="url(#yarnGrad)" />
+        <path d="M47 82 Q54 78 61 82" stroke="#FDA4AF" stroke-width="1.5" fill="none" />
+        <path d="M46 86 Q54 90 62 86" stroke="#FDA4AF" stroke-width="1.5" fill="none" />
+        <path d="M50 78 Q54 85 58 78" stroke="#FDA4AF" stroke-width="1.4" fill="none" />
+        <!-- Yumağa Dokunan / Oynayan Ön Patiler -->
+        <ellipse cx="44" cy="81" rx="5.5" ry="4.5" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+        <ellipse cx="64" cy="81" rx="5.5" ry="4.5" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+      </g>
+    </svg>`;
+}
+
+function renderPandaStageSVG(stageId = 'baby', mood = 'normal') {
+  const isBaby = stageId === 'baby';
+  const isExplorer = stageId === 'explorer';
+  const isStudent = stageId === 'student';
+  const isScholar = stageId === 'scholar';
+  const isMaster = stageId === 'master';
+  const isDance = mood === 'dance';
+  const isSad = mood === 'sad';
+  const isSleep = mood === 'sleep';
+  const scale = isBaby ? 0.88 : isExplorer ? 0.94 : 1;
+
+  const leftEarRot = isSad ? 'rotate(-25 34 28)' : isDance ? 'rotate(10 34 28)' : 'rotate(0 34 28)';
+  const rightEarRot = isSad ? 'rotate(25 74 28)' : isDance ? 'rotate(-10 74 28)' : 'rotate(0 74 28)';
+
+  return `
+    <svg class="panda-stage-svg stage-${esc(stageId)} mood-${esc(mood)}" viewBox="0 0 120 120" width="76" height="76" role="img" aria-label="Bambu Panda Yoldaş (${esc(stageId)})" style="transform:scale(${scale});transition:transform 0.3s ease;overflow:visible;">
+      <defs>
+        <linearGradient id="pandaBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#FFFFFF" />
+          <stop offset="100%" stop-color="#F1F5F9" />
+        </linearGradient>
+        <linearGradient id="bambooGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4ADE80" />
+          <stop offset="100%" stop-color="#16A34A" />
+        </linearGradient>
+      </defs>
+
+      <!-- Panda Yuvarlak Kulakları -->
+      <circle cx="33" cy="27" r="11" fill="#0F172A" transform="${leftEarRot}" />
+      <circle cx="33" cy="27" r="5.5" fill="#334155" opacity="0.4" transform="${leftEarRot}" />
+      <circle cx="75" cy="27" r="11" fill="#0F172A" transform="${rightEarRot}" />
+      <circle cx="75" cy="27" r="5.5" fill="#334155" opacity="0.4" transform="${rightEarRot}" />
+
+      <!-- Gövde ve Siyah Omuz Bandı -->
+      <ellipse cx="54" cy="82" rx="25" ry="23" fill="#0F172A" />
+      <ellipse cx="54" cy="85" rx="19" ry="17" fill="url(#pandaBodyGrad)" />
+
+      <!-- Tombul Siyah Ayaklar -->
+      <ellipse class="sq-foot-l" cx="38" cy="103" rx="8" ry="5.5" fill="#0F172A" />
+      <ellipse class="sq-foot-r" cx="70" cy="103" rx="8" ry="5.5" fill="#0F172A" />
+      <circle cx="38" cy="103" r="2.5" fill="#475569" opacity="0.4" />
+      <circle cx="70" cy="103" r="2.5" fill="#475569" opacity="0.4" />
+
+      <!-- Baş (Panda Yüzü) -->
+      <circle cx="54" cy="48" r="24" fill="url(#pandaBodyGrad)" stroke="#E2E8F0" stroke-width="1.2" />
+
+      <!-- Panda Göz Lekeleri (Siyah Oval Yamalar) -->
+      <ellipse cx="41" cy="46" rx="8.5" ry="10" transform="rotate(-18 41 46)" fill="#0F172A" />
+      <ellipse cx="67" cy="46" rx="8.5" ry="10" transform="rotate(18 67 46)" fill="#0F172A" />
+
+      <!-- Yanak Kızarıklıkları -->
+      <circle cx="33" cy="54" r="${isDance ? 5.5 : 4.5}" fill="#FB7185" opacity="${isDance ? 0.7 : 0.45}" />
+      <circle cx="75" cy="54" r="${isDance ? 5.5 : 4.5}" fill="#FB7185" opacity="${isDance ? 0.7 : 0.45}" />
+
+      <!-- Gözler (Duygu Durumuna Göre) -->
+      ${isDance ? `
+        <path d="M37 45 Q41 39 45 45" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" />
+        <path d="M63 45 Q67 39 71 45" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" />
+      ` : isSleep ? `
+        <path d="M37 45 Q41 49 45 45" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none" />
+        <path d="M63 45 Q67 49 71 45" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none" />
+      ` : `
+        <circle cx="41" cy="45" r="${isBaby ? 4.8 : 4.2}" fill="#FFFFFF" />
+        <circle cx="67" cy="45" r="${isBaby ? 4.8 : 4.2}" fill="#FFFFFF" />
+        <circle cx="42" cy="45" r="2.4" fill="#0F172A" />
+        <circle cx="66" cy="45" r="2.4" fill="#0F172A" />
+        <circle cx="43" cy="43.5" r="1.2" fill="#FFFFFF" />
+        <circle cx="65" cy="43.5" r="1.2" fill="#FFFFFF" />
+        ${isSad ? `
+          <path d="M36 38 L44 41" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" />
+          <path d="M72 38 L64 41" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" />
+          <path d="M72 49 C74 53, 74 56, 72 56 C70 56, 70 53, 72 49 Z" fill="#38BDF8" />
+        ` : ''}
+      `}
+
+      <!-- Burun ve Ağız -->
+      <ellipse cx="54" cy="53" rx="4" ry="2.8" fill="#0F172A" />
+      ${isSad ? `
+        <path d="M49 61 Q54 57 59 61" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" />
+      ` : isDance ? `
+        <path d="M47 57 Q54 66 61 57 Z" fill="#E11D48" stroke="#0F172A" stroke-width="1.5" />
+      ` : `
+        <path d="M49 57 Q54 61 59 57" stroke="#0F172A" stroke-width="2" fill="none" stroke-linecap="round" />
+      `}
+
+      ${isStudent ? `
+        <!-- Kırmızı Denge/Zen Bandı -->
+        <rect x="29" y="32" width="50" height="6" rx="2" fill="#DC2626" />
+        <circle cx="54" cy="35" r="2" fill="#FACC15" />
+      ` : ''}
+
+      ${isScholar ? `
+        <!-- Zen Boncuk Kolyesi -->
+        <circle cx="43" cy="69" r="3" fill="#D97706" />
+        <circle cx="50" cy="72" r="3" fill="#D97706" />
+        <circle cx="58" cy="72" r="3" fill="#D97706" />
+        <circle cx="65" cy="69" r="3" fill="#D97706" />
+      ` : ''}
+
+      ${isMaster ? `
+        <!-- Efsanevi Zen Tacı & Altın Yıldız -->
+        <polygon points="40,24 45,11 54,19 63,11 68,24" fill="#FACC15" stroke="#CA8A04" stroke-width="1.6" />
+        <circle cx="54" cy="17" r="2" fill="#10B981" />
+      ` : ''}
+
+      <!-- Patilerinde Taze Yeşil Bambu Filizi -->
+      <g class="panda-bamboo-hold">
+        <!-- Bambu Çubuğu -->
+        <rect x="58" y="65" width="7" height="32" rx="3" fill="url(#bambooGrad)" transform="rotate(-22 61 81)" stroke="#15803D" stroke-width="1" />
+        <line x1="56" y1="73" x2="63" y2="70" stroke="#15803D" stroke-width="1.8" />
+        <line x1="60" y1="84" x2="67" y2="81" stroke="#15803D" stroke-width="1.8" />
+        <!-- Taze Bambu Yaprakları -->
+        <path d="M54 64 Q46 56 55 52 Q58 59 54 64 Z" fill="#22C55E" />
+        <path d="M57 66 Q67 58 72 63 Q63 67 57 66 Z" fill="#4ADE80" />
+        <!-- Bambuyu Tutan Siyah Patiler -->
+        <ellipse cx="48" cy="79" rx="6.5" ry="5.5" fill="#0F172A" />
+        <ellipse cx="66" cy="85" rx="6.5" ry="5.5" fill="#0F172A" />
+      </g>
+    </svg>`;
+}
+
+function renderMascotStageSVG(mascotId = 'squirrel', stageId = 'baby', mood = 'normal') {
+  if (mascotId === 'cat') return renderCatStageSVG(stageId, mood);
+  if (mascotId === 'panda') return renderPandaStageSVG(stageId, mood);
+  return renderSquirrelStageSVG(stageId, mood);
+}
+
+function applyMascotChange(mId) {
+  if (!MASCOT_BY_ID[mId]) return;
+  store.setMascot(mId);
+  saveState();
+  renderMainHeader();
+  const route = (location.hash.replace('#/', '') || 'home').split('/')[0];
+  renderNav(route);
+  if (shimejiController && typeof shimejiController.onMascotChanged === 'function') {
+    shimejiController.onMascotChanged();
+  }
+  if (typeof ROUTES[route] === 'function') {
+    ROUTES[route]();
+  }
+  toast(`Yoldaşın ${MASCOT_BY_ID[mId].name} (${MASCOT_BY_ID[mId].icon}) seçildi! ✨`);
+}
+
+function openMascotSelectModal() {
+  const current = mascotService.getActive();
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-emoji">🐾</div>
+      <h2>Yol Arkadaşını Seç</h2>
+      <p class="muted">İngilizce yolculuğunda sana eşlik edecek, derslerde ipucu verip seninle büyüyecek yoldaşını seç:</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin:16px 0;">
+      ${MASCOTS.map(m => `
+        <div class="mascot-choice-row ${m.id === current.id ? 'active' : ''}" data-m="${m.id}" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:2px solid ${m.id === current.id ? 'var(--primary)' : 'var(--border)'};background:${m.id === current.id ? 'color-mix(in srgb, var(--primary) 8%, var(--card))' : 'var(--card)'};cursor:pointer;transition:all 0.2s ease;">
+          <div style="font-size:2.2rem;line-height:1;">${m.icon}</div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <b>${esc(m.name)} (${esc(m.animal)})</b>
+              <span class="badge" style="background:var(--primary);color:#fff;font-size:0.7rem;padding:2px 6px;">${m.itemIcon} ${esc(m.itemName)}</span>
+            </div>
+            <div class="muted small" style="font-size:0.78rem;margin-top:2px;">${esc(m.vaultName)} · ${esc(m.perk)}</div>
+          </div>
+          ${m.id === current.id ? `<span style="color:var(--primary);font-weight:800;font-size:1.1rem;">✓</span>` : ''}
+        </div>
+      `).join('')}
+    </div>
+    <div class="modal-actions" style="justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="closeModal()">Kapat</button>
+    </div>
+  `);
+
+  $('.mascot-choice-row').forEach(row => {
+    row.onclick = () => {
+      const mId = row.dataset.m;
+      closeModal();
+      applyMascotChange(mId);
+    };
+  });
+}
+
 function screenHome() {
   const lvl = levelInfo();
   const xl = xpLevel();
@@ -689,7 +993,8 @@ function screenHome() {
             </div>
             <div style="flex:1;min-width:160px;">
               <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <b style="font-size:0.9rem;" id="mascotHeroName">${esc(curMascot.name)}</b>
+                <b style="font-size:0.92rem;" id="mascotHeroName">${esc(curMascot.name)}</b>
+                <button type="button" class="btn btn-ghost sm" id="mascotQuickSwitchBtn" style="padding:2px 8px;font-size:0.72rem;height:auto;line-height:1.2;border-radius:99px;" title="Farklı bir hayvan seç">🐾 Değiştir</button>
                 <span class="badge" id="squirrelStageBadge" style="background:var(--primary);color:#fff;font-weight:800;padding:2px 8px;border-radius:99px;font-size:0.72rem;">${esc(sq.badge)} · ${esc(sq.title)}</span>
                 <span class="badge" id="squirrelAcornBadge" style="background:color-mix(in srgb, #F59E0B 18%, var(--card));color:var(--text);font-weight:800;font-size:0.72rem;">${curMascot.itemIcon} ${sq.acorns} ${curMascot.itemsName}</span>
               </div>
@@ -939,6 +1244,10 @@ function screenHome() {
   const helperOut = $('#squirrelHelperOutput');
   const wordHelpBtn = $('#squirrelWordHelpBtn');
   const grammarHelpBtn = $('#squirrelGrammarHelpBtn');
+  const avatarWrap = $('#mascotAvatarWrap');
+  if (avatarWrap) avatarWrap.onclick = () => openMascotSelectModal();
+  const switchBtn = $('#mascotQuickSwitchBtn');
+  if (switchBtn) switchBtn.onclick = () => openMascotSelectModal();
   const feedBtn = $('#squirrelFeedBtn');
   const acornBadge = $('#squirrelAcornBadge');
 
@@ -3267,7 +3576,7 @@ function initShimejiCompanion() {
       </div>
       <div id="shimejiSpriteWrap" class="shimeji-sprite-wrap" title="${esc(mascotService.getActive().name)} (Tıkla veya İstediğin Köşeye Sürükle)">
         <div id="shimejiSpriteInner" style="width:100%;height:100%;transform:scale(${curScale});transform-origin:bottom center;transition:transform 0.3s ease;">
-          ${mascotService.getActive().id === 'squirrel' ? renderSquirrelStageSVG(sq.id, 'normal') : `<div class="shimeji-companion-avatar" style="font-size:3.5rem;line-height:1;text-align:center;">${mascotService.getActive().icon}</div>`}
+          ${renderMascotStageSVG(mascotService.getActive().id, sq.id, 'normal')}
         </div>
       </div>
       <div id="shimejiLegendBadge" class="shimeji-legend-badge" tabindex="0" data-tooltip="${esc(starTooltipText(sq))}" title="${esc(starTooltipText(sq))}" aria-label="${esc(starTooltipText(sq))}">${starsText(sq.stage)} ${esc(mascotService.getActive().name)}</div>

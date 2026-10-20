@@ -2120,7 +2120,9 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 
 /* Doğal Yürüme Animasyonu (Adım atan patiler + sallanan kuyruk + yumuşak yaylanma) */
-.shimeji-pet.state-walk .squirrel-stage-svg {
+.shimeji-pet.state-walk .squirrel-stage-svg,
+.shimeji-pet.state-walk .cat-stage-svg,
+.shimeji-pet.state-walk .panda-stage-svg {
   animation: shimejiWalkStride 0.48s infinite ease-in-out;
 }
 .shimeji-pet.state-walk .sq-foot-l {
@@ -2138,32 +2140,44 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 
 /* Dururken nefes alma ve kuyruk sallama */
-.shimeji-pet.state-idle .squirrel-stage-svg {
+.shimeji-pet.state-idle .squirrel-stage-svg,
+.shimeji-pet.state-idle .cat-stage-svg,
+.shimeji-pet.state-idle .panda-stage-svg {
   animation: shimejiIdleBreathe 2.6s infinite ease-in-out;
 }
 
 /* Palamut kemirme (Munch) */
-.shimeji-pet.state-munch .squirrel-stage-svg {
+.shimeji-pet.state-munch .squirrel-stage-svg,
+.shimeji-pet.state-munch .cat-stage-svg,
+.shimeji-pet.state-munch .panda-stage-svg {
   animation: shimejiMunch 0.36s infinite ease-in-out;
 }
 
 /* Sevinç zıplaması / Takla */
-.shimeji-pet.state-jump .squirrel-stage-svg {
+.shimeji-pet.state-jump .squirrel-stage-svg,
+.shimeji-pet.state-jump .cat-stage-svg,
+.shimeji-pet.state-jump .panda-stage-svg {
   animation: shimejiCheerJump 0.65s ease-out;
 }
 
 /* Doğru Cevap: Minik Efsane Zafer Dansı (Dance) */
-.shimeji-pet.state-dance .squirrel-stage-svg {
+.shimeji-pet.state-dance .squirrel-stage-svg,
+.shimeji-pet.state-dance .cat-stage-svg,
+.shimeji-pet.state-dance .panda-stage-svg {
   animation: shimejiVictoryDance 0.55s infinite ease-in-out;
 }
 
 /* Yanlış Cevap: Üzülme ve Moral Verme (Sad) */
-.shimeji-pet.state-sad .squirrel-stage-svg {
+.shimeji-pet.state-sad .squirrel-stage-svg,
+.shimeji-pet.state-sad .cat-stage-svg,
+.shimeji-pet.state-sad .panda-stage-svg {
   animation: shimejiSadDroop 1.1s infinite ease-in-out;
 }
 
 /* Fareyle tutulduğunda havada çırpınma */
-.shimeji-pet.dragging .squirrel-stage-svg {
+.shimeji-pet.dragging .squirrel-stage-svg,
+.shimeji-pet.dragging .cat-stage-svg,
+.shimeji-pet.dragging .panda-stage-svg {
   animation: shimejiDangle 0.35s infinite ease-in-out;
 }
 
@@ -2171,7 +2185,9 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 .shimeji-pet.state-sleep {
   opacity: 0.88;
 }
-.shimeji-pet.state-sleep .squirrel-stage-svg {
+.shimeji-pet.state-sleep .squirrel-stage-svg,
+.shimeji-pet.state-sleep .cat-stage-svg,
+.shimeji-pet.state-sleep .panda-stage-svg {
   animation: shimejiSleepPulse 3s infinite ease-in-out;
 }
 
@@ -2964,3 +2980,40 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 
 
 
+
+/* Kedi Yün Yumağı Oynama & Panda Bambu Kemirme Animasyonları */
+.shimeji-pet.state-walk .cat-yarn-hold {
+  animation: yarnRoll 0.48s infinite ease-in-out;
+  transform-origin: 54px 85px;
+}
+.shimeji-pet.state-dance .cat-yarn-hold,
+.shimeji-pet.state-munch .cat-yarn-hold {
+  animation: yarnPlay 0.38s infinite ease-in-out;
+  transform-origin: 54px 85px;
+}
+@keyframes yarnRoll {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(8deg) translateY(-2px); }
+}
+@keyframes yarnPlay {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.08) translateY(-3px) rotate(-6deg); }
+}
+
+.shimeji-pet.state-walk .panda-bamboo-hold {
+  animation: bambooSway 0.48s infinite ease-in-out;
+  transform-origin: 61px 81px;
+}
+.shimeji-pet.state-dance .panda-bamboo-hold,
+.shimeji-pet.state-munch .panda-bamboo-hold {
+  animation: bambooChew 0.35s infinite ease-in-out;
+  transform-origin: 61px 81px;
+}
+@keyframes bambooSway {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(-5deg) translateY(-2px); }
+}
+@keyframes bambooChew {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(6deg) translateY(-4px); }
+}
