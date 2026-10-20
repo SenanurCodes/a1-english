@@ -2714,21 +2714,9 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 
 @media (max-width: 768px) {
+  /* Mobilde kartların, butonların ve menülerin üzerini kapatmaması için yüzen yoldaşı mobilde gizle */
   .shimeji-stage {
-    z-index: 25 !important;
-    pointer-events: none;
-  }
-  .shimeji-pet {
-    bottom: 72px !important;
-    right: 14px !important;
-    left: auto !important;
-    width: 46px !important;
-    height: 46px !important;
-  }
-  .shimeji-badge-pill {
-    font-size: 0.65rem !important;
-    padding: 2px 6px !important;
-    bottom: -14px !important;
+    display: none !important;
   }
 }
 
