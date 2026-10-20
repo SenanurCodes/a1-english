@@ -1989,46 +1989,38 @@ function screenLearn() {
 
   view().innerHTML = `
     <div class="page">
-      <header class="page-head">
-        <div>
-          <h1>🗺️ Macera Haritası</h1>
-          <p class="muted">Her üniteyi <b>%70</b> ve üzeri başarıyla tamamlayarak seviyeler boyunca ilerle.</p>
+      <header class="page-head" style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+        <div style="flex:1;min-width:0;">
+          <h1 style="font-size:clamp(1.25rem, 5vw, 1.6rem);margin:0 0 2px;">🗺️ Macera Haritası</h1>
+          <p class="muted small" style="margin:0;">%70 başarıyla seviyelerde ilerle.</p>
         </div>
-        <a class="btn btn-ghost" href="#/placement">📝 Seviye Testi</a>
+        <a class="btn btn-ghost sm" href="#/placement" style="white-space:nowrap;padding:7px 12px;font-size:0.8rem;border-radius:12px;flex-shrink:0;">📝 Seviye Testi</a>
       </header>
 
       <!-- Dünya Seçici Sekmeleri (4 CEFR Seviyesi) -->
-      <div class="world-tabs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;margin-bottom:18px;">
-        <button class="btn ${lvl === 'A1' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldA1" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
-          <span style="font-size:1.3rem;">🌱</span>
-          <div>
-            <div style="font-size:0.85rem;line-height:1.2;">A1 Başlangıç</div>
-            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'A1' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${doneA1}/${countA1} · %${pctA1}</div>
-          </div>
+      <div class="world-tabs" style="display:grid;grid-template-columns:repeat(4, 1fr);gap:6px;margin-bottom:14px;">
+        <button class="btn ${lvl === 'A1' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldA1" style="font-weight:800;padding:8px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;" aria-label="A1 Başlangıç">
+          <span style="font-size:1.15rem;line-height:1;">🌱</span>
+          <span style="font-size:0.82rem;font-weight:900;line-height:1.1;">A1</span>
+          <span class="muted small" style="font-weight:700;font-size:0.65rem;color:${lvl === 'A1' ? 'rgba(255,255,255,0.95)' : 'var(--muted)'};">%${pctA1}</span>
         </button>
 
-        <button class="btn ${lvl === 'A2' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldA2" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
-          <span style="font-size:1.3rem;">${state.a2Unlocked ? '🚀' : '🔒'}</span>
-          <div>
-            <div style="font-size:0.85rem;line-height:1.2;">A2 Macera</div>
-            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'A2' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.a2Unlocked ? `${doneA2}/${countA2} · %${pctA2}` : 'A1 Sonrası'}</div>
-          </div>
+        <button class="btn ${lvl === 'A2' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldA2" style="font-weight:800;padding:8px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;" aria-label="A2 Macera">
+          <span style="font-size:1.15rem;line-height:1;">${state.a2Unlocked ? '🚀' : '🔒'}</span>
+          <span style="font-size:0.82rem;font-weight:900;line-height:1.1;">A2</span>
+          <span class="muted small" style="font-weight:700;font-size:0.65rem;color:${lvl === 'A2' ? 'rgba(255,255,255,0.95)' : 'var(--muted)'};">${state.a2Unlocked ? `%${pctA2}` : 'Kilitli'}</span>
         </button>
 
-        <button class="btn ${lvl === 'B1' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldB1" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
-          <span style="font-size:1.3rem;">${state.b1Unlocked ? '⚡' : '🔒'}</span>
-          <div>
-            <div style="font-size:0.85rem;line-height:1.2;">B1 Bağımsız</div>
-            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'B1' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.b1Unlocked ? `${doneB1}/${countB1} · %${pctB1}` : 'A2 Sonrası'}</div>
-          </div>
+        <button class="btn ${lvl === 'B1' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldB1" style="font-weight:800;padding:8px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;" aria-label="B1 Bağımsız">
+          <span style="font-size:1.15rem;line-height:1;">${state.b1Unlocked ? '⚡' : '🔒'}</span>
+          <span style="font-size:0.82rem;font-weight:900;line-height:1.1;">B1</span>
+          <span class="muted small" style="font-weight:700;font-size:0.65rem;color:${lvl === 'B1' ? 'rgba(255,255,255,0.95)' : 'var(--muted)'};">${state.b1Unlocked ? `%${pctB1}` : 'Kilitli'}</span>
         </button>
 
-        <button class="btn ${lvl === 'B2' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldB2" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
-          <span style="font-size:1.3rem;">${state.b2Unlocked ? '👑' : '🔒'}</span>
-          <div>
-            <div style="font-size:0.85rem;line-height:1.2;">B2 Ustalık</div>
-            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'B2' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.b2Unlocked ? `${doneB2}/${countB2} · %${pctB2}` : 'B1 Sonrası'}</div>
-          </div>
+        <button class="btn ${lvl === 'B2' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldB2" style="font-weight:800;padding:8px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;" aria-label="B2 Ustalık">
+          <span style="font-size:1.15rem;line-height:1;">${state.b2Unlocked ? '👑' : '🔒'}</span>
+          <span style="font-size:0.82rem;font-weight:900;line-height:1.1;">B2</span>
+          <span class="muted small" style="font-weight:700;font-size:0.65rem;color:${lvl === 'B2' ? 'rgba(255,255,255,0.95)' : 'var(--muted)'};">${state.b2Unlocked ? `%${pctB2}` : 'Kilitli'}</span>
         </button>
       </div>
 

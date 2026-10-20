@@ -261,7 +261,7 @@ function screenLocomotive() {
       <header class="page-head" style="margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
-            <h1>🚂 Cümle Lokomotifi Mühendisliği</h1>
+            <h1 style="font-size:clamp(1.25rem, 4.5vw, 1.55rem);margin:0 0 4px;">🚂 Cümle Lokomotifi</h1>
             <p class="muted">Metin yazmak yok! Vagonları rayların üstüne doğru sırada kenetle, SVO mantığını görsel yapbozla çöz.</p>
           </div>
           <div style="display:flex;gap:6px;align-items:center;">
@@ -512,11 +512,11 @@ function screenTrapHunter() {
       <header class="page-head" style="margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
-            <h1>💣 Tuzak Avcısı (Türk Tuzağı İmhacısı · Arcade)</h1>
+            <h1 style="font-size:clamp(1.25rem, 4.5vw, 1.55rem);margin:0 0 4px;">💣 Tuzak Avcısı</h1>
             <p class="muted">Ekrana gelen cümlelerdeki gizli Türkçe mantık tuzaklarını tespit et, üstüne tıklayıp süren bitmeden İMHA ET!</p>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
-            <span class="badge" style="background:#EF4444;color:#fff;font-weight:800;">⚡ 60 Saniye Meydan Okuma</span>
+            <span class="badge" style="background:var(--card-hover);color:var(--text);border:1.5px solid var(--border);font-weight:700;font-size:0.78rem;padding:4px 10px;border-radius:99px;">⚡ 60 Saniye Meydan Okuma</span>
           </div>
         </div>
       </header>
@@ -600,7 +600,7 @@ function renderCurrentTrapSentence() {
 
   stage.innerHTML = `
     <div style="margin-bottom:12px;">
-      <span class="badge" style="background:#EF4444;color:#fff;font-weight:800;font-size:0.75rem;">💣 TUZAKLI CÜMLE · Hatalı Kelimeye Dokun!</span>
+      <span class="badge" style="background:var(--card-hover);color:var(--text);border:1.5px solid var(--border);font-weight:700;font-size:0.75rem;padding:4px 10px;border-radius:99px;">💣 TUZAKLI CÜMLE · Hatalı Kelimeye Dokun!</span>
     </div>
     <div class="trap-tokens-wrap" style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0;">
       ${t.sentence.map((word, wIdx) => `
@@ -666,7 +666,7 @@ function handleTrapClick(clickedIdx, t) {
 
     if (fbCard) {
       fbCard.style.display = 'block';
-      fbCard.style.background = 'rgba(239, 68, 68, 0.1)';
+      fbCard.style.background = 'rgba(239, 68, 68, 0.05)';
       fbCard.style.borderColor = '#EF4444';
       fbCard.innerHTML = `
         <div style="display:flex;align-items:center;gap:10px;">
