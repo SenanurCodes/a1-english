@@ -23,8 +23,9 @@ const PRECACHE_ASSETS = [
   'js/icons.js?v=2.9.20',
   'js/utils.js?v=2.9.20',
   'js/ai.js?v=2.9.20',
-  'js/exercises.js?v=2.9.20',
-  'js/app.js?v=2.9.20'
+  'js/exercises.js?v=2.9.22',
+  'js/games.js?v=2.9.22',
+  'js/app.js?v=2.9.22'
 ];
 
 // Install: Core dosyaları önbelleğe al ve beklemeden anında aktif et

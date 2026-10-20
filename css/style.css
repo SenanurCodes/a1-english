@@ -3038,3 +3038,169 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   background: rgba(239, 68, 68, 0.18) !important;
   color: #FCA5A5 !important;
 }
+
+/* ============================================================
+   Oyun & Mühendislik Modülleri Stilleri (Lokomotif, Tuzak, Hayatta Kalma)
+   ============================================================ */
+.rail-scene {
+  position: relative;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+}
+.track-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  height: 6px;
+  background: #64748B;
+  border-radius: 4px;
+  z-index: 1;
+}
+.track-ties {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  height: 16px;
+  background: repeating-linear-gradient(90deg, #94A3B8 0, #94A3B8 6px, transparent 6px, transparent 20px);
+  z-index: 0;
+}
+.train-assembly-dock {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 22px;
+}
+.loco-engine-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2.8rem;
+  line-height: 1;
+  position: relative;
+  flex-shrink: 0;
+}
+.engine-smoke {
+  font-size: 1.2rem;
+  position: absolute;
+  top: -16px;
+  left: 2px;
+  transition: transform 0.3s ease;
+}
+.coupled-wagons-list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 60px;
+}
+.rail-empty-hint {
+  padding: 14px;
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+}
+.coupled-wagon-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  animation: wagonCouplePop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes wagonCouplePop {
+  0% { transform: scale(0.6) translateX(-20px); opacity: 0; }
+  100% { transform: scale(1) translateX(0); opacity: 1; }
+}
+.coupler-joint {
+  font-size: 0.9rem;
+  color: #64748B;
+}
+.wagon-mini-body {
+  background: var(--wagon-c, #3B82F6);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.wmb-role {
+  font-size: 0.62rem;
+  font-weight: 800;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+.wmb-text {
+  font-size: 1.05rem;
+}
+.depot-wagons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.wagon-item-btn {
+  background: var(--card);
+  border: 2px solid var(--wagon-c, var(--primary));
+  border-radius: 12px;
+  padding: 10px 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.wagon-item-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+  background: color-mix(in srgb, var(--wagon-c) 10%, var(--card));
+}
+.wagon-item-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+.wagon-role-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--wagon-c);
+  display: block;
+  margin-bottom: 2px;
+}
+.wagon-text {
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.derail-shake {
+  animation: derailShakeAnim 0.5s ease;
+}
+@keyframes derailShakeAnim {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px) rotate(-1deg); }
+  40%, 80% { transform: translateX(8px) rotate(1deg); }
+}
+.train-departure-anim {
+  animation: trainDeparture 2.4s ease forwards;
+}
+@keyframes trainDeparture {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(20px); }
+  100% { transform: translateX(600px); opacity: 0; }
+}
+.trap-word-token:hover {
+  transform: scale(1.06);
+  border-color: #EF4444 !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+.quest-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}

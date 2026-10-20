@@ -7,6 +7,9 @@ let pendingAILesson = null;
 const NAV_DESKTOP = [
   ['home', icon('home'), 'Ana Sayfa'],
   ['learn', icon('map'), 'Öğren'],
+  ['locomotive', '🚂', 'Lokomotif'],
+  ['trap-hunter', '💣', 'Tuzak Avcısı'],
+  ['survival', '🗺️', 'Hayatta Kalma'],
   ['logic', icon('lightbulb'), 'Dil Mantığı'],
   ['leaderboard', icon('trophy'), 'Rekabet'],
   ['review', icon('repeat'), 'Tekrar'],
@@ -25,6 +28,9 @@ const NAV_MOBILE = [
 ];
 
 const MORE_LINKS = [
+  { id: 'locomotive', icon: '🚂', title: 'Cümle Lokomotifi', desc: 'SVO vagon kenetleme ve cümle mühendisliği yapbozu' },
+  { id: 'trap-hunter', icon: '💣', title: 'Tuzak Avcısı (Arcade)', desc: '60 saniyede Türk düşünce tuzaklarını imha et' },
+  { id: 'survival', icon: '🗺️', title: 'Hayatta Kalma Haritası', desc: 'Pasaport, kafe ve sokak senaryolarında canlı AI pratiği' },
   { id: 'leaderboard', icon: icon('trophy'), title: 'Rekabet & Liderlik', desc: 'Arkadaşlarınla yarış ve skorunu paylaş' },
   { id: 'ai', icon: icon('bot'), title: 'AI Öğretmen', desc: 'Google Gemini ile seviye analizi ve pratik' },
   { id: 'review', icon: icon('repeat'), title: 'Akıllı Tekrar', desc: 'Aralıklı tekrar sistemi ve hata havuzu' },
@@ -215,7 +221,10 @@ function router() {
     home: screenHome, learn: screenLearn, logic: screenLogic, leaderboard: screenLeaderboard, review: screenReview, cards: screenCards, ai: screenAI,
     progress: screenProgress, settings: screenSettings, grammar: screenGrammar, lesson: screenLesson,
     placement: screenPlacement, 'ai-lesson': screenAILesson, 'boss-a1': screenA1Boss, 'boss-a2': screenA2Boss,
-    auth: () => { screenHome(); openAuthModal(); }
+    auth: () => { screenHome(); openAuthModal(); },
+    locomotive: typeof screenLocomotive === 'function' ? screenLocomotive : screenHome,
+    'trap-hunter': typeof screenTrapHunter === 'function' ? screenTrapHunter : screenHome,
+    survival: typeof screenSurvival === 'function' ? screenSurvival : screenHome
   };
   (screens[r] || screenHome)(param);
   initShimejiCompanion();
@@ -1108,6 +1117,46 @@ function screenHome() {
         </div>
       </div>
 
+      <!-- Oyun & Mühendislik Laboratuvarı Hub'ı -->
+      <div class="card game-hub-card" style="margin-bottom:20px;padding:18px;border:2px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <span class="badge" style="background:#EF4444;color:#fff;font-weight:800;font-size:0.72rem;">YENİ · MÜHENDİSLİK & OYUN MODLARI</span>
+            <h2 style="margin:4px 0 2px;font-size:1.18rem;">🎮 İngilizceyi Oynayarak Keşfet</h2>
+            <p class="muted small" style="margin:0;">Metin çevirmek yerine vagonları kenetle, Türk tuzaklarını imha et veya yapay zeka ile hayatta kal!</p>
+          </div>
+        </div>
+
+        <div class="game-hub-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:12px;margin-top:12px;">
+          <a href="#/locomotive" class="game-hub-item" style="display:flex;flex-direction:column;justify-content:space-between;padding:14px;border-radius:14px;background:color-mix(in srgb, #3B82F6 8%, var(--card));border:1.5px solid #3B82F6;text-decoration:none;color:var(--text);transition:transform 0.2s ease;">
+            <div>
+              <div style="font-size:2rem;margin-bottom:6px;">🚂</div>
+              <b style="font-size:1rem;color:var(--text);display:block;">Cümle Lokomotifi</b>
+              <p class="muted small" style="margin:4px 0 10px;line-height:1.4;">Özne, Yüklem, Nesne vagonlarını raylara kenetle; SVO yapbozunu çöz!</p>
+            </div>
+            <span class="btn btn-primary sm" style="width:100%;text-align:center;justify-content:center;">▶ Oyna (+25 XP)</span>
+          </a>
+
+          <a href="#/trap-hunter" class="game-hub-item" style="display:flex;flex-direction:column;justify-content:space-between;padding:14px;border-radius:14px;background:color-mix(in srgb, #EF4444 8%, var(--card));border:1.5px solid #EF4444;text-decoration:none;color:var(--text);transition:transform 0.2s ease;">
+            <div>
+              <div style="font-size:2rem;margin-bottom:6px;">💣</div>
+              <b style="font-size:1rem;color:var(--text);display:block;">Tuzak Avcısı</b>
+              <p class="muted small" style="margin:4px 0 10px;line-height:1.4;">60 saniyelik arcade yarış! Cümlelerdeki Türkçe düşünce tuzaklarını imha et!</p>
+            </div>
+            <span class="btn btn-primary sm" style="width:100%;text-align:center;justify-content:center;background:#EF4444;border-color:#EF4444;">▶ İmha Et (Arcade)</span>
+          </a>
+
+          <a href="#/survival" class="game-hub-item" style="display:flex;flex-direction:column;justify-content:space-between;padding:14px;border-radius:14px;background:color-mix(in srgb, #10B981 8%, var(--card));border:1.5px solid #10B981;text-decoration:none;color:var(--text);transition:transform 0.2s ease;">
+            <div>
+              <div style="font-size:2rem;margin-bottom:6px;">🗺️</div>
+              <b style="font-size:1rem;color:var(--text);display:block;">Hayatta Kalma Haritası</b>
+              <p class="muted small" style="margin:4px 0 10px;line-height:1.4;">Pasaport kontrolü, kahve siparişi ve yol tarifinde Gemini AI ile canlı rol yap!</p>
+            </div>
+            <span class="btn btn-primary sm" style="width:100%;text-align:center;justify-content:center;background:#10B981;border-color:#10B981;">▶ Göreve Çık (+50 XP)</span>
+          </a>
+        </div>
+      </div>
+
       <!-- Genel Kurs İlerlemesi Özeti (Top-Level Course Progress Summary Card) -->
       <div class="card course-progress-card" style="margin-bottom:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -1409,7 +1458,13 @@ function screenLogic(param) {
           <div class="loco-head">
             <div>
               <span class="badge-loco" id="simBadge">${esc(curSim.badge || '⚡ İNTERAKTİF SİMÜLATÖR')}</span>
-              <h2 style="margin:8px 0 4px;" id="simTitle">${esc(curSim.title || '🚂 İngilizce Cümle Lokomotifi')}</h2>
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <h2 style="margin:8px 0 4px;" id="simTitle">${esc(curSim.title || '🚂 İngilizce Cümle Lokomotifi')}</h2>
+                <a href="#/locomotive" class="btn btn-primary sm" style="font-weight:800;">🚂 Vagon Kenetleme Yapbozunu Oyna ➔</a>
+              </div>
+                <a href="#/locomotive" class="btn btn-primary sm" style="font-weight:800;">🚂 Vagon Kenetleme Yapbozunu Oyna ➔</a>
+              </div>
               <p class="muted small" style="margin:0;" id="simDesc">${esc(curSim.desc || '')}</p>
             </div>
             <div class="loco-nav-btns" role="tablist" aria-label="Simülatör Örnekleri" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">

@@ -18,6 +18,7 @@ const SCRIPT_FILES = [
   'js/utils.js',
   'js/ai.js',
   'js/exercises.js',
+  'js/games.js',
   'js/app.js'
 ];
 
@@ -214,7 +215,7 @@ test('4. Rotalar hatasız render oluyor (review ve progress dahil)', () => {
 
   const coreRoutes = [
     'home', 'learn', 'logic', 'leaderboard', 'review', 'cards/u1',
-    'ai', 'progress', 'settings', 'placement', 'ai-lesson', 'boss-a1', 'boss-a2', 'auth'
+    'ai', 'progress', 'settings', 'placement', 'ai-lesson', 'boss-a1', 'boss-a2', 'auth', 'locomotive', 'trap-hunter', 'survival'
   ];
 
   // Temel rotaların testi
@@ -576,6 +577,53 @@ test('9. QA & Güvenlik: Lig özyineleme koruması, Stored XSS filtreleme, TDZ g
   `);
   const wordKeys = run('Object.keys(store.state.words)');
   ok(wordKeys.length >= 100, 'Tüm tamamlanmış ünitelerin kelimeleri (100+) TDZ takılmadan Kutu 1\'e taşınmalı');
+});
+
+/* ============================================================
+   10. Yeni Nesil Oyun Modları: Lokomotif, Tuzak Avcısı, Hayatta Kalma
+   ============================================================ */
+test('10. Oyun Modları: Lokomotif SVO yapbozu, Tuzak Avcısı arcade ve Hayatta Kalma Haritası', () => {
+  const { window, run } = createEnv();
+
+  // A. Lokomotif Veritabanı ve Mekaniği
+  const locoPuzzles = run('LOCOMOTIVE_PUZZLES');
+  ok(Array.isArray(locoPuzzles) && locoPuzzles.length >= 5, 'En az 5 seviye lokomotif bulmacası bulunmalı');
+  for (const p of locoPuzzles) {
+    ok(p.wagons.length >= 3, 'Her bulmacada en az 3 vagon olmalı (Özne, Yüklem, Nesne)');
+    ok(p.correctOrder.length === p.wagons.length, 'Doğru sıra vagon sayısıyla eşleşmeli');
+  }
+
+  // B. Tuzak Avcısı Veritabanı
+  const traps = run('TRAP_HUNTER_DATABASE');
+  ok(Array.isArray(traps) && traps.length >= 8, 'En az 8 adet Türk düşünce tuzağı olmalı');
+  for (const t of traps) {
+    ok(t.trapIndex >= 0 && t.trapIndex < t.sentence.length, 'Tuzak indeksi cümle uzunluğu içinde olmalı');
+    ok(t.tip && t.tip.length > 5, 'Tuzak ipucu ve açıklaması bulunmalı');
+  }
+
+  // C. Hayatta Kalma Haritası Görevleri
+  const quests = run('SURVIVAL_QUESTS');
+  ok(Array.isArray(quests) && quests.length >= 4, 'En az 4 hayatta kalma görevi olmalı');
+  for (const q of quests) {
+    ok(q.objectives.length >= 2, 'Her görevde en az 2 hedef bulunmalı');
+    ok(q.starterMsg && q.starterMsg.length > 10, 'Görev başlangıç mesajı olmalı');
+  }
+
+  // D. Ekranların Render Doğrulaması
+  window.location.hash = '#/locomotive';
+  window.router();
+  const locoHtml = window.document.getElementById('view').innerHTML;
+  ok(locoHtml.includes('Lokomotif') && locoHtml.includes('Vagon'), 'Lokomotif ekranı başarıyla render edilmeli');
+
+  window.location.hash = '#/trap-hunter';
+  window.router();
+  const trapHtml = window.document.getElementById('view').innerHTML;
+  ok(trapHtml.includes('Arcade') && (trapHtml.includes('Tuzak') || trapHtml.includes('Avcısı')), 'Tuzak Avcısı ekranı başarıyla render edilmeli');
+
+  window.location.hash = '#/survival';
+  window.router();
+  const survivalHtml = window.document.getElementById('view').innerHTML;
+  ok(survivalHtml.includes('Hayatta Kalma') && survivalHtml.includes('Heathrow'), 'Hayatta Kalma Haritası başarıyla render edilmeli');
 });
 
 /* ============================================================
