@@ -468,8 +468,11 @@ class MascotService {
     const xp = typeof customXP === 'number' ? Math.max(0, customXP) : Math.max(0, this.store.state.xp || 0);
     const wordsCount = Object.keys(this.store.state.words || {}).length;
     const acorns = wordsCount + Math.floor(xp / 15) + ((this.store.state.companion && this.store.state.companion.fedCount) || 0);
-    const stages = (typeof SQUIRREL_STAGES !== 'undefined' && Array.isArray(SQUIRREL_STAGES)) ? SQUIRREL_STAGES : [];
-    let current = stages[0] || { stage: 1, id: 'baby', title: 'Minik Yavru Sincap', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Kelime Fısıltısı', desc: '' };
+    const active = this.getActive();
+    const stages = (active && Array.isArray(active.stages) && active.stages.length)
+      ? active.stages
+      : ((typeof SQUIRREL_STAGES !== 'undefined' && Array.isArray(SQUIRREL_STAGES)) ? SQUIRREL_STAGES : []);
+    let current = stages[0] || { stage: 1, id: 'baby', title: 'Minik Yavru', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Kelime Fısıltısı', desc: '' };
     for (const st of stages) {
       if (xp >= st.minXP) current = st;
     }

@@ -939,8 +939,8 @@ const MASCOTS = [
     perk: 'Canlı Ders & Kelime Yardımı',
     stages: [
       { stage: 1, id: 'baby', title: 'Minik Yavru Sincap', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Kelime Fısıltısı', desc: 'İlk İngilizce kelimeleri seninle keşfediyor.' },
-      { stage: 2, id: 'junior', title: 'Meraklı Kaşif Sincap', badge: '🌿 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Gramer Desteği', desc: 'Yeni cümle yapılarını merakla inceliyor.' },
-      { stage: 3, id: 'smart', title: 'Usta Palamutçu Sincap', badge: '🌰 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Hızlı İpucu', desc: 'Zorlu testlerde anında taktik veriyor.' },
+      { stage: 2, id: 'explorer', title: 'Meraklı Kaşif Sincap', badge: '🌿 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Gramer Desteği', desc: 'Yeni cümle yapılarını merakla inceliyor.' },
+      { stage: 3, id: 'student', title: 'Usta Palamutçu Sincap', badge: '🌰 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Hızlı İpucu', desc: 'Zorlu testlerde anında taktik veriyor.' },
       { stage: 4, id: 'scholar', title: 'Bilge Orman Rehberi', badge: '🎓 Evre 4/5', minXP: 700, nextXP: 1500, perkTitle: 'Hafıza Kalkanı', desc: 'Kelimeleri kalıcı hafızaya mühürlüyor.' },
       { stage: 5, id: 'master', title: 'Efsanevi Meşe Muhafızı', badge: '👑 Evre 5/5', minXP: 1500, nextXP: null, perkTitle: 'Akıcı İngilizce Ustası', desc: 'Tüm A1 & A2 kelimelerine tamamen hakim!' }
     ],
@@ -969,8 +969,8 @@ const MASCOTS = [
     perk: 'Hızlı Seri & Kelime Avı',
     stages: [
       { stage: 1, id: 'baby', title: 'Minik Yavru Kedi', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Pati İpucu', desc: 'Dünyayı keşfeden minik ve meraklı bir kedi yavrusu.' },
-      { stage: 2, id: 'junior', title: 'Meraklı Avcı Kedi', badge: '🐾 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Kelime Avcısı', desc: 'Yeni İngilizce kelimeleri bir fare gibi ustalıkla yakalar.' },
-      { stage: 3, id: 'smart', title: 'Usta Yumakbaz Kedi', badge: '🧶 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Gramer Yumağı', desc: 'Cümle yapılarını yün yumağı gibi ustalıkla çözer.' },
+      { stage: 2, id: 'explorer', title: 'Meraklı Avcı Kedi', badge: '🐾 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Kelime Avcısı', desc: 'Yeni İngilizce kelimeleri bir fare gibi ustalıkla yakalar.' },
+      { stage: 3, id: 'student', title: 'Usta Yumakbaz Kedi', badge: '🧶 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Gramer Yumağı', desc: 'Cümle yapılarını yün yumağı gibi ustalıkla çözer.' },
       { stage: 4, id: 'scholar', title: 'Asil Salon Kedisi', badge: '🎩 Evre 4/5', minXP: 700, nextXP: 1500, perkTitle: 'Kusursuz Odak', desc: 'İngilizce konuşurken asaletini ve netliğini korur.' },
       { stage: 5, id: 'master', title: 'Efsanevi Pati Ustası', badge: '👑 Evre 5/5', minXP: 1500, nextXP: null, perkTitle: 'Akıcı Kedi Zekası', desc: 'Tüm dilde 9 canlı akıcılık ve ustalık!' }
     ],
@@ -998,8 +998,8 @@ const MASCOTS = [
     perk: 'Stressiz ve Dengeli Öğrenme',
     stages: [
       { stage: 1, id: 'baby', title: 'Minik Yavru Panda', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Zen Dinginliği', desc: 'Stressiz, sakin ve neşeli ilk adımlar.' },
-      { stage: 2, id: 'junior', title: 'Neşeli Filiz Avcısı', badge: '🎋 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Dengeli Adımlar', desc: 'Her gün düzenli kelime filizleri toplar.' },
-      { stage: 3, id: 'smart', title: 'Usta Bambu Sever', badge: '🍃 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Hafıza Bahçesi', desc: 'Gramer yapılarını sağlam bambu kökleri gibi kavrar.' },
+      { stage: 2, id: 'explorer', title: 'Neşeli Filiz Avcısı', badge: '🎋 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Dengeli Adımlar', desc: 'Her gün düzenli kelime filizleri toplar.' },
+      { stage: 3, id: 'student', title: 'Usta Bambu Sever', badge: '🍃 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Hafıza Bahçesi', desc: 'Gramer yapılarını sağlam bambu kökleri gibi kavrar.' },
       { stage: 4, id: 'scholar', title: 'Denge & Odak Ustası', badge: '🥋 Evre 4/5', minXP: 700, nextXP: 1500, perkTitle: 'Kung-Fu İngilizce', desc: 'Zorlu soruları dingin zihniyle tek hamlede çözer.' },
       { stage: 5, id: 'master', title: 'Efsanevi Zen Üstadı', badge: '👑 Evre 5/5', minXP: 1500, nextXP: null, perkTitle: 'Kusursuz Ustalık', desc: 'Tamamen dengeli, akıcı ve dingin İngilizce ustalığı!' }
     ],
