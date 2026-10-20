@@ -666,7 +666,7 @@ function screenHome() {
       <header class="page-head" style="margin-bottom:14px;">
         <div>
           <h1>${greet}, ${esc(state.name)}! 👋</h1>
-          <p class="muted">Bugün zulaya <b>${todayXP} 🌰 Palamut</b> kattın. ${todayXP >= 50 ? '🎉 Günlük hedefin tamamlandı!' : `Günlük hedefe <b>${50 - todayXP} palamut</b> kaldı.`}</p>
+          <p class="muted">Bugün ${esc(curMascot.vaultName)}'na <b>${todayXP} ${curMascot.itemIcon} ${curMascot.itemName}</b> kattın. ${todayXP >= 50 ? '🎉 Günlük hedefin tamamlandı!' : `Günlük hedefe <b>${50 - todayXP} ${curMascot.itemsName}</b> kaldı.`}</p>
         </div>
       </header>
 
@@ -691,12 +691,12 @@ function screenHome() {
               <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                 <b style="font-size:0.9rem;" id="mascotHeroName">${esc(curMascot.name)}</b>
                 <span class="badge" id="squirrelStageBadge" style="background:var(--primary);color:#fff;font-weight:800;padding:2px 8px;border-radius:99px;font-size:0.72rem;">${esc(sq.badge)} · ${esc(sq.title)}</span>
-                <span class="badge" id="squirrelAcornBadge" style="background:color-mix(in srgb, #F59E0B 18%, var(--card));color:var(--text);font-weight:800;font-size:0.72rem;">🌰 ${sq.acorns} Palamut</span>
+                <span class="badge" id="squirrelAcornBadge" style="background:color-mix(in srgb, #F59E0B 18%, var(--card));color:var(--text);font-weight:800;font-size:0.72rem;">${curMascot.itemIcon} ${sq.acorns} ${curMascot.itemsName}</span>
               </div>
               <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
                 <div class="progress" id="squirrelGrowthBar" style="height:6px;flex:1;max-width:190px;margin:0;"><div class="bar rainbow" style="width:${sq.stagePct}%;"></div></div>
                 <span class="muted small" style="font-size:0.74rem;font-weight:700;">
-                  ${sq.nextXP !== null ? `Sonraki evre: ${sq.xpLeft} Palamut (%${sq.stagePct})` : '👑 Maksimum Evre'}
+                  ${sq.nextXP !== null ? `Sonraki evre: ${sq.xpLeft} ${curMascot.itemsName} (%${sq.stagePct})` : '👑 Maksimum Evre'}
                 </span>
               </div>
             </div>
@@ -704,7 +704,7 @@ function screenHome() {
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
             <button type="button" class="btn btn-primary sm" id="squirrelWordHelpBtn" style="padding:6px 10px;font-size:0.78rem;">💡 Kelime İpucu</button>
             <button type="button" class="btn btn-secondary sm" id="squirrelGrammarHelpBtn" style="padding:6px 10px;font-size:0.78rem;">📘 Gramer Tüyosu</button>
-            <button type="button" class="btn btn-ghost sm" id="squirrelFeedBtn" style="padding:6px 10px;font-size:0.78rem;">🌰 Besle</button>
+            <button type="button" class="btn btn-ghost sm" id="squirrelFeedBtn" style="padding:6px 10px;font-size:0.78rem;">${curMascot.feedAction}</button>
             <button type="button" class="speak-btn sm" id="mascotSpeakBtn" title="Yoldaşını Dinle" aria-label="Yoldaşını İngilizce Dinle">🔊</button>
           </div>
         </div>
@@ -755,7 +755,7 @@ function screenHome() {
           
           <div class="mission-goal-bar-wrap">
             <div class="mission-goal-info">
-              <span class="mgi-title"><b>Günlük Hedef:</b> <b>${Math.min(todayXP, 50)} / 50 🌰 Palamut</b></span>
+              <span class="mgi-title"><b>Günlük Hedef:</b> <b>${Math.min(todayXP, 50)} / 50 ${curMascot.itemIcon} ${curMascot.itemsName}</b></span>
               <span class="mgi-sub muted small">${todayXP >= 50 ? '🎉 Günlük Hedef Tamamlandı!' : `Günlük hedefe ${50 - todayXP} palamut kaldı`}</span>
             </div>
             <div class="progress thick"><div class="bar rainbow" style="width:${Math.min(100, (todayXP / 50) * 100)}%;"></div></div>
@@ -782,7 +782,7 @@ function screenHome() {
                 ${nu.type === 'grammar' 
                   ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu Özeti</a>` 
                   : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kelimeler</a>`}
-                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 🌰)</a>
+                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 ${curMascot.itemIcon})</a>
               </div>
             </div>
           ` : `
@@ -796,7 +796,7 @@ function screenHome() {
                 </div>
               </div>
               <div class="mission-unit-btns">
-                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/u1">▶ Dersi Tekrar Et (+15 🌰)</a>
+                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/u1">▶ Dersi Tekrar Et (+15 ${curMascot.itemIcon})</a>
               </div>
             </div>
           `}
@@ -2024,8 +2024,8 @@ function screenReview() {
   const header = `
       <header class="page-head">
         <div>
-          <h1>🌰 Fındık'ın Palamut Zulası</h1>
-          <p class="muted">Sincaplar kış için gömdükleri palamutları zamanla unutur. Aralıklı tekrar yaparak Fındık'ın gömdüğü kelimeleri kalıcı hafızaya kazı!</p>
+          <h1>${curMascot.itemIcon} ${esc(curMascot.name)}'ın ${esc(curMascot.vaultName)}</h1>
+          <p class="muted">${curMascot.vaultDesc}</p>
         </div>
       </header>`;
 
@@ -2035,8 +2035,8 @@ function screenReview() {
         ${header}
         <div class="card review-status-card" id="reviewStatusCard" style="text-align:center; padding: 32px 20px; max-width: 560px; margin: 0 auto;">
           <div style="font-size: 3rem; margin-bottom: 12px;">🐿️ ✨</div>
-          <h2>Palamut Zulan Güvende!</h2>
-          <p class="muted" style="margin: 8px auto 20px;">Şu anda unutulma riski olan vadesi dolmuş kelime bulunmuyor. Fındık tüm palamutların yerini çok iyi hatırlıyor! İstersen zuladaki temel kelimelerle serbest bir hafıza tazeleme seansı başlatabilirsin.</p>
+          <h2>${esc(curMascot.vaultName)} Güvende!</h2>
+          <p class="muted" style="margin: 8px auto 20px;">${curMascot.vaultEmptyDesc}</p>
           <div style="display:flex; flex-direction:column; gap:12px; max-width:340px; margin:0 auto;">
             <button class="btn btn-primary btn-lg" id="startReviewBtn" aria-label="Serbest Tekrar Seansı Başlat">
               🌰 Serbest Tekrar Seansı Başlat (${practiceWords.length} Kelime)
@@ -2057,7 +2057,7 @@ function screenReview() {
         <div style="font-size: 3rem; margin-bottom: 12px;">🌰 🔍</div>
         <h2>Palamutları Çıkarma Vakti!</h2>
         <p class="muted" style="margin: 8px auto 20px;">
-          Fındık toprağa gömdüğü <b>${dueCount} kelime palamudunu</b> unutmak üzere${dueCount > words.length ? ` (bu seansta ${words.length} tanesini çıkaracağız)` : ''}. Hafızasını tazeleyip kelimeleri kalıcı kılalım!
+          ${esc(curMascot.name)} sepetindeki <b>${dueCount} kelimeyi</b> unutmak üzere${dueCount > words.length ? ` (bu seansta ${words.length} tanesini çıkaracağız)` : ''}. Hafızasını tazeleyip kelimeleri kalıcı kılalım!
         </p>
 
         <div class="stats-row" style="display:flex; justify-content:center; gap:24px; margin-bottom:24px;">
@@ -3557,7 +3557,7 @@ function initShimejiCompanion() {
       closeBubble();
       setMode('munch', 115);
       if (typeof toast === 'function') {
-        toast(`🌰 Fındık afiyetle beslendi! (Toplam ${state.companion.fedCount}. kez)`);
+        toast(`${curMascot.fedToast || 'Yoldaşın afiyetle beslendi!'} (Toplam ${state.companion.fedCount}. kez)`);
       }
     };
   }

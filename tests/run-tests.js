@@ -560,10 +560,10 @@ test('TestSprite Akışları: Yoldaş tutarlılığı, günlük hedef gösterges
   eq(catMascot.id, 'cat', 'Seçilen yoldaş cat olmalı');
   eq(catMascot.name, 'Pamuk', 'Yoldaş adı Pamuk olmalı');
 
-  env.run('store.setMascot("dog")');
-  const dogMascot = env.run('mascotService.getActive()');
-  eq(dogMascot.id, 'dog', 'Yoldaş dog olmalı');
-  eq(dogMascot.name, 'Dost', 'Yoldaş adı Dost olmalı');
+    env.run('store.setMascot("panda")');
+  const pandaMascot = env.run('mascotService.getActive()');
+  eq(pandaMascot.id, 'panda', 'Yoldaş panda olmalı');
+  eq(pandaMascot.name, 'Bambu', 'Yoldaş adı Bambu olmalı');
 
   // 2. Günlük hedef hedefi ve mevcut ilerleme
   const dailyStr = env.run('todayStr()');

@@ -920,21 +920,36 @@ const WORD_BY_KEY = {};
 UNITS.forEach(u => (u.words || []).forEach(w => { WORD_BY_KEY[w.key] = w; }));
 const ALL_WORDS = Object.values(WORD_BY_KEY);
 
-/* ---------- Yoldaş Hayvanlar (Mascots) ---------- */
+/* ---------- Yoldaş Hayvanlar (Mascots - 3 Özel Karakter) ---------- */
 const MASCOTS = [
   {
     id: 'squirrel',
     name: 'Fındık',
     animal: 'Sincap',
     icon: '🐿️',
+    itemIcon: '🌰',
+    itemName: 'Palamut',
+    itemsName: 'Palamut',
+    vaultName: 'Palamut Zulası',
+    feedAction: '🌰 Palamut Ver',
+    fedToast: '🐿️ Fındık palamudunu afiyetle yedi!',
+    vaultDesc: 'Sincaplar kış için gömdükleri palamutları unutur! Fındık bu kelimeleri unutmadan zuladan çıkarıp tazeleyelim.',
+    vaultEmptyDesc: 'Fındık tüm palamutların yerini çok iyi hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.',
     motto: 'Yavrudan büyüyen, kelime ve gramerde sana yardım eden akıllı sincap yoldaşın!',
     perk: 'Canlı Ders & Kelime Yardımı',
+    stages: [
+      { stage: 1, id: 'baby', title: 'Minik Yavru Sincap', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Kelime Fısıltısı', desc: 'İlk İngilizce kelimeleri seninle keşfediyor.' },
+      { stage: 2, id: 'junior', title: 'Meraklı Kaşif Sincap', badge: '🌿 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Gramer Desteği', desc: 'Yeni cümle yapılarını merakla inceliyor.' },
+      { stage: 3, id: 'smart', title: 'Usta Palamutçu Sincap', badge: '🌰 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Hızlı İpucu', desc: 'Zorlu testlerde anında taktik veriyor.' },
+      { stage: 4, id: 'scholar', title: 'Bilge Orman Rehberi', badge: '🎓 Evre 4/5', minXP: 700, nextXP: 1500, perkTitle: 'Hafıza Kalkanı', desc: 'Kelimeleri kalıcı hafızaya mühürlüyor.' },
+      { stage: 5, id: 'master', title: 'Efsanevi Meşe Muhafızı', badge: '👑 Evre 5/5', minXP: 1500, nextXP: null, perkTitle: 'Akıcı İngilizce Ustası', desc: 'Tüm A1 & A2 kelimelerine tamamen hakim!' }
+    ],
     encouragements: [
-      { en: "Ready to collect new words today? Let's grow together! 🌰", tr: "Fındık hazır! Sen yeni kelimeler öğrendikçe ben de büyüyorum ve sana yardım ediyorum!" },
-      { en: "Need a hint on a tricky word or grammar rule? Just ask me! 🐿️", tr: "Zor bir kelimede veya gramer kuralında takılırsan bana tıkla, hemen ipucu vereyim!" },
+      { en: "Ready to collect new words today? Let's grow together! 🌰", tr: "Fındık hazır! Sen yeni kelimeler öğrendikçe ben de büyüyorum!" },
+      { en: "Need a hint on a tricky word or grammar rule? Just ask me! 🐿️", tr: "Zor bir kelimede takılırsan bana tıkla, hemen ipucu vereyim!" },
       { en: "Quick thinking shines with daily practice! You rock! ⚡", tr: "Pratik zeka pratik yaparak parlar! Sen harikasın!" },
       { en: "English becomes fluent with just five minutes a day! 🚀", tr: "İngilizce her gün sadece 5 dakikayla akıcı hale gelir!" },
-      { en: "Together we add every new word into our acorn chest! 🌰", tr: "Öğrendiğin her yeni kelimeyi palamut sandığımıza ekliyoruz!" }
+      { en: "Together we add every new word into our acorn chest! 🌰", tr: "Öğrendiğin her yeni kelimeyi palamut zulamıza ekliyoruz!" }
     ]
   },
   {
@@ -942,41 +957,28 @@ const MASCOTS = [
     name: 'Pamuk',
     animal: 'Kedi',
     icon: '🐱',
-    motto: 'Çevik, meraklı ve hızla öğrenir!',
-    perk: 'Hızlı seri avantajı',
+    itemIcon: '🧶',
+    itemName: 'Yün Yumağı',
+    itemsName: 'Yumak',
+    vaultName: 'Pati Sepeti',
+    feedAction: '🥛 Süt Ver',
+    fedToast: '🐱 Pamuk sütünü keyifle içti, mırıldıyor!',
+    vaultDesc: 'Kediler meraklıdır! Pamuk ile sepetindeki yeni kelimeleri tazeleyip kalıcı hafızaya taşıyalım.',
+    vaultEmptyDesc: 'Pamuk tüm kelimeleri pati gibi sağlam hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.',
+    motto: 'Çevik, meraklı ve hızla öğrenen sevimli kedi yoldaşın!',
+    perk: 'Hızlı Seri & Kelime Avı',
+    stages: [
+      { stage: 1, id: 'baby', title: 'Minik Yavru Kedi', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Pati İpucu', desc: 'Dünyayı keşfeden minik ve meraklı bir kedi yavrusu.' },
+      { stage: 2, id: 'junior', title: 'Meraklı Avcı Kedi', badge: '🐾 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Kelime Avcısı', desc: 'Yeni İngilizce kelimeleri bir fare gibi ustalıkla yakalar.' },
+      { stage: 3, id: 'smart', title: 'Usta Yumakbaz Kedi', badge: '🧶 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Gramer Yumağı', desc: 'Cümle yapılarını yün yumağı gibi ustalıkla çözer.' },
+      { stage: 4, id: 'scholar', title: 'Asil Salon Kedisi', badge: '🎩 Evre 4/5', minXP: 700, nextXP: 1500, perkTitle: 'Kusursuz Odak', desc: 'İngilizce konuşurken asaletini ve netliğini korur.' },
+      { stage: 5, id: 'master', title: 'Efsanevi Pati Ustası', badge: '👑 Evre 5/5', minXP: 1500, nextXP: null, perkTitle: 'Akıcı Kedi Zekası', desc: 'Tüm dilde 9 canlı akıcılık ve ustalık!' }
+    ],
     encouragements: [
       { en: "Never be afraid of making mistakes, learn by exploring! 🐾", tr: "Miyav! Hata yapmaktan asla korkma, keşfederek öğren!" },
-      { en: "Did you catch a new word today? Let's start! 🐱", tr: "Bugün yeni bir kelime yakaladın mı? Hadi başlayalım!" },
+      { en: "Did you catch a new word today? Let's add it to our yarn basket! 🧶", tr: "Bugün yeni bir kelime yakaladın mı? Hemen sepetimize ekleyelim!" },
       { en: "Five minutes of practice every day moves you forward! ✨", tr: "Her gün 5 dakikalık pratik seni dev adımlarla öne taşır!" },
       { en: "Small steps bring great success, I believe in you! 🌟", tr: "Küçük adımlar büyük başarılar getirir, sana güveniyorum!" }
-    ]
-  },
-  {
-    id: 'dog',
-    name: 'Dost',
-    animal: 'Köpek',
-    icon: '🐶',
-    motto: 'Sadık, enerjik ve asla pes etmez!',
-    perk: 'Günlük tekrar gücü',
-    encouragements: [
-      { en: "Never give up! I am right beside you, let's go! 🐶", tr: "Asla pes etmek yok! Yanındayım, hadi başlayalım!" },
-      { en: "Our energy is high! Let's reach our goal together! ⚡", tr: "Enerjimiz tavan! Bugünkü hedefini birlikte tamamlayalım!" },
-      { en: "You are doing great! Let's protect our streak today! 🎾", tr: "Harika gidiyorsun! Bugünkü dersimizi yapıp seriyi koruyalım!" },
-      { en: "Learning with you is so much fun, keep it up! 🚀", tr: "Seninle çalışmak çok keyifli, arkandayım!" }
-    ]
-  },
-  {
-    id: 'owl',
-    name: 'Bilge',
-    animal: 'Baykuş',
-    icon: '🦉',
-    motto: 'Kusursuz hafıza ve gramer ustası!',
-    perk: 'Doğruluk katsayısı',
-    encouragements: [
-      { en: "Practice makes perfect! Every single lesson counts! 🦉", tr: "Her ders bir bilgi damlası, yakında derya olacak!" },
-      { en: "Once you catch the grammar logic, everything becomes easy! 💡", tr: "Gramer mantığını kavradığında her şey çorap söküğü gibi gelir!" },
-      { en: "Take a deep breath, focus, and believe in yourself! 📚", tr: "Derin bir nefes al, odaklan ve yapabileceğine inan!" },
-      { en: "English is not just talent, it is joyful practice! 🎯", tr: "İngilizce bir yetenek değil, keyifli bir pratik meselesidir!" }
     ]
   },
   {
@@ -984,11 +986,26 @@ const MASCOTS = [
     name: 'Bambu',
     animal: 'Panda',
     icon: '🐼',
-    motto: 'Sakin, dengeli ve istikrarlı ritim!',
-    perk: 'Stressiz öğrenme',
+    itemIcon: '🎋',
+    itemName: 'Bambu Filizi',
+    itemsName: 'Filiz',
+    vaultName: 'Bambu Bahçesi',
+    feedAction: '🎋 Bambu Ver',
+    fedToast: '🐼 Bambu taze filizleri afiyetle çıtırdatıyor!',
+    vaultDesc: 'Pandalar sakin ve istikrarlıdır! Bambu ile taze kelime filizlerini toplayıp bilgini pekiştirelim.',
+    vaultEmptyDesc: 'Bambu bahçesindeki tüm kelimeleri çok iyi hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.',
+    motto: 'Sakin, dengeli ve istikrarlı ritim ustası tatlı pandan!',
+    perk: 'Stressiz ve Dengeli Öğrenme',
+    stages: [
+      { stage: 1, id: 'baby', title: 'Minik Yavru Panda', badge: '🍼 Evre 1/5', minXP: 0, nextXP: 100, perkTitle: 'Zen Dinginliği', desc: 'Stressiz, sakin ve neşeli ilk adımlar.' },
+      { stage: 2, id: 'junior', title: 'Neşeli Filiz Avcısı', badge: '🎋 Evre 2/5', minXP: 100, nextXP: 300, perkTitle: 'Dengeli Adımlar', desc: 'Her gün düzenli kelime filizleri toplar.' },
+      { stage: 3, id: 'smart', title: 'Usta Bambu Sever', badge: '🍃 Evre 3/5', minXP: 300, nextXP: 700, perkTitle: 'Hafıza Bahçesi', desc: 'Gramer yapılarını sağlam bambu kökleri gibi kavrar.' },
+      { stage: 4, id: 'scholar', title: 'Denge & Odak Ustası', badge: '🥋 Evre 4/5', minXP: 700, nextXP: 1500, perkTitle: 'Kung-Fu İngilizce', desc: 'Zorlu soruları dingin zihniyle tek hamlede çözer.' },
+      { stage: 5, id: 'master', title: 'Efsanevi Zen Üstadı', badge: '👑 Evre 5/5', minXP: 1500, nextXP: null, perkTitle: 'Kusursuz Ustalık', desc: 'Tamamen dengeli, akıcı ve dingin İngilizce ustalığı!' }
+    ],
     encouragements: [
       { en: "No rush! Calm and steady steps bring real mastery! 🎋", tr: "Acele yok! Sakin ve dengeli adımlar kalıcı öğrenme sağlar!" },
-      { en: "How about a quick lesson to refresh your mind today? 🐼", tr: "Bugün biraz çalışıp zihnini taze tutmaya ne dersin?" },
+      { en: "How about collecting fresh bamboo words today? 🐼", tr: "Bugün biraz çalışıp taze kelime filizleri toplamaya ne dersin?" },
       { en: "Every new word opens a new world, relax and enjoy! 🌸", tr: "Her kelime yeni bir dünya açar, rahat ol ve öğren!" },
       { en: "Consistency is your superpower! Step by step to the top! 🌟", tr: "İstikrar en büyük süper gücün! Adım adım zirveye!" }
     ]
