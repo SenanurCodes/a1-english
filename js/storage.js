@@ -3,6 +3,7 @@
    Store (Kapsüllenmiş Durum), ThemeService, MascotService, ProgressionManager
    ============================================================ */
 
+let syncManager = null;
 const STORE_KEY = 'a1english_v2';
 const LEGACY_STORE_KEY = 'a1english_v1';
 const SRS_INTERVALS = [0, 1, 2, 4, 7, 15, 30]; // gün (Leitner kutuları)
@@ -165,6 +166,12 @@ class AppStore {
       };
     } catch (e) {
       console.warn('[Store] _load hatası, defaultState yükleniyor:', e);
+      try {
+        const raw = localStorage.getItem(STORE_KEY) || localStorage.getItem(LEGACY_STORE_KEY);
+        if (raw) {
+          localStorage.setItem('a1english_v2_corrupt_' + Date.now(), raw);
+        }
+      } catch (errBackup) {}
       return defaultState();
     }
   }
@@ -222,17 +229,19 @@ class AppStore {
   }
 
   passA1Boss() {
+    const isFirstTime = !this._state.a1BossPassed;
     this._state.a1BossPassed = true;
     this._state.a2Unlocked = true;
     this._state.unlockedUpTo = Math.max(this._state.unlockedUpTo, 27);
-    this.gainXP(200); // Boss tamamlama ödülü
+    this.gainXP(isFirstTime ? 200 : 25);
     this.save();
     this._notify('A1_BOSS_PASSED', null);
   }
 
   passA2Boss() {
+    const isFirstTime = !this._state.a2BossPassed;
     this._state.a2BossPassed = true;
-    this.gainXP(300); // A2 Boss tamamlama ödülü
+    this.gainXP(isFirstTime ? 300 : 30);
     this.save();
     this._notify('A2_BOSS_PASSED', null);
   }
@@ -587,12 +596,14 @@ function isUnlocked(index) {
 }
 
 function recordUnitResult(unitId, correct, total) {
+  const safeTotal = Number.isFinite(total) && total > 0 ? Math.floor(total) : 0;
+  const safeCorrect = Number.isFinite(correct) && correct >= 0 ? Math.min(Math.floor(correct), safeTotal) : 0;
   const s = { ...unitStats(unitId) };
-  const pct = Math.round((correct / total) * 100);
+  const pct = safeTotal > 0 ? Math.round((safeCorrect / safeTotal) * 100) : 0;
   s.attempts += 1;
-  s.correct += correct;
-  s.total += total;
-  s.best = Math.max(s.best, pct);
+  s.correct += safeCorrect;
+  s.total += safeTotal;
+  s.best = Math.max(s.best || 0, pct);
   s.lastAt = Date.now();
   if (pct >= 70) {
     s.done = true;
@@ -705,7 +716,7 @@ function classifyTurkishTrap(m = {}) {
 
   // 2. am / is / are + Yalın Fiil Fazlalığı ("I am agree", "She is go")
   if (/\b(am|is|are)\s+(agree|go|like|want|know|work|live|need|have|speak|drink|eat)\b/.test(given) ||
-      (/(am|is|are)/.test(given) && !/(am|is|are)/.test(correct) && correct.length > 0)) {
+      (/\\b(am|is|are)\\b/.test(given) && !/\\b(am|is|are)\\b/.test(correct) && correct.length > 0)) {
     return metaFor(
       'extra_be',
       '🪤 Gereksiz am/is/are Fazlalığı',
@@ -790,24 +801,39 @@ function normalizeUnitsDone(val) {
 }
 
 function normalizeLeagueMember(m, isMe = false) {
-  if (!m) return null;
+  if (!m || typeof m !== 'object') return null;
   const streak = normalizeStreak(m.streak);
   const unitsDone = normalizeUnitsDone(m.unitsDone ?? m.completedUnits);
-  const xp = Math.max(0, parseInt(m.xp, 10) || 0);
+  const xp = Math.min(2000000, Math.max(0, parseInt(m.xp, 10) || 0));
+
+  let rawAvatar = String(m.avatar || '').trim();
+  let cleanAvatar = '🧑';
+  if (rawAvatar && !rawAvatar.includes('<') && !rawAvatar.includes('>') && rawAvatar.length <= 8) {
+    cleanAvatar = rawAvatar;
+  } else if (isMe) {
+    cleanAvatar = (typeof mascotService !== 'undefined' && mascotService.getActive()) ? mascotService.getActive().icon : '🐾';
+  }
+
+  const rawName = String(m.name || (isMe ? (state.name || 'Öğrenci') : 'Arkadaş')).trim().slice(0, 32);
+  const cleanName = rawName.replace(/[<>]/g, '') || 'Öğrenci';
+  const rawMascot = String(m.mascot || 'squirrel').replace(/[^a-z0-9_-]/gi, '').slice(0, 20);
+
   return {
-    ...m,
-    id: m.id || (isMe ? state.userId : 'unknown'),
-    name: m.name || (isMe ? (state.name || 'Öğrenci') : 'Arkadaş'),
+    id: String(m.id || (isMe ? state.userId : 'u_' + Math.random().toString(36).slice(2, 7))).replace(/[^a-z0-9_@-]/gi, '').slice(0, 48),
+    name: cleanName,
     xp,
     streak,
     unitsDone,
-    avatar: m.avatar || (isMe ? ((typeof mascotService !== 'undefined' && mascotService.getActive()) ? mascotService.getActive().icon : '🐾') : '🧑'),
+    avatar: cleanAvatar,
+    mascot: rawMascot,
+    mascotName: String(m.mascotName || '').replace(/[<>]/g, '').slice(0, 32),
+    lastActive: Number.isFinite(m.lastActive) ? m.lastActive : Date.now(),
     isMe: !!isMe
   };
 }
 
 /* ---------- Ünite Kelimelerini Aralıklı Tekrara Aktarma & Göç (Migration) ---------- */
-function syncUnitWordsToBox1(unitId) {
+function syncUnitWordsToBox1(unitId, shouldSave = true) {
   if (typeof UNITS === 'undefined') return 0;
   const u = UNITS.find(x => x.id === unitId);
   if (!u || !Array.isArray(u.words)) return 0;
@@ -824,9 +850,8 @@ function syncUnitWordsToBox1(unitId) {
       existing.due = Math.min(existing.due || Date.now(), Date.now());
       count++;
     }
-    // Kural: Mevcut kutusu 1'den yüksek olan kelimelerin kutusunu ASLA düşürme!
   });
-  if (count > 0) saveState();
+  if (count > 0 && shouldSave) store.save();
   return count;
 }
 
@@ -841,9 +866,12 @@ function migrateCompletedUnitsWords() {
   UNITS.forEach(u => {
     const s = state.units[u.id];
     if (s && (s.done || s.best >= 70)) {
-      total += syncUnitWordsToBox1(u.id);
+      total += syncUnitWordsToBox1(u.id, false);
     }
   });
+  if (total > 0) {
+    store.save();
+  }
   return total;
 }
 
@@ -1137,62 +1165,65 @@ async function joinCloudLeague(roomId) {
 let isSyncInProgress = false;
 let pendingSyncAgain = false;
 
+let syncRetryCount = 0;
+
 async function syncCloudLeague() {
   if (!state.leagueRoomId) return null;
-  const me = normalizeLeagueMember(myLeagueProfile(), true);
-
-  // Yerel lig tablosundaki kendi satırını her zaman en güncel yerel verilerle koru
-  if (!state.leagueMembers) state.leagueMembers = {};
-  const curLocal = state.leagueMembers[state.userId] || {};
-  state.leagueMembers[state.userId] = {
-    ...curLocal,
-    ...me,
-    xp: Math.max(parseInt(curLocal.xp, 10) || 0, me.xp),
-    streak: Math.max(normalizeStreak(curLocal.streak), me.streak),
-    unitsDone: Math.max(normalizeUnitsDone(curLocal.unitsDone ?? curLocal.completedUnits), me.unitsDone)
-  };
-  saveState();
-
-  if (!navigator.onLine) {
-    leagueSyncStatus = {
-      status: 'offline',
-      text: '📡 Çevrimdışı Mod (Skorların güvende, internet gelince aktarılacak)',
-      lastSync: leagueSyncStatus.lastSync
-    };
-    return getLeaderboardList();
-  }
-
-  const db = getFirebaseDatabase();
-  if (!db) {
-    leagueSyncStatus = {
-      status: 'offline',
-      text: '📡 Yerel Mod (Firebase bağlantısı bekleniyor)',
-      lastSync: leagueSyncStatus.lastSync
-    };
-    return getLeaderboardList();
-  }
-
   if (isSyncInProgress) {
     pendingSyncAgain = true;
     return getLeaderboardList();
   }
-
   isSyncInProgress = true;
-  leagueSyncStatus = {
-    status: 'syncing',
-    text: '🔄 Senkronize ediliyor...',
-    lastSync: leagueSyncStatus.lastSync
-  };
 
   try {
-    // 1. Önce güncel yerel profilimizi Firebase'e aktar
+    const me = normalizeLeagueMember(myLeagueProfile(), true);
+
+    if (!state.leagueMembers) state.leagueMembers = {};
+    const curLocal = state.leagueMembers[state.userId] || {};
+    state.leagueMembers[state.userId] = {
+      ...curLocal,
+      ...me,
+      xp: Math.max(parseInt(curLocal.xp, 10) || 0, me.xp),
+      streak: Math.max(normalizeStreak(curLocal.streak), me.streak),
+      unitsDone: Math.max(normalizeUnitsDone(curLocal.unitsDone ?? curLocal.completedUnits), me.unitsDone)
+    };
+    store.save();
+
+    if (!navigator.onLine) {
+      leagueSyncStatus = {
+        status: 'offline',
+        text: '📡 Çevrimdışı Mod (Skorların güvende, internet gelince aktarılacak)',
+        lastSync: leagueSyncStatus.lastSync
+      };
+      return getLeaderboardList();
+    }
+
+    const db = getFirebaseDatabase();
+    if (!db) {
+      leagueSyncStatus = {
+        status: 'offline',
+        text: '📡 Yerel Mod (Firebase bağlantısı bekleniyor)',
+        lastSync: leagueSyncStatus.lastSync
+      };
+      return getLeaderboardList();
+    }
+
+    leagueSyncStatus = {
+      status: 'syncing',
+      text: '🔄 Senkronize ediliyor...',
+      lastSync: leagueSyncStatus.lastSync
+    };
+
     await db.ref('leagues/' + state.leagueRoomId + '/members/' + state.userId).set(state.leagueMembers[state.userId]);
 
-    // 2. Odanın tüm üyelerini çek
     const snap = await db.ref('leagues/' + state.leagueRoomId + '/members').once('value');
-    const remoteMembers = snap.val() || {};
+    const rawRemoteMembers = snap.val() || {};
+    const remoteMembers = {};
+    for (const [uid, m] of Object.entries(rawRemoteMembers)) {
+      const normalized = normalizeLeagueMember(m, uid === state.userId);
+      if (normalized) remoteMembers[uid] = normalized;
+    }
 
-    // 3. Sunucudan gelen verilerle birleştir; sunucudaki değer yerelden düşükse YEREL DEĞER KAZANSIN!
     const remoteMe = remoteMembers[state.userId] || {};
     remoteMembers[state.userId] = {
       ...remoteMe,
@@ -1203,7 +1234,8 @@ async function syncCloudLeague() {
     };
 
     state.leagueMembers = remoteMembers;
-    saveState();
+    store.save();
+    syncRetryCount = 0;
     leagueSyncStatus = {
       status: 'synced',
       text: '🟢 Tüm Skorlar Güncel (Bulutla Eşitlendi)',
@@ -1217,8 +1249,9 @@ async function syncCloudLeague() {
       text: '⚠️ Ağ Gecikmesi (Yerel skorlar güvende, tekrar deneniyor)',
       lastSync: leagueSyncStatus.lastSync
     };
-    if (navigator.onLine) {
-      setTimeout(syncCloudLeague, 3500);
+    if (navigator.onLine && syncRetryCount < 3) {
+      syncRetryCount++;
+      setTimeout(syncCloudLeague, 3500 * syncRetryCount);
     }
     return getLeaderboardList();
   } finally {
@@ -1291,11 +1324,12 @@ class OfflineSyncManager {
     }
 
     // 2. Firebase Realtime Database senkronizasyonu
-    if (window.firebase && firebase.apps && firebase.apps.length && curState.auth && curState.auth.uid) {
+    const authUid = curState.auth?.user?.uid || curState.auth?.uid;
+    if (window.firebase && firebase.apps && firebase.apps.length && authUid) {
       try {
         const db = firebase.database();
         const done = typeof doneCount === 'function' ? doneCount() : 0;
-        await db.ref('users/' + curState.auth.uid).update({
+        await db.ref('users/' + authUid).update({
           name: curState.name || 'Öğrenci',
           xp: curState.xp || 0,
           streak: curState.streak || { count: 0 },
@@ -1307,7 +1341,7 @@ class OfflineSyncManager {
       } catch (e) {}
     }
 
-    if ((didSync || this.hasPendingOfflineChanges) && showToastOnSuccess) {
+    if (didSync && showToastOnSuccess) {
       this.hasPendingOfflineChanges = false;
       if (typeof toast === 'function') {
         toast('⚡ İnternet bağlantısı sağlandı. Çevrimdışı kazandığın XP ve ilerlemeler başarıyla senkronize edildi! ☁️');
@@ -1316,5 +1350,5 @@ class OfflineSyncManager {
   }
 }
 
-const syncManager = new OfflineSyncManager(store);
+syncManager = new OfflineSyncManager(store);
 

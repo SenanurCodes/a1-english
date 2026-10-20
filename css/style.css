@@ -3017,3 +3017,24 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   0%, 100% { transform: rotate(0deg) translateY(0); }
   50% { transform: rotate(6deg) translateY(-4px); }
 }
+
+[data-mode="dark"] .type-input {
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+}
+[data-mode="dark"] .type-input:focus {
+  border-color: #91A7FF !important;
+  background: var(--card) !important;
+  box-shadow: 0 0 0 4px rgba(145, 167, 255, 0.25) !important;
+}
+[data-mode="dark"] .type-input.ok {
+  border-color: var(--green) !important;
+  background: rgba(16, 185, 129, 0.18) !important;
+  color: #6EE7B7 !important;
+}
+[data-mode="dark"] .type-input.bad {
+  border-color: var(--red) !important;
+  background: rgba(239, 68, 68, 0.18) !important;
+  color: #FCA5A5 !important;
+}

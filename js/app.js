@@ -1153,7 +1153,7 @@ function screenHome() {
         return `
         <div class="card rivalry-card" style="margin-bottom:20px;">
           <div class="rivalry-head">
-            <div class="rivalry-avatar">${topRival.avatar || '🧑'}</div>
+            <div class="rivalry-avatar">${esc(topRival.avatar || '🧑')}</div>
             <div class="rivalry-info">
               <div class="muted small">⚔️ Arkadaş Rekabeti ${state.leagueRoomId ? '· 🟢 Canlı Lig' : ''}</div>
               <div class="rivalry-text">${rivalryMsg}</div>
@@ -1702,7 +1702,7 @@ function renderLeaderboardView() {
             ${list.map((u, i) => `
               <div class="lb-row ${u.isMe ? 'is-me' : ''}">
                 <div class="lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}</div>
-                <div class="lb-avatar">${u.avatar || '🧑'}</div>
+                <div class="lb-avatar">${esc(u.avatar || '🧑')}</div>
                 <div class="lb-details">
                   <div class="lb-name">
                     <span class="lb-uname">${esc(u.name)}</span>

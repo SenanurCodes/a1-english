@@ -221,6 +221,8 @@ function md(text) {
 function toast(msg) {
   const t = document.createElement('div');
   t.className = 'toast';
+  t.setAttribute('role', 'status');
+  t.setAttribute('aria-live', 'polite');
   t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.classList.add('show'), 10);

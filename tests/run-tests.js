@@ -512,6 +512,73 @@ test('8. Bozuk localStorage (\'{bozuk json\') ile uygulama çökmeden varsayıla
 });
 
 /* ============================================================
+   9. QA & Güvenlik Güçlendirmesi Doğrulaması (Kıdemli QA Raporu)
+   ============================================================ */
+test('9. QA & Güvenlik: Lig özyineleme koruması, Stored XSS filtreleme, TDZ göçü, 0/0 NaN önleme, Boss replay kontrolü', () => {
+  const { window, run } = createEnv();
+
+  // A. 0/0 Sıfıra bölme ve NaN kontrolü
+  const pctZero = run('recordUnitResult("u1", 0, 0)');
+  eq(pctZero, 0, '0/0 sonucu 0 dönmeli, NaN olmamalı');
+  const u1Stat = run('store.state.units.u1');
+  ok(Number.isFinite(u1Stat.best) && !isNaN(u1Stat.best), 'unit.best NaN olmamalı');
+
+  // B. Türk tuzağı sınıflandırıcısı false-positive kontrolü
+  const trapName = run('classifyTurkishTrap({ given: "name", correct: "apple", q: "Elma" })');
+  ok(trapName.trap !== 'extra_be', '"name" kelimesi n-am-e içinde am geçiyor diye extra_be olmamalı');
+
+  const trapThis = run('classifyTurkishTrap({ given: "this is my car", correct: "this is my car", q: "Bu benim arabam" })');
+  ok(trapThis.trap !== 'extra_be', '"this" kelimesi th-is içinde is geçiyor diye extra_be olmamalı');
+
+  // C. Boss replay ödülü koruması
+  const initialXP = run('store.state.xp');
+  run('store.passA1Boss()');
+  const passedXP1 = run('store.state.xp');
+  eq(passedXP1, initialXP + 200, 'İlk A1 Boss geçişinde 200 XP verilmeli');
+
+  run('store.passA1Boss()');
+  const passedXP2 = run('store.state.xp');
+  eq(passedXP2, passedXP1 + 25, 'A1 Boss tekrarında tam 200 XP yerine pratik ödülü (25 XP) verilmeli');
+
+  // D. Stored XSS ve Zararlı Avatar Filtrelemesi
+  const maliciousMember = run(`
+    return normalizeLeagueMember({
+      id: "hacker123",
+      name: "<b>Hacker</b><script>alert(1)</script>",
+      avatar: "<img src=x onerror=alert('xss')>",
+      xp: 999999999
+    }, false);
+  `);
+  ok(!maliciousMember.avatar.includes('<'), 'normalizeLeagueMember zararlı avatar etiketini temizlemeli');
+  eq(maliciousMember.avatar, '🧑', 'Zararlı avatar güvenli yedek emojisine dönmeli');
+  ok(!maliciousMember.name.includes('<') && !maliciousMember.name.includes('>'), 'normalizeLeagueMember isimdeki HTML taglarını temizlemeli');
+  ok(maliciousMember.xp <= 2000000, 'Aşırı yüksek XP üst sınıra indirgenmeli');
+
+  // E. Lig Odasında gainXP Sonsuz Özyineleme (Maximum Call Stack) Koruması
+  run(`
+    store.state.leagueRoomId = 'test_room_123';
+    store.save();
+    store.gainXP(10);
+  `);
+  const currentXP = run('store.state.xp');
+  ok(currentXP >= passedXP2 + 10, 'Lig odasında gainXP özyinelemeye girmeden başarıyla çalışmalı');
+
+  // F. Çoklu Ünite Kelime Göçü (TDZ ReferenceError olmadan)
+  run(`
+    const id1 = UNITS[0].id;
+    const id2 = UNITS[2].id;
+    const id3 = UNITS[3].id;
+    store.state.units[id1] = { done: true, best: 100 };
+    store.state.units[id2] = { done: true, best: 85 };
+    store.state.units[id3] = { done: true, best: 90 };
+    store.save();
+    migrateCompletedUnitsWords();
+  `);
+  const wordKeys = run('Object.keys(store.state.words)');
+  ok(wordKeys.length >= 100, 'Tüm tamamlanmış ünitelerin kelimeleri (100+) TDZ takılmadan Kutu 1\'e taşınmalı');
+});
+
+/* ============================================================
    Test Çalıştırıcı (Runner)
    ============================================================ */
 (async () => {

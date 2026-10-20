@@ -55,14 +55,22 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
       };
       if (system) body.systemInstruction = { parts: [{ text: system }] };
 
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': key
-        },
-        body: JSON.stringify(body)
-      });
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timeoutId = controller ? setTimeout(() => controller.abort(), 18000) : null;
+      let res;
+      try {
+        res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': key
+          },
+          body: JSON.stringify(body),
+          signal: controller ? controller.signal : undefined
+        });
+      } finally {
+        if (timeoutId) clearTimeout(timeoutId);
+      }
       if (res.status === 404) {
         // Bu model yoksa veya bu anahtarın bölgesinde açık değilse listedeki bir sonrakini dene
         continue;
