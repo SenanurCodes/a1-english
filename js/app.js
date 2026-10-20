@@ -898,14 +898,13 @@ function applyMascotChange(mId) {
   if (!MASCOT_BY_ID[mId]) return;
   store.setMascot(mId);
   saveState();
-  renderMainHeader();
   const route = (location.hash.replace('#/', '') || 'home').split('/')[0];
   renderNav(route);
   if (shimejiController && typeof shimejiController.onMascotChanged === 'function') {
     shimejiController.onMascotChanged();
   }
-  if (typeof ROUTES[route] === 'function') {
-    ROUTES[route]();
+  if (typeof router === 'function') {
+    router();
   }
   toast(`Yoldaşın ${MASCOT_BY_ID[mId].name} (${MASCOT_BY_ID[mId].icon}) seçildi! ✨`);
 }
@@ -2306,6 +2305,7 @@ function screenLesson(id) {
    Tekrar: Fındık'ın Palamut Zulası (Aralıklı Tekrar - SRS)
    ============================================================ */
 function screenReview() {
+  const curMascot = mascotService.getActive();
   const reviewLimit = Math.max(5, parseInt(state.settings.reviewLimit, 10) || 25);
   const allDue = dueWords();
   const dueCount = allDue.length;
@@ -2554,6 +2554,7 @@ function screenGrammar(id) {
    İlerleme
    ============================================================ */
 function screenProgress() {
+  const curMascot = mascotService.getActive();
   const lvl = levelInfo();
   const days = Array.from({ length: 7 }, (_, i) => { const d = daysAgoStr(6 - i); return { d, xp: state.daily[d] || 0 }; });
   const maxXP = Math.max(50, ...days.map(d => d.xp));
@@ -3865,8 +3866,12 @@ function initShimejiCompanion() {
       saveState();
       closeBubble();
       setMode('munch', 115);
+      const curMascot = mascotService.getActive();
       if (typeof toast === 'function') {
-        toast(`${curMascot.fedToast || 'Yoldaşın afiyetle beslendi!'} (Toplam ${state.companion.fedCount}. kez)`);
+        const feedText = typeof curMascot.fedToast === 'function'
+          ? curMascot.fedToast(state.companion.fedCount)
+          : (curMascot.fedToast || 'Yoldaşın afiyetle beslendi!');
+        toast(`${feedText} (Toplam ${state.companion.fedCount}. kez)`);
       }
     };
   }

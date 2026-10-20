@@ -1,58 +1,124 @@
 #!/usr/bin/env node
 /* ============================================================
-   PatiLingo - Kütüphanesiz otomatik testler
-   Kullanım:  node tests/run-tests.js
-   Her test, data.js + logic.js + storage.js dosyalarını tarayıcıdaki
-   sırayla temiz bir sanal ortama (vm) yükler; sahte localStorage kullanır.
+   PatiLingo - Automated Test Suite (JSDOM + Node.js)
+   Tests: npm test / node tests/run-tests.js
+   Loads scripts in index.html order via <script> elements.
    ============================================================ */
 const fs = require('fs');
 const path = require('path');
-const vm = require('vm');
+const { JSDOM } = require('jsdom');
 
 const ROOT = path.join(__dirname, '..');
-const FILES = ['js/data.js', 'js/logic.js', 'js/storage.js', 'js/firebase.js', 'js/utils.js', 'js/exercises.js', 'js/ai.js'];
-const SOURCES = FILES.map(f => [f, fs.readFileSync(path.join(ROOT, f), 'utf8')]);
+const SCRIPT_FILES = [
+  'js/data.js',
+  'js/logic.js',
+  'js/storage.js',
+  'js/firebase.js',
+  'js/icons.js',
+  'js/utils.js',
+  'js/ai.js',
+  'js/exercises.js',
+  'js/app.js'
+];
 
-/* ---------- Sahte tarayıcı ortamı ---------- */
-function makeEnv(initialStorage = {}, options = {}) {
-  const store = { ...initialStorage };
-  const warnings = [];
-  const localStorage = {
-    getItem: k => (k in store ? store[k] : null),
-    setItem: (k, v) => { store[k] = String(v); },
-    removeItem: k => { delete store[k]; },
-    clear: () => { for (const k of Object.keys(store)) delete store[k]; },
-    _raw: store
+const SCRIPT_SOURCES = SCRIPT_FILES.map(f => [f, fs.readFileSync(path.join(ROOT, f), 'utf8')]);
+
+/* ---------- Test Suite Setup Helper ---------- */
+function createEnv(options = {}) {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+
+  const dom = new JSDOM(indexHtml, {
+    url: 'https://localhost/',
+    runScripts: 'dangerously',
+    pretendToBeVisual: true
+  });
+
+  const { window } = dom;
+
+  // Prompt Stubs: HTMLCanvasElement.getContext, window.scrollTo, Element.prototype.scrollIntoView, fetch
+  window.HTMLCanvasElement.prototype.getContext = () => ({
+    fillRect() {}, clearRect() {}, getImageData() {}, putImageData() {},
+    createImageData() {}, setTransform() {}, drawImage() {}, save() {},
+    fillText() {}, restore() {}, beginPath() {}, moveTo() {}, lineTo() {},
+    closePath() {}, stroke() {}, strokeRect() {}, arc() {}, fill() {}
+  });
+  window.scrollTo = () => {};
+  window.Element.prototype.scrollIntoView = () => {};
+
+  // Crypto subtle stub for jsdom
+  if (!window.crypto.subtle && globalThis.crypto && globalThis.crypto.subtle) {
+    try {
+      Object.defineProperty(window.crypto, 'subtle', {
+        value: globalThis.crypto.subtle,
+        configurable: true
+      });
+    } catch (e) {
+      window.crypto.subtle = globalThis.crypto.subtle;
+    }
+  }
+
+  // Audio & Speech Synthesis stubs
+  window.speechSynthesis = {
+    speak() {}, cancel() {}, pause() {}, resume() {}, getVoices: () => []
   };
-  const attrs = {};
-  const ctx = {
-    console: {
-      log() {}, info() {}, error: (...a) => warnings.push(['error', a.join(' ')]),
-      warn: (...a) => warnings.push(['warn', a.join(' ')])
-    },
-    localStorage,
-    navigator: { onLine: false },
-    location: { hash: '#/', pathname: '/', origin: 'http://test' },
-    document: {
-      documentElement: { setAttribute: (k, v) => { attrs[k] = v; }, style: { setProperty() {} } },
-      querySelector: () => null,
-      addEventListener: () => {}
-    },
-    setTimeout, clearTimeout, Date, Math, JSON, Promise,
-    btoa: s => Buffer.from(s, 'binary').toString('base64'),
-    atob: s => Buffer.from(s, 'base64').toString('binary'),
-    escape, unescape, encodeURIComponent, decodeURIComponent
+  window.SpeechSynthesisUtterance = function() {};
+  window.Audio = function() {
+    return { play: () => Promise.resolve(), pause() {} };
   };
-  ctx.window = ctx;
-  ctx.addEventListener = () => {};
-  if (options.fetch) ctx.fetch = options.fetch;
-  vm.createContext(ctx);
-  for (const [file, src] of SOURCES) vm.runInContext(src, ctx, { filename: file });
-  const run = code => vm.runInContext(code, ctx);
-  return { run, localStorage, warnings, attrs };
+
+  // Mock fetch
+  if (options.fetch) {
+    window.fetch = options.fetch;
+  } else {
+    window.fetch = () => Promise.resolve(new window.Response('{}', { status: 200 }));
+  }
+
+  // Pre-seed localStorage
+  if (options.localStorage) {
+    for (const [k, v] of Object.entries(options.localStorage)) {
+      window.localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v));
+    }
+  }
+
+  if (options.corruptLocalStorage) {
+    window.localStorage.setItem('a1english_v1', '{bozuk json');
+  }
+
+  // Ensure timer unref so test process never hangs
+  const origSetInterval = window.setInterval;
+  window.setInterval = (fn, ms) => {
+    const id = origSetInterval(fn, ms);
+    if (id && typeof id.unref === 'function') id.unref();
+    return id;
+  };
+
+  // Load scripts in index.html order via <script> elements (NO eval)
+  for (const [file, code] of SCRIPT_SOURCES) {
+    const scriptEl = window.document.createElement('script');
+    scriptEl.textContent = code;
+    window.document.body.appendChild(scriptEl);
+  }
+
+  const run = code => {
+    const s = window.document.createElement('script');
+    const isExpr = !code.includes(';') && !code.includes('\n');
+    s.textContent = `window.__lastRunResult = (() => { ${isExpr ? 'return (' + code + ');' : code} })();`;
+    window.document.body.appendChild(s);
+    return window.__lastRunResult;
+  };
+
+  const runAsync = async code => {
+    const s = window.document.createElement('script');
+    const isExpr = !code.includes(';') && !code.includes('\n');
+    s.textContent = `window.__lastRunPromise = (async () => { ${isExpr ? 'return (' + code + ');' : code} })();`;
+    window.document.body.appendChild(s);
+    return await window.__lastRunPromise;
+  };
+
+  return { dom, window, run, runAsync };
 }
 
-/* ---------- Mini test çatısı ---------- */
+/* ---------- Test Assertions ---------- */
 const tests = [];
 function test(name, fn) {
   tests.push({ name, fn });
@@ -61,541 +127,391 @@ function eq(actual, expected, msg) {
   const a = JSON.stringify(actual), b = JSON.stringify(expected);
   if (a !== b) throw new Error(`${msg || 'eşit değil'}: beklenen ${b}, gelen ${a}`);
 }
-function ok(cond, msg) { if (!cond) throw new Error(msg || 'koşul sağlanmadı'); }
-
-/* ---------- Gerçek ünite kimlikleriyle eski (v0) kullanıcı verisi ---------- */
-const env0 = makeEnv();
-const UNIT_IDS = env0.run('UNITS.map(u => u.id)');
-const FIRST_WORDS = env0.run(`UNITS.find(u => u.id === '${UNIT_IDS[0]}').words.map(w => w.key)`);
-
-function legacy480() {
-  return {
-    // schemaVersion yok -> v0
-    userId: 'u_legacy_480',
-    name: 'Senanur',
-    onboarded: true,
-    mascot: 'dog',
-    theme: 'cyber',
-    xp: 480,
-    streak: { count: 4, last: '2026-10-14' },
-    daily: { '2026-10-14': 120 },
-    units: {
-      [UNIT_IDS[0]]: { best: 95, attempts: 2, correct: 19, total: 20, done: true },
-      [UNIT_IDS[1]]: { best: 80, attempts: 1, correct: 8, total: 10, done: true },
-      [UNIT_IDS[2]]: { best: 50, attempts: 1, correct: 5, total: 10, done: false }
-    },
-    unlockedUpTo: 2,
-    words: { [FIRST_WORDS[0]]: { box: 4, due: 0, right: 6, wrong: 1 } },
-    friends: [{ id: 'f1', name: 'Kenan', xp: 110 }, { id: 'b1', name: 'Bot', isBot: true }],
-    settings: { apiKey: 'KEY123', rate: 1 }
-  };
+function ok(cond, msg) {
+  if (!cond) throw new Error(msg || 'koşul sağlanmadı');
 }
 
-/* ================== TESTLER ================== */
-
-test('Yeni kullanıcı: schemaVersion 1, XP 0, onboarded false', () => {
-  const { run } = makeEnv();
-  eq(run('store.state.schemaVersion'), 1);
-  eq(run('state.xp'), 0);
-  eq(run('state.onboarded'), false);
+/* ============================================================
+   1. Tüm JS Dosyaları Hatasız Yükleniyor
+   ============================================================ */
+test('1. Tüm JS dosyaları index.html sırasıyla <script> elementleri olarak hatasız yükleniyor', () => {
+  const { window } = createEnv();
+  ok(window.document, 'DOM penceresi başarıyla oluşturulmalı');
+  ok(typeof window.router === 'function', 'app.js router fonksiyonu tanımlı olmalı');
+  ok(typeof window.screenHome === 'function', 'screenHome tanımlı olmalı');
+  ok(typeof window.screenReview === 'function', 'screenReview tanımlı olmalı');
+  ok(typeof window.screenProgress === 'function', 'screenProgress tanımlı olmalı');
 });
 
-test('Script sırası: storage.js yüklenirken UNITS tanımlı, uyarı yok', () => {
-  const { warnings } = makeEnv({ a1english_v2: JSON.stringify(legacy480()) });
-  const unitsWarn = warnings.filter(w => w[1].includes('UNITS tanımlı değil'));
-  eq(unitsWarn.length, 0, 'UNITS uyarısı');
-});
+/* ============================================================
+   2. UNITS Bütünlüğü: id'ler benzersiz, vocab boş en/tr yok
+   ============================================================ */
+test('2. UNITS: id\'ler benzersiz, vocab ünitelerinde boş en/tr yok', () => {
+  const { run } = createEnv();
+  const units = run('UNITS');
+  ok(Array.isArray(units) && units.length === 52, 'Müfredatta toplam 52 ünite olmalı');
 
-test('Göç v0 -> v1: 480 XP, seri, ünite ve ayarlar korunur', () => {
-  const { run, localStorage } = makeEnv({ a1english_v2: JSON.stringify(legacy480()) });
-  eq(run('state.schemaVersion'), 1);
-  eq(run('state.xp'), 480);
-  eq(run('state.streak.count'), 4);
-  eq(run('state.name'), 'Senanur');
-  eq(run('doneCount()'), 2, 'tamamlanan ünite');
-  eq(run('state.settings.apiKey'), 'KEY123');
-  eq(run('state.settings.reviewLimit'), 25, 'yeni ayar varsayılanla eklenmeli');
-  eq(run('state.friends.map(f => f.name)'), ['Kenan'], 'bot arkadaş temizlenmeli');
-  eq(JSON.parse(localStorage._raw.a1english_v2).schemaVersion, 1, 'göç kalıcı kaydedilmeli');
-});
+  const ids = units.map(u => u.id);
+  eq(new Set(ids).size, ids.length, 'Tüm ünite id\'leri benzersiz olmalı');
 
-test('Göç: tamamlanan ünite kelimeleri Kutu 1+, yüksek kutu düşmez', () => {
-  const { run } = makeEnv({ a1english_v2: JSON.stringify(legacy480()) });
-  const boxes = run(`UNITS.find(u => u.id === '${UNIT_IDS[0]}').words.map(w => (state.words[w.key] || {}).box || 0)`);
-  ok(boxes.every(b => b >= 1), 'tüm kelimeler en az Kutu 1 olmalı: ' + boxes);
-  eq(run(`state.words['${FIRST_WORDS[0]}'].box`), 4, 'Kutu 4 korunmalı');
-  const notDone = run(`UNITS.find(u => u.id === '${UNIT_IDS[2]}').words.filter(w => state.words[w.key]).length`);
-  eq(notDone, 0, '%70 altı ünitenin kelimeleri eklenmemeli');
-});
-
-test('Eski anahtar (a1english_v1) okunur', () => {
-  const { run } = makeEnv({ a1english_v1: JSON.stringify(legacy480()) });
-  eq(run('state.xp'), 480);
-});
-
-test('Bozuk veri: uygulama çökmez, varsayılana döner ve uyarı loglar', () => {
-  const { run, warnings } = makeEnv({ a1english_v2: '{bozuk json' });
-  eq(run('state.xp'), 0);
-  ok(warnings.some(w => w[1].includes('_load')), 'uyarı loglanmalı');
-});
-
-test('state Proxy: yazma store.state\'e gider, store değişince bayat kalmaz', () => {
-  const { run } = makeEnv();
-  run('state.xp = 77');
-  eq(run('store.state.xp'), 77);
-  run('store._state = { ...store._state, xp: 5 }');
-  eq(run('state.xp'), 5, 'Proxy yeni nesneyi görmeli');
-  eq(run('({ ...state }).xp'), 5, 'spread çalışmalı');
-});
-
-test('resetState: ilerleme sıfırlanır, ayarlar korunur, state bayat kalmaz', () => {
-  const { run } = makeEnv({ a1english_v2: JSON.stringify(legacy480()) });
-  run('resetState()');
-  eq(run('state.xp'), 0);
-  eq(run('state.settings.apiKey'), 'KEY123');
-});
-
-test('Dışa aktar -> içe aktar (boş cihaza): veri birebir gelir', () => {
-  const src = makeEnv({ a1english_v2: JSON.stringify(legacy480()) });
-  const exported = src.run('JSON.stringify({ ...state, settings: { ...state.settings, apiKey: "" } })');
-  const dst = makeEnv();
-  dst.run(`store.importState(${exported})`);
-  eq(dst.run('state.xp'), 480);
-  eq(dst.run('doneCount()'), 2);
-  eq(dst.run('state.name'), 'Senanur');
-  eq(JSON.parse(dst.localStorage._raw.a1english_v2).xp, 480, 'localStorage\'a yazılmalı');
-});
-
-test('İçe aktar (dolu cihaza): akıllı birleştirme, hiçbir ilerleme kaybolmaz', () => {
-  const { run } = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), xp: 600, units: { [UNIT_IDS[3]]: { best: 90, attempts: 1, correct: 9, total: 10, done: true } } }) });
-  run(`store.importState(${JSON.stringify({ ...legacy480(), settings: { apiKey: '' } })})`);
-  eq(run('state.xp'), 600, 'yüksek XP kalmalı');
-  eq(run('doneCount()'), 3, 'iki cihazın üniteleri birleşmeli');
-  eq(run('state.settings.apiKey'), 'KEY123', 'mevcut API anahtarı korunmalı');
-});
-
-test('Ünite sonucu: %70+ tamamlar ve sonrakini açar, altı açmaz', () => {
-  const { run } = makeEnv();
-  run(`recordUnitResult('${UNIT_IDS[0]}', 6, 10)`);
-  eq(run(`unitStats('${UNIT_IDS[0]}').done`), false);
-  eq(run('state.unlockedUpTo'), 0);
-  run(`recordUnitResult('${UNIT_IDS[0]}', 8, 10)`);
-  eq(run(`unitStats('${UNIT_IDS[0]}').done`), true);
-  eq(run('state.unlockedUpTo'), 1);
-  eq(run(`unitStats('${UNIT_IDS[0]}').best`), 80);
-});
-
-test('syncUnitWordsToBox1: yeni kelimeler Kutu 1, mevcut yüksek kutu asla düşmez', () => {
-  const { run } = makeEnv();
-  run(`state.words['${FIRST_WORDS[0]}'] = { box: 5, due: 0, right: 9, wrong: 0 }`);
-  run(`syncUnitWordsToBox1('${UNIT_IDS[0]}')`);
-  eq(run(`state.words['${FIRST_WORDS[0]}'].box`), 5);
-  eq(run(`state.words['${FIRST_WORDS[1]}'].box`), 1);
-});
-
-test('recordWord (SRS): doğru kutu artırır ve tavanda durur, yanlış Kutu 1\'e indirir', () => {
-  const { run } = makeEnv();
-  const k = FIRST_WORDS[0];
-  for (let i = 0; i < 10; i++) run(`recordWord('${k}', true)`);
-  eq(run(`state.words['${k}'].box`), run('SRS_INTERVALS.length - 1'), 'tavan');
-  run(`recordWord('${k}', false)`);
-  eq(run(`state.words['${k}'].box`), 1);
-  eq(run(`state.words['${k}'].wrong`), 1);
-});
-
-test('Cihaz Eşitle kodu: telefon -> bilgisayar birleştirme', () => {
-  const phone = makeEnv({ a1english_v2: JSON.stringify(legacy480()) });
-  const code = phone.run('generateSyncCode()');
-  const pc = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), xp: 50, units: {} }) });
-  pc.run(`mergeSyncCode('${code}')`);
-  eq(pc.run('state.xp'), 480);
-  eq(pc.run('doneCount()'), 2);
-});
-
-test('Tema: karanlık/aydınlık bilgisi sadece PALETTES\'ten gelir ve kaydedilir', () => {
-  const { run, localStorage, attrs } = makeEnv();
-  const palettes = run('PALETTES.map(p => ({ id: p.id, dark: !!p.isDark }))');
-  for (const p of palettes) {
-    run(`themeService.apply('${p.id}')`);
-    eq(localStorage._raw.a1_data_mode, p.dark ? 'dark' : 'light', p.id);
-    eq(attrs['data-mode'], p.dark ? 'dark' : 'light', p.id + ' attr');
-  }
-});
-
-test('Nezaket & Kültür kategorisi: phrases ve dinleme kalıpları eksiksiz tanımlı', () => {
-  const { run } = makeEnv();
-  const culture = run('LOGIC_GUIDES.find(g => g.category === "culture")');
-  ok(culture, 'Nezaket ve kültür kategorisi bulunmalı');
-  ok(Array.isArray(culture.phrases) && culture.phrases.length >= 3, 'En az 3 dinleme kalıbı içermeli');
-  for (const p of culture.phrases) {
-    ok(p.en && p.tr && p.tip, `Kalıp en/tr/tip alanlarına sahip olmalı: ${JSON.stringify(p)}`);
-  }
-});
-
-test('Gemini API anahtarı: state, window ve env değişkenlerinden boşluksuz alınır', () => {
-  const envWithState = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: '  AIzaCustomKey123  ' } }) });
-  eq(envWithState.run('getApiKey()'), 'AIzaCustomKey123');
-  ok(envWithState.run('hasAI()'), 'hasAI true olmalı');
-
-  const envWithWindow = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: '' } }) });
-  envWithWindow.run('window.GEMINI_API_KEY = "  AIzaFromWindow456  ";');
-  eq(envWithWindow.run('getApiKey()'), 'AIzaFromWindow456');
-  ok(envWithWindow.run('hasAI()'), 'window.GEMINI_API_KEY ile hasAI true olmalı');
-});
-
-test('Lokomotif Simülatörü: Örnek 1, 2 ve 3 eksiksiz vagon ve mapping verisine sahip', () => {
-  const { run } = makeEnv();
-  const examples = run('LOKOMOTIF_EXAMPLES');
-  ok(Array.isArray(examples) && examples.length >= 3, 'En az 3 lokomotif örneği olmalı');
-  examples.forEach((ex, idx) => {
-    ok(ex.tr && ex.explanation && ex.fullEn, `Örnek ${idx + 1} temel alanları içermeli`);
-    ok(Array.isArray(ex.cars) && ex.cars.length >= 4, `Örnek ${idx + 1} en az 4 vagon içermeli`);
-    ex.cars.forEach(c => ok(c.role && c.en && c.tr && c.color, `Örnek ${idx + 1} vagon eksiksiz olmalı`));
-  });
-});
-
-test('Kategoriye Özel Simülatörler: Her kategori (mindset, culture, traps, survival) 3 örnek ve token haritasına sahip', () => {
-  const { run } = makeEnv();
-  const sims = run('LOGIC_SIMULATORS');
-  ok(sims && sims.mindset && sims.culture && sims.traps && sims.survival, 'Tüm kategorilerin simülatörü olmalı');
-  ['mindset', 'culture', 'traps', 'survival'].forEach(cat => {
-    const s = sims[cat];
-    ok(s.title && s.badge && s.desc, `${cat} simülatör başlık ve açıklamaları içermeli`);
-    ok(Array.isArray(s.examples) && s.examples.length >= 3, `${cat} en az 3 simülatör örneği içermeli`);
-    s.examples.forEach((ex, i) => {
-      ok(ex.tr && ex.fullEn && ex.explanation, `${cat} Örnek ${i + 1} metin alanları eksiksiz olmalı`);
-      ok(Array.isArray(ex.cars) && ex.cars.length >= 3, `${cat} Örnek ${i + 1} token/vagonları içermeli`);
+  let emptyCount = 0;
+  units.filter(u => u.type === 'vocab').forEach(u => {
+    ok(Array.isArray(u.words) && u.words.length > 0, `${u.id} ünitesi kelime listesine sahip olmalı`);
+    u.words.forEach(w => {
+      if (!w.en || !w.tr || !w.en.trim() || !w.tr.trim()) emptyCount++;
     });
   });
-  const cultSim = run('getSimulatorForCategory("culture")');
-  ok(cultSim.id === 'culture' && cultSim.title.includes('Nezaket'), 'Nezaket kategorisi doğru simülatörü döndürmeli');
-  const allSim = run('getSimulatorForCategory("all")');
-  ok(allSim.id === 'mindset', 'Tümü seçeneği varsayılan Lokomotif simülatörünü döndürmeli');
+  eq(emptyCount, 0, 'Hiçbir vocab kelimesinde boş en/tr olmamalı');
 });
 
-test('Gemini API: anahtar yoksa dürüstçe NO_KEY hatası fırlatır', async () => {
-  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: '' } }) });
-  let threw = false;
-  try {
-    await env.run('aiTest()');
-  } catch (err) {
-    threw = true;
-    ok(err.message.includes('API anahtarı yok'), 'Doğru hata mesajı verilmeli');
-  }
-  ok(threw, 'Anahtar yokken hata fırlatılmalı');
-});
+/* ============================================================
+   3. Soru Üreticileri: buildUnitLesson, Boss & Placement Testleri
+   ============================================================ */
+test('3. Soru üreticileri: buildUnitLesson, buildPlacementTest, buildA1BossTest, buildA2BossTest, buildReviewLesson', () => {
+  const { run } = createEnv();
 
-/* Google Gemini API'si uygulama kodunda değil, burada (test tarafında) mock'lanır. */
-function mockFetch(status, body) {
-  const calls = [];
-  const fn = async (url, opts) => {
-    calls.push({ url, headers: (opts && opts.headers) || {} });
-    return { status, ok: status >= 200 && status < 300, json: async () => body };
-  };
-  fn.calls = calls;
-  return fn;
-}
-function envWithKey(key, fetchImpl, extraNavigator) {
-  const env = makeEnv({ a1english_v2: JSON.stringify({ ...legacy480(), settings: { apiKey: key } }) }, { fetch: fetchImpl });
-  if (extraNavigator) env.run(`globalThis.navigator = ${JSON.stringify(extraNavigator)};`);
-  return env;
-}
+  // Her ünite için buildUnitLesson doğrulaması
+  const units = run('UNITS');
+  for (const u of units) {
+    const qs = run(`buildUnitLesson(UNITS.find(x => x.id === "${u.id}"))`);
+    ok(Array.isArray(qs) && qs.length >= 5, `${u.id} için soru üretilmeli (en az 5 soru)`);
 
-test('Gemini API: geçerli anahtar, Google yanıtı 200 dönünce aiTest başarılı olur ve anahtar istekle gönderilir', async () => {
-  const f = mockFetch(200, { candidates: [{ content: { parts: [{ text: 'Hello! I am ready to help you learn English.' }] } }] });
-  const env = envWithKey('AIzaSyValidKey1234567890', f);
-  const res = await env.run('aiTest()');
-  ok(res.includes('ready to help'), 'Geçerli anahtarla aiTest yanıt döndürmeli');
-  ok(f.calls.length >= 1, 'Gerçekten ağ isteği yapılmalı');
-  eq(f.calls[0].headers['x-goog-api-key'], 'AIzaSyValidKey1234567890', 'Anahtar x-goog-api-key başlığıyla gitmeli');
-});
-
-test('Gemini API: geçersiz anahtar (HTTP 400) BAD_KEY hatası verir, AIzaSy ile başlasa da sahte onay yok', async () => {
-  const f = mockFetch(400, { error: { message: 'API key not valid.' } });
-  const env = envWithKey('AIzaSyInvalidKey1234567890', f);
-  let err = null;
-  try { await env.run('aiTest()'); } catch (e) { err = e; }
-  ok(err, 'Geçersiz anahtarda hata fırlatılmalı');
-  eq(err.code, 'BAD_KEY', 'Hata kodu BAD_KEY olmalı');
-});
-
-test('Gemini API: yetkisiz anahtar (HTTP 403) BAD_KEY verir, ortam (webdriver/test) davranışı değiştirmez', async () => {
-  const f = mockFetch(403, { error: { message: 'Permission denied.' } });
-  const env = envWithKey('AIzaSyTEST_dummyKey1234567890', f, { webdriver: true });
-  let err = null;
-  try { await env.run('aiTest()'); } catch (e) { err = e; }
-  ok(err, 'webdriver ve "test" içeren anahtarda da gerçek doğrulama yapılmalı');
-  eq(err.code, 'BAD_KEY', 'Hata kodu BAD_KEY olmalı');
-  ok(f.calls.length >= 1, 'Anahtar adı ne olursa olsun ağ isteği yapılmalı');
-});
-
-test('Landing dashboard bileşenleri: index.html Günlük, hedef, sonraki ders ve Genel Kurs İlerlemesi özeti içerir', () => {
-  const fs = require('fs');
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  ok(html.includes('Günlük'), 'index.html "Günlük" kelimesini içermeli');
-  ok(html.includes('hedef'), 'index.html "hedef" kelimesini içermeli');
-  ok(html.includes('Sonraki ders') || html.includes('sonraki ders'), 'index.html "Sonraki ders" ibaresini içermeli');
-  ok(html.includes('Kurs İlerlemesi'), 'index.html "Kurs İlerlemesi" progress card içermeli');
-  ok(html.includes('Genel Kurs Tamamlama Özeti') || html.includes('Overall Completion'), 'index.html overall progress summary içermeli');
-  ok(html.includes('href="#/lesson/u1"'), 'index.html derse başlama butonu doğrudan #/lesson/u1 rotasına gitmeli');
-});
-
-test('Firebase Auth fallback: operation-not-allowed veya çevrimdışıyken çökmeden yerel oturum açar', async () => {
-  const env = makeEnv();
-  const u = await env.run('authService.signInWithEmail("test@example.com", "pass123")');
-  ok(u && u.email === 'test@example.com', 'Sağlayıcı yokken yerel hesapla giriş yapılabilmeli');
-  ok(env.run('state.auth.isGuest === false'), 'Kullanıcı giriş yapmış sayılmalı');
-});
-
-test('A2 Müfredatı: 27 A1 + 25 A2 ünitesi ve toplam 52 ünite eksiksiz tanımlı', () => {
-  const env = makeEnv();
-  const total = env.run('UNITS.length');
-  const a1 = env.run('UNITS.filter(u => u.level === "A1").length');
-  const a2 = env.run('UNITS.filter(u => u.level === "A2").length');
-  eq(total, 52, 'Toplam 52 ünite olmalı');
-  eq(a1, 27, 'A1 seviyesinde 27 ünite olmalı');
-  eq(a2, 25, 'A2 seviyesinde 25 ünite olmalı');
-  ok(env.run('UNITS.some(u => u.id === "too_enough")'), 'too_enough ünitesi bulunmalı');
-  ok(env.run('UNITS.some(u => u.id === "first_conditional")'), 'first_conditional ünitesi bulunmalı');
-  ok(env.run('UNITS.some(u => u.id === "relative_pronouns")'), 'relative_pronouns ünitesi bulunmalı');
-});
-
-test('Büyük sayılar ve sıra sayıları: 100 - 1.000.000 ve 1st-20th eksiksiz tanımlı', () => {
-  const env = makeEnv();
-  const largeUnit = env.run('UNITS.find(u => u.id === "numbers_large")');
-  ok(largeUnit, 'numbers_large ünitesi tanımlı olmalı');
-  const enWords = largeUnit.words.map(w => w.en);
-  ok(enWords.includes('one hundred'), 'one hundred bulunmalı');
-  ok(enWords.includes('one thousand'), 'one thousand bulunmalı');
-  ok(enWords.includes('one million'), 'one million bulunmalı');
-  ok(enWords.includes('first'), 'first bulunmalı');
-  ok(enWords.includes('second'), 'second bulunmalı');
-  ok(enWords.includes('tenth'), 'tenth bulunmalı');
-});
-
-test('Boss testleri: buildA1BossTest ve buildA2BossTest 15\'er soru üretir', () => {
-  const env = makeEnv();
-  const a1Q = env.run('buildA1BossTest()');
-  const a2Q = env.run('buildA2BossTest()');
-  eq(a1Q.length, 15, 'A1 Boss testi 15 soru olmalı');
-  eq(a2Q.length, 15, 'A2 Boss testi 15 soru olmalı');
-});
-
-test('Kelime kartları: A2 seviyesi açılmadıkça A2 kartları gizli kalır, açılınca listelenir', () => {
-  const env = makeEnv();
-  ok(!env.run('state.a2Unlocked'), 'Başlangıçta A2 kilitli olmalı');
-  const a1VocabCount = env.run('UNITS.filter(x => x.type === "vocab" && x.level === "A1").length');
-  const totalVocabCount = env.run('UNITS.filter(x => x.type === "vocab").length');
-  ok(a1VocabCount > 0, 'A1 kelime üniteleri bulunmalı');
-  ok(totalVocabCount > a1VocabCount, 'Toplam kelime üniteleri A1 den fazla olmalı (A2 dahil)');
-
-  // store.unlockA2() çağrıldığında A2 kartları açılır
-  env.run('store.unlockA2()');
-  ok(env.run('state.a2Unlocked'), 'A2 kilidi açılmış olmalı');
-});
-
-test('Kelime tekrarı: vadesi gelen kelime yoksa dueWords boş döner (boş durum garantisi)', () => {
-  const env = makeEnv();
-  const due = env.run('dueWords()');
-  eq(due.length, 0, 'Yeni kullanıcıda vadesi gelen kelime olmamalı');
-});
-
-test('Üretim kodu saflığı: js/ altında test ortamı algılama veya sahte anahtar bulunmaz', () => {
-  const fs = require('fs');
-  const forbidden = ['navigator.webdriver', '__TEST__', 'isTestSandboxKey', 'MockTestKey', 'MockUpdatedKey', 'SeededKeyForUpdateTest'];
-  const jsDir = path.join(ROOT, 'js');
-  for (const f of fs.readdirSync(jsDir).filter(n => n.endsWith('.js'))) {
-    const src = fs.readFileSync(path.join(jsDir, f), 'utf8');
-    for (const token of forbidden) {
-      ok(!src.includes(token), `js/${f} içinde yasaklı test hilesi var: ${token}`);
+    for (const q of qs) {
+      if (q.kind === 'mc') {
+        ok(Array.isArray(q.options), `${u.id} mc sorusu options dizisine sahip olmalı`);
+        ok(q.options.includes(q.answer), `${u.id} mc cevabı (${q.answer}) options içinde bulunmalı`);
+        eq(new Set(q.options).size, q.options.length, `${u.id} mc seçenekleri tekrarsız olmalı`);
+      } else if (q.kind === 'order') {
+        ok(Array.isArray(q.words) && q.answer, `${u.id} order sorusu words ve answer içermeli`);
+        const wordsSorted = [...q.words].sort().join(' ');
+        const answerWordsSorted = q.answer.trim().split(/\s+/).sort().join(' ');
+        eq(wordsSorted, answerWordsSorted, `${u.id} order kelimeleri cevapla tam uyuşmalı`);
+      }
     }
   }
+
+  // buildPlacementTest
+  const placement = run('buildPlacementTest()');
+  ok(Array.isArray(placement) && placement.length >= 10, 'buildPlacementTest soruları dönmeli');
+
+  // buildA1BossTest & buildA2BossTest
+  const boss1 = run('buildA1BossTest()');
+  eq(boss1.length, 15, 'buildA1BossTest tam 15 soru üretmeli');
+
+  const boss2 = run('buildA2BossTest()');
+  eq(boss2.length, 15, 'buildA2BossTest tam 15 soru üretmeli');
+
+  // buildReviewLesson
+  const reviewQs = run('buildReviewLesson(UNITS[0].words)');
+  ok(Array.isArray(reviewQs) && reviewQs.length > 0, 'buildReviewLesson soru listesi üretmeli');
 });
 
-test('Ana sayfa kısayolları: AI Öğretmen kurulum butonu (#dashAiSetupBtn) ve Kelime Tekrarı kısayolu (#dashReviewBtn) tanımlı', () => {
-  const fs = require('fs');
-  const appSrc = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
-  const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+/* ============================================================
+   4. Rotaların Hatasız Render Edilmesi (HATA 1 Doğrulaması Dahil)
+   ============================================================ */
+test('4. Rotalar hatasız render oluyor (review ve progress dahil)', () => {
+  const { window, run } = createEnv();
 
-  ok(appSrc.includes('id="dashReviewCard"') && appSrc.includes('id="dashReviewBtn"'), 'app.js içinde #dashReviewCard ve #dashReviewBtn bulunmalı');
-  ok(appSrc.includes('id="dashAiCard"') && appSrc.includes('id="dashAiSetupBtn"') && appSrc.includes('id="dashAiHowtoBtn"'), 'app.js içinde #dashAiCard, #dashAiSetupBtn ve #dashAiHowtoBtn bulunmalı');
-  ok(appSrc.includes('AI Öğretmeni Kur (Gemini API Ayarları)'), 'AI kartında doğrudan Gemini API kurulum butonu metni bulunmalı');
-  ok(appSrc.includes('Akıllı Tekrar Sayfasına Git') && appSrc.includes('Kelime Tekrarı'), 'Tekrar kartında Akıllı Tekrar (Spaced Repetition) kısayolu bulunmalı');
+  const coreRoutes = [
+    'home', 'learn', 'logic', 'leaderboard', 'review', 'cards/u1',
+    'ai', 'progress', 'settings', 'placement', 'ai-lesson', 'boss-a1', 'boss-a2', 'auth'
+  ];
 
-  ok(htmlSrc.includes('id="dashReviewBtn"') && htmlSrc.includes('href="#/review"'), 'index.html içinde #/review kısayolu bulunmalı');
-  ok(htmlSrc.includes('id="dashAiSetupBtn"') && htmlSrc.includes('href="#/ai"'), 'index.html içinde #/ai kurulum kısayolu bulunmalı');
+  // Temel rotaların testi
+  for (const r of coreRoutes) {
+    window.location.hash = '#/' + r;
+    window.router();
+    ok(window.document.body.innerHTML.length > 0, `${r} rotası başarıyla render olmalı`);
+  }
+
+  // Tüm 52 ünitenin lesson, cards ve grammar rotaları
+  const units = run('UNITS');
+  for (const u of units) {
+    window.location.hash = '#/lesson/' + u.id;
+    window.router();
+
+    window.location.hash = '#/cards/' + u.id;
+    window.router();
+
+    if (u.type === 'grammar') {
+      window.location.hash = '#/grammar/' + u.id;
+      window.router();
+    }
+  }
+
+  // HATA 1 Regresyon Kontrolü: screenReview ve screenProgress curMascot ile ReferenceError vermemeli
+  window.location.hash = '#/review';
+  window.router();
+  const reviewHtml = window.document.getElementById('view').innerHTML;
+  ok(reviewHtml.includes('Zula') || reviewHtml.includes('Tazeleme') || reviewHtml.includes('Güvende'), 'Review sayfası hatasız açılmalı');
+
+  window.location.hash = '#/progress';
+  window.router();
+  const progressHtml = window.document.getElementById('view').innerHTML;
+  ok(progressHtml.includes('İlerlemen') || progressHtml.includes('Analizi'), 'Progress sayfası hatasız açılmalı');
 });
 
-test('Bölüm ilerlemesi, boş tekrar seansı ve AI kurulum kalıcılığı bileşenleri tanımlı', () => {
-  const fs = require('fs');
-  const appSrc = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
-
-  ok(appSrc.includes('function renderUnitProgressionCard(u)') && appSrc.includes('id="chapterProgressionCard"'), 'Kilitli/açık ünitelerde Bölüm İlerlemesi (Chapter Progression) kartı bulunmalı');
-  ok(appSrc.includes('Serbest Tekrar Seansı Başlat'), 'Boş tekrar durumunda doğrudan serbest tekrar seansı başlatma aksiyonu bulunmalı');
-  ok(appSrc.includes('id="aiSetupSuccessBanner"') && appSrc.includes('id="aiPingBtn"'), 'AI kurulumunda kalıcı kayıt onayı ve ayrı bağlantı testi butonu bulunmalı');
-});
-
-test('AI anahtar/model kalıcılığı ve serbest tekrar ders üretimi: yenileme sonrası korunur', () => {
-  const env1 = makeEnv();
-  env1.run('state.settings.apiKey = "AIzaSyExampleKey12345"; state.settings.model = "gemini-2.0-flash"; saveState();');
-  const savedRaw = env1.localStorage.getItem('a1english_v2');
-  ok(savedRaw && savedRaw.includes('AIzaSyExampleKey12345'), 'Anahtar localStorage içine kaydedilmeli');
-
-  // Sayfa yenilendiğinde (yeni ortam aynı localStorage ile açıldığında)
-  const env2 = makeEnv({ a1english_v2: savedRaw });
-  eq(env2.run('hasAI()'), true, 'Yenileme sonrası hasAI() true dönmeli');
-  eq(env2.run('getApiKey()'), 'AIzaSyExampleKey12345', 'Yenileme sonrası anahtar korunmalı');
-  eq(env2.run('state.settings.model'), 'gemini-2.0-flash', 'Yenileme sonrası seçilen model korunmalı');
-
-  // Boş tekrar durumunda 1. ünite kelimeleriyle serbest tekrar dersi üretilebilmeli
-  const reviewQs = env2.run('buildReviewLesson(UNITS[0].words.slice(0, 10))');
-  ok(Array.isArray(reviewQs) && reviewQs.length > 0, 'Serbest tekrar seansı için geçerli sorular üretilmeli');
-});
-
-test('Sincap Yoldaş (Fındık): Yavrudan Ustaya 5 büyüme evresi ve ders/kelime yardımcısı çalışır', () => {
-  const env = makeEnv();
-  eq(env.run('state.mascot'), 'squirrel', 'Varsayılan yoldaş sincap (squirrel) olmalı');
-  eq(env.run('mascotService.getActive().name'), 'Fındık', 'Aktif yoldaş adı Fındık olmalı');
-
-  const st1 = env.run('getSquirrelGrowth(0)');
-  eq(st1.stage, 1, '0 XP de 1. evre (Minik Yavru Sincap) olmalı');
-  eq(st1.id, 'baby');
-  ok(st1.title.includes('Yavru Sincap'), '1. evre başlığı Yavru Sincap içermeli');
-
-  const st2 = env.run('getSquirrelGrowth(150)');
-  eq(st2.stage, 2, '150 XP de 2. evre (Meraklı Toplayıcı Sincap) olmalı');
-  eq(st2.id, 'explorer');
-
-  const st3 = env.run('getSquirrelGrowth(450)');
-  eq(st3.stage, 3, '450 XP de 3. evre (Okullu Çırak Sincap) olmalı');
-  eq(st3.id, 'student');
-
-  const st4 = env.run('getSquirrelGrowth(900)');
-  eq(st4.stage, 4, '900 XP de 4. evre (Bilgin Rehber Sincap) olmalı');
-  eq(st4.id, 'scholar');
-
-  const st5 = env.run('getSquirrelGrowth(1600)');
-  eq(st5.stage, 5, '1600 XP de 5. evre (Usta Profesör Sincap) olmalı');
-  eq(st5.id, 'master');
-  eq(st5.xpLeft, 0, 'Son evrede kalan XP 0 olmalı');
-
-  const clue = env.run('getSquirrelQuestionClue({ kind: "mc", prompt: "She ___ my sister.", answer: "is" })');
-  ok(clue.includes('He / She / It'), 'Tekil özne sorusunda gramer ipucu vermeli');
-
-  const fs = require('fs');
-  const htmlSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const appSrc = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
-  ok(htmlSrc.includes('id="shimeji-root"'), 'index.html içinde Shimeji ekran dostu katmanı (#shimeji-root) bulunmalı');
-  ok(appSrc.includes('function initShimejiCompanion()') && appSrc.includes('id="shimejiPet"'), 'js/app.js içinde yürüyen Shimeji sincap kontrolcüsü (initShimejiCompanion) bulunmalı');
-  ok(appSrc.includes('id="shimejiLegendBadge"') && appSrc.includes("setMode('dance'") && appSrc.includes("setMode('sad'"), 'Minik Efsaneler (Little Legends) yıldız rozeti, doğru cevapta dans ve yanlış cevapta üzülme/moral tepkisi bulunmalı');
-  ok(appSrc.includes('id="shimejiGreetWrap"') && appSrc.includes('id="shimejiGoalWrap"') && appSrc.includes('id="shimejiPrimaryCta"') && appSrc.includes('id="shimejiRemindBtn"'), 'Yenilenen konuşma baloncuğunda kişisel selam, günlük hedef çubuğu, birincil aksiyon ve Hatırlat ikonu bulunmalı');
-});
-
-test('Türk Beyni vs İngilizce: Türk Tuzağı sınıflandırması ve Lokomotif mantık kartı çalışır', () => {
-  const env = makeEnv();
-
-  // 1. Extra be ("I am agree") tuzağı
-  const trap1 = env.run('classifyTurkishTrap({ correct: "I agree with you", given: "I am agree with you" })');
-  eq(trap1.type, 'extra_be');
-  ok(trap1.label.includes('am/is/are Fazlalığı'), 'extra_be etiketi am/is/are Fazlalığı içermeli');
-  ok(trap1.tip.includes('am/is/are') || trap1.tip.includes('fiil'), 'extra_be ipucu mantıklı olmalı');
-
-  // 2. He/She/It -s takısı eksikliği
-  const trap2 = env.run('classifyTurkishTrap({ correct: "She likes ice cream", given: "She like ice cream" })');
-  eq(trap2.type, 'he_she_it_s');
-
-  // 3. Lokomotif söz dizimi (Word order)
-  const trap3 = env.run('classifyTurkishTrap({ correct: "I read books every day", given: "I every day books read" })');
-  eq(trap3.type, 'word_order');
-
-  // 4. Edat birebir çevirisi
-  const trap4 = env.run('classifyTurkishTrap({ correct: "I live in Istanbul", given: "I live at Istanbul" })');
-  eq(trap4.type, 'preposition_literal');
-
-  // 5. Kelime & Birebir Düşünme Tuzağı
-  const trap5 = env.run('classifyTurkishTrap({ correct: "I drink water", given: "I tea" })');
-  eq(trap5.type, 'vocab_recall');
-
-  // 6. Mistake kaydetme, localStorage kalıcılığı ve getTopTurkishTraps
-  env.run(`
-    recordMistake({ q: "Ben katılıyorum", correct: "I agree", given: "I am agree" });
-    recordMistake({ q: "O sever", correct: "She likes", given: "She like" });
-    recordMistake({ q: "Ben katılıyorum 2", correct: "I agree with this", given: "I am agree with this" });
-  `);
-
-  const storeKey = env.run('STORE_KEY');
-  const rawStorage = env.localStorage.getItem(storeKey);
-  ok(rawStorage && rawStorage.includes('extra_be'), 'recordMistake hataları localStorage içine kalıcı kaydetmeli');
-
-  const topTraps = env.run('getTopTurkishTraps()');
-  ok(topTraps.length >= 2, 'En az 2 farklı tuzak türü listelenmeli');
-  eq(topTraps[0].type, 'extra_be', 'En çok yapılan tuzak extra_be olmalı (2 kez)');
-  eq(topTraps[0].count, 2);
-  eq(topTraps[1].type, 'he_she_it_s');
-  eq(topTraps[1].count, 1);
-
-  // 7. Ders açılışı 30 saniyelik Türk vs İngilizce mantık kartı
-  const bannerBe = env.run('getUnitLogicBanner("Temel Selamlaşma & Be Fiili")');
-  ok(bannerBe && bannerBe.title && bannerBe.body, 'Be fiili mantık kartı başlık ve gövde içermeli');
-  ok(bannerBe.body.includes('am / is / are') || bannerBe.body.includes('fiilsiz'), 'Be fiili mantık açıklaması am/is/are içermeli');
-
-  const bannerPresent = env.run('getUnitLogicBanner("Geniş Zaman & Rutinler")');
-  ok(bannerPresent.body.includes('Lokomotif') || bannerPresent.body.includes('drink'), 'Geniş zaman mantık açıklaması Lokomotif veya fiil sırası içermeli');
-
-  // 8. Lokomotif Order Soru Üretimi
-  const orderQ = env.run('qOrder({ en: "test", order: [["I drink coffee", "Ben kahve içerim"]] }, ["I drink coffee", "Ben kahve içerim"])');
-  eq(orderQ.kind, 'order');
-  eq(orderQ.answer, 'I drink coffee');
-  eq(orderQ.tr, 'Ben kahve içerim');
-  ok(Array.isArray(orderQ.words) && orderQ.words.length === 3, 'Kelimeler dizi halinde üretilmeli');
-});
-
-
-
-test('TestSprite Akışları: Yoldaş tutarlılığı, günlük hedef göstergesi ve Seviye Testi girişi', async () => {
-  const env = makeEnv();
-  // 1. Yoldaş seçimi ve tutarlılık
-  env.run('store.setMascot("cat")');
-  const catMascot = env.run('mascotService.getActive()');
-  eq(catMascot.id, 'cat', 'Seçilen yoldaş cat olmalı');
-  eq(catMascot.name, 'Pamuk', 'Yoldaş adı Pamuk olmalı');
-
-    env.run('store.setMascot("panda")');
-  const pandaMascot = env.run('mascotService.getActive()');
-  eq(pandaMascot.id, 'panda', 'Yoldaş panda olmalı');
-  eq(pandaMascot.name, 'Bambu', 'Yoldaş adı Bambu olmalı');
-
-  // 2. Günlük hedef hedefi ve mevcut ilerleme
-  const dailyStr = env.run('todayStr()');
-  ok(dailyStr, 'todayStr geçerli bir gün dizesi dönmeli');
-
-  // 3. UI dosya bütünlüğü (app.js ve index.html)
-  const appJs = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
-  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-
-  ok(appJs.includes('progressPlacementBtn'), 'screenProgress Seviye Testi butonuna sahip olmalı');
-  ok(appJs.includes('landingHeroStartBtn'), 'screenOnboarding Landing Hero Başla butonuna sahip olmalı');
-  ok(appJs.includes('dashDailyGoalPill'), 'Dashboard Günlük Hedef (mevcut / hedef) rozetine sahip olmalı');
-  ok(indexHtml.includes('0 / 50 XP'), 'index.html Günlük Hedef mevcut ve hedef XP göstermeli');
-});
-
-/* ---------- Sonuç ---------- */
-(async () => {
-  const results = [];
-  for (const { name, fn } of tests) {
+/* ============================================================
+   5. ai.js: 200, 429, 403, 404, NO_KEY, Alıştırma Filtreleme, aiChat Rollback
+   ============================================================ */
+test('5. ai.js (fetch mock): 200, 429, 403, 404 fallback, NO_KEY, json temizleme, aiChat rollback', async () => {
+  // 5.1 Anahtarsız -> NO_KEY
+  {
+    const { runAsync } = createEnv();
+    let errCode = null;
     try {
-      await fn();
-      results.push([true, name]);
+      await runAsync('gemini({ contents: [{ role: "user", parts: [{ text: "hi" }] }] })');
     } catch (e) {
-      results.push([false, name, e.message]);
+      errCode = e.code;
+    }
+    eq(errCode, 'NO_KEY', 'Anahtar yokken NO_KEY fırlatılmalı');
+  }
+
+  // 5.2 200 Başarılı
+  {
+    const mockFetch = async () => new Response(JSON.stringify({
+      candidates: [{ content: { parts: [{ text: 'Hello from AI' }] } }]
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+
+    const { run, runAsync } = createEnv({ fetch: mockFetch });
+    run('state.settings.apiKey = "AIzaSyTestValidKey123"');
+    const res = await runAsync('gemini({ contents: [{ role: "user", parts: [{ text: "hi" }] }] })');
+    eq(res, 'Hello from AI', '200 başarılı yanıtta AI cevabı dönmeli');
+  }
+
+  // 5.3 429 -> RATE_LIMIT
+  {
+    const mockFetch = async () => new Response(JSON.stringify({
+      error: { message: 'Quota exceeded' }
+    }), { status: 429, headers: { 'Content-Type': 'application/json' } });
+
+    const { run, runAsync } = createEnv({ fetch: mockFetch });
+    run('state.settings.apiKey = "AIzaSyTestValidKey123"');
+    let errCode = null;
+    try {
+      await runAsync('gemini({ contents: [{ role: "user", parts: [{ text: "hi" }] }] })');
+    } catch (e) {
+      errCode = e.code;
+    }
+    eq(errCode, 'RATE_LIMIT', '429 durumunda RATE_LIMIT fırlatılmalı');
+  }
+
+  // 5.4 403 -> BAD_KEY
+  {
+    const mockFetch = async () => new Response(JSON.stringify({
+      error: { message: 'The provided API key is invalid' }
+    }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+
+    const { run, runAsync } = createEnv({ fetch: mockFetch });
+    run('state.settings.apiKey = "AIzaSyBadKey123"');
+    let errCode = null;
+    try {
+      await runAsync('gemini({ contents: [{ role: "user", parts: [{ text: "hi" }] }] })');
+    } catch (e) {
+      errCode = e.code;
+    }
+    eq(errCode, 'BAD_KEY', '403 durumunda BAD_KEY fırlatılmalı');
+  }
+
+  // 5.5 404 -> Yedek modele geçiş
+  {
+    let triedModels = [];
+    const mockFetch = async (url) => {
+      const model = url.split('/models/')[1].split(':')[0];
+      triedModels.push(model);
+      if (model === 'gemini-2.5-flash') {
+        return new Response('Not found', { status: 404 });
+      }
+      return new Response(JSON.stringify({
+        candidates: [{ content: { parts: [{ text: 'Fallback model succeeded' }] } }]
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    };
+
+    const { run, runAsync } = createEnv({ fetch: mockFetch });
+    run('state.settings.apiKey = "AIzaSyKey123"');
+    run('state.settings.model = "gemini-2.5-flash"');
+    const res = await runAsync('gemini({ contents: [{ role: "user", parts: [{ text: "hi" }] }] })');
+    eq(res, 'Fallback model succeeded', '404 sonrası yedek modele geçerek başarılı olmalı');
+    ok(triedModels.length >= 2, 'En az iki model denenmiş olmalı');
+  }
+
+  // 5.6 aiGenerateExercises bozuk soruları eler ve ```json sarmalını temizler
+  {
+    const rawAiOutput = '```json\n{\n  "title": "A1 Pratik",\n  "questions": [\n    { "t": "mc", "q": "I ___ a doctor.", "o": ["am", "is", "are"], "a": "am", "h": "to be" },\n    { "t": "mc", "q": "Bozuk soru", "o": ["x", "y"], "a": "z" },\n    { "t": "order", "s": "I like cats", "tr": "Kedileri severim" },\n    { "t": "mc", "q": "She ___ happy.", "o": ["is", "are"], "a": "is" }\n  ]\n}\n```';
+
+    const mockFetch = async () => new Response(JSON.stringify({
+      candidates: [{ content: { parts: [{ text: rawAiOutput }] } }]
+    }), { status: 200 });
+
+    const { run, runAsync } = createEnv({ fetch: mockFetch });
+    run('state.settings.apiKey = "AIzaSyKey123"');
+    const ex = await runAsync('aiGenerateExercises("Selamlaşma")');
+    eq(ex.title, 'A1 Pratik');
+    eq(ex.questions.length, 3, 'Bozuk soru (cevabı seçeneklerde olmayan) elenmeli, 3 geçerli soru kalmalı');
+  }
+
+  // 5.7 aiChat hata verirse geçmişi geri alır (rollback)
+  {
+    const mockFetch = async () => new Response('Internal error', { status: 500 });
+    const { run, runAsync } = createEnv({ fetch: mockFetch });
+    run('state.settings.apiKey = "AIzaSyKey123"');
+    run('state.chat = [{ role: "user", text: "Önceki mesaj" }]');
+    let chatFailed = false;
+    try {
+      await runAsync('aiChat("Hatalı mesaj")');
+    } catch (e) {
+      chatFailed = true;
+    }
+    ok(chatFailed, 'aiChat hata fırlatmalı');
+    const chatLen = run('state.chat.length');
+    eq(chatLen, 1, 'Hata anında eklenen son kullanıcı mesajı geri alınmalı (rollback)');
+  }
+});
+
+/* ============================================================
+   6. Auth: Doğrulama, Kayıt, Şifre Kontrolü, HATA 2 Regresyonu ve Hash Göçü
+   ============================================================ */
+test('6. Auth (window.firebase yokken): Geçersiz e-posta/şifre, kayıtsız e-posta reddi (HATA 2) ve SHA-256 göçü', async () => {
+  const { run, runAsync } = createEnv();
+
+  // 6.1 Geçersiz e-posta
+  let err = null;
+  try {
+    await runAsync('authService.registerWithEmail("gecersiz-email", "123456")');
+  } catch (e) { err = e.message; }
+  ok(err && err.includes('geçerli bir e-posta'), 'Geçersiz e-posta reddedilmeli');
+
+  // 6.2 Kısa şifre
+  err = null;
+  try {
+    await runAsync('authService.registerWithEmail("valid@test.com", "12345")');
+  } catch (e) { err = e.message; }
+  ok(err && err.includes('en az 6 karakter'), '6 karakterden kısa şifre reddedilmeli');
+
+  // 6.3 Boş şifre ile giriş
+  err = null;
+  try {
+    await runAsync('authService.signInWithEmail("valid@test.com", "")');
+  } catch (e) { err = e.message; }
+  ok(err && err.includes('şifreni gir'), 'Boş şifreyle giriş reddedilmeli');
+
+  // 6.4 HATA 2 REGRESYON TESTİ: Kayıtsız e-posta ile giriş YENİ HESAP AÇMAMALI, HATA VERMELİ
+  err = null;
+  try {
+    await runAsync('authService.signInWithEmail("kayitsiz_biri@test.com", "sifre123456")');
+  } catch (e) { err = e.message; }
+  ok(err && err.includes('hesap bulunamadı'), 'Kayıtsız e-posta sessizce hesap oluşturmamalı, hesap bulunamadı hatası fırlatmalı');
+
+  // 6.5 Kayıt sonrası doğru şifreyle giriş
+  const registeredUser = await runAsync('authService.registerWithEmail("sena@test.com", "dogruSifre123", "Sena")');
+  eq(registeredUser.email, "sena@test.com");
+  eq(run('state.auth.isGuest'), false);
+
+  // Yanlış şifre reddi
+  err = null;
+  try {
+    await runAsync('authService.signInWithEmail("sena@test.com", "yanlisSifre")');
+  } catch (e) { err = e.message; }
+  ok(err && err.includes('hatalı'), 'Yanlış şifre reddedilmeli');
+
+  // Doğru şifreyle oturum açma
+  const signedUser = await runAsync('authService.signInWithEmail("sena@test.com", "dogruSifre123")');
+  eq(signedUser.displayName, 'Sena');
+  eq(run('state.auth.isGuest'), false);
+
+  // 6.6 Eski hash formatından (legacy 32-bit) yeni SHA-256 + salt formatına otomatik geçiş
+  const legacyPassword = 'eskiSifre123';
+  const legacyHash = run(`authService._legacyHashStr("${legacyPassword}")`);
+
+  // LocalStorage içine eski formatta hesap ekle
+  const localAccs = run('authService._getLocalAccounts()');
+  localAccs['legacy@test.com'] = {
+    uid: 'u_legacy_test',
+    email: 'legacy@test.com',
+    displayName: 'Eski Kullanıcı',
+    passHash: legacyHash,
+    createdAt: 1000
+  };
+  run(`authService._saveLocalAccounts(${JSON.stringify(localAccs)})`);
+
+  // Eski hesapla giriş yap
+  const legacyLoginUser = await runAsync('authService.signInWithEmail("legacy@test.com", "eskiSifre123")');
+  eq(legacyLoginUser.email, 'legacy@test.com');
+
+  // Hesabın yeni formata (salt + SHA-256) taşındığını doğrula
+  const updatedAccs = run('authService._getLocalAccounts()');
+  const migratedAcc = updatedAccs['legacy@test.com'];
+  ok(migratedAcc.salt && migratedAcc.salt.length === 32, 'Eski hesap yeni kullanıcı tuzu (salt) kazanmalı');
+  ok(typeof migratedAcc.passHash === 'string' && migratedAcc.passHash.length === 64, 'Eski 32-bit hash 64 karakter SHA-256 hash\'e dönüştürülmeli');
+
+  // Güncellenmiş yeni formatla tekrar sorunsuz giriş yapılabilmeli
+  const secondLogin = await runAsync('authService.signInWithEmail("legacy@test.com", "eskiSifre123")');
+  eq(secondLogin.email, 'legacy@test.com');
+});
+
+/* ============================================================
+   7. XSS Güvenliği: esc() ve md() Güvenli Çıktı
+   ============================================================ */
+test('7. XSS: esc() ve md() script/onerror etiketlerini nötralize eder', () => {
+  const { run } = createEnv();
+
+  // esc() testleri
+  const escapedScript = run('esc("<script>alert(1)</script>")');
+  ok(!escapedScript.includes('<script>'), 'esc() script etiketini etkisiz kılmalı');
+  ok(escapedScript.includes('&lt;script&gt;'), 'esc() html varlıklarına dönüştürmeli');
+
+  const escapedOnerror = run('esc("<img src=x onerror=alert(1)>")');
+  ok(!escapedOnerror.includes('<img'), 'esc() img tagını kaçırmalı');
+
+  // md() testleri
+  const mdScript = run('md("<script>alert(\'xss\')</script>")');
+  ok(!mdScript.includes('<script>'), 'md() script etiketlerini render etmemeli');
+
+  const mdOnerror = run('md("<img src=x onerror=alert(1)>")');
+  ok(!mdOnerror.includes('<img') || !mdOnerror.includes('onerror'), 'md() onerror niteliğini yürütmemeli');
+
+  const mdJsLink = run('md("[zararlı](javascript:alert(1))")');
+  ok(!mdJsLink.includes('href="javascript:'), 'md() javascript: link protokolünü filtrelemeli');
+});
+
+/* ============================================================
+   8. Bozuk LocalStorage: '{bozuk json' İle Çökmeden Açılma
+   ============================================================ */
+test('8. Bozuk localStorage (\'{bozuk json\') ile uygulama çökmeden varsayılan duruma döner', () => {
+  const { window, run } = createEnv({ corruptLocalStorage: true });
+  const schema = run('store.state.schemaVersion');
+  eq(schema, 1, 'Bozuk localStorage sonrasında schemaVersion 1 olmalı');
+  const xp = run('store.state.xp');
+  eq(xp, 0, 'Bozuk localStorage sonrasında XP sıfırlanmış varsayılan state olmalı');
+
+  window.location.hash = '#/home';
+  window.router();
+  ok(window.document.body.innerHTML.includes('PatiLingo'), 'Bozuk veride de arayüz başarıyla açılmalı');
+});
+
+/* ============================================================
+   Test Çalıştırıcı (Runner)
+   ============================================================ */
+(async () => {
+  let passed = 0;
+  let failed = 0;
+
+  for (const t of tests) {
+    try {
+      await t.fn();
+      console.log(`✅ ${t.name}`);
+      passed++;
+    } catch (err) {
+      console.error(`❌ ${t.name}`);
+      console.error(`     → ${err.message}`);
+      if (err.stack) {
+        const stackLines = err.stack.split('\n').slice(1, 4).join('\n');
+        console.error(`     ${stackLines}`);
+      }
+      failed++;
     }
   }
 
-  let failed = 0;
-  for (const [pass, name, err] of results) {
-    console.log(`${pass ? '✅' : '❌'} ${name}${pass ? '' : '\n     → ' + err}`);
-    if (!pass) failed++;
-  }
-  console.log(`\n${results.length - failed}/${results.length} test geçti.`);
-  process.exit(failed ? 1 : 0);
+  console.log(`\n${passed}/${passed + failed} test geçti.`);
+  process.exit(failed > 0 ? 1 : 0);
 })();

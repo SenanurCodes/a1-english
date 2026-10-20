@@ -165,7 +165,7 @@ class AuthService {
     }
 
     // 2. Yalnızca ağ erişimi yokken yerel çevrimdışı hesap aç
-    const uId = 'u_' + Math.abs(this._hashStr(cleanEmail + '_' + Date.now()));
+    const uId = 'u_' + Math.abs(this._legacyHashStr(cleanEmail + '_' + Date.now()));
     const localUser = {
       uid: uId,
       email: cleanEmail,
@@ -174,10 +174,14 @@ class AuthService {
       createdAt: Date.now()
     };
 
+    const salt = this._generateSalt();
+    const passHash = await this._hashPassword(password, salt);
+
     const accs = this._getLocalAccounts();
     accs[cleanEmail] = {
       ...localUser,
-      passHash: this._hashStr(password)
+      salt,
+      passHash
     };
     this._saveLocalAccounts(accs);
 
@@ -235,45 +239,85 @@ class AuthService {
     // 2. Çevrimdışı veya yerel hesap listesinde varsa şifreyi kontrol et
     const accs = this._getLocalAccounts();
     const existing = accs[cleanEmail];
-    if (existing) {
-      if (existing.passHash && existing.passHash !== this._hashStr(password)) {
-        throw new Error('E-posta veya şifre hatalı.');
-      }
-      const u = {
-        uid: existing.uid,
-        email: cleanEmail,
-        displayName: existing.displayName || cleanEmail.split('@')[0],
-        photoURL: null
-      };
-      this.store.setAuth(u, false, 'email');
-      return u;
+    if (!existing) {
+      throw new Error('Bu e-posta adresine ait bir hesap bulunamadı. Lütfen önce kayıt ol.');
     }
 
-    // Sağlayıcı kapalıyken veya test ortamında yerel hesap oluşturup oturum aç
-    const uId = 'u_' + Math.abs(this._hashStr(cleanEmail + '_' + Date.now()));
-    const localUser = {
-      uid: uId,
+    let isPasswordCorrect = false;
+    let needsMigration = false;
+
+    if (existing.salt && existing.passHash) {
+      // Modern SHA-256 + salt formatı
+      const computedHash = await this._hashPassword(password, existing.salt);
+      if (computedHash === existing.passHash) {
+        isPasswordCorrect = true;
+      }
+    } else if (existing.passHash !== undefined) {
+      // Eski (legacy) 32-bit hash kontrolü
+      const legacy = this._legacyHashStr(password);
+      if (existing.passHash === legacy || String(existing.passHash) === String(legacy)) {
+        isPasswordCorrect = true;
+        needsMigration = true;
+      }
+    }
+
+    if (!isPasswordCorrect) {
+      throw new Error('E-posta veya şifre hatalı.');
+    }
+
+    // Eski formattan yeni SHA-256 + salt formatına otomatik geçiş
+    if (needsMigration) {
+      const newSalt = this._generateSalt();
+      existing.salt = newSalt;
+      existing.passHash = await this._hashPassword(password, newSalt);
+      this._saveLocalAccounts(accs);
+    }
+
+    const u = {
+      uid: existing.uid,
       email: cleanEmail,
-      displayName: cleanEmail.split('@')[0],
-      photoURL: null,
-      createdAt: Date.now()
+      displayName: existing.displayName || cleanEmail.split('@')[0],
+      photoURL: null
     };
-    accs[cleanEmail] = {
-      ...localUser,
-      passHash: this._hashStr(password)
-    };
-    this._saveLocalAccounts(accs);
-    this.store.setAuth(localUser, false, 'email');
-    return localUser;
+    this.store.setAuth(u, false, 'email');
+    return u;
   }
 
-  _hashStr(str) {
+  _generateSalt() {
+    const arr = new Uint8Array(16);
+    const cryptoObj = (typeof window !== 'undefined' && window.crypto) || (typeof crypto !== 'undefined' ? crypto : null);
+    if (cryptoObj && typeof cryptoObj.getRandomValues === 'function') {
+      cryptoObj.getRandomValues(arr);
+    } else {
+      for (let i = 0; i < 16; i++) arr[i] = Math.floor(Math.random() * 256);
+    }
+    return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async _hashPassword(password, salt) {
+    const cryptoObj = (typeof window !== 'undefined' && window.crypto && window.crypto.subtle)
+      ? window.crypto
+      : ((typeof crypto !== 'undefined' && crypto.subtle) ? crypto : null);
+    if (cryptoObj && cryptoObj.subtle && typeof cryptoObj.subtle.digest === 'function') {
+      const enc = new TextEncoder();
+      const data = enc.encode(salt + ':' + password);
+      const digest = await cryptoObj.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    return 'legacy_' + this._legacyHashStr(salt + ':' + password);
+  }
+
+  _legacyHashStr(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = ((hash << 5) - hash) + str.charCodeAt(i);
       hash |= 0;
     }
     return hash;
+  }
+
+  _hashStr(str) {
+    return this._legacyHashStr(str);
   }
 
   _getLocalAccounts() {

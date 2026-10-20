@@ -1,0 +1,21 @@
+{
+  "name": "a1-english",
+  "version": "2.9.20",
+  "description": "PatiLingo - A1 & A2 English Learning PWA",
+  "main": "sw.js",
+  "scripts": {
+    "test": "node tests/run-tests.js"
+  },
+  "keywords": [
+    "english",
+    "pwa",
+    "learning",
+    "gamification"
+  ],
+  "author": "Senanur Bildi",
+  "license": "MIT",
+  "devDependencies": {
+    "acorn": "^8.16.0",
+    "jsdom": "^26.0.0"
+  }
+}
