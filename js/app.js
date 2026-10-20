@@ -896,6 +896,7 @@ function renderMascotStageSVG(mascotId = 'squirrel', stageId = 'baby', mood = 'n
 
 function applyMascotChange(mId) {
   if (!MASCOT_BY_ID[mId]) return;
+  state.mascot = mId;
   store.setMascot(mId);
   saveState();
   const route = (location.hash.replace('#/', '') || 'home').split('/')[0];
@@ -937,7 +938,7 @@ function openMascotSelectModal() {
     </div>
   `);
 
-  $('.mascot-choice-row').forEach(row => {
+  $$('.mascot-choice-row').forEach(row => {
     row.onclick = () => {
       const mId = row.dataset.m;
       closeModal();
@@ -3109,9 +3110,7 @@ function screenSettings() {
       $$('.mascot-card').forEach(c => c.classList.remove('active'));
       card.classList.add('active');
       const mId = card.dataset.m;
-      store.setMascot(mId);
-      renderNav('settings');
-      toast(`Yoldaşın ${MASCOT_BY_ID[mId].name} (${MASCOT_BY_ID[mId].icon}) seçildi!`);
+      applyMascotChange(mId);
     };
   });
 
@@ -3674,12 +3673,14 @@ function initShimejiCompanion() {
     const latestSq = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : sq;
     const nextScale = scaleMap[latestSq.id] || 1;
     const targetMood = forcedMood || currentMood;
-    if (spriteInnerEl && (shimejiController?.lastStageId !== latestSq.id || shimejiController?.lastMood !== targetMood)) {
-      spriteInnerEl.innerHTML = renderSquirrelStageSVG(latestSq.id, targetMood);
+    const activeMascot = mascotService.getActive();
+    if (spriteInnerEl && (shimejiController?.lastStageId !== latestSq.id || shimejiController?.lastMood !== targetMood || shimejiController?.lastMascotId !== activeMascot.id)) {
+      spriteInnerEl.innerHTML = renderMascotStageSVG(activeMascot.id, latestSq.id, targetMood);
       spriteInnerEl.style.transform = `scale(${nextScale})`;
       if (shimejiController) {
         shimejiController.lastStageId = latestSq.id;
         shimejiController.lastMood = targetMood;
+        shimejiController.lastMascotId = activeMascot.id;
       }
     }
     if (petEl) petEl.style.setProperty('--shimeji-scale', nextScale);
@@ -3710,7 +3711,7 @@ function initShimejiCompanion() {
 
     if (newMode === 'dance') setEmote('🎵 ✨ 🎉');
     else if (newMode === 'sad') setEmote('🥺 💧 💪');
-    else if (newMode === 'munch') setEmote('🌰 🧡');
+    else if (newMode === 'munch') { const active = mascotService.getActive(); setEmote((active.itemIcon || '🌰') + ' 🧡'); }
     else if (newMode === 'sleep') setEmote('💤');
     else setEmote('');
   }
@@ -4084,11 +4085,29 @@ function initShimejiCompanion() {
 
   syncViewportEdgeClasses();
 
+  function onMascotChanged() {
+    if (shimejiController) {
+      shimejiController.lastMascotId = null;
+    }
+    refreshAppearance('dance');
+    const active = mascotService.getActive();
+    setEmote(active.itemIcon);
+    setTimeout(() => setEmote(''), 2500);
+    showBubble(
+      `🎉 <b>${esc(active.name)}</b> yanında! ${esc(active.motto)}`,
+      `${active.icon} ${esc(active.name)}`,
+      5500,
+      'dance'
+    );
+  }
+
   shimejiController = {
     timerId,
     lastStageId: sq.id,
     lastMood: 'normal',
+    lastMascotId: mascotService.getActive().id,
     refreshAppearance,
+    onMascotChanged,
     showBubble,
     closeBubble,
     setMode,

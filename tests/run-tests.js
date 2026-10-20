@@ -249,6 +249,28 @@ test('4. Rotalar hatasız render oluyor (review ve progress dahil)', () => {
   window.router();
   const progressHtml = window.document.getElementById('view').innerHTML;
   ok(progressHtml.includes('İlerlemen') || progressHtml.includes('Analizi'), 'Progress sayfası hatasız açılmalı');
+
+  // Yoldaş Değişimi & Canlı Modal Doğrulaması (Pamuk, Bambu, Fındık)
+  run(`
+    store.setMascot('cat');
+    applyMascotChange('cat');
+  `);
+  eq(run('mascotService.getActive().id'), 'cat', 'Aktif yoldaş Pamuk (cat) olmalı');
+  const catSvg = run('renderMascotStageSVG("cat", "baby", "normal")');
+  ok(catSvg.includes('yarn') || catSvg.includes('Yün Yumağı'), 'Kedi SVG tüy/yün yumağı içermeli');
+
+  run(`
+    store.setMascot('panda');
+    applyMascotChange('panda');
+  `);
+  eq(run('mascotService.getActive().id'), 'panda', 'Aktif yoldaş Bambu (panda) olmalı');
+  const pandaSvg = run('renderMascotStageSVG("panda", "baby", "normal")');
+  ok(pandaSvg.includes('bamboo') || pandaSvg.includes('Bambu'), 'Panda SVG bambu filizi içermeli');
+
+  run('openMascotSelectModal()');
+  const choiceRows = window.document.querySelectorAll('.mascot-choice-row');
+  eq(choiceRows.length, 3, 'Yoldaş seçim modalında 3 hayvan olmalı');
+  run('closeModal()');
 });
 
 /* ============================================================
