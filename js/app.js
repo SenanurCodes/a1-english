@@ -243,11 +243,20 @@ function screenOnboarding() {
 
   view().innerHTML = `
     <div class="onboard" style="width:100%;max-width:640px;margin:0 auto;padding-bottom:32px;">
-      <div class="onboard-hero">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
+      <!-- Landing Hero & Start Action CTA -->
+      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:12px 16px 20px;">
+        <div class="onboard-hero">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
       <h1 class="rainbow-text">PatiLingo</h1>
       <p class="lead">Sana özel yoldaşın ve renklerinle İngilizce öğrenmeye başla! 🎈</p>
+        <div id="landingCtaRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0;">
+          <button class="btn btn-big btn-primary hero-action-btn" id="landingHeroStartBtn" style="min-width:220px;font-size:1.15rem;box-shadow:0 6px 0 var(--primary-d);">
+            🚀 Öğrenmeye Başla
+          </button>
+          <a class="btn btn-big btn-ghost" id="landingPlacementBtn" href="#/placement">📝 Seviye Testi</a>
+        </div>
+      </div>
       
-      <div class="card onboard-card" style="width:100%;max-width:640px;box-sizing:border-box;">
+      <div class="card onboard-card" id="onboardSetupCard" style="width:100%;max-width:640px;box-sizing:border-box;">
         <label class="lbl">Sana nasıl hitap edelim?</label>
         <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${state.name !== 'Öğrenci' ? esc(state.name) : ''}" />
 
@@ -305,7 +314,7 @@ function screenOnboarding() {
       <div class="card onboard-daily-preview" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
           <span class="badge" style="font-weight:700;">🎯 Günlük Hedef</span>
-          <span class="muted small"><b>Günlük hedef:</b> 50 XP / gün</span>
+          <span class="muted small"><b>Günlük hedef:</b> <b>0 / 50 XP</b> (%0)</span>
         </div>
         <div class="progress thick" style="margin-bottom:12px;"><div class="bar rainbow" style="width:20%;"></div></div>
         
@@ -402,14 +411,28 @@ function screenOnboarding() {
       </div>
     </div>`;
 
+  const landingHeroBtn = $('#landingHeroStartBtn');
+  if (landingHeroBtn) {
+    landingHeroBtn.onclick = () => {
+      const setupCard = $('#onboardSetupCard');
+      if (setupCard) {
+        setupCard.scrollIntoView({ behavior: 'smooth' });
+        $('#nameIn')?.focus();
+      }
+    };
+  }
+
   // Yoldaş seçimi
   $$('.mascot-card').forEach(card => {
     card.onclick = () => {
       $$('.mascot-card').forEach(c => c.classList.remove('active'));
       card.classList.add('active');
       selectedMascot = card.dataset.m;
+      state.mascot = selectedMascot;
       store.setMascot(selectedMascot);
-      $('.onboard-hero').textContent = MASCOT_BY_ID[selectedMascot].icon;
+      saveState();
+      renderNav('');
+      if ($('.onboard-hero')) $('.onboard-hero').textContent = (MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾';
     };
   });
 
@@ -427,6 +450,7 @@ function screenOnboarding() {
   const go = to => {
     const name = $('#nameIn').value.trim() || 'Öğrenci';
     state.name = name;
+    state.mascot = selectedMascot;
     store.setMascot(selectedMascot);
     store.setTheme(selectedTheme);
     const pendingRoom = state.pendingLeagueRoom;
@@ -660,12 +684,12 @@ function screenHome() {
       <div class="card" id="mascotHeroCard" style="padding:12px 16px;margin-bottom:14px;">
         <div id="squirrelCompanionPanel" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
           <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:220px;">
-            <div id="mascotAvatarWrap" title="Fındık'a seslen!" style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb, var(--primary) 14%, var(--card));font-size:1.35rem;">
+            <div id="mascotAvatarWrap" title="${esc(curMascot.name)}'a seslen!" style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb, var(--primary) 14%, var(--card));font-size:1.35rem;">
               <span id="mascotIconEl">${curMascot.icon || '🐿️'}</span>
             </div>
             <div style="flex:1;min-width:160px;">
               <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <b style="font-size:0.9rem;">Fındık</b>
+                <b style="font-size:0.9rem;" id="mascotHeroName">${esc(curMascot.name)}</b>
                 <span class="badge" id="squirrelStageBadge" style="background:var(--primary);color:#fff;font-weight:800;padding:2px 8px;border-radius:99px;font-size:0.72rem;">${esc(sq.badge)} · ${esc(sq.title)}</span>
                 <span class="badge" id="squirrelAcornBadge" style="background:color-mix(in srgb, #F59E0B 18%, var(--card));color:var(--text);font-weight:800;font-size:0.72rem;">🌰 ${sq.acorns} Palamut</span>
               </div>
@@ -695,7 +719,7 @@ function screenHome() {
           <div class="mp-icon">🌿</div>
           <div class="mp-content">
             <div class="mp-val">${currentStreak()} <span class="mp-unit">Gün</span></div>
-            <div class="mp-lbl">${currentStreak() > 0 ? 'Çalışma Ritmi' : 'Fındık Seni Bekliyor'}</div>
+            <div class="mp-lbl">${currentStreak() > 0 ? 'Çalışma Ritmi' : `${esc(curMascot.name)} Seni Bekliyor`}</div>
           </div>
         </div>
         <div class="metric-pill">
@@ -710,6 +734,13 @@ function screenHome() {
           <div class="mp-content">
             <div class="mp-val">${lvl.done}/${UNITS.length} <span class="mp-unit">(%${lvl.pct})</span></div>
             <div class="mp-lbl">Ünite Tamamlandı</div>
+          </div>
+        </div>
+        <div class="metric-pill" id="dashDailyGoalPill" title="Günlük hedef ilerlemesi">
+          <div class="mp-icon">🎯</div>
+          <div class="mp-content">
+            <div class="mp-val">${todayXP} / 50 <span class="mp-unit">XP</span></div>
+            <div class="mp-lbl">Günlük Hedef (%${Math.min(100, Math.round((todayXP / 50) * 100))})</div>
           </div>
         </div>
       </div>
@@ -828,9 +859,9 @@ function screenHome() {
         <div class="card action-card" id="dashReviewCard" style="--c:#20C997">
           <div class="ac-emoji">🌰</div>
           <div class="ac-body">
-            <div class="muted small">Fındık'ın Palamut Zulası (Aralıklı Tekrar)</div>
-            <h3>${due > 0 ? `Zuladaki Kelimeler (${due} palamut bekliyor)` : 'Fındık\'ın Palamut Zulası'}</h3>
-            <p class="muted small">${due > 0 ? 'Sincaplar gömdükleri palamutları unutur! Fındık bu kelimeleri unutmadan zuladan çıkarıp tazeleyelim.' : 'Fındık tüm gömdüğü kelimeleri çok iyi hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.'}</p>
+            <div class="muted small">${esc(curMascot.name)}'ın Palamut Zulası (Aralıklı Tekrar)</div>
+            <h3>${due > 0 ? `Zuladaki Kelimeler (${due} palamut bekliyor)` : `${esc(curMascot.name)}'ın Palamut Zulası`}</h3>
+            <p class="muted small">${due > 0 ? `${esc(curMascot.name)} ile unutulma riski olan kelimeleri zuladan çıkarıp tazeleyelim.` : `${esc(curMascot.name)} tüm kelimeleri çok iyi hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.`}</p>
             <div class="ac-actions" style="margin-top:10px;">
               <a class="btn btn-primary" id="dashReviewBtn" href="#/review" aria-label="Akıllı Tekrar sayfasını aç">🌰 ${due > 0 ? `Zulayı Tazelemeye Başla (${due})` : 'Zuladaki Kelimeleri Gör'}</a>
             </div>
@@ -2225,7 +2256,7 @@ function screenProgress() {
 
   view().innerHTML = `
     <div class="page">
-      <header class="page-head"><div><h1>📊 İlerlemen & Öğrenme Analizi</h1><p class="muted">${lvl.label} · ${lvl.desc}</p></div></header>
+      <header class="page-head" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><h1>📊 İlerlemen & Öğrenme Analizi</h1><p class="muted">${lvl.label} · ${lvl.desc}</p></div><a class="btn btn-ghost" id="progressPlacementBtn" href="#/placement">📝 Seviye Testi</a></header>
 
       <div class="grid-4">
         <div class="stat-card grad-1"><div class="sc-icon">🌿</div><div class="sc-val">${currentStreak()}</div><div class="sc-lbl">gün ritim</div></div>
@@ -3196,9 +3227,9 @@ function initShimejiCompanion() {
   const initialGoal = getContextGoalData();
 
   root.innerHTML = `
-    <div id="shimejiPet" class="shimeji-pet state-walk" style="left:${posX}px;--shimeji-scale:${curScale};" role="region" aria-label="Eğitim Yoldaşı Minik Efsane Fındık">
+    <div id="shimejiPet" class="shimeji-pet state-walk" style="left:${posX}px;--shimeji-scale:${curScale};" role="region" aria-label="${esc(mascotService.getActive().name)} Eğitim Yoldaşı">
       <div id="shimejiEmoteFx" class="shimeji-emote-fx" aria-hidden="true"></div>
-      <div id="shimejiBubble" class="shimeji-bubble" role="dialog" aria-label="Fındık Eğitim Yoldaşı Mesajı">
+      <div id="shimejiBubble" class="shimeji-bubble" role="dialog" aria-label="${esc(mascotService.getActive().name)} Eğitim Yoldaşı Mesajı">
         <div class="shimeji-bubble-tail" aria-hidden="true"></div>
         <button type="button" class="shimeji-bubble-close" id="shimejiBubbleClose" aria-label="Kapat">✕</button>
 
@@ -3224,19 +3255,19 @@ function initShimejiCompanion() {
           <button type="button" class="shimeji-cta-secondary" id="shimejiHintBtn">İpucu</button>
         </div>
 
-        <div class="shimeji-icon-toolbar" role="group" aria-label="Fındık Etkileşimleri">
+        <div class="shimeji-icon-toolbar" role="group" aria-label="${esc(mascotService.getActive().name)} Etkileşimleri">
           <button type="button" class="shimeji-icon-btn" id="shimejiDanceBtn" aria-label="Dans" data-tooltip="Dans">${svgIcons.dance}</button>
           <button type="button" class="shimeji-icon-btn" id="shimejiFeedBtn" aria-label="Besle" data-tooltip="Besle">${svgIcons.feed}</button>
           <button type="button" class="shimeji-icon-btn" id="shimejiRemindBtn" aria-label="Hatırlat" data-tooltip="Hatırlat">${svgIcons.remind}</button>
           <button type="button" class="shimeji-icon-btn" id="shimejiSleepBtn" aria-label="Uyut" data-tooltip="Uyut">${svgIcons.sleep}</button>
         </div>
       </div>
-      <div id="shimejiSpriteWrap" class="shimeji-sprite-wrap" title="Fındık (Tıkla veya İstediğin Köşeye Sürükle)">
+      <div id="shimejiSpriteWrap" class="shimeji-sprite-wrap" title="${esc(mascotService.getActive().name)} (Tıkla veya İstediğin Köşeye Sürükle)">
         <div id="shimejiSpriteInner" style="width:100%;height:100%;transform:scale(${curScale});transform-origin:bottom center;transition:transform 0.3s ease;">
-          ${renderSquirrelStageSVG(sq.id, 'normal')}
+          ${mascotService.getActive().id === 'squirrel' ? renderSquirrelStageSVG(sq.id, 'normal') : `<div class="shimeji-companion-avatar" style="font-size:3.5rem;line-height:1;text-align:center;">${mascotService.getActive().icon}</div>`}
         </div>
       </div>
-      <div id="shimejiLegendBadge" class="shimeji-legend-badge" tabindex="0" data-tooltip="${esc(starTooltipText(sq))}" title="${esc(starTooltipText(sq))}" aria-label="${esc(starTooltipText(sq))}">${starsText(sq.stage)} Fındık</div>
+      <div id="shimejiLegendBadge" class="shimeji-legend-badge" tabindex="0" data-tooltip="${esc(starTooltipText(sq))}" title="${esc(starTooltipText(sq))}" aria-label="${esc(starTooltipText(sq))}">${starsText(sq.stage)} ${esc(mascotService.getActive().name)}</div>
     </div>
   `;
 
@@ -3273,9 +3304,10 @@ function initShimejiCompanion() {
     const latestSq = typeof getSquirrelGrowth === 'function' ? getSquirrelGrowth() : sq;
     const stars = starsText(latestSq.stage);
     const tip = starTooltipText(latestSq);
+    const activeMascot = mascotService.getActive();
     badgeEl.textContent = lessonCombo >= 2
-      ? `${stars} Fındık · 🔥 ${lessonCombo}x`
-      : `${stars} Fındık`;
+      ? `${stars} ${activeMascot.name} · 🔥 ${lessonCombo}x`
+      : `${stars} ${activeMascot.name}`;
     badgeEl.setAttribute('data-tooltip', tip);
     badgeEl.setAttribute('title', tip);
     badgeEl.setAttribute('aria-label', tip);
@@ -3298,7 +3330,7 @@ function initShimejiCompanion() {
     if (primaryCtaEl) {
       if (mode === 'sleep') {
         primaryCtaEl.textContent = 'Uyandır';
-        primaryCtaEl.setAttribute('aria-label', 'Fındık\'ı Uyandır');
+        primaryCtaEl.setAttribute('aria-label', `${mascotService.getActive().name}'ı Uyandır`);
       } else {
         const label = goal.isComplete ? 'Tekrar yap' : 'Derse başla';
         primaryCtaEl.textContent = label;

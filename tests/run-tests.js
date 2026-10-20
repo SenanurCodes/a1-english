@@ -551,6 +551,34 @@ test('Türk Beyni vs İngilizce: Türk Tuzağı sınıflandırması ve Lokomotif
 });
 
 
+
+test('TestSprite Akışları: Yoldaş tutarlılığı, günlük hedef göstergesi ve Seviye Testi girişi', async () => {
+  const env = makeEnv();
+  // 1. Yoldaş seçimi ve tutarlılık
+  env.run('store.setMascot("cat")');
+  const catMascot = env.run('mascotService.getActive()');
+  eq(catMascot.id, 'cat', 'Seçilen yoldaş cat olmalı');
+  eq(catMascot.name, 'Pamuk', 'Yoldaş adı Pamuk olmalı');
+
+  env.run('store.setMascot("dog")');
+  const dogMascot = env.run('mascotService.getActive()');
+  eq(dogMascot.id, 'dog', 'Yoldaş dog olmalı');
+  eq(dogMascot.name, 'Dost', 'Yoldaş adı Dost olmalı');
+
+  // 2. Günlük hedef hedefi ve mevcut ilerleme
+  const dailyStr = env.run('todayStr()');
+  ok(dailyStr, 'todayStr geçerli bir gün dizesi dönmeli');
+
+  // 3. UI dosya bütünlüğü (app.js ve index.html)
+  const appJs = fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8');
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+
+  ok(appJs.includes('progressPlacementBtn'), 'screenProgress Seviye Testi butonuna sahip olmalı');
+  ok(appJs.includes('landingHeroStartBtn'), 'screenOnboarding Landing Hero Başla butonuna sahip olmalı');
+  ok(appJs.includes('dashDailyGoalPill'), 'Dashboard Günlük Hedef (mevcut / hedef) rozetine sahip olmalı');
+  ok(indexHtml.includes('0 / 50 XP'), 'index.html Günlük Hedef mevcut ve hedef XP göstermeli');
+});
+
 /* ---------- Sonuç ---------- */
 (async () => {
   const results = [];
