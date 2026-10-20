@@ -1121,7 +1121,7 @@ function screenHome() {
       <div class="card game-hub-card" style="margin-bottom:20px;padding:18px;border:2px solid var(--border);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
           <div>
-            <span class="badge" style="background:#EF4444;color:#fff;font-weight:800;font-size:0.72rem;">YENİ · MÜHENDİSLİK & OYUN MODLARI</span>
+            <span class="badge" style="background:rgba(92, 124, 250, 0.1);color:var(--primary);border:1px solid rgba(92, 124, 250, 0.25);font-weight:800;font-size:0.72rem;padding:3px 10px;border-radius:99px;">🎮 YENİ · OYUN & MÜHENDİSLİK MODLARI</span>
             <h2 style="margin:4px 0 2px;font-size:1.18rem;">🎮 İngilizceyi Oynayarak Keşfet</h2>
             <p class="muted small" style="margin:0;">Metin çevirmek yerine vagonları kenetle, Türk tuzaklarını imha et veya yapay zeka ile hayatta kal!</p>
           </div>
@@ -1458,12 +1458,9 @@ function screenLogic(param) {
           <div class="loco-head">
             <div>
               <span class="badge-loco" id="simBadge">${esc(curSim.badge || '⚡ İNTERAKTİF SİMÜLATÖR')}</span>
-              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                <h2 style="margin:8px 0 4px;" id="simTitle">${esc(curSim.title || '🚂 İngilizce Cümle Lokomotifi')}</h2>
-                <a href="#/locomotive" class="btn btn-primary sm" style="font-weight:800;">🚂 Vagon Kenetleme Yapbozunu Oyna ➔</a>
-              </div>
-                <a href="#/locomotive" class="btn btn-primary sm" style="font-weight:800;">🚂 Vagon Kenetleme Yapbozunu Oyna ➔</a>
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+                <h2 style="margin:4px 0;font-size:1.2rem;" id="simTitle">${esc(curSim.title || '🚂 İngilizce Cümle Lokomotifi')}</h2>
+                <a href="#/locomotive" class="btn btn-primary sm" style="font-weight:800;padding:6px 14px;border-radius:12px;">🚂 Vagon Kenetleme Yapbozunu Oyna ➔</a>
               </div>
               <p class="muted small" style="margin:0;" id="simDesc">${esc(curSim.desc || '')}</p>
             </div>

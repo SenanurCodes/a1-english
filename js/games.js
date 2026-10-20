@@ -258,30 +258,30 @@ function screenLocomotive() {
 
   view().innerHTML = `
     <div class="page loco-puzzle-page">
-      <header class="page-head" style="margin-bottom:14px;">
+      <header class="page-head" style="margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
-            <h1 style="font-size:clamp(1.25rem, 4.5vw, 1.55rem);margin:0 0 4px;">🚂 Cümle Lokomotifi</h1>
-            <p class="muted">Metin yazmak yok! Vagonları rayların üstüne doğru sırada kenetle, SVO mantığını görsel yapbozla çöz.</p>
+            <h1 style="font-size:clamp(1.2rem, 4.5vw, 1.45rem);margin:0 0 2px;">🚂 Cümle Lokomotifi</h1>
+            <p class="muted small" style="margin:0;font-size:0.82rem;line-height:1.4;">Metin yazmak yok! Vagonları rayların üstüne kenetle, SVO mantığını çöz.</p>
           </div>
-          <div style="display:flex;gap:6px;align-items:center;">
-            <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;font-size:0.82rem;">Seviye ${p.level} / ${LOCOMOTIVE_PUZZLES.length}</span>
-            <a href="#/logic" class="btn btn-ghost sm">📘 Kural Rehberi</a>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="badge" style="background:var(--card-hover);color:var(--primary);border:1.5px solid var(--primary);font-weight:800;font-size:0.75rem;padding:4px 10px;border-radius:10px;">Seviye ${p.level} / ${LOCOMOTIVE_PUZZLES.length}</span>
+            <a href="#/logic" class="btn btn-ghost sm" style="padding:5px 10px;font-size:0.78rem;border-radius:10px;">📘 Kural Rehberi</a>
           </div>
         </div>
       </header>
 
       <!-- Hedef Cümle Paneli -->
-      <div class="card loco-target-card" style="padding:16px 20px;margin-bottom:16px;background:color-mix(in srgb, var(--primary) 6%, var(--card));border:2px solid var(--border);">
+      <div class="card loco-target-card" style="padding:14px 18px;margin-bottom:14px;background:color-mix(in srgb, var(--primary) 6%, var(--card));border:2px solid var(--border);">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
           <div>
-            <span class="badge" style="font-weight:700;margin-bottom:4px;display:inline-block;">🎯 Kurulacak Cümle</span>
-            <h2 style="margin:2px 0;font-size:1.35rem;color:var(--text);">${esc(p.tr)}</h2>
-            <div class="muted small">${esc(p.explanation)}</div>
+            <span class="badge" style="font-weight:800;font-size:0.72rem;padding:2px 8px;border-radius:99px;background:var(--card);border:1px solid var(--border);margin-bottom:4px;display:inline-block;">🎯 Kurulacak Cümle</span>
+            <h2 style="margin:2px 0 4px;font-size:1.15rem;font-weight:800;color:var(--text);">${esc(p.tr)}</h2>
+            <div class="muted small" style="font-size:0.82rem;line-height:1.35;">${esc(p.explanation)}</div>
           </div>
           <div style="text-align:right;">
-            <div style="font-size:1.8rem;">${curMascot.icon}</div>
-            <div class="muted small" style="font-weight:700;">${esc(curMascot.name)} Raylarda</div>
+            <div style="font-size:1.6rem;line-height:1;">${curMascot.icon}</div>
+            <div class="muted small" style="font-weight:700;font-size:0.72rem;margin-top:2px;">${esc(curMascot.name)} Raylarda</div>
           </div>
         </div>
       </div>
