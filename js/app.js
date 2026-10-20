@@ -213,6 +213,7 @@ function router() {
     return;
   }
 
+  document.body.classList.remove('onboarding-mode');
   window.currentActiveLessonQuestion = null;
   const r = route || 'home';
   renderNav(r === 'grammar' ? 'learn' : r);
@@ -246,190 +247,70 @@ function closeModal() { $('#modal-root').innerHTML = ''; }
    ============================================================ */
 function screenOnboarding() {
   document.body.classList.remove('focus-mode');
+  document.body.classList.add('onboarding-mode');
   renderNav('');
   let selectedMascot = state.mascot || 'squirrel';
   let selectedTheme = state.theme || 'nordic';
 
   view().innerHTML = `
-    <div class="onboard" style="width:100%;max-width:640px;margin:0 auto;padding-bottom:32px;">
-      <!-- Landing Hero & Start Action CTA -->
-      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:12px 16px 20px;">
-        <div class="onboard-hero">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
-      <h1 class="rainbow-text">PatiLingo</h1>
-      <p class="lead">Sana özel yoldaşın ve renklerinle İngilizce öğrenmeye başla! 🎈</p>
-        <div id="landingCtaRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0;">
-          <button class="btn btn-big btn-primary hero-action-btn" id="landingHeroStartBtn" style="min-width:220px;font-size:1.15rem;box-shadow:0 6px 0 var(--primary-d);">
-            🚀 Öğrenmeye Başla
-          </button>
-          <a class="btn btn-big btn-ghost" id="landingPlacementBtn" href="#/placement">📝 Seviye Testi</a>
-        </div>
-      </div>
-      
-      <div class="card onboard-card" id="onboardSetupCard" style="width:100%;max-width:640px;box-sizing:border-box;">
-        <label class="lbl">Sana nasıl hitap edelim?</label>
-        <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${state.name !== 'Öğrenci' ? esc(state.name) : ''}" />
-
-        <label class="lbl" style="margin-top:16px;">🐾 Öğrenme Yoldaşını Seç</label>
-        <div class="mascot-grid">
-          ${MASCOTS.map(m => `
-            <div class="mascot-card ${m.id === selectedMascot ? 'active' : ''}" data-m="${m.id}">
-              <div class="mascot-icon">${m.icon}</div>
-              <div class="mascot-name">${esc(m.name)}</div>
-              <div class="mascot-animal">${esc(m.animal)}</div>
-              <div class="mascot-motto">${esc(m.motto)}</div>
-            </div>
-          `).join('')}
+    <div class="onboard-isolated-wrap">
+      <div class="onboard-isolated-card">
+        <div class="onboard-brand-header">
+          <div class="onboard-hero-bubble">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
+          <h1 class="onboard-brand-title rainbow-text">PatiLingo</h1>
+          <p class="onboard-tagline">Oyunlaştırılmış & AI Destekli İngilizce Öğrenme Platformu 🎈</p>
         </div>
 
-        <label class="lbl" style="margin-top:16px;">🎨 Renk Paletini Seç</label>
-        <div class="theme-grid">
-          ${PALETTES.map(p => `
-            <div class="theme-card ${p.id === selectedTheme ? 'active' : ''}" data-t="${p.id}">
-              <div class="theme-head">
-                <span class="theme-name">${esc(p.name)}</span>
-                <div class="theme-dots">
-                  <span style="background:${p.colors.primary}"></span>
-                  <span style="background:${p.colors.accent}"></span>
-                  <span style="background:${p.colors.bg}"></span>
+        <div class="onboard-field-group">
+          <label class="lbl">Sana nasıl hitap edelim?</label>
+          <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${state.name !== 'Öğrenci' ? esc(state.name) : ''}" />
+        </div>
+
+        <div class="onboard-field-group">
+          <label class="lbl">🐾 Öğrenme Yoldaşını Seç</label>
+          <div class="mascot-grid">
+            ${MASCOTS.map(m => `
+              <div class="mascot-card ${m.id === selectedMascot ? 'active' : ''}" data-m="${m.id}">
+                <div class="mascot-icon">${m.icon}</div>
+                <div class="mascot-name">${esc(m.name)}</div>
+                <div class="mascot-animal">${esc(m.animal)}</div>
+                <div class="mascot-motto">${esc(m.motto)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="onboard-field-group">
+          <label class="lbl">🎨 Renk Paletini Seç</label>
+          <div class="theme-grid">
+            ${PALETTES.map(p => `
+              <div class="theme-card ${p.id === selectedTheme ? 'active' : ''}" data-t="${p.id}">
+                <div class="theme-head">
+                  <span class="theme-name">${esc(p.name)}</span>
+                  <div class="theme-dots">
+                    <span style="background:${p.colors.primary}"></span>
+                    <span style="background:${p.colors.accent}"></span>
+                    <span style="background:${p.colors.bg}"></span>
+                  </div>
                 </div>
+                <div class="theme-desc">${esc(p.desc)}</div>
               </div>
-              <div class="theme-desc">${esc(p.desc)}</div>
-            </div>
-          `).join('')}
-        </div>
-
-        <div class="onboard-actions" style="margin-top:18px;">
-          <button class="btn btn-big btn-primary" id="zeroBtn">🌱 Hemen Başla</button>
-          <button class="btn btn-big btn-ghost" id="placeBtn">📝 Seviye Testiyle Başla</button>
-        </div>
-
-        <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-ghost sm" id="onboardAuthBtn">🚀 Google ile Giriş Yap</button>
-          <button class="btn btn-ghost sm" id="onboardGuestBtn">👤 Misafir Olarak Hesapsız Dene</button>
-          <a class="btn btn-ghost sm" href="#/progress" id="onboardGuestProgressBtn" aria-label="Giriş Yapmadan Kurs İlerlemesini Gör">📊 Kurs İlerlemesi (Girişsiz)</a>
-        </div>
-
-        <div class="onboard-nav-links" style="margin-top:18px;padding-top:14px;border-top:1px dashed var(--border);display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-          <a class="btn btn-ghost sm" href="#/progress" aria-label="Kurs İlerlemesi ve Başarı Kartı">📊 Kurs İlerlemesi</a>
-          <a class="btn btn-ghost sm" href="#/review" id="onboardReviewShortcutBtn" aria-label="Akıllı Tekrar (Spaced Repetition) Sayfası">🔁 Akıllı Tekrar</a>
-          <a class="btn btn-ghost sm" href="#/ai" id="onboardAiShortcutBtn" aria-label="AI Öğretmen Kurulumu ve Gemini API Ayarları">🤖 AI Öğretmen Kurulumu</a>
-          <a class="btn btn-ghost sm" href="#/cards" aria-label="Kelime Kartları ve Konu Kütüphanesi">🃏 Kelime Kartları</a>
-          <a class="btn btn-ghost sm" href="#/logic" aria-label="Cümle Lokomotifi Simülatörü">🚂 Cümle Lokomotifi</a>
-          <a class="btn btn-ghost sm" href="#/lesson/u1" id="onboardLessonShortcutBtn" aria-label="A1 Dersine Başla">📖 A1 Dersine Başla</a>
-        </div>
-      </div>
-
-      <!-- Günlük Hedef & Sonraki Ders Kartı -->
-      <div class="card onboard-daily-preview" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span class="badge" style="font-weight:700;">🎯 Günlük Hedef</span>
-          <span class="muted small"><b>Günlük hedef:</b> <b>0 / 50 XP</b> (%0)</span>
-        </div>
-        <div class="progress thick" style="margin-bottom:12px;"><div class="bar rainbow" style="width:20%;"></div></div>
-        
-        <div class="next-lesson-box" style="padding-top:10px;border-top:1px dashed var(--border);">
-          <div class="muted small" style="font-weight:700;margin-bottom:4px;">📖 Sonraki ders:</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-            <div><b>Sonraki ders:</b> 👋 Selamlaşma & Tanışma (A1 Başlangıç)</div>
-            <a class="btn btn-primary sm" id="onboardNextLessonBtn" href="#/lesson/u1" aria-label="Sonraki Derse Başla">▶ Sonraki Derse Başla (+15 XP)</a>
+            `).join('')}
           </div>
         </div>
-      </div>
 
-      <!-- Akıllı Tekrar (Spaced Repetition) & Kelime Tekrarı Kısayol Kartı -->
-      <div class="card action-card onboard-review-card" id="onboardReviewCard" style="--c:#20C997;margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
-        <div class="ac-emoji">🔁</div>
-        <div class="ac-body">
-          <div class="muted small">Akıllı Tekrar (Spaced Repetition)</div>
-          <h3>Kelime Tekrarı</h3>
-          <p class="muted small">Aralıklı tekrar sistemi (SRS) ile öğrendiğin kelimeleri kalıcı hafızaya taşı.</p>
-          <div class="ac-actions" style="margin-top:10px;">
-            <a class="btn btn-primary sm" id="onboardReviewCardBtn" href="#/review" aria-label="Akıllı Tekrar (Spaced Repetition) sayfasını aç">🔁 Akıllı Tekrar Sayfasına Git</a>
-          </div>
+        <!-- İzole Aksiyon Butonları -->
+        <div class="onboard-primary-actions">
+          <button class="btn btn-big btn-primary" id="zeroBtn">🚀 Hemen Başla</button>
+          <button class="btn btn-big btn-secondary" id="placeBtn">📝 Seviye Testiyle Başla</button>
         </div>
-      </div>
 
-      <!-- AI Öğretmen & Gemini API Kurulum Kısayol Kartı -->
-      <div class="card ai-teaser onboard-ai-card" id="onboardAiCard" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
-        <div class="muted small">${icon('bot', '', 16)} AI Öğretmen & Kişisel Rehber</div>
-        <h3>Yapay zeka öğretmenini etkinleştir</h3>
-        <p class="muted">Ücretsiz bir Gemini API anahtarıyla sana özel seviye analizi, alıştırma ve sohbet pratiği.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-          <a class="btn btn-primary sm" id="onboardAiSetupBtn" href="#/ai" aria-label="AI Öğretmeni Kur: Gemini API anahtarı ayarları">🔑 AI Öğretmeni Kur (Gemini API Ayarları)</a>
-          <a class="btn btn-ghost sm" id="onboardAiHowtoBtn" href="#/ai">Nasıl yapılır?</a>
-        </div>
-      </div>
-
-      <!-- Kurs İlerlemesi & Ünite Başarı Kartı (Course Progress Card) -->
-      <div class="card onboard-progress-card" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi (Course Progress Summary)</h2>
-          <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm İlerlemeyi Gör">Tüm İlerleme ➔</a>
-        </div>
-        <div class="course-progress-summary">
-          <div class="cps-head">
-            <div class="cps-title">
-              <span class="cps-icon">📊</span>
-              <div>
-                <div class="cps-heading">Genel Kurs Tamamlama Özeti</div>
-                <div class="cps-sub muted">Tüm A1 &amp; A2 müfredatı ilerleme durumu</div>
-              </div>
-            </div>
-            <div class="cps-badge-wrap">
-              <span class="cps-badge">%0 Tamamlandı</span>
-            </div>
-          </div>
-          <div class="progress cps-progress"><div class="bar rainbow" style="width:0%;"></div></div>
-          <div class="cps-foot">
-            <span>🎯 Tamamlanan: <b>0 / ${UNITS.length} Ünite</b></span>
-            <span class="muted">${UNITS.length} ünite seni bekliyor</span>
-          </div>
-        </div>
-        <p class="muted small" style="margin-bottom:14px;">Giriş yapmadan misafir olarak üniteleri ve kelimeleri doğrudan inceleyebilirsin:</p>
-        <div class="unit-bars">
-          ${UNITS.slice(0, 5).map(u => {
-            const targetUrl = u.type === 'vocab' ? `#/cards/${u.id}` : `#/grammar/${u.id}`;
-            return `
-            <a class="ub-row" href="${targetUrl}" role="button" tabindex="0" aria-label="${esc(u.title)} ünitesi kelimelerini aç" style="text-decoration:none;color:inherit;cursor:pointer;display:flex;align-items:center;">
-              <span class="ub-name">${u.emoji} ${esc(u.title)}</span>
-              <div class="progress"><div class="bar" style="width:0%;background:${u.color}"></div></div>
-              <span class="ub-val">İncele ➔</span>
-            </a>`;
-          }).join('')}
-        </div>
-      </div>
-
-      <!-- Konu Bazlı Kelime Kartları & Kategori Kütüphanesi -->
-      <div class="card onboard-vocab-library" style="margin-top:20px;width:100%;max-width:640px;box-sizing:border-box;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🃏 Kelime Kartları & Kategori Kütüphanesi</h2>
-          <a href="#/cards" class="btn btn-ghost sm" aria-label="Tümünü Gör">Tümünü Gör ➔</a>
-        </div>
-        <p class="muted small" style="margin-bottom:16px;">Başlamadan önce kelime kategorilerini ve kart kütüphanesini doğrudan inceleyebilirsin:</p>
-        <div class="unit-grid">
-          ${UNITS.filter(x => x.type === 'vocab').slice(0, 6).map(x => `
-            <a class="unit-tile" href="#/cards/${x.id}" style="--c:${x.color}">
-              <span class="unit-tile-emoji">${x.emoji}</span>
-              <div>
-                <h3>${esc(x.title)}</h3>
-                <p class="muted small">${x.words ? x.words.length : 0} kelime</p>
-              </div>
-            </a>
-          `).join('')}
+        <div class="onboard-auth-actions">
+          <button class="btn btn-ghost" id="onboardAuthBtn">🔐 Google ile Giriş Yap</button>
+          <button class="btn btn-ghost" id="onboardGuestBtn">👤 Misafir Olarak Dene</button>
         </div>
       </div>
     </div>`;
-
-  const landingHeroBtn = $('#landingHeroStartBtn');
-  if (landingHeroBtn) {
-    landingHeroBtn.onclick = () => {
-      const setupCard = $('#onboardSetupCard');
-      if (setupCard) {
-        setupCard.scrollIntoView({ behavior: 'smooth' });
-        $('#nameIn')?.focus();
-      }
-    };
-  }
 
   // Yoldaş seçimi
   $$('.mascot-card').forEach(card => {
@@ -440,8 +321,7 @@ function screenOnboarding() {
       state.mascot = selectedMascot;
       store.setMascot(selectedMascot);
       saveState();
-      renderNav('');
-      if ($('.onboard-hero')) $('.onboard-hero').textContent = (MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾';
+      if ($('.onboard-hero-bubble')) $('.onboard-hero-bubble').textContent = (MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾';
     };
   });
 
@@ -457,7 +337,7 @@ function screenOnboarding() {
   });
 
   const go = to => {
-    const name = $('#nameIn').value.trim() || 'Öğrenci';
+    const name = $('#nameIn')?.value?.trim() || 'Öğrenci';
     state.name = name;
     state.mascot = selectedMascot;
     store.setMascot(selectedMascot);
@@ -468,6 +348,7 @@ function screenOnboarding() {
     if (to === 'zero' || to === 'guest') {
       state.onboarded = true;
       saveState();
+      document.body.classList.remove('onboarding-mode');
       if (pendingRoom) {
         joinCloudLeague(pendingRoom).then(() => {
           toast('🎉 Canlı Lige katıldın!');
@@ -482,6 +363,7 @@ function screenOnboarding() {
         router();
       }
     } else {
+      document.body.classList.remove('onboarding-mode');
       saveState();
       location.hash = '#/placement';
     }
@@ -490,12 +372,6 @@ function screenOnboarding() {
   $('#placeBtn').onclick = () => go('place');
   $('#zeroBtn').onclick = () => go('zero');
   $('#onboardGuestBtn').onclick = () => go('guest');
-  if ($('#onboardGuestProgressBtn')) {
-    $('#onboardGuestProgressBtn').onclick = () => {
-      state.onboarded = true;
-      saveState();
-    };
-  }
   $('#onboardAuthBtn').onclick = () => openAuthModal();
   $('#nameIn').onkeydown = e => { if (e.key === 'Enter') go('zero'); };
 }
@@ -4200,7 +4076,7 @@ function initShimejiCompanion() {
     syncViewportEdgeClasses();
   });
 
-  // Sürükle-Bırak ve Tıklama
+  // Sürükle-Bırak ve Tıklama (Mouse + Mobil Touch Desteği)
   let isDragging = false;
   let dragMoved = false;
   let startPointerX = 0;
@@ -4208,83 +4084,124 @@ function initShimejiCompanion() {
   let startPetX = 0;
   let startPetBottom = 0;
 
+  const handleDragStart = (clientX, clientY) => {
+    isDragging = true;
+    dragMoved = false;
+    startPointerX = clientX;
+    startPointerY = clientY;
+    startPetX = posX;
+    startPetBottom = posY;
+  };
+
+  const handleDragMove = (clientX, clientY) => {
+    if (!isDragging) return;
+    const dx = clientX - startPointerX;
+    const dy = startPointerY - clientY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      if (!dragMoved) {
+        dragMoved = true;
+        setMode('dragging', 999);
+      }
+      const minW = getSafeMinX();
+      const maxW = getSafeMaxX();
+      const maxH = Math.max(120, (window.innerHeight || 600) - 96);
+      posX = Math.max(minW, Math.min(maxW, startPetX + dx));
+      posY = Math.max(0, Math.min(maxH, startPetBottom + dy));
+      petEl.style.left = `${Math.round(posX)}px`;
+      petEl.style.bottom = `${Math.round(posY)}px`;
+      syncViewportEdgeClasses();
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    if (dragMoved) {
+      const winH = window.innerHeight || 600;
+      petEl.style.transition = 'bottom 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      if (posY > winH * 0.55) {
+        roamZone = 'top';
+        posY = Math.max(120, winH - 96);
+        petEl.style.bottom = `${Math.round(posY)}px`;
+        showBubble('🐿️ Ekranın <b>üst kenarına</b> tutundum, buradan dersine eşlik edeceğim!', null, 4500);
+      } else {
+        roamZone = 'bottom';
+        posY = 0;
+        petEl.style.bottom = '';
+        showBubble(null, null, 4500);
+      }
+      syncViewportEdgeClasses();
+      const fallTimer = setTimeout(() => {
+        if (petEl) petEl.style.transition = '';
+        setMode('jump', 18);
+      }, 430);
+      if (fallTimer && typeof fallTimer.unref === 'function') fallTimer.unref();
+    } else {
+      // Sadece tıklandı: Baloncuk kapalıysa bağlamsal mesajı aç, açıksa yeni ipucu ver
+      if (bubbleEl.classList.contains('visible')) {
+        giveSmartHelp();
+      } else {
+        if (window.currentActiveLessonQuestion && typeof getSquirrelQuestionClue === 'function') {
+          showBubble(getSquirrelQuestionClue(window.currentActiveLessonQuestion), null, 10000);
+        } else {
+          showBubble(null, null, 9000);
+        }
+        if (mode !== 'sleep') setMode('jump', 16);
+      }
+    }
+  };
+
   if (spriteWrapEl) {
+    // 1. Mouse / Pointer Events
     spriteWrapEl.onpointerdown = (e) => {
+      if (e.pointerType === 'touch') return; // Touchstart işleyecek
       if (e.button && e.button !== 0) return;
-      isDragging = true;
-      dragMoved = false;
-      startPointerX = e.clientX;
-      startPointerY = e.clientY;
-      startPetX = posX;
-      startPetBottom = posY;
+      handleDragStart(e.clientX, e.clientY);
       if (spriteWrapEl.setPointerCapture) {
         try { spriteWrapEl.setPointerCapture(e.pointerId); } catch (_) {}
       }
     };
 
     spriteWrapEl.onpointermove = (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startPointerX;
-      const dy = startPointerY - e.clientY;
-      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-        if (!dragMoved) {
-          dragMoved = true;
-          setMode('dragging', 999);
-        }
-        const minW = getSafeMinX();
-        const maxW = getSafeMaxX();
-        const maxH = Math.max(120, (window.innerHeight || 600) - 96);
-        posX = Math.max(minW, Math.min(maxW, startPetX + dx));
-        posY = Math.max(0, Math.min(maxH, startPetBottom + dy));
-        petEl.style.left = `${Math.round(posX)}px`;
-        petEl.style.bottom = `${Math.round(posY)}px`;
-        syncViewportEdgeClasses();
-      }
+      if (e.pointerType === 'touch') return;
+      handleDragMove(e.clientX, e.clientY);
     };
 
-    const endDrag = (e) => {
-      if (!isDragging) return;
-      isDragging = false;
-      if (spriteWrapEl.releasePointerCapture && e && e.pointerId !== undefined) {
+    spriteWrapEl.onpointerup = (e) => {
+      if (e.pointerType === 'touch') return;
+      if (spriteWrapEl.releasePointerCapture && e.pointerId !== undefined) {
         try { spriteWrapEl.releasePointerCapture(e.pointerId); } catch (_) {}
       }
-      if (dragMoved) {
-        const winH = window.innerHeight || 600;
-        petEl.style.transition = 'bottom 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        if (posY > winH * 0.55) {
-          roamZone = 'top';
-          posY = Math.max(120, winH - 96);
-          petEl.style.bottom = `${Math.round(posY)}px`;
-          showBubble('🐿️ Ekranın <b>üst kenarına</b> tutundum, buradan dersine eşlik edeceğim!', null, 4500);
-        } else {
-          roamZone = 'bottom';
-          posY = 0;
-          petEl.style.bottom = '';
-          showBubble(null, null, 4500);
-        }
-        syncViewportEdgeClasses();
-        const fallTimer = setTimeout(() => {
-          if (petEl) petEl.style.transition = '';
-          setMode('jump', 18);
-        }, 430);
-        if (fallTimer && typeof fallTimer.unref === 'function') fallTimer.unref();
-      } else {
-        // Sadece tıklandı: Baloncuk kapalıysa bağlamsal mesajı aç, açıksa yeni ipucu ver
-        if (bubbleEl.classList.contains('visible')) {
-          giveSmartHelp();
-        } else {
-          if (window.currentActiveLessonQuestion && typeof getSquirrelQuestionClue === 'function') {
-            showBubble(getSquirrelQuestionClue(window.currentActiveLessonQuestion), null, 10000);
-          } else {
-            showBubble(null, null, 9000);
-          }
-          if (mode !== 'sleep') setMode('jump', 16);
-        }
-      }
+      handleDragEnd();
     };
 
-    spriteWrapEl.onpointerup = endDrag;
-    spriteWrapEl.onpointercancel = endDrag;
+    spriteWrapEl.onpointercancel = (e) => {
+      if (e.pointerType === 'touch') return;
+      handleDragEnd();
+    };
+
+    // 2. Mobil Parmakla Sürükleme (Touch Events)
+    spriteWrapEl.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      if (e.touches && e.touches.length > 0) {
+        if (e.cancelable) e.preventDefault(); // Sayfa kaymasını önler
+        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    window.addEventListener('touchend', () => {
+      if (isDragging) handleDragEnd();
+    }, { passive: true });
+
+    window.addEventListener('touchcancel', () => {
+      if (isDragging) handleDragEnd();
+    }, { passive: true });
   }
 
   // Davranış Kuralı: Baloncuk günde yalnızca BİR KEZ otomatik açılsın (localStorage ile kontrol edilir)
