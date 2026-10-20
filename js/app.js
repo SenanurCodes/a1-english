@@ -2250,7 +2250,7 @@ function screenLearn() {
             <div class="boss-banner">
               <div class="boss-emoji">🏆</div>
               <div class="boss-title">B2 Büyük Finali Tamamlandı · Zirvedesin!</div>
-              <div class="boss-sub">Efsanevi başarı! 92 ünitenin tamamını ve tüm seviye finallerini fethederek PatiLingo İngilizce Şampiyonu oldun!</div>
+              <div class="boss-sub">Efsanevi başarı! 97 ünitenin tamamını ve tüm seviye finallerini fethederek PatiLingo İngilizce Şampiyonu oldun!</div>
               <a class="btn btn-secondary" href="#/boss-b2">${icon('repeat', '', 18)} B2 Finalini Tekrar Çöz</a>
             </div>
           `;

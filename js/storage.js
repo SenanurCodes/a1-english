@@ -669,8 +669,8 @@ function doneCount(level) {
 function levelInfo() {
   const countA1 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'A1').length : 27) || 27;
   const countA2 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'A2').length : 25) || 25;
-  const countB1 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'B1').length : 20) || 20;
-  const countB2 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'B2').length : 20) || 20;
+  const countB1 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'B1').length : 22) || 22;
+  const countB2 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'B2').length : 23) || 23;
 
   const doneA1 = doneCount('A1');
   const doneA2 = doneCount('A2');
@@ -715,7 +715,7 @@ function levelInfo() {
   return {
     label, desc,
     pct: activePct,
-    totalPct: Math.round((totalDone / (typeof UNITS !== 'undefined' ? UNITS.length : 92)) * 100),
+    totalPct: Math.round((totalDone / (typeof UNITS !== 'undefined' ? UNITS.length : 97)) * 100),
     done: totalDone,
     doneA1,
     doneA2,

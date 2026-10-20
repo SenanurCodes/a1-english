@@ -150,7 +150,7 @@ test('1. Tüm JS dosyaları index.html sırasıyla <script> elementleri olarak h
 test('2. UNITS: id\'ler benzersiz, vocab ünitelerinde boş en/tr yok', () => {
   const { run } = createEnv();
   const units = run('UNITS');
-  ok(Array.isArray(units) && units.length === 92, 'Müfredatta toplam 92 ünite olmalı (A1: 27, A2: 25, B1: 20, B2: 20)');
+  ok(Array.isArray(units) && units.length === 97, 'Müfredatta toplam 97 ünite olmalı (A1: 27, A2: 25, B1: 22, B2: 23)');
 
   const ids = units.map(u => u.id);
   eq(new Set(ids).size, ids.length, 'Tüm ünite id\'leri benzersiz olmalı');
