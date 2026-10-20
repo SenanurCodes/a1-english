@@ -45,7 +45,7 @@ function defaultState() {
     friends: [],          // Kod ile eklenen gerçek arkadaşlar
     leagueRoomId: null,   // Canlı senkronize lig oda ID'si
     leagueMembers: {},    // Canlı lig üyeleri { userId: { id, name, xp, streak, unitsDone, avatar, mascot, lastActive } }
-    settings: { apiKey: '', model: 'gemini-2.5-flash', rate: 0.9, sound: true, reviewLimit: 25 }
+    settings: { apiKey: '', model: 'gemini-2.5-flash', rate: 0.9, sound: true, reviewLimit: 25, shimeji: true }
   };
 }
 

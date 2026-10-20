@@ -3265,6 +3265,13 @@ function screenSettings() {
             </div>
           `).join('')}
         </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+          <label class="check" style="margin:0;cursor:pointer;">
+            <input type="checkbox" id="toggleShimeji" ${state.settings?.shimeji !== false ? 'checked' : ''} />
+            <span>🐾 <b>Yüzen Ekran Yoldaşı:</b> Ekranda serbestçe dolaşsın ve bana eşlik etsin</span>
+          </label>
+          <p class="muted small" style="margin:4px 0 0 26px;">Kapatırsan ekranda serbestçe dolaşmaz; sadece ders içi ipuçları ve kartlarda yer alır.</p>
+        </div>
       </div>
 
       <!-- Renk Paleti Seçimi -->
@@ -3334,6 +3341,15 @@ function screenSettings() {
       <div class="center mt-4"><button class="btn btn-big btn-primary" id="saveBtn">${icon('check', '', 18)} Kaydet</button></div>
     </div>`;
 
+  if ($('#toggleShimeji')) {
+    $('#toggleShimeji').onchange = (e) => {
+      state.settings.shimeji = e.target.checked;
+      saveState();
+      applyShimejiVisibility();
+      toast(e.target.checked ? 'Yüzen ekran yoldaşı açıldı! 🐾' : 'Yüzen ekran yoldaşı gizlendi.');
+    };
+  }
+
   // Yoldaş seçimi
   $$('.mascot-card').forEach(card => {
     card.onclick = () => {
@@ -3374,6 +3390,10 @@ function screenSettings() {
     state.settings.model = $('#setModel').value.trim() || 'gemini-2.5-flash';
     state.settings.rate = parseFloat($('#setRate').value);
     state.settings.sound = $('#setSound').checked;
+    if ($('#toggleShimeji')) {
+      state.settings.shimeji = $('#toggleShimeji').checked;
+      applyShimejiVisibility();
+    }
     if ($('#setReviewLimit')) {
       state.settings.reviewLimit = Math.max(5, Math.min(100, parseInt($('#setReviewLimit').value, 10) || 25));
     }
@@ -3663,9 +3683,25 @@ function openAuthModal() {
    ============================================================ */
 let shimejiController = null;
 
+function applyShimejiVisibility() {
+  const root = $('#shimeji-root');
+  if (!root) return;
+  const isEnabled = !state.settings || state.settings.shimeji !== false;
+  root.style.display = isEnabled ? '' : 'none';
+  if (isEnabled && !shimejiController) {
+    initShimejiCompanion();
+  }
+}
+
 function initShimejiCompanion() {
   const root = $('#shimeji-root');
   if (!root) return;
+
+  if (state.settings && state.settings.shimeji === false) {
+    root.style.display = 'none';
+    return;
+  }
+  root.style.display = '';
 
   const sq = typeof getSquirrelGrowth === 'function'
     ? getSquirrelGrowth()
@@ -3678,11 +3714,11 @@ function initShimejiCompanion() {
     return;
   }
 
-  // Masaüstünde sol menünün (Seri "0 gün", XP ve "Giriş Yap / Eşitle") üstüne binmemesi için güvenli yatay sınır
-  const getSafeMinX = () => ((window.innerWidth || 800) > 768 ? 290 : 18);
-  const getSafeMaxX = () => Math.max(getSafeMinX() + 40, (window.innerWidth || 800) - 96);
+  // Masaüstünde sol menünün üstüne binmemesi için güvenli yatay sınır; mobilde ekran boyunca gezinir
+  const getSafeMinX = () => ((window.innerWidth || 800) > 768 ? 290 : 12);
+  const getSafeMaxX = () => Math.max(getSafeMinX() + 30, (window.innerWidth || 800) - ((window.innerWidth || 800) > 768 ? 96 : 56));
 
-  let posX = Math.max(getSafeMinX(), Math.min(getSafeMaxX(), (window.innerWidth || 800) > 768 ? 340 : 120));
+  let posX = Math.max(getSafeMinX(), Math.min(getSafeMaxX(), (window.innerWidth || 800) > 768 ? 340 : 40));
   let posY = 0; // 0 = alt kenar, yüksek değer = üst kenar
   let roamZone = 'bottom'; // 'bottom' | 'top' | 'corners'
   let dir = 1; // 1 = sağa, -1 = sola

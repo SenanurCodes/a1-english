@@ -1,6 +1,6 @@
 {
   "name": "a1-english",
-  "version": "2.9.21",
+  "version": "2.9.22",
   "description": "PatiLingo - A1 & A2 English Learning PWA",
   "main": "sw.js",
   "scripts": {

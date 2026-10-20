@@ -2714,9 +2714,47 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 }
 
 @media (max-width: 768px) {
-  /* Mobilde kartların, butonların ve menülerin üzerini kapatmaması için yüzen yoldaşı mobilde gizle */
+  /* Mobilde kartların arkasında kalmaması ve rahatça dolaşabilmesi için optimize edildi */
   .shimeji-stage {
-    display: none !important;
+    z-index: 950 !important;
+    pointer-events: none;
+  }
+  .shimeji-pet {
+    bottom: 66px !important;
+    width: 48px !important;
+    height: 48px !important;
+    touch-action: none;
+    pointer-events: auto;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.22));
+  }
+  .shimeji-legend-badge {
+    font-size: 0.62rem !important;
+    padding: 2px 5px !important;
+    bottom: -13px !important;
+    border-radius: 6px !important;
+  }
+  .shimeji-bubble {
+    width: 250px !important;
+    max-width: calc(100vw - 28px) !important;
+    font-size: 0.8rem !important;
+    padding: 9px 12px !important;
+  }
+  .shimeji-msg-text {
+    font-size: 0.78rem !important;
+    line-height: 1.35 !important;
+  }
+  .shimeji-cta-primary,
+  .shimeji-cta-secondary {
+    font-size: 0.72rem !important;
+    padding: 5px 10px !important;
+  }
+  .shimeji-icon-btn {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .shimeji-icon-btn svg {
+    width: 14px !important;
+    height: 14px !important;
   }
 }
 
