@@ -220,7 +220,7 @@ function router() {
   const screens = {
     home: screenHome, learn: screenLearn, logic: screenLogic, leaderboard: screenLeaderboard, review: screenReview, cards: screenCards, ai: screenAI,
     progress: screenProgress, settings: screenSettings, grammar: screenGrammar, lesson: screenLesson,
-    placement: screenPlacement, 'ai-lesson': screenAILesson, 'boss-a1': screenA1Boss, 'boss-a2': screenA2Boss,
+    placement: screenPlacement, 'ai-lesson': screenAILesson, 'boss-a1': screenA1Boss, 'boss-a2': screenA2Boss, 'boss-b1': screenB1Boss, 'boss-b2': screenB2Boss,
     auth: () => { screenHome(); openAuthModal(); },
     locomotive: typeof screenLocomotive === 'function' ? screenLocomotive : screenHome,
     'trap-hunter': typeof screenTrapHunter === 'function' ? screenTrapHunter : screenHome,
@@ -1937,126 +1937,178 @@ let currentLearnWorld = null;
 
 function screenLearn() {
   if (!currentLearnWorld) {
-    currentLearnWorld = state.a2Unlocked ? 'A2' : 'A1';
+    if (state.b2Unlocked) currentLearnWorld = 'B2';
+    else if (state.b1Unlocked) currentLearnWorld = 'B1';
+    else if (state.a2Unlocked) currentLearnWorld = 'A2';
+    else currentLearnWorld = 'A1';
   }
+
   const doneA1 = UNITS.filter(u => u.level === 'A1' && unitStats(u.id).done).length;
   const doneA2 = UNITS.filter(u => u.level === 'A2' && unitStats(u.id).done).length;
-  const pctA1 = Math.round((doneA1 / 27) * 100);
-  const pctA2 = Math.round((doneA2 / 25) * 100);
-  const curMascot = mascotService.getActive();
-  const isA1 = currentLearnWorld === 'A1';
-  const unitsToShow = UNITS.filter(u => u.level === (isA1 ? 'A1' : 'A2'));
+  const doneB1 = UNITS.filter(u => u.level === 'B1' && unitStats(u.id).done).length;
+  const doneB2 = UNITS.filter(u => u.level === 'B2' && unitStats(u.id).done).length;
 
-  // Pedagojik Yol Aşamaları & Yoldaş Rehberler (Öğrenme odaklı kilometre taşları)
-  const STAGE_DIVIDERS = isA1 ? {
-    0: {
-      tag: 'Aşama 1 / 3 · A1 Temelleri',
-      title: '🌱 İlk Cümleler & Temel İletişim',
-      sub: 'Tanışma, günlük nesneler ve "to be" / varlık cümlelerinin mantığı.',
-      guideIcon: '🐿️',
-      guideName: 'Fındık Rehberliğinde'
+  const countA1 = UNITS.filter(u => u.level === 'A1').length || 27;
+  const countA2 = UNITS.filter(u => u.level === 'A2').length || 25;
+  const countB1 = UNITS.filter(u => u.level === 'B1').length || 20;
+  const countB2 = UNITS.filter(u => u.level === 'B2').length || 20;
+
+  const pctA1 = Math.round((doneA1 / countA1) * 100);
+  const pctA2 = Math.round((doneA2 / countA2) * 100);
+  const pctB1 = Math.round((doneB1 / countB1) * 100);
+  const pctB2 = Math.round((doneB2 / countB2) * 100);
+
+  const curMascot = mascotService.getActive();
+  const lvl = currentLearnWorld || 'A1';
+  const unitsToShow = UNITS.filter(u => u.level === lvl);
+
+  const STAGE_DIVIDERS_MAP = {
+    A1: {
+      0: { tag: 'Aşama 1 / 3 · A1 Temelleri', title: '🌱 İlk Cümleler & Temel İletişim', sub: 'Tanışma, günlük nesneler ve "to be" / varlık cümlelerinin mantığı.', guideIcon: '🐿️', guideName: 'Fındık Rehberliğinde' },
+      9: { tag: 'Aşama 2 / 3 · Rutinler & Zaman', title: '🏡 Günlük Yaşam & Alışkanlıklar', sub: 'Geniş zaman (Present Simple), saatler, sayılar ve rutin aktiviteler.', guideIcon: '🐱', guideName: 'Pamuk Rehberliğinde' },
+      18: { tag: 'Aşama 3 / 3 · Sosyal Hayat', title: '💬 Akıcı Diyaloglar & Soru Kalıpları', sub: 'Soru sorma, yer-yön tarifleri, tercihler ve A1 Final Hazırlığı.', guideIcon: '🐶', guideName: 'Dost Rehberliğinde' }
     },
-    9: {
-      tag: 'Aşama 2 / 3 · Rutinler & Zaman',
-      title: '🏡 Günlük Yaşam & Alışkanlıklar',
-      sub: 'Geniş zaman (Present Simple), saatler, sayılar ve rutin aktiviteler.',
-      guideIcon: '🐱',
-      guideName: 'Pamuk Rehberliğinde'
+    A2: {
+      0: { tag: 'Aşama 1 / 3 · Geçmiş Zaman', title: '⏳ Geçmiş Zaman (Past Tense) & Anılar', sub: 'Was/were, düzenli ve düzensiz geçmiş fiillerle olay anlatımı.', guideIcon: '🐼', guideName: 'Bambu Rehberliğinde' },
+      9: { tag: 'Aşama 2 / 3 · Gelecek & Seyahat', title: '✈️ Gelecek Planları & Seyahat İngilizcesi', sub: 'Will, be going to, bilet alma, otel & restoranda akıcı konuşma.', guideIcon: '🦉', guideName: 'Bilge Rehberliğinde' },
+      18: { tag: 'Aşama 3 / 3 · İleri A2 Ustalığı', title: '🏆 İleri Kalıplar & Seviye Tamamlama', sub: 'Karşılaştırmalar (Comparatives), bağlaçlar, zarflar ve A2 Finali.', guideIcon: '👑', guideName: 'Ustalık Aşaması' }
     },
-    18: {
-      tag: 'Aşama 3 / 3 · Sosyal Hayat',
-      title: '💬 Akıcı Diyaloglar & Soru Kalıpları',
-      sub: 'Soru sorma, yer-yön tarifleri, tercihler ve A1 Final Hazırlığı.',
-      guideIcon: '🐶',
-      guideName: 'Dost Rehberliğinde'
-    }
-  } : {
-    0: {
-      tag: 'Aşama 1 / 3 · Geçmiş Zaman',
-      title: '⏳ Geçmiş Zaman (Past Tense) & Anılar',
-      sub: 'Was/were, düzenli ve düzensiz geçmiş fiillerle olay anlatımı.',
-      guideIcon: '🐼',
-      guideName: 'Bambu Rehberliğinde'
+    B1: {
+      0: { tag: 'Aşama 1 / 3 · Zaman & Nüanslar', title: '⚡ Deneyimler, Alışkanlıklar & İlgiler', sub: 'Present Perfect, Relative Clauses, Used to ve geçmiş alışkanlıklar.', guideIcon: '⚡', guideName: 'B1 Kaşif Rehberi' },
+      7: { tag: 'Aşama 2 / 3 · Kariyer & Fikir Beyanı', title: '💼 İş Dünyası & Görüş Belirtme', sub: 'Passive Voice, Modals of Deduction, Reported Speech ve mülakatlar.', guideIcon: '💼', guideName: 'Kariyer Danışmanı' },
+      14: { tag: 'Aşama 3 / 3 · Argüman & Akıcılık', title: '🎯 İleri Koşullar & B1 Finali', sub: 'Conditionals (Tip 2 & 3), Gerund & Infinitive, çevre ve teknoloji.', guideIcon: '👑', guideName: 'B1 Ustalık Aşaması' }
     },
-    9: {
-      tag: 'Aşama 2 / 3 · Gelecek & Seyahat',
-      title: '✈️ Gelecek Planları & Seyahat İngilizcesi',
-      sub: 'Will, be going to, bilet alma, otel & restoranda akıcı konuşma.',
-      guideIcon: '🦉',
-      guideName: 'Bilge Rehberliğinde'
-    },
-    18: {
-      tag: 'Aşama 3 / 3 · İleri A2 Ustalığı',
-      title: '🏆 İleri Kalıplar & Seviye Tamamlama',
-      sub: 'Karşılaştırmalar (Comparatives), bağlaçlar, zarflar ve A2 Finali.',
-      guideIcon: '👑',
-      guideName: 'Ustalık Aşaması'
+    B2: {
+      0: { tag: 'Aşama 1 / 3 · İleri Yapılar', title: '👑 Devrik Cümleler & Vurgulu Anlatım', sub: 'Inversion, Mixed Conditionals, Cleft Sentences ile profesyonel ifade.', guideIcon: '👑', guideName: 'B2 Master Rehberi' },
+      7: { tag: 'Aşama 2 / 3 · Global İletişim', title: '🌐 Doğal Deyimler & Müzakere', sub: 'Subjunctive, Discourse Markers, Idioms, Phrasal Verbs & ikna dili.', guideIcon: '🌐', guideName: 'Diplomat Rehber' },
+      14: { tag: 'Aşama 3 / 3 · Büyük Zirve', title: '🏛️ Akademik & Zirve Ustalığı', sub: 'Hedging, soyut kavramlar, ileri tartışma ve B2 Büyük Finali!', guideIcon: '🏆', guideName: 'Şampiyonlar Zirvesi' }
     }
   };
+
+  const STAGE_DIVIDERS = STAGE_DIVIDERS_MAP[lvl] || STAGE_DIVIDERS_MAP.A1;
 
   view().innerHTML = `
     <div class="page">
       <header class="page-head">
         <div>
           <h1>🗺️ Macera Haritası</h1>
-          <p class="muted">Her üniteyi <b>%70</b> ve üzeri başarıyla tamamlayarak yol boyunca ilerle.</p>
+          <p class="muted">Her üniteyi <b>%70</b> ve üzeri başarıyla tamamlayarak seviyeler boyunca ilerle.</p>
         </div>
         <a class="btn btn-ghost" href="#/placement">📝 Seviye Testi</a>
       </header>
 
-      <!-- Dünya Seçici Sekmeleri (Candy Crush Chapters) -->
-      <div class="world-tabs" style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
-        <button class="btn ${isA1 ? 'btn-primary' : 'btn-secondary'} flex-1" id="tabWorldA1" style="font-weight:800;padding:12px 14px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;">
-          <span>🌱</span>
-          <div style="text-align:left;">
-            <div>Dünya 1: A1 Başlangıç</div>
-            <div class="muted small" style="font-weight:600;font-size:0.75rem;color:${isA1 ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${doneA1} / 27 Ünite · %${pctA1}</div>
+      <!-- Dünya Seçici Sekmeleri (4 CEFR Seviyesi) -->
+      <div class="world-tabs" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;margin-bottom:18px;">
+        <button class="btn ${lvl === 'A1' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldA1" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
+          <span style="font-size:1.3rem;">🌱</span>
+          <div>
+            <div style="font-size:0.85rem;line-height:1.2;">A1 Başlangıç</div>
+            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'A1' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${doneA1}/${countA1} · %${pctA1}</div>
           </div>
         </button>
-        <button class="btn ${!isA1 ? 'btn-primary' : 'btn-secondary'} flex-1" id="tabWorldA2" style="font-weight:800;padding:12px 14px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:8px;">
-          <span>${state.a2Unlocked ? '🚀' : '🔒'}</span>
-          <div style="text-align:left;">
-            <div>Dünya 2: A2 Macera</div>
-            <div class="muted small" style="font-weight:600;font-size:0.75rem;color:${!isA1 ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.a2Unlocked ? `${doneA2} / 25 Ünite · %${pctA2}` : 'A1 Sonrası (Tıkla & Aç)'}</div>
+
+        <button class="btn ${lvl === 'A2' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldA2" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
+          <span style="font-size:1.3rem;">${state.a2Unlocked ? '🚀' : '🔒'}</span>
+          <div>
+            <div style="font-size:0.85rem;line-height:1.2;">A2 Macera</div>
+            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'A2' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.a2Unlocked ? `${doneA2}/${countA2} · %${pctA2}` : 'A1 Sonrası'}</div>
+          </div>
+        </button>
+
+        <button class="btn ${lvl === 'B1' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldB1" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
+          <span style="font-size:1.3rem;">${state.b1Unlocked ? '⚡' : '🔒'}</span>
+          <div>
+            <div style="font-size:0.85rem;line-height:1.2;">B1 Bağımsız</div>
+            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'B1' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.b1Unlocked ? `${doneB1}/${countB1} · %${pctB1}` : 'A2 Sonrası'}</div>
+          </div>
+        </button>
+
+        <button class="btn ${lvl === 'B2' ? 'btn-primary' : 'btn-secondary'}" id="tabWorldB2" style="font-weight:800;padding:10px 12px;border-radius:14px;display:flex;align-items:center;gap:8px;text-align:left;">
+          <span style="font-size:1.3rem;">${state.b2Unlocked ? '👑' : '🔒'}</span>
+          <div>
+            <div style="font-size:0.85rem;line-height:1.2;">B2 Ustalık</div>
+            <div class="muted small" style="font-weight:600;font-size:0.7rem;color:${lvl === 'B2' ? 'rgba(255,255,255,0.9)' : 'var(--muted)'};">${state.b2Unlocked ? `${doneB2}/${countB2} · %${pctB2}` : 'B1 Sonrası'}</div>
           </div>
         </button>
       </div>
 
-      <!-- Aktif Dünya Kartı -->
-      ${isA1 ? `
+      <!-- Aktif Seviye Bilgi Kartı -->
+      ${lvl === 'A1' ? `
         <div class="card world-card">
           <div class="world-head">
             <div>
-              <div class="muted small" style="font-weight:800;letter-spacing:0.5px;">DÜNYA 1 / 2 · A1 TEMEL İNGİLİZCE</div>
-              <div class="world-title">🌍 Başlangıç Dünyası</div>
+              <div class="muted small" style="font-weight:800;letter-spacing:0.5px;">DÜNYA 1 / 4 · A1 TEMEL İNGİLİZCE</div>
+              <div class="world-title">🌱 Başlangıç Dünyası</div>
             </div>
             <div class="world-badge">${state.a1BossPassed ? '👑' : curMascot.icon}</div>
           </div>
           <p class="muted small" style="margin:8px 0 12px;">Tüm A1 ünitelerini tamamladığında <b>A1 Seviye Final Sınavı</b> açılır ve başarıyla bitirdiğinde <b>A2 Seviyesi</b>'ne geçiş yapabilirsin.</p>
           <div class="progress" style="height:10px;"><div class="bar rainbow" style="width:${pctA1}%"></div></div>
           <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:800;color:var(--muted);margin-top:6px;">
-            <span>${doneA1} / 27 Ünite Tamamlandı</span>
+            <span>${doneA1} / ${countA1} Ünite Tamamlandı</span>
             <span>%${pctA1}</span>
           </div>
         </div>
-      ` : `
+      ` : lvl === 'A2' ? `
         <div class="card world-card" style="border-color:var(--primary);">
           <div class="world-head">
             <div>
-              <div class="muted small" style="font-weight:800;letter-spacing:0.5px;">DÜNYA 2 / 2 · A2 İLERİ ADIMLAR</div>
+              <div class="muted small" style="font-weight:800;letter-spacing:0.5px;">DÜNYA 2 / 4 · A2 İLERİ ADIMLAR</div>
               <div class="world-title">🚀 A2 Macera Dünyası</div>
             </div>
             <div class="world-badge">${state.a2BossPassed ? '👑' : state.a2Unlocked ? '🌟' : '🔒'}</div>
           </div>
-          <p class="muted small" style="margin:8px 0 12px;">Geçmiş zaman (was/were, düzenli/düzensiz fiiller), büyük sayılar & tarihler, gelecek planları, seyahat, restoran ve akıcı diyaloglar!</p>
+          <p class="muted small" style="margin:8px 0 12px;">Geçmiş zaman (was/were, düzenli/düzensiz fiiller), gelecek planları, seyahat, restoran ve akıcı diyaloglar!</p>
           <div class="progress" style="height:10px;"><div class="bar rainbow" style="width:${pctA2}%"></div></div>
           <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:800;color:var(--muted);margin-top:6px;">
-            <span>${doneA2} / 25 Ünite Tamamlandı</span>
+            <span>${doneA2} / ${countA2} Ünite Tamamlandı</span>
             <span>%${pctA2}</span>
           </div>
           ${!state.a2Unlocked ? `
             <div style="margin-top:12px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb, var(--primary) 12%, transparent);border:1px dashed var(--primary);font-size:0.85rem;">
-              💡 <b>A2 Macera Dünyası:</b> A1 Seviyesindeki 27 üniteyi tamamlayıp A1 Final Sınavı'nı geçtiğinde bu dünya açılacaktır.
+              💡 <b>A2 Macera Dünyası:</b> A1 Seviyesindeki üniteleri tamamlayıp A1 Final Sınavı'nı geçtiğinde bu dünya açılacaktır.
+            </div>
+          ` : ''}
+        </div>
+      ` : lvl === 'B1' ? `
+        <div class="card world-card" style="border-color:#fab005;">
+          <div class="world-head">
+            <div>
+              <div class="muted small" style="font-weight:800;letter-spacing:0.5px;">DÜNYA 3 / 4 · B1 BAĞIMSIZ İLETİŞİM</div>
+              <div class="world-title">⚡ B1 Bağımsız Dünya</div>
+            </div>
+            <div class="world-badge">${state.b1BossPassed ? '👑' : state.b1Unlocked ? '⚡' : '🔒'}</div>
+          </div>
+          <p class="muted small" style="margin:8px 0 12px;">Present Perfect, edilgen çatı (Passive Voice), dolaylı anlatım (Reported Speech), kariyer, teknoloji ve fikir beyanı!</p>
+          <div class="progress" style="height:10px;"><div class="bar rainbow" style="width:${pctB1}%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:800;color:var(--muted);margin-top:6px;">
+            <span>${doneB1} / ${countB1} Ünite Tamamlandı</span>
+            <span>%${pctB1}</span>
+          </div>
+          ${!state.b1Unlocked ? `
+            <div style="margin-top:12px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb, #fab005 12%, transparent);border:1px dashed #fab005;font-size:0.85rem;">
+              💡 <b>B1 Bağımsız Dünyası:</b> A2 Final Sınavı'nı geçtiğinde bu seviyenin kapıları açılır!
+            </div>
+          ` : ''}
+        </div>
+      ` : `
+        <div class="card world-card" style="border-color:#7950f2;">
+          <div class="world-head">
+            <div>
+              <div class="muted small" style="font-weight:800;letter-spacing:0.5px;">DÜNYA 4 / 4 · B2 İLERİ DÜZEY YETKİNLİK</div>
+              <div class="world-title">👑 B2 Ustalık Zirvesi</div>
+            </div>
+            <div class="world-badge">${state.b2BossPassed ? '🏆' : state.b2Unlocked ? '👑' : '🔒'}</div>
+          </div>
+          <p class="muted small" style="margin:8px 0 12px;">Devrik cümleler (Inversion), karmaşık koşul kalıpları, nüanslar, deyimler, akademik tartışma ve küresel akıcılık!</p>
+          <div class="progress" style="height:10px;"><div class="bar rainbow" style="width:${pctB2}%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:0.8rem;font-weight:800;color:var(--muted);margin-top:6px;">
+            <span>${doneB2} / ${countB2} Ünite Tamamlandı</span>
+            <span>%${pctB2}</span>
+          </div>
+          ${!state.b2Unlocked ? `
+            <div style="margin-top:12px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb, #7950f2 12%, transparent);border:1px dashed #7950f2;font-size:0.85rem;">
+              💡 <b>B2 Ustalık Zirvesi:</b> B1 Final Sınavı'nı geçtiğinde İngilizce ustalığının zirvesine adım atacaksın!
             </div>
           ` : ''}
         </div>
@@ -2095,8 +2147,8 @@ function screenLearn() {
       </div>
 
       <!-- Seviye Finali Bannerları -->
-      ${isA1 ? (() => {
-        const allDone = doneA1 >= 27;
+      ${lvl === 'A1' ? (() => {
+        const allDone = doneA1 >= countA1;
         if (state.a1BossPassed) {
           return `
             <div class="boss-banner">
@@ -2124,18 +2176,21 @@ function screenLearn() {
           <div class="boss-banner locked">
             <div class="boss-emoji">🔒</div>
             <div class="boss-title">A1 Seviye Final Sınavı</div>
-            <div class="boss-sub">A1 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneA1}/27 ünite tamamlandı).</div>
+            <div class="boss-sub">A1 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneA1}/${countA1} ünite tamamlandı).</div>
           </div>
         `;
-      })() : (() => {
-        const allDone = doneA2 >= 25;
+      })() : lvl === 'A2' ? (() => {
+        const allDone = doneA2 >= countA2;
         if (state.a2BossPassed) {
           return `
             <div class="boss-banner">
               <div class="boss-emoji">👑</div>
               <div class="boss-title">A2 Seviye Finali Tamamlandı!</div>
-              <div class="boss-sub">Muhteşem! A2 Macera Dünyası'nı başarıyla tamamladın ve A2 Ustalık Rozeti kazandın!</div>
-              <a class="btn btn-secondary" href="#/boss-a2">${icon('repeat', '', 18)} A2 Finalini Tekrar Çöz</a>
+              <div class="boss-sub">Muhteşem! A2 Macera Dünyası'nı başarıyla tamamladın ve B1 Dünyası'nın kapılarını açtın!</div>
+              <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" id="goWorldB1Btn">⚡ B1 Dünyası Haritasına Geç</button>
+                <a class="btn btn-secondary" href="#/boss-a2">${icon('repeat', '', 18)} A2 Finalini Tekrar Çöz</a>
+              </div>
             </div>
           `;
         }
@@ -2153,7 +2208,68 @@ function screenLearn() {
           <div class="boss-banner locked">
             <div class="boss-emoji">🔒</div>
             <div class="boss-title">A2 Seviye Final Sınavı</div>
-            <div class="boss-sub">A2 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneA2}/25 ünite tamamlandı).</div>
+            <div class="boss-sub">A2 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneA2}/${countA2} ünite tamamlandı).</div>
+          </div>
+        `;
+      })() : lvl === 'B1' ? (() => {
+        const allDone = doneB1 >= countB1;
+        if (state.b1BossPassed) {
+          return `
+            <div class="boss-banner">
+              <div class="boss-emoji">👑</div>
+              <div class="boss-title">B1 Bağımsız Seviye Finali Tamamlandı!</div>
+              <div class="boss-sub">Harika bir başarı! B1 müfredatını tamamlayarak B2 Ustalık Zirvesi'ni açtın!</div>
+              <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" id="goWorldB2Btn">👑 B2 Dünyası Haritasına Geç</button>
+                <a class="btn btn-secondary" href="#/boss-b1">${icon('repeat', '', 18)} B1 Finalini Tekrar Çöz</a>
+              </div>
+            </div>
+          `;
+        }
+        if (allDone && state.b1Unlocked) {
+          return `
+            <div class="boss-banner">
+              <div class="boss-emoji">⚔️</div>
+              <div class="boss-title">B1 Seviye Final Sınavı Hazır!</div>
+              <div class="boss-sub">Tüm B1 ünitelerini tamamladın! 15 soruluk final sınavını %75 ve üzeri başarıyla tamamlayıp B2 seviyesine geç!</div>
+              <a class="btn btn-primary btn-big" href="#/boss-b1">🔥 B1 Final Sınavına Başla</a>
+            </div>
+          `;
+        }
+        return `
+          <div class="boss-banner locked">
+            <div class="boss-emoji">🔒</div>
+            <div class="boss-title">B1 Seviye Final Sınavı</div>
+            <div class="boss-sub">B1 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneB1}/${countB1} ünite tamamlandı).</div>
+          </div>
+        `;
+      })() : (() => {
+        const allDone = doneB2 >= countB2;
+        if (state.b2BossPassed) {
+          return `
+            <div class="boss-banner">
+              <div class="boss-emoji">🏆</div>
+              <div class="boss-title">B2 Büyük Finali Tamamlandı · Zirvedesin!</div>
+              <div class="boss-sub">Efsanevi başarı! 92 ünitenin tamamını ve tüm seviye finallerini fethederek PatiLingo İngilizce Şampiyonu oldun!</div>
+              <a class="btn btn-secondary" href="#/boss-b2">${icon('repeat', '', 18)} B2 Finalini Tekrar Çöz</a>
+            </div>
+          `;
+        }
+        if (allDone && state.b2Unlocked) {
+          return `
+            <div class="boss-banner">
+              <div class="boss-emoji">⚔️</div>
+              <div class="boss-title">B2 Seviye Büyük Finali Hazır!</div>
+              <div class="boss-sub">Tüm B2 ünitelerini tamamladın! 15 soruluk büyük final sınavını %75 ve üzeri başarıyla tamamlayıp B2 Ustalık Tacını kap!</div>
+              <a class="btn btn-primary btn-big" href="#/boss-b2">🔥 B2 Büyük Finaline Başla</a>
+            </div>
+          `;
+        }
+        return `
+          <div class="boss-banner locked">
+            <div class="boss-emoji">🔒</div>
+            <div class="boss-title">B2 Seviye Büyük Finali</div>
+            <div class="boss-sub">B2 seviyesindeki tüm üniteleri tamamladığında bu sınav açılır (${doneB2}/${countB2} ünite tamamlandı).</div>
           </div>
         `;
       })()}
@@ -2161,7 +2277,12 @@ function screenLearn() {
 
   $('#tabWorldA1').onclick = () => { currentLearnWorld = 'A1'; screenLearn(); };
   $('#tabWorldA2').onclick = () => { currentLearnWorld = 'A2'; screenLearn(); };
+  $('#tabWorldB1').onclick = () => { currentLearnWorld = 'B1'; screenLearn(); };
+  $('#tabWorldB2').onclick = () => { currentLearnWorld = 'B2'; screenLearn(); };
+
   if ($('#goWorldA2Btn')) $('#goWorldA2Btn').onclick = () => { currentLearnWorld = 'A2'; screenLearn(); };
+  if ($('#goWorldB1Btn')) $('#goWorldB1Btn').onclick = () => { currentLearnWorld = 'B1'; screenLearn(); };
+  if ($('#goWorldB2Btn')) $('#goWorldB2Btn').onclick = () => { currentLearnWorld = 'B2'; screenLearn(); };
 
   $$('.node').forEach(n => n.onclick = () => unitModal(UNIT_BY_ID[n.dataset.id]));
   const cur = $('.node.current');
@@ -2231,6 +2352,71 @@ function screenA2Boss() {
   });
   start();
 }
+
+/* ============================================================
+   B1 Seviye Final Sınavı (B1 Boss Test)
+   ============================================================ */
+function screenB1Boss() {
+  const start = () => runLesson({
+    title: '⚡ B1 Seviye Final Sınavı',
+    questions: buildB1BossTest(),
+    color: '#fab005',
+    exitTo: '#/learn',
+    retry: start,
+    onFinish: (results, { correct, total, pct }) => {
+      if (pct >= 75) {
+        store.passB1Boss();
+        return {
+          xp: 400,
+          exitTo: '#/learn',
+          message: `🎉 <b>OLAĞANÜSTÜ BAŞARI! %${pct} ile B1 Seviyesini Tamamladın!</b><br>+400 XP Kazandın ve ⚡ <b>B1 Bağımsız İletişim Rozeti</b> aldın!`
+        };
+      } else {
+        const earnedXP = correct * 5;
+        addXP(earnedXP);
+        return {
+          xp: earnedXP,
+          exitTo: '#/learn',
+          message: `B1 Final sınavında %${pct} aldın (${correct}/${total}). Başarı için en az <b>%75</b> gerekiyor. Biraz tekrar yapıp tekrar dene! 💪`
+        };
+      }
+    }
+  });
+  start();
+}
+
+/* ============================================================
+   B2 Seviye Büyük Final Sınavı (B2 Boss Test)
+   ============================================================ */
+function screenB2Boss() {
+  const start = () => runLesson({
+    title: '👑 B2 Seviye Büyük Finali',
+    questions: buildB2BossTest(),
+    color: '#7950f2',
+    exitTo: '#/learn',
+    retry: start,
+    onFinish: (results, { correct, total, pct }) => {
+      if (pct >= 75) {
+        store.passB2Boss();
+        return {
+          xp: 500,
+          exitTo: '#/learn',
+          message: `🏆 <b>ZİRVEDESİN! %${pct} ile B2 İleri Düzey Yetkinliği Tamamladın!</b><br>+500 XP Kazandın ve 👑 <b>B2 Üst Düzey Ustalık Tacı</b> kazandın!`
+        };
+      } else {
+        const earnedXP = correct * 5;
+        addXP(earnedXP);
+        return {
+          xp: earnedXP,
+          exitTo: '#/learn',
+          message: `B2 Final sınavında %${pct} aldın (${correct}/${total}). Başarı için en az <b>%75</b> gerekiyor. Nüansları gözden geçirip tekrar dene! 💪`
+        };
+      }
+    }
+  });
+  start();
+}
+
 
 function renderUnitProgressionCard(u) {
   const s = unitStats(u.id);

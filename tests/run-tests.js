@@ -150,7 +150,7 @@ test('1. Tüm JS dosyaları index.html sırasıyla <script> elementleri olarak h
 test('2. UNITS: id\'ler benzersiz, vocab ünitelerinde boş en/tr yok', () => {
   const { run } = createEnv();
   const units = run('UNITS');
-  ok(Array.isArray(units) && units.length === 52, 'Müfredatta toplam 52 ünite olmalı');
+  ok(Array.isArray(units) && units.length === 92, 'Müfredatta toplam 92 ünite olmalı (A1: 27, A2: 25, B1: 20, B2: 20)');
 
   const ids = units.map(u => u.id);
   eq(new Set(ids).size, ids.length, 'Tüm ünite id\'leri benzersiz olmalı');
@@ -202,6 +202,12 @@ test('3. Soru üreticileri: buildUnitLesson, buildPlacementTest, buildA1BossTest
   const boss2 = run('buildA2BossTest()');
   eq(boss2.length, 15, 'buildA2BossTest tam 15 soru üretmeli');
 
+  const bossB1 = run('buildB1BossTest()');
+  eq(bossB1.length, 15, 'buildB1BossTest tam 15 soru üretmeli');
+
+  const bossB2 = run('buildB2BossTest()');
+  eq(bossB2.length, 15, 'buildB2BossTest tam 15 soru üretmeli');
+
   // buildReviewLesson
   const reviewQs = run('buildReviewLesson(UNITS[0].words)');
   ok(Array.isArray(reviewQs) && reviewQs.length > 0, 'buildReviewLesson soru listesi üretmeli');
@@ -215,7 +221,7 @@ test('4. Rotalar hatasız render oluyor (review ve progress dahil)', () => {
 
   const coreRoutes = [
     'home', 'learn', 'logic', 'leaderboard', 'review', 'cards/u1',
-    'ai', 'progress', 'settings', 'placement', 'ai-lesson', 'boss-a1', 'boss-a2', 'auth', 'locomotive', 'trap-hunter', 'survival'
+    'ai', 'progress', 'settings', 'placement', 'ai-lesson', 'boss-a1', 'boss-a2', 'boss-b1', 'boss-b2', 'auth', 'locomotive', 'trap-hunter', 'survival'
   ];
 
   // Temel rotaların testi

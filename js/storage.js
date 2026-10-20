@@ -33,6 +33,11 @@ function defaultState() {
     unlockedUpTo: 0,      // bu indekse kadar (dahil) üniteler açık
     a1BossPassed: false,  // Candy Crush Boss Sınavı tamamlandı mı?
     a2Unlocked: false,    // A2 dünyası açık mı?
+    a2BossPassed: false,  // A2 Final tamamlandı mı?
+    b1Unlocked: false,    // B1 dünyası açık mı?
+    b1BossPassed: false,  // B1 Final tamamlandı mı?
+    b2Unlocked: false,    // B2 dünyası açık mı?
+    b2BossPassed: false,  // B2 Final tamamlandı mı?
     words: {},            // { key: { box, due, right, wrong } }
     mistakes: [],         // son hatalar
     chat: [],             // AI sohbet geçmişi
@@ -143,14 +148,27 @@ class AppStore {
       }
       const realUnlocked = Math.max(0, highestDone + 1);
       const a1BossPassed = Boolean(s.a1BossPassed);
-      const a2Unlocked = a1BossPassed;
-      const unlockedUpTo = a1BossPassed ? Math.max(realUnlocked, 27) : Math.min(s.unlockedUpTo ?? 0, realUnlocked);
+      const a2Unlocked = Boolean(s.a2Unlocked || a1BossPassed);
+      const a2BossPassed = Boolean(s.a2BossPassed);
+      const b1Unlocked = Boolean(s.b1Unlocked || a2BossPassed);
+      const b1BossPassed = Boolean(s.b1BossPassed);
+      const b2Unlocked = Boolean(s.b2Unlocked || b1BossPassed);
+      const b2BossPassed = Boolean(s.b2BossPassed);
+      let unlockedUpTo = Math.min(s.unlockedUpTo ?? 0, realUnlocked);
+      if (b2Unlocked) unlockedUpTo = Math.max(unlockedUpTo, 72);
+      else if (b1Unlocked) unlockedUpTo = Math.max(unlockedUpTo, 52);
+      else if (a2Unlocked) unlockedUpTo = Math.max(unlockedUpTo, 27);
 
       return {
         ...d,
         ...s,
         a1BossPassed,
         a2Unlocked,
+        a2BossPassed,
+        b1Unlocked,
+        b1BossPassed,
+        b2Unlocked,
+        b2BossPassed,
         unlockedUpTo,
         schemaVersion: targetVersion,
         userId,
@@ -241,9 +259,29 @@ class AppStore {
   passA2Boss() {
     const isFirstTime = !this._state.a2BossPassed;
     this._state.a2BossPassed = true;
+    this._state.b1Unlocked = true;
+    this._state.unlockedUpTo = Math.max(this._state.unlockedUpTo, 52);
     this.gainXP(isFirstTime ? 300 : 30);
     this.save();
     this._notify('A2_BOSS_PASSED', null);
+  }
+
+  passB1Boss() {
+    const isFirstTime = !this._state.b1BossPassed;
+    this._state.b1BossPassed = true;
+    this._state.b2Unlocked = true;
+    this._state.unlockedUpTo = Math.max(this._state.unlockedUpTo, 72);
+    this.gainXP(isFirstTime ? 400 : 40);
+    this.save();
+    this._notify('B1_BOSS_PASSED', null);
+  }
+
+  passB2Boss() {
+    const isFirstTime = !this._state.b2BossPassed;
+    this._state.b2BossPassed = true;
+    this.gainXP(isFirstTime ? 500 : 50);
+    this.save();
+    this._notify('B2_BOSS_PASSED', null);
   }
 
   unlockA2() {
@@ -332,6 +370,11 @@ class AppStore {
       unlockedUpTo: Math.max(this._state.unlockedUpTo || 0, data.unlockedUpTo || 0),
       a1BossPassed: !!(this._state.a1BossPassed || data.a1BossPassed),
       a2Unlocked: !!(this._state.a2Unlocked || data.a2Unlocked),
+      a2BossPassed: !!(this._state.a2BossPassed || data.a2BossPassed),
+      b1Unlocked: !!(this._state.b1Unlocked || data.b1Unlocked),
+      b1BossPassed: !!(this._state.b1BossPassed || data.b1BossPassed),
+      b2Unlocked: !!(this._state.b2Unlocked || data.b2Unlocked),
+      b2BossPassed: !!(this._state.b2BossPassed || data.b2BossPassed),
       auth: { ...defaultState().auth, ...(this._state.auth?.user ? this._state.auth : (data.auth || {})) },
       settings: {
         ...defaultState().settings,
@@ -624,33 +667,60 @@ function doneCount(level) {
 }
 
 function levelInfo() {
+  const countA1 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'A1').length : 27) || 27;
+  const countA2 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'A2').length : 25) || 25;
+  const countB1 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'B1').length : 20) || 20;
+  const countB2 = (typeof UNITS !== 'undefined' ? UNITS.filter(u => u.level === 'B2').length : 20) || 20;
+
   const doneA1 = doneCount('A1');
   const doneA2 = doneCount('A2');
-  const totalDone = doneA1 + doneA2;
-  const pctA1 = Math.round((doneA1 / 27) * 100);
-  const pctA2 = Math.round((doneA2 / 25) * 100);
-  
-  let label, desc;
-  if (!state.a2Unlocked && !state.a1BossPassed) {
+  const doneB1 = doneCount('B1');
+  const doneB2 = doneCount('B2');
+  const totalDone = doneA1 + doneA2 + doneB1 + doneB2;
+
+  const pctA1 = Math.round((doneA1 / countA1) * 100);
+  const pctA2 = Math.round((doneA2 / countA2) * 100);
+  const pctB1 = Math.round((doneB1 / countB1) * 100);
+  const pctB2 = Math.round((doneB2 / countB2) * 100);
+
+  let label, desc, activePct = pctA1;
+  if (state.b2Unlocked || state.b1BossPassed) {
+    activePct = pctB2;
+    if (pctB2 === 0) { label = 'B2 · Ustalık Başladı'; desc = 'İleri düzey kalıplar ve nüanslara hoş geldin! 👑'; }
+    else if (pctB2 < 50) { label = 'B2.1 · İleri Yetkinlik'; desc = 'Karmaşık argümanları akıcı ifade ediyorsun.'; }
+    else if (pctB2 < 100) { label = 'B2.2 · Zirve Ustalığı'; desc = 'B2 Büyük Finali çok yakında!'; }
+    else { label = 'B2 İngilizce Ustası 🏆'; desc = 'Tebrikler! Dört seviyeyi de eksiksiz tamamladın!'; }
+  } else if (state.b1Unlocked || state.a2BossPassed) {
+    activePct = pctB1;
+    if (pctB1 === 0) { label = 'B1 · Bağımsız İletişim'; desc = 'Edilgen çatı ve dolaylı anlatıma hoş geldin! ⚡'; }
+    else if (pctB1 < 50) { label = 'B1.1 · Orta Seviye Akıcılık'; desc = 'İş ve günlük hayatta bağımsızca konuşabiliyorsun.'; }
+    else if (pctB1 < 100) { label = 'B1.2 · İleri Yolculuk'; desc = 'B1 Final Sınavı kapıda!'; }
+    else { label = 'B1 Tamamlandı 🌟'; desc = 'Harika! B2 İleri Düzey seviyesine hazırsın!'; }
+  } else if (state.a2Unlocked || state.a1BossPassed) {
+    activePct = pctA2;
+    if (pctA2 === 0) { label = 'A2 · Macera Başladı'; desc = 'Geçmiş zaman ve seyahat kalıplarına hoş geldin! 🚀'; }
+    else if (pctA2 < 50) { label = 'A2.1 · Akıcı İletişim'; desc = 'Geçmiş ve geleceği rahatça konuşabiliyorsun.'; }
+    else if (pctA2 < 100) { label = 'A2.2 · Usta Gezgin'; desc = "A2 Final Sınavı'na çok yaklaştın!"; }
+    else { label = 'A2 Ustası 👑'; desc = 'Tebrikler! Hem A1 hem A2 müfredatını fethettin!'; }
+  } else {
+    activePct = pctA1;
     if (doneA1 === 0) { label = 'A1 · Yolculuk Başlıyor'; desc = 'Adım adım temelleri atıyoruz! 🌱'; }
     else if (pctA1 < 25) { label = 'A1.1 · İlk Kelimeler'; desc = 'Harika bir başlangıç yaptın.'; }
     else if (pctA1 < 50) { label = 'A1.2 · Günlük Diyaloglar'; desc = 'Basit cümlelerle iletişim kurabiliyorsun.'; }
     else if (pctA1 < 75) { label = 'A1.3 · Kendini Anlatma'; desc = 'İngilizceyi rahatça kavramaya başladın.'; }
     else if (pctA1 < 100) { label = 'A1.4 · Zirveye Yakın'; desc = 'Az kaldı, A1 Final Sınavı kapıda!'; }
-    else { label = 'A1 Tamamlandı 🏆'; desc = 'Final sınavını geçip A2 Macera Dünyası\'nı açabilirsin!'; }
-  } else {
-    if (pctA2 === 0) { label = 'A2 · Macera Başladı'; desc = 'Geçmiş zaman ve seyahat kalıplarına hoş geldin! 🚀'; }
-    else if (pctA2 < 50) { label = 'A2.1 · Akıcı İletişim'; desc = 'Geçmiş ve geleceği rahatça konuşabiliyorsun.'; }
-    else if (pctA2 < 100) { label = 'A2.2 · Usta Gezgin'; desc = 'A2 Final Sınavı\'na çok yaklaştın!'; }
-    else { label = 'A2 Ustası 👑'; desc = 'Tebrikler! Hem A1 hem A2 müfredatını fethettin!'; }
+    else { label = 'A1 Tamamlandı 🏆'; desc = "Final sınavını geçip A2 Macera Dünyası'nı açabilirsin!"; }
   }
+
   return {
     label, desc,
-    pct: state.a2Unlocked ? pctA2 : pctA1,
-    totalPct: Math.round((totalDone / UNITS.length) * 100),
+    pct: activePct,
+    totalPct: Math.round((totalDone / (typeof UNITS !== 'undefined' ? UNITS.length : 92)) * 100),
     done: totalDone,
     doneA1,
-    doneA2
+    doneA2,
+    doneB1,
+    doneB2
   };
 }
 

@@ -902,7 +902,3003 @@ const RAW_UNITS = [
       ['wireless', 'kablosuz (Wi-Fi)', '📶'], ['headphones', 'kulaklık', '🎧'], ['application', 'uygulama (app)', '📲'],
       ['website', 'web sitesi', '🌐'], ['click', 'tıklamak', '🖱️'], ['connect', 'bağlanmak', '🔗']
     ]
+  },
+
+  /* ============================================================
+     B1 CEFR ORTA SEVİYE MÜFREDATI (Intermediate - 20 Ünite)
+     ============================================================ */
+
+  {
+    "id": "b1_pres_perf_past",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Present Perfect vs Past Simple",
+    "en": "Present Perfect vs Past Simple",
+    "emoji": "⏳",
+    "explain": "<h4>Zaman Ayrımı: Present Perfect vs Past Simple</h4>\n<p><b>Past Simple:</b> Geçmişte belirli bir zamanda bitmiş eylemler (yesterday, in 2020, two days ago).</p>\n<p><b>Present Perfect:</b> Zamanı belirsiz, etkisi şu an süren veya hayat tecrübesi olan eylemler (since, for, already, yet, just, ever).</p>\n<table class=\"g-table\">\n  <tr><th>Zaman</th><th>Anahtar Kelimeler</th><th>Örnek Cümle</th></tr>\n  <tr><td><b>Past Simple</b></td><td>yesterday, last night, ago, in 2010</td><td>I <b>visited</b> London last year.</td></tr>\n  <tr><td><b>Present Perfect</b></td><td>already, yet, since, for, just, ever</td><td>I <b>have visited</b> London twice.</td></tr>\n</table>",
+    "examples": [
+      [
+        "I have lived here for five years.",
+        "Beş yıldır burada yaşıyorum (hala buradayım)."
+      ],
+      [
+        "I lived in Paris in 2018.",
+        "2018 yılında Paris'te yaşadım (artık orada değilim)."
+      ],
+      [
+        "Have you ever seen a whale?",
+        "Hiç balina gördün mü?"
+      ]
+    ],
+    "mc": [
+      [
+        "She ___ her keys yesterday morning.",
+        [
+          "lost",
+          "has lost",
+          "loses"
+        ]
+      ],
+      [
+        "I ___ never ___ Japanese food before.",
+        [
+          "have / eaten",
+          "did / eat",
+          "am / eating"
+        ]
+      ],
+      [
+        "They ___ in this company since 2021.",
+        [
+          "have worked",
+          "worked",
+          "work"
+        ]
+      ],
+      [
+        "We ___ our tickets two hours ago.",
+        [
+          "bought",
+          "have bought",
+          "buy"
+        ]
+      ],
+      [
+        "He ___ already ___ his homework.",
+        [
+          "has / finished",
+          "did / finish",
+          "had / finish"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "I have already seen that movie",
+        "O filmi zaten gördüm."
+      ],
+      [
+        "She lived in Rome two years ago",
+        "İki yıl önce Roma'da yaşadı."
+      ],
+      [
+        "Have you finished your breakfast yet",
+        "Kahvaltını henüz bitirdin mi?"
+      ]
+    ]
+  },
+  {
+    "id": "b1_career_jobs",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Kariyer ve İş Mülakatı",
+    "en": "Career & Job Interviews",
+    "emoji": "💼",
+    "words": [
+      [
+        "applicant",
+        "başvuru sahibi / aday",
+        "👤"
+      ],
+      [
+        "resume",
+        "özgeçmiş (CV)",
+        "📄"
+      ],
+      [
+        "promotion",
+        "terfi / yükselme",
+        "📈"
+      ],
+      [
+        "deadline",
+        "son teslim tarihi",
+        "⏰"
+      ],
+      [
+        "colleague",
+        "iş arkadaşı",
+        "🤝"
+      ],
+      [
+        "salary",
+        "maaş",
+        "💰"
+      ],
+      [
+        "employment",
+        "istihdam / iş",
+        "🏢"
+      ],
+      [
+        "interview",
+        "mülakat / görüşme",
+        "🎙️"
+      ],
+      [
+        "experience",
+        "deneyim / tecrübe",
+        "⭐"
+      ],
+      [
+        "responsible",
+        "sorumlu",
+        "📋"
+      ],
+      [
+        "skill",
+        "beceri / yetenek",
+        "🎯"
+      ],
+      [
+        "contract",
+        "sözleşme",
+        "📑"
+      ]
+    ]
+  },
+  {
+    "id": "b1_pres_perf_cont",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Present Perfect Continuous",
+    "en": "Present Perfect Continuous",
+    "emoji": "🔄",
+    "explain": "<h4>Present Perfect Continuous (have/has been + -ing)</h4>\n<p>Geçmişte başlayıp <b>şu ana kadar kesintisiz devam eden</b> veya az önce bitip <b>etkisi gözle görülen</b> eylemler için kullanılır.</p>\n<table class=\"g-table\">\n  <tr><th>Özne</th><th>Kalıp</th><th>Örnek</th></tr>\n  <tr><td><b>I / You / We / They</b></td><td>have been + V-ing</td><td>I <b>have been studying</b> for three hours.</td></tr>\n  <tr><td><b>He / She / It</b></td><td>has been + V-ing</td><td>She <b>has been waiting</b> since morning.</td></tr>\n</table>",
+    "examples": [
+      [
+        "It has been raining all morning.",
+        "Bütün sabahtır yağmur yağıyor."
+      ],
+      [
+        "I have been learning English for six months.",
+        "Altı aydır İngilizce öğreniyorum."
+      ],
+      [
+        "Why are you out of breath? Because I have been running.",
+        "Neden nefes nefesesin? Çünkü koşuyordum."
+      ]
+    ],
+    "mc": [
+      [
+        "She is tired because she ___ all day.",
+        [
+          "has been working",
+          "worked",
+          "works"
+        ]
+      ],
+      [
+        "How long ___ you ___ for me?",
+        [
+          "have / been waiting",
+          "did / wait",
+          "are / waiting"
+        ]
+      ],
+      [
+        "They ___ football since 2 o'clock.",
+        [
+          "have been playing",
+          "played",
+          "play"
+        ]
+      ],
+      [
+        "He ___ Spanish for two years.",
+        [
+          "has been studying",
+          "studied",
+          "studies"
+        ]
+      ],
+      [
+        "My eyes hurt because I ___ at the screen.",
+        [
+          "have been looking",
+          "looked",
+          "look"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "She has been working here for years",
+        "Yıllardır burada çalışıyor."
+      ],
+      [
+        "How long have you been studying",
+        "Ne kadar süredir ders çalışıyorsun?"
+      ],
+      [
+        "It has been snowing all day",
+        "Bütün gündür kar yağıyor."
+      ]
+    ]
+  },
+  {
+    "id": "b1_environment_nature",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Çevre ve Doğa Bilinci",
+    "en": "Environment & Climate",
+    "emoji": "🌍",
+    "words": [
+      [
+        "renewable",
+        "yenilenebilir",
+        "♻️"
+      ],
+      [
+        "pollution",
+        "kirlilik",
+        "🏭"
+      ],
+      [
+        "ecosystem",
+        "ekosistem",
+        "🌿"
+      ],
+      [
+        "deforestation",
+        "ormansızlaşma",
+        "🪓"
+      ],
+      [
+        "climate change",
+        "iklim değişikliği",
+        "🌡️"
+      ],
+      [
+        "protect",
+        "korumak",
+        "🛡️"
+      ],
+      [
+        "solar energy",
+        "güneş enerjisi",
+        "☀️"
+      ],
+      [
+        "extinction",
+        "neslin tükenmesi",
+        "🦕"
+      ],
+      [
+        "recycle",
+        "geri dönüştürmek",
+        "🔄"
+      ],
+      [
+        "sustainable",
+        "sürdürülebilir",
+        "🌱"
+      ],
+      [
+        "carbon footprint",
+        "karbon ayak izi",
+        "👣"
+      ],
+      [
+        "wildlife",
+        "yaban hayatı",
+        "🦉"
+      ]
+    ]
+  },
+  {
+    "id": "b1_past_perfect",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Past Perfect Simple (had done)",
+    "en": "Past Perfect Simple",
+    "emoji": "🕰️",
+    "explain": "<h4>Past Perfect Simple (had + V3)</h4>\n<p>Geçmişte gerçekleşen iki olaydan <b>daha önce gerçekleşeni</b> anlatmak için kullanılır (\"Geçmişin Geçmişi\").</p>\n<table class=\"g-table\">\n  <tr><th>Olay Sırası</th><th>Kullanılan Zaman</th><th>Örnek</th></tr>\n  <tr><td><b>1. İlk Olan Eylem</b></td><td>Past Perfect (had + V3)</td><td>The train <b>had left</b>...</td></tr>\n  <tr><td><b>2. Daha Sonraki Eylem</b></td><td>Past Simple (V2)</td><td>...when we arrived at the station.</td></tr>\n</table>",
+    "examples": [
+      [
+        "When I arrived, the film had already started.",
+        "Ben vardığımda film çoktan başlamıştı."
+      ],
+      [
+        "She had lived in Paris before she moved to London.",
+        "Londra'ya taşınmadan önce Paris'te yaşamıştı."
+      ],
+      [
+        "I was not hungry because I had had lunch.",
+        "Aç değildim çünkü öğle yemeği yemiştim."
+      ]
+    ],
+    "mc": [
+      [
+        "By the time we got home, everyone ___ to sleep.",
+        [
+          "had gone",
+          "went",
+          "goes"
+        ]
+      ],
+      [
+        "She recognized the city because she ___ it before.",
+        [
+          "had visited",
+          "visits",
+          "visiting"
+        ]
+      ],
+      [
+        "When the police arrived, the thieves ___ away.",
+        [
+          "had escaped",
+          "escape",
+          "are escaping"
+        ]
+      ],
+      [
+        "I knew the answer because I ___ the book.",
+        [
+          "had read",
+          "read",
+          "am reading"
+        ]
+      ],
+      [
+        "He ___ his phone before he left the house.",
+        [
+          "had charged",
+          "charges",
+          "charge"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "The train had left when we arrived",
+        "Biz vardığımızda tren kalkmıştı."
+      ],
+      [
+        "She had finished dinner before I called",
+        "Ben aramadan önce akşam yemeğini bitirmişti."
+      ],
+      [
+        "I realized that I had lost my keys",
+        "Anahtarlarımı kaybettiğimi fark ettim."
+      ]
+    ]
+  },
+  {
+    "id": "b1_opinions_debate",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Görüş Belirtme ve Tartışma",
+    "en": "Opinions & Debating",
+    "emoji": "🗣️",
+    "words": [
+      [
+        "in my opinion",
+        "bana göre / fikrimce",
+        "💭"
+      ],
+      [
+        "perspective",
+        "bakış açısı",
+        "🔭"
+      ],
+      [
+        "disagree",
+        "aynı fikirde olmamak",
+        "❌"
+      ],
+      [
+        "argument",
+        "argüman / iddia",
+        "💡"
+      ],
+      [
+        "furthermore",
+        "dahası / üstelik",
+        "➕"
+      ],
+      [
+        "whereas",
+        "oysaki / buna karşın",
+        "⚖️"
+      ],
+      [
+        "conclude",
+        "sonuca varmak",
+        "🏁"
+      ],
+      [
+        "convince",
+        "ikna etmek",
+        "🎯"
+      ],
+      [
+        "point of view",
+        "görüş noktası",
+        "👀"
+      ],
+      [
+        "evidence",
+        "kanıt / delil",
+        "🔍"
+      ],
+      [
+        "benefit",
+        "fayda / yarar",
+        "✨"
+      ],
+      [
+        "drawback",
+        "dezavantaj / eksiklik",
+        "📉"
+      ]
+    ]
+  },
+  {
+    "id": "b1_second_conditional",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Second Conditional (Hayali Durumlar)",
+    "en": "Second Conditional",
+    "emoji": "🦄",
+    "explain": "<h4>Second Conditional (If + Past Simple, would + V1)</h4>\n<p>Şu anki gerçekliğe aykırı, <b>hayali durumlar</b> veya <b>tavsiye</b> bildirmek için kullanılır.</p>\n<table class=\"g-table\">\n  <tr><th>Koşul Cümlesi (If)</th><th>Sonuç Cümlesi</th><th>Anlamı</th></tr>\n  <tr><td>If I <b>had</b> more time,</td><td>I <b>would travel</b> the world.</td><td>Daha çok vaktim olsa dünyayı gezerdim (ama yok).</td></tr>\n  <tr><td>If I <b>were</b> you,</td><td>I <b>would take</b> this job.</td><td>Senin yerinde olsaydım bu işi kabul ederdim (tavsiye).</td></tr>\n</table>",
+    "examples": [
+      [
+        "If I won the lottery, I would buy a house.",
+        "Piyangoyu kazansam bir ev alırdım."
+      ],
+      [
+        "If I were you, I would see a doctor.",
+        "Senin yerinde olsaydım doktora görünürdüm."
+      ],
+      [
+        "What would you do if you were invisible?",
+        "Görünmez olsan ne yapardın?"
+      ]
+    ],
+    "mc": [
+      [
+        "If I had a million dollars, I ___ a yacht.",
+        [
+          "would buy",
+          "will buy",
+          "bought"
+        ]
+      ],
+      [
+        "If she ___ harder, she would pass the exam.",
+        [
+          "studied",
+          "studies",
+          "study"
+        ]
+      ],
+      [
+        "If I were you, I ___ that car.",
+        [
+          "would not buy",
+          "will not buy",
+          "did not buy"
+        ]
+      ],
+      [
+        "Where would you go if you ___ fly?",
+        [
+          "could",
+          "can",
+          "will"
+        ]
+      ],
+      [
+        "He would help us if he ___ the answer.",
+        [
+          "knew",
+          "knows",
+          "know"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "If I were you I would accept",
+        "Senin yerinde olsam kabul ederdim."
+      ],
+      [
+        "What would you do if you won",
+        "Kazansaydın ne yapardın?"
+      ],
+      [
+        "I would travel if I had time",
+        "Vaktim olsa seyahat ederdim."
+      ]
+    ]
+  },
+  {
+    "id": "b1_education_academic",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Eğitim ve Üniversite Hayatı",
+    "en": "Education & Academics",
+    "emoji": "🎓",
+    "words": [
+      [
+        "curriculum",
+        "müfredat / öğretim planı",
+        "📚"
+      ],
+      [
+        "scholarship",
+        "burs",
+        "📜"
+      ],
+      [
+        "graduate",
+        "mezun olmak / mezun",
+        "🧑‍🎓"
+      ],
+      [
+        "assignment",
+        "ödev / görev",
+        "✍️"
+      ],
+      [
+        "semester",
+        "dönem / yarıyıl",
+        "🗓️"
+      ],
+      [
+        "tuition",
+        "öğrenim harcı",
+        "💳"
+      ],
+      [
+        "research",
+        "araştırma",
+        "🔬"
+      ],
+      [
+        "presentation",
+        "sunum",
+        "📊"
+      ],
+      [
+        "lecture",
+        "üniversite dersi",
+        "👨‍🏫"
+      ],
+      [
+        "degree",
+        "diploma / derece",
+        "🎖️"
+      ],
+      [
+        "campus",
+        "yerleşke / kampüs",
+        "🏫"
+      ],
+      [
+        "dormitory",
+        "öğrenci yurdu",
+        "🛏️"
+      ]
+    ]
+  },
+  {
+    "id": "b1_passive_voice",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Edilgen Çatı (Passive Voice)",
+    "en": "Passive Voice (Present & Past)",
+    "emoji": "🏗️",
+    "explain": "<h4>Edilgen Çatı: Passive Voice (be + V3)</h4>\n<p>Eylemi kimin yaptığından ziyade <b>eylemin kendisine veya nesneye</b> odaklanıldığında kullanılır.</p>\n<table class=\"g-table\">\n  <tr><th>Zaman</th><th>Etken (Active)</th><th>Edilgen (Passive)</th></tr>\n  <tr><td><b>Present Simple</b></td><td>They make cars.</td><td>Cars <b>are made</b>.</td></tr>\n  <tr><td><b>Past Simple</b></td><td>Bell invented the phone.</td><td>The phone <b>was invented</b>.</td></tr>\n</table>",
+    "examples": [
+      [
+        "This bridge was built in 1920.",
+        "Bu köprü 1920'de inşa edildi."
+      ],
+      [
+        "English is spoken all around the world.",
+        "İngilizce tüm dünyada konuşulur."
+      ],
+      [
+        "The email was sent by the manager.",
+        "E-posta müdür tarafından gönderildi."
+      ]
+    ],
+    "mc": [
+      [
+        "The Mona Lisa ___ by Leonardo da Vinci.",
+        [
+          "was painted",
+          "painted",
+          "is painting"
+        ]
+      ],
+      [
+        "Millions of phones ___ in this factory every month.",
+        [
+          "are produced",
+          "produce",
+          "produced"
+        ]
+      ],
+      [
+        "The window ___ during the storm yesterday.",
+        [
+          "was broken",
+          "breaks",
+          "broken"
+        ]
+      ],
+      [
+        "Coffee ___ in Brazil and Colombia.",
+        [
+          "is grown",
+          "grows",
+          "grown"
+        ]
+      ],
+      [
+        "The stolen car ___ by the police last night.",
+        [
+          "was found",
+          "finds",
+          "finding"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "This castle was built in medieval times",
+        "Bu kale orta çağda inşa edildi."
+      ],
+      [
+        "English is spoken in many countries",
+        "İngilizce birçok ülkede konuşulur."
+      ],
+      [
+        "The letter was delivered this morning",
+        "Mektup bu sabah teslim edildi."
+      ]
+    ]
+  },
+  {
+    "id": "b1_phrasal_verbs_1",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Temel Phrasal Verbs (Öbek Fiiller)",
+    "en": "Essential Phrasal Verbs",
+    "emoji": "🧩",
+    "words": [
+      [
+        "give up",
+        "pes etmek / bırakmak",
+        "🏳️"
+      ],
+      [
+        "look forward to",
+        "dört gözle beklemek",
+        "👀"
+      ],
+      [
+        "run out of",
+        "tükenmek / bitmek",
+        "⛽"
+      ],
+      [
+        "carry on",
+        "devam etmek",
+        "🚶"
+      ],
+      [
+        "find out",
+        "öğrenmek / keşfetmek",
+        "💡"
+      ],
+      [
+        "turn down",
+        "reddetmek / kısmak",
+        "👎"
+      ],
+      [
+        "pick up",
+        "almak / toplamak",
+        "📦"
+      ],
+      [
+        "call off",
+        "iptal etmek",
+        "🚫"
+      ],
+      [
+        "set up",
+        "kurmak / düzenlemek",
+        "⚙️"
+      ],
+      [
+        "put off",
+        "ertelemek",
+        "⏳"
+      ],
+      [
+        "get along with",
+        "biriyle iyi geçinmek",
+        "🤝"
+      ],
+      [
+        "take off",
+        "havalanmak / çıkarmak",
+        "🛫"
+      ]
+    ]
+  },
+  {
+    "id": "b1_reported_speech",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Dolaylı Anlatım (Reported Speech)",
+    "en": "Reported Speech",
+    "emoji": "💬",
+    "explain": "<h4>Dolaylı Anlatım: Reported Speech</h4>\n<p>Birinin söylediği sözü başka birine aktarırken fiil genellikle <b>bir derece geçmiş zamana</b> kaydırılır.</p>\n<table class=\"g-table\">\n  <tr><th>Doğrudan Cümle (Direct)</th><th>Aktarılan Cümle (Reported)</th></tr>\n  <tr><td>\"I <b>am</b> happy.\"</td><td>He said that he <b>was</b> happy.</td></tr>\n  <tr><td>\"I <b>like</b> coffee.\"</td><td>She said that she <b>liked</b> coffee.</td></tr>\n  <tr><td>\"I <b>will</b> call you.\"</td><td>He told me that he <b>would</b> call me.</td></tr>\n</table>",
+    "examples": [
+      [
+        "He said that he lived in Istanbul.",
+        "İstanbul'da yaşadığını söyledi."
+      ],
+      [
+        "She told me that she was studying for the test.",
+        "Sınava çalıştığını bana söyledi."
+      ],
+      [
+        "They said they would arrive on time.",
+        "Zamanında varacaklarını söylediler."
+      ]
+    ],
+    "mc": [
+      [
+        "\"I am tired.\" ➔ He said that he ___ tired.",
+        [
+          "was",
+          "is",
+          "be"
+        ]
+      ],
+      [
+        "\"I have finished.\" ➔ She said that she ___ finished.",
+        [
+          "had",
+          "has",
+          "have"
+        ]
+      ],
+      [
+        "\"I will help.\" ➔ He told me that he ___ help.",
+        [
+          "would",
+          "will",
+          "can"
+        ]
+      ],
+      [
+        "\"We can swim.\" ➔ They said that they ___ swim.",
+        [
+          "could",
+          "can",
+          "may"
+        ]
+      ],
+      [
+        "\"I don't know.\" ➔ She explained that she ___ know.",
+        [
+          "didn't",
+          "doesn't",
+          "not"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "He said that he was ready",
+        "Hazır olduğunu söyledi."
+      ],
+      [
+        "She told me she would call",
+        "Arayacağını bana söyledi."
+      ],
+      [
+        "They said they had arrived safely",
+        "Güvenle vardıklarını söylediler."
+      ]
+    ]
+  },
+  {
+    "id": "b1_travel_culture",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Kültür ve Gezi Rotaları",
+    "en": "Travel & Culture",
+    "emoji": "🏛️",
+    "words": [
+      [
+        "heritage",
+        "kültürel miras",
+        "🏛️"
+      ],
+      [
+        "itinerary",
+        "gezi planı / rota",
+        "🗺️"
+      ],
+      [
+        "accommodation",
+        "konaklama",
+        "🏨"
+      ],
+      [
+        "sightseeing",
+        "turistik yerleri gezme",
+        "📸"
+      ],
+      [
+        "customs",
+        "gümrük / gelenekler",
+        "🛂"
+      ],
+      [
+        "destination",
+        "varış noktası",
+        "📍"
+      ],
+      [
+        "foreigner",
+        "yabancı",
+        "🌍"
+      ],
+      [
+        "monument",
+        "anıt / abide",
+        "🗿"
+      ],
+      [
+        "souvenir",
+        "hediyelik eşya",
+        "🎁"
+      ],
+      [
+        "guidebook",
+        "rehber kitap",
+        "📖"
+      ],
+      [
+        "traditional",
+        "geleneksel",
+        "🏮"
+      ],
+      [
+        "explore",
+        "keşfetmek",
+        "🧭"
+      ]
+    ]
+  },
+  {
+    "id": "b1_modals_deduction",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Çıkarım Modalleri (must, can't, might)",
+    "en": "Modals of Deduction",
+    "emoji": "🔍",
+    "explain": "<h4>Çıkarım Modalleri: must, can't, might / could</h4>\n<p>Elimizdeki ipuçlarına dayanarak bir durum hakkında tahminde bulunurken kullanılır.</p>\n<table class=\"g-table\">\n  <tr><th>Modal</th><th>Kesinlik Oranı</th><th>Örnek</th><th>Anlamı</th></tr>\n  <tr><td><b>must</b></td><td>%95 Emin (Olumlu)</td><td>He <b>must be</b> rich.</td><td>Zengin olmalı (kesin gibi).</td></tr>\n  <tr><td><b>can't</b></td><td>%95 Emin (Olumsuz)</td><td>It <b>can't be</b> true.</td><td>Doğru olamaz (imkansız).</td></tr>\n  <tr><td><b>might / could</b></td><td>%50 İhtimal</td><td>She <b>might be</b> busy.</td><td>Meşgul olabilir (belki).</td></tr>\n</table>",
+    "examples": [
+      [
+        "You have worked for 12 hours, you must be exhausted!",
+        "12 saat çalıştın, çok yorulmuş olmalısın!"
+      ],
+      [
+        "He can't be forty years old, he looks so young.",
+        "Kırk yaşında olamaz, çok genç görünüyor."
+      ],
+      [
+        "Take an umbrella, it might rain later.",
+        "Şemsiye al, daha sonra yağmur yağabilir."
+      ]
+    ],
+    "mc": [
+      [
+        "Look at the snow outside, it ___ freezing cold!",
+        [
+          "must be",
+          "can't be",
+          "should"
+        ]
+      ],
+      [
+        "He just had lunch, so he ___ hungry.",
+        [
+          "can't be",
+          "must be",
+          "might be"
+        ]
+      ],
+      [
+        "I don't know where Anna is, she ___ at the library.",
+        [
+          "might be",
+          "must",
+          "can't"
+        ]
+      ],
+      [
+        "That car is a Ferrari, it ___ cost a fortune!",
+        [
+          "must",
+          "can't",
+          "may not"
+        ]
+      ],
+      [
+        "She isn't answering, she ___ driving right now.",
+        [
+          "could be",
+          "can't",
+          "mustn't"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "You must be tired after work",
+        "İşten sonra yorulmuş olmalısın."
+      ],
+      [
+        "That story cannot be true",
+        "O hikaye doğru olamaz."
+      ],
+      [
+        "It might rain in the evening",
+        "Akşam yağmur yağabilir."
+      ]
+    ]
+  },
+  {
+    "id": "b1_health_fitness",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Sağlık, Beslenme ve Zindelik",
+    "en": "Health & Nutrition",
+    "emoji": "🥗",
+    "words": [
+      [
+        "nutrition",
+        "beslenme",
+        "🥗"
+      ],
+      [
+        "symptom",
+        "belirti / semptom",
+        "🤒"
+      ],
+      [
+        "treatment",
+        "tedavi",
+        "💊"
+      ],
+      [
+        "workout",
+        "antrenman / egzersiz",
+        "🏋️"
+      ],
+      [
+        "immune system",
+        "bağışıklık sistemi",
+        "🛡️"
+      ],
+      [
+        "calorie",
+        "kalori",
+        "🔥"
+      ],
+      [
+        "prevention",
+        "önleme / tedbir",
+        "⚠️"
+      ],
+      [
+        "recovery",
+        "iyileşme / toparlanma",
+        "🩹"
+      ],
+      [
+        "blood pressure",
+        "tansiyon / kan basıncı",
+        "🩺"
+      ],
+      [
+        "mental health",
+        "ruh sağlığı",
+        "🧠"
+      ],
+      [
+        "habit",
+        "alışkanlık",
+        "📅"
+      ],
+      [
+        "digest",
+        "sindirmek",
+        "🫄"
+      ]
+    ]
+  },
+  {
+    "id": "b1_relative_clauses",
+    "level": "B1",
+    "type": "grammar",
+    "title": "İlgi Cümlecikleri (Relative Clauses)",
+    "en": "Defining Relative Clauses",
+    "emoji": "🔗",
+    "explain": "<h4>Defining Relative Clauses (who, which, whose, where, when)</h4>\n<p>Bahsettiğimiz kişinin, nesnenin veya yerin <b>kim veya ne olduğunu kesin olarak belirten</b> sıfat cümlecikleridir.</p>\n<table class=\"g-table\">\n  <tr><th>Bağlaç</th><th>Kullanım</th><th>Örnek Cümle</th></tr>\n  <tr><td><b>who / that</b></td><td>İnsanlar için</td><td>The teacher <b>who</b> taught me English.</td></tr>\n  <tr><td><b>which / that</b></td><td>Cansız varlık & Hayvan</td><td>The car <b>which</b> broke down.</td></tr>\n  <tr><td><b>whose</b></td><td>Sahiplik (Kimin?)</td><td>The boy <b>whose</b> dog was lost.</td></tr>\n  <tr><td><b>where</b></td><td>Mekanlar için</td><td>The city <b>where</b> I was born.</td></tr>\n</table>",
+    "examples": [
+      [
+        "I met a woman who writes books.",
+        "Kitaplar yazan bir kadınla tanıştım."
+      ],
+      [
+        "This is the phone which has the best camera.",
+        "En iyi kameraya sahip olan telefon bu."
+      ],
+      [
+        "He is the man whose car was stolen.",
+        "Arabası çalınan adam o."
+      ]
+    ],
+    "mc": [
+      [
+        "The architect ___ designed this building is famous.",
+        [
+          "who",
+          "which",
+          "where"
+        ]
+      ],
+      [
+        "This is the laptop ___ battery lasts for 20 hours.",
+        [
+          "whose",
+          "which",
+          "who"
+        ]
+      ],
+      [
+        "Do you remember the park ___ we played football?",
+        [
+          "where",
+          "which",
+          "who"
+        ]
+      ],
+      [
+        "A dictionary is a book ___ gives word meanings.",
+        [
+          "which",
+          "who",
+          "where"
+        ]
+      ],
+      [
+        "The student ___ won the competition was very happy.",
+        [
+          "who",
+          "which",
+          "whose"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "This is the doctor who treated me",
+        "Beni tedavi eden doktor bu."
+      ],
+      [
+        "I like places where nature is preserved",
+        "Doğanın korunduğu yerleri severim."
+      ],
+      [
+        "The woman whose purse was stolen called",
+        "Çantası çalınan kadın aradı."
+      ]
+    ]
+  },
+  {
+    "id": "b1_media_arts",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Medya, Sinema ve Sanat",
+    "en": "Media & Arts",
+    "emoji": "🎬",
+    "words": [
+      [
+        "masterpiece",
+        "başyapıt / şaheser",
+        "🎨"
+      ],
+      [
+        "audience",
+        "seyirci / kitle",
+        "👥"
+      ],
+      [
+        "performance",
+        "performans / gösteri",
+        "🎭"
+      ],
+      [
+        "documentary",
+        "belgesel",
+        "🎥"
+      ],
+      [
+        "director",
+        "yönetmen",
+        "🎬"
+      ],
+      [
+        "exhibition",
+        "sergi",
+        "🖼️"
+      ],
+      [
+        "soundtrack",
+        "film müziği",
+        "🎵"
+      ],
+      [
+        "broadcast",
+        "yayın / yayınlamak",
+        "📡"
+      ],
+      [
+        "review",
+        "eleştiri / inceleme",
+        "⭐"
+      ],
+      [
+        "genre",
+        "tür / tarz",
+        "📂"
+      ],
+      [
+        "sculpture",
+        "heykel",
+        "🗿"
+      ],
+      [
+        "actor",
+        "oyuncu / aktör",
+        "🌟"
+      ]
+    ]
+  },
+  {
+    "id": "b1_gerunds_infinitives",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Gerunds vs Infinitives",
+    "en": "Gerunds vs Infinitives",
+    "emoji": "⚖️",
+    "explain": "<h4>Fiilden İsim Yapma: Gerund (-ing) vs Infinitive (to + V1)</h4>\n<p>Bazı fiiller kendisinden sonra <b>-ing</b> (enjoy, avoid, suggest), bazıları <b>to + fiil</b> (hope, decide, promise) ister.</p>\n<table class=\"g-table\">\n  <tr><th>Grup</th><th>Örnek Fiiller</th><th>Örnek Cümle</th></tr>\n  <tr><td><b>Gerund (-ing)</b></td><td>enjoy, mind, admit, avoid, finish</td><td>I enjoy <b>reading</b>.</td></tr>\n  <tr><td><b>Infinitive (to)</b></td><td>decide, hope, plan, promise, want</td><td>I decided <b>to go</b>.</td></tr>\n  <tr><td><b>Anlam Değişen</b></td><td>remember, stop, forget</td><td>I stopped <b>smoking</b> (bıraktım) vs stopped <b>to smoke</b> (içmek için durdum).</td></tr>\n</table>",
+    "examples": [
+      [
+        "I decided to study abroad next year.",
+        "Gelecek yıl yurt dışında okumaya karar verdim."
+      ],
+      [
+        "She avoids eating fast food.",
+        "Hazır yemek yemekten kaçınır."
+      ],
+      [
+        "Don't forget to lock the door.",
+        "Kapıyı kilitlemeyi unutma."
+      ]
+    ],
+    "mc": [
+      [
+        "I promised ___ my friend tomorrow.",
+        [
+          "to visit",
+          "visiting",
+          "visit"
+        ]
+      ],
+      [
+        "Would you mind ___ the window?",
+        [
+          "closing",
+          "to close",
+          "close"
+        ]
+      ],
+      [
+        "He stopped ___ because he was coughing.",
+        [
+          "smoking",
+          "to smoke",
+          "smoke"
+        ]
+      ],
+      [
+        "We are planning ___ on holiday in July.",
+        [
+          "to go",
+          "going",
+          "go"
+        ]
+      ],
+      [
+        "She enjoys ___ international podcasts.",
+        [
+          "listening to",
+          "to listen",
+          "listen"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "I decided to study medicine abroad",
+        "Yurt dışında tıp okumaya karar verdim."
+      ],
+      [
+        "She avoids drinking sugary drinks",
+        "Şekerli içecekler içmekten kaçınır."
+      ],
+      [
+        "Remember to call your parents tonight",
+        "Bu akşam aileni aramayı hatırla."
+      ]
+    ]
+  },
+  {
+    "id": "b1_personality_psych",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Kişilik ve Karakter Özellikleri",
+    "en": "Personality Traits",
+    "emoji": "🎭",
+    "words": [
+      [
+        "ambitious",
+        "hırslı / azimli",
+        "🧗"
+      ],
+      [
+        "generous",
+        "cömert",
+        "🤲"
+      ],
+      [
+        "reliable",
+        "güvenilir",
+        "🤝"
+      ],
+      [
+        "stubborn",
+        "inatçı",
+        "🐂"
+      ],
+      [
+        "open-minded",
+        "açık fikirli",
+        "💡"
+      ],
+      [
+        "sensitive",
+        "duyarlı / hassas",
+        "💧"
+      ],
+      [
+        "pessimistic",
+        "karamsar",
+        "🌧️"
+      ],
+      [
+        "optimistic",
+        "iyimser",
+        "🌈"
+      ],
+      [
+        "introvert",
+        "içe dönük",
+        "🚪"
+      ],
+      [
+        "extrovert",
+        "dışa dönük",
+        "🎉"
+      ],
+      [
+        "patient",
+        "sabırlı",
+        "🧘"
+      ],
+      [
+        "creative",
+        "yaratıcı",
+        "🎨"
+      ]
+    ]
+  },
+  {
+    "id": "b1_used_to_would",
+    "level": "B1",
+    "type": "grammar",
+    "title": "Geçmiş Alışkanlıklar (used to & would)",
+    "en": "used to & would",
+    "emoji": "📼",
+    "explain": "<h4>Eski Alışkanlıklar: used to vs would</h4>\n<p>Geçmişte düzenli olarak yapılan ama <b>artık yapılmayan</b> alışkanlıkları ve durumları anlatır.</p>\n<table class=\"g-table\">\n  <tr><th>Kalıp</th><th>Kullanım Alanı</th><th>Örnek</th></tr>\n  <tr><td><b>used to</b></td><td>Hem eylem hem de durum fiilleri (be, live, have)</td><td>I <b>used to live</b> in Izmir.</td></tr>\n  <tr><td><b>would</b></td><td>Yalnızca tekrarlanan eylemler (durum fiili olmaz)</td><td>My grandfather <b>would tell</b> stories.</td></tr>\n</table>",
+    "examples": [
+      [
+        "I used to play basketball when I was a child.",
+        "Çocukken basketbol oynardım (artık oynamıyorum)."
+      ],
+      [
+        "Did you use to drink coffee back then?",
+        "O zamanlar kahve içer miydin?"
+      ],
+      [
+        "Every summer, we would swim in the lake.",
+        "Her yaz gölde yüzerdik."
+      ]
+    ],
+    "mc": [
+      [
+        "I ___ wear glasses, but now I wear contacts.",
+        [
+          "used to",
+          "use to",
+          "would to"
+        ]
+      ],
+      [
+        "When I was young, my father ___ read me bedtime stories.",
+        [
+          "would",
+          "used",
+          "is used to"
+        ]
+      ],
+      [
+        "She ___ have long blonde hair, but she cut it.",
+        [
+          "used to",
+          "would",
+          "is used to"
+        ]
+      ],
+      [
+        "___ you ___ live in Ankara?",
+        [
+          "Did / use to",
+          "Do / used to",
+          "Have / used to"
+        ]
+      ],
+      [
+        "They ___ eat meat, but now they are vegan.",
+        [
+          "used to",
+          "would",
+          "will"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "I used to live in a small village",
+        "Küçük bir köyde yaşardım."
+      ],
+      [
+        "We would play outside every evening",
+        "Her akşam dışarıda oynardık."
+      ],
+      [
+        "She used to have a red bicycle",
+        "Kırmızı bir bisikleti vardı."
+      ]
+    ]
+  },
+  {
+    "id": "b1_crime_society",
+    "level": "B1",
+    "type": "vocab",
+    "title": "Toplum, Hukuk ve Kurallar",
+    "en": "Crime & Society",
+    "emoji": "⚖️",
+    "words": [
+      [
+        "citizen",
+        "vatandaş / yurttaş",
+        "🏙️"
+      ],
+      [
+        "witness",
+        "tanık / şahit",
+        "👁️"
+      ],
+      [
+        "punishment",
+        "ceza / yaptırım",
+        "⛓️"
+      ],
+      [
+        "innocent",
+        "masum / suçsuz",
+        "🕊️"
+      ],
+      [
+        "guilty",
+        "suçlu",
+        "⚖️"
+      ],
+      [
+        "judge",
+        "yargıç / hakim",
+        "🧑‍⚖️"
+      ],
+      [
+        "evidence",
+        "delil / kanıt",
+        "🔎"
+      ],
+      [
+        "investigate",
+        "soruşturmak",
+        "🕵️"
+      ],
+      [
+        "community",
+        "topluluk / cemiyet",
+        "👥"
+      ],
+      [
+        "prevent",
+        "önlemek / engellemek",
+        "🛑"
+      ],
+      [
+        "security",
+        "güvenlik",
+        "🔒"
+      ],
+      [
+        "rights",
+        "haklar",
+        "📜"
+      ]
+    ]
   }
+,
+
+  /* ============================================================
+     B2 CEFR İLERİ SEVİYE MÜFREDATI (Upper-Intermediate - 20 Ünite)
+     ============================================================ */
+
+  {
+    "id": "b2_third_conditional",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Third Conditional (Geçmiş Pişmanlıklar)",
+    "en": "Third Conditional",
+    "emoji": "💔",
+    "explain": "<h4>Third Conditional (If + Past Perfect, would have + V3)</h4>\n<p>Geçmişte yaşanmış ve <b>artık değiştirilmesi imkansız olan</b> olaylar hakkındaki varsayımları ve pişmanlıkları anlatır.</p>\n<table class=\"g-table\">\n  <tr><th>Koşul (If + had V3)</th><th>Sonuç (would have V3)</th><th>Gerçek Durum</th></tr>\n  <tr><td>If I <b>had studied</b> harder,</td><td>I <b>would have passed</b>.</td><td>Çalışmadım ve kaldım.</td></tr>\n  <tr><td>If you <b>had told</b> me,</td><td>I <b>could have helped</b> you.</td><td>Bana söylemedin, yardım edemedim.</td></tr>\n</table>",
+    "examples": [
+      [
+        "If we had left earlier, we would not have missed the flight.",
+        "Daha erken çıksaydık uçağı kaçırmazdık."
+      ],
+      [
+        "If she had known the truth, she wouldn't have reacted that way.",
+        "Gerçeği bilseydi bu şekilde tepki vermezdi."
+      ],
+      [
+        "What would you have done if you had been there?",
+        "Orada olsaydın ne yapardın?"
+      ]
+    ],
+    "mc": [
+      [
+        "If I ___ about the traffic, I would have taken the subway.",
+        [
+          "had known",
+          "knew",
+          "have known"
+        ]
+      ],
+      [
+        "She would have won the race if she ___ her ankle.",
+        [
+          "had not injured",
+          "did not injure",
+          "has not injured"
+        ]
+      ],
+      [
+        "If they had listened to advice, they ___ so much money.",
+        [
+          "would not have lost",
+          "will not lose",
+          "did not lose"
+        ]
+      ],
+      [
+        "What ___ you ___ if the manager had asked you directly?",
+        [
+          "would / have said",
+          "will / say",
+          "did / say"
+        ]
+      ],
+      [
+        "If we had booked early, the tickets ___ much cheaper.",
+        [
+          "would have been",
+          "will be",
+          "are"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "If I had known I would have called you",
+        "Bilseydim seni arardım."
+      ],
+      [
+        "We would not have missed the train if we had hurried",
+        "Acele etseydik treni kaçırmazdık."
+      ],
+      [
+        "She would have succeeded if she had tried harder",
+        "Daha çok çabalasaydı başarırdı."
+      ]
+    ]
+  },
+  {
+    "id": "b2_business_negotiation",
+    "level": "B2",
+    "type": "vocab",
+    "title": "İş Müzakeresi ve Finans",
+    "en": "Business Negotiation & Finance",
+    "emoji": "📊",
+    "words": [
+      [
+        "negotiate",
+        "müzakere etmek / pazarlık yapmak",
+        "🤝"
+      ],
+      [
+        "revenue",
+        "gelir / hasılat",
+        "💰"
+      ],
+      [
+        "stakeholder",
+        "paydaş / hissedar",
+        "🏢"
+      ],
+      [
+        "compromise",
+        "uzlaşma / ödün verme",
+        "⚖️"
+      ],
+      [
+        "acquisition",
+        "şirket satın alımı",
+        "📈"
+      ],
+      [
+        "profit margin",
+        "kar marjı",
+        "📊"
+      ],
+      [
+        "asset",
+        "varlık / aktif değer",
+        "💎"
+      ],
+      [
+        "liability",
+        "yükümlülük / borç",
+        "📉"
+      ],
+      [
+        "collaborate",
+        "iş birliği yapmak",
+        "👥"
+      ],
+      [
+        "feasibility",
+        "fizibilite / uygulanabilirlik",
+        "📐"
+      ],
+      [
+        "venture capital",
+        "girişim sermayesi",
+        "🚀"
+      ],
+      [
+        "turnover",
+        "ciro / devir hızı",
+        "🔄"
+      ]
+    ]
+  },
+  {
+    "id": "b2_wish_if_only",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Keşkeler: I wish & If only",
+    "en": "Wishes & Regrets (I wish / If only)",
+    "emoji": "🌠",
+    "explain": "<h4>Keşkeler ve Pişmanlıklar: I wish / If only</h4>\n<table class=\"g-table\">\n  <tr><th>Zaman Dilimi</th><th>Kullanılan Yapı</th><th>Örnek</th><th>Anlamı</th></tr>\n  <tr><td><b>Şimdiki Zaman İçin</b></td><td>wish + Past Simple</td><td>I wish I <b>spoke</b> French.</td><td>Keşke Fransızca konuşabilsem (şu an bilmiyorum).</td></tr>\n  <tr><td><b>Geçmiş Zaman İçin</b></td><td>wish + Past Perfect</td><td>I wish I <b>had gone</b>.</td><td>Keşke gitseydim (geçmiş pişmanlık).</td></tr>\n  <tr><td><b>Şikayet / Başkası</b></td><td>wish + would</td><td>I wish it <b>would stop</b> raining!</td><td>Keşke yağmur dursa! (şikayet).</td></tr>\n</table>",
+    "examples": [
+      [
+        "I wish I had more free time these days.",
+        "Bu günlerde keşke daha çok boş vaktim olsa."
+      ],
+      [
+        "If only I had listened to your advice!",
+        "Keşke senin tavsiyeni dinlemiş olsaydım!"
+      ],
+      [
+        "I wish you would listen to me when I speak.",
+        "Konuştuğumda keşke beni dinlesen."
+      ]
+    ],
+    "mc": [
+      [
+        "I don't have a car. I wish I ___ one.",
+        [
+          "had",
+          "have",
+          "would have"
+        ]
+      ],
+      [
+        "I failed the exam. I wish I ___ more.",
+        [
+          "had studied",
+          "studied",
+          "study"
+        ]
+      ],
+      [
+        "The music next door is loud. I wish they ___ it down!",
+        [
+          "would turn",
+          "turned",
+          "turn"
+        ]
+      ],
+      [
+        "If only we ___ that train yesterday!",
+        [
+          "had caught",
+          "caught",
+          "catch"
+        ]
+      ],
+      [
+        "She is lonely. She wishes she ___ more friends.",
+        [
+          "had",
+          "has",
+          "would have"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "I wish I had studied harder for the test",
+        "Keşke sınava daha çok çalışsaydım."
+      ],
+      [
+        "If only I knew the answer to this question",
+        "Keşke bu sorunun cevabını bilseydim."
+      ],
+      [
+        "I wish it would stop raining so heavily",
+        "Keşke bu kadar şiddetli yağmasa."
+      ]
+    ]
+  },
+  {
+    "id": "b2_technology_ai",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Yapay Zeka ve Gelecek Teknolojisi",
+    "en": "Artificial Intelligence & Future Tech",
+    "emoji": "🤖",
+    "words": [
+      [
+        "algorithm",
+        "algoritma",
+        "🧮"
+      ],
+      [
+        "automation",
+        "otomasyon",
+        "⚙️"
+      ],
+      [
+        "breakthrough",
+        "çığır açan buluş",
+        "⚡"
+      ],
+      [
+        "cybersecurity",
+        "siber güvenlik",
+        "🛡️"
+      ],
+      [
+        "neural network",
+        "yapay sinir ağı",
+        "🧠"
+      ],
+      [
+        "disruptive",
+        "ezber bozan / dönüştürücü",
+        "💥"
+      ],
+      [
+        "virtual reality",
+        "sanal gerçeklik",
+        "🥽"
+      ],
+      [
+        "data privacy",
+        "veri gizliliği",
+        "🔒"
+      ],
+      [
+        "unprecedented",
+        "benzeri görülmemiş",
+        "🚀"
+      ],
+      [
+        "autonomous",
+        "otonom / sürücüsüz",
+        "🚗"
+      ],
+      [
+        "nanotechnology",
+        "nanoteknoloji",
+        "🔬"
+      ],
+      [
+        "biometrics",
+        "biyometrik veri",
+        "👁️"
+      ]
+    ]
+  },
+  {
+    "id": "b2_causatives_passive",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Ettirgen Çatı (Causatives: have/get done)",
+    "en": "Causatives & Impersonal Passive",
+    "emoji": "🛠️",
+    "explain": "<h4>Ettirgen Çatı: Causatives (have / get something done)</h4>\n<p>Bir işi kendimiz yapmak yerine bir başkasına <b>yaptırdığımızda</b> veya bir hizmet aldığımızda kullanılır.</p>\n<table class=\"g-table\">\n  <tr><th>Kalıp</th><th>Örnek Cümle</th><th>Anlamı</th></tr>\n  <tr><td><b>have something done</b></td><td>I <b>had my car repaired</b>.</td><td>Arabamı tamir ettirdim (tamirci yaptı).</td></tr>\n  <tr><td><b>get something done</b></td><td>She <b>got her hair cut</b>.</td><td>Saçını kestirdi (kuaför yaptı).</td></tr>\n  <tr><td><b>İleri Edilgen</b></td><td>It <b>is said that</b> he is rich.</td><td>Zengin olduğu söyleniyor.</td></tr>\n</table>",
+    "examples": [
+      [
+        "I need to have my passport renewed.",
+        "Pasaportumu yeniletmem gerekiyor."
+      ],
+      [
+        "She gets her teeth cleaned twice a year.",
+        "Yılda iki kez dişlerini temizletir."
+      ],
+      [
+        "It is believed that the pyramids were built by skilled workers.",
+        "Piramitlerin usta işçilerce yapıldığına inanılır."
+      ]
+    ],
+    "mc": [
+      [
+        "My laptop was broken, so I had it ___ yesterday.",
+        [
+          "repaired",
+          "repair",
+          "repairing"
+        ]
+      ],
+      [
+        "She is going to get her wedding dress ___ by a designer.",
+        [
+          "made",
+          "make",
+          "to make"
+        ]
+      ],
+      [
+        "We must have the roof ___ before winter arrives.",
+        [
+          "fixed",
+          "fix",
+          "fixing"
+        ]
+      ],
+      [
+        "It ___ that the global economy will grow next quarter.",
+        [
+          "is expected",
+          "expects",
+          "expecting"
+        ]
+      ],
+      [
+        "He ___ his house painted last week.",
+        [
+          "had",
+          "made",
+          "did"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "I had my car washed yesterday afternoon",
+        "Dün öğleden sonra arabamı yıkattım."
+      ],
+      [
+        "She got her hair styled for the wedding",
+        "Düğün için saçını yaptırdı."
+      ],
+      [
+        "It is thought that the project will succeed",
+        "Projenin başarılı olacağı düşünülüyor."
+      ]
+    ]
+  },
+  {
+    "id": "b2_psychology_mind",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Psikoloji ve İnsan Zihni",
+    "en": "Psychology & Human Behavior",
+    "emoji": "🧠",
+    "words": [
+      [
+        "subconscious",
+        "bilinçaltı",
+        "🌊"
+      ],
+      [
+        "cognitive",
+        "bilişsel / zihinsel",
+        "🧩"
+      ],
+      [
+        "empathy",
+        "empati / duygudaşlık",
+        "❤️"
+      ],
+      [
+        "resilience",
+        "psikolojik dayanıklılık",
+        "🌱"
+      ],
+      [
+        "perception",
+        "algı / idrak",
+        "👁️"
+      ],
+      [
+        "motivation",
+        "güdülenme / motivasyon",
+        "🔥"
+      ],
+      [
+        "anxiety",
+        "kaygı / endişe",
+        "🌪️"
+      ],
+      [
+        "instinct",
+        "içgüdü",
+        "🐾"
+      ],
+      [
+        "behavioral",
+        "davranışsal",
+        "📋"
+      ],
+      [
+        "personality",
+        "kişilik",
+        "🎭"
+      ],
+      [
+        "consciousness",
+        "bilinç / farkındalık",
+        "💡"
+      ],
+      [
+        "trauma",
+        "travma / sarsıntı",
+        "⚡"
+      ]
+    ]
+  },
+  {
+    "id": "b2_future_cont_perf",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Future Continuous & Future Perfect",
+    "en": "Future Continuous & Future Perfect",
+    "emoji": "🚀",
+    "explain": "<h4>Gelecek Zaman Süreçleri</h4>\n<table class=\"g-table\">\n  <tr><th>Zaman</th><th>Kalıp</th><th>Örnek</th><th>Anlamı</th></tr>\n  <tr><td><b>Future Continuous</b></td><td>will be + V-ing</td><td>This time tomorrow, I <b>will be flying</b>.</td><td>Yarın bu saatte uçuyor olacağım.</td></tr>\n  <tr><td><b>Future Perfect</b></td><td>will have + V3</td><td>By 2030, she <b>will have graduated</b>.</td><td>2030'a kadar mezun olmuş olacak.</td></tr>\n</table>",
+    "examples": [
+      [
+        "By next month, I will have finished writing this book.",
+        "Gelecek aya kadar bu kitabı yazmayı bitirmiş olacağım."
+      ],
+      [
+        "Don't call at eight, I will be having dinner.",
+        "Sekizde arama, akşam yemeği yiyor olacağım."
+      ],
+      [
+        "By the time you arrive, we will have prepared everything.",
+        "Sen varana kadar her şeyi hazırlamış olacağız."
+      ]
+    ],
+    "mc": [
+      [
+        "By this time next year, I ___ from university.",
+        [
+          "will have graduated",
+          "will graduate",
+          "will be graduating"
+        ]
+      ],
+      [
+        "Tomorrow at 3 PM, we ___ our final presentation.",
+        [
+          "will be delivering",
+          "will deliver",
+          "have delivered"
+        ]
+      ],
+      [
+        "By 2050, scientists ___ a cure for many diseases.",
+        [
+          "will have found",
+          "find",
+          "will be finding"
+        ]
+      ],
+      [
+        "Don't disturb him tonight, he ___ for his exam.",
+        [
+          "will be studying",
+          "will have studied",
+          "studies"
+        ]
+      ],
+      [
+        "By next Friday, they ___ their house.",
+        [
+          "will have sold",
+          "will sell",
+          "are selling"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "By next year I will have completed my degree",
+        "Gelecek yıla kadar diplomamı tamamlamış olacağım."
+      ],
+      [
+        "This time tomorrow we will be swimming in the sea",
+        "Yarın bu saatte denizde yüzüyor olacağız."
+      ],
+      [
+        "By five o clock they will have finished the match",
+        "Saat beşe kadar maçı bitirmiş olacaklar."
+      ]
+    ]
+  },
+  {
+    "id": "b2_global_challenges",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Küresel Krizler ve Diplomasi",
+    "en": "Global Challenges & Diplomacy",
+    "emoji": "🌐",
+    "words": [
+      [
+        "poverty",
+        "yoksulluk / sefalet",
+        "🏚️"
+      ],
+      [
+        "sustainable development",
+        "sürdürülebilir kalkınma",
+        "🌱"
+      ],
+      [
+        "diplomatic",
+        "diplomatik / diplomatça",
+        "🕊️"
+      ],
+      [
+        "resolution",
+        "karar / uzlaşı metni",
+        "📜"
+      ],
+      [
+        "humanitarian",
+        "insani / yardımsever",
+        "🤝"
+      ],
+      [
+        "sanction",
+        "yaptırım",
+        "🛑"
+      ],
+      [
+        "negotiate treaty",
+        "antlaşma müzakere etmek",
+        "✍️"
+      ],
+      [
+        "crisis management",
+        "kriz yönetimi",
+        "🚨"
+      ],
+      [
+        "inequality",
+        "eşitsizlik",
+        "⚖️"
+      ],
+      [
+        "sovereignty",
+        "egemenlik",
+        "👑"
+      ],
+      [
+        "refugee",
+        "mülteci / sığınmacı",
+        "🏕️"
+      ],
+      [
+        "coalition",
+        "koalisyon / ittifak",
+        "🌐"
+      ]
+    ]
+  },
+  {
+    "id": "b2_modals_past_deduction",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Geçmiş Çıkarım (must/can't have done)",
+    "en": "Past Modals of Deduction",
+    "emoji": "🕵️",
+    "explain": "<h4>Geçmişe Dair Güçlü Çıkarımlar (Modal + have + V3)</h4>\n<table class=\"g-table\">\n  <tr><th>Kalıp</th><th>Anlamı</th><th>Örnek Cümle</th></tr>\n  <tr><td><b>must have + V3</b></td><td>Yapmış olmalı (kesine yakın)</td><td>He <b>must have forgotten</b> his keys.</td></tr>\n  <tr><td><b>can't have + V3</b></td><td>Yapmış olamaz (imkansız)</td><td>She <b>can't have said</b> such a thing.</td></tr>\n  <tr><td><b>might have + V3</b></td><td>Yapmış olabilir (ihtimal)</td><td>They <b>might have missed</b> the bus.</td></tr>\n  <tr><td><b>should have + V3</b></td><td>Yapmalıydı (ama yapmadı)</td><td>You <b>should have called</b> me!</td></tr>\n</table>",
+    "examples": [
+      [
+        "The streets are wet, it must have rained last night.",
+        "Sokaklar ıslak, dün gece yağmur yağmış olmalı."
+      ],
+      [
+        "He can't have stolen the money, he was in Paris!",
+        "Parayı o çalmış olamaz, Paris'teydi!"
+      ],
+      [
+        "You should have told me earlier, I could have helped.",
+        "Bana daha önce söylemeliydin, yardım edebilirdim."
+      ]
+    ],
+    "mc": [
+      [
+        "The lights are off and the door is locked. They ___ out.",
+        [
+          "must have gone",
+          "can't have gone",
+          "should go"
+        ]
+      ],
+      [
+        "He only started reading 5 minutes ago, he ___ the whole book.",
+        [
+          "can't have finished",
+          "must have finished",
+          "should finish"
+        ]
+      ],
+      [
+        "You look exhausted. You ___ slept enough last night.",
+        [
+          "can't have",
+          "must have",
+          "might have"
+        ]
+      ],
+      [
+        "I didn't see Jack at the party. He ___ busy.",
+        [
+          "might have been",
+          "can't be",
+          "must be"
+        ]
+      ],
+      [
+        "I failed the driving test. I ___ practiced more parking.",
+        [
+          "should have",
+          "must have",
+          "can't have"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "He must have left his wallet at home",
+        "Cüzdanını evde unutmuş olmalı."
+      ],
+      [
+        "She can not have done that on purpose",
+        "Bunu bilerek yapmış olamaz."
+      ],
+      [
+        "You should have listened to the teacher carefully",
+        "Öğretmeni dikkatlice dinlemeliydin."
+      ]
+    ]
+  },
+  {
+    "id": "b2_advanced_idioms",
+    "level": "B2",
+    "type": "vocab",
+    "title": "İleri Düzey Deyimler ve Nüanslar",
+    "en": "Advanced Idioms & Collocations",
+    "emoji": "🎭",
+    "words": [
+      [
+        "bite the bullet",
+        "acı reçeteyi kabul etmek / katlanmak",
+        "🎯"
+      ],
+      [
+        "blessing in disguise",
+        "görünüşte kötü ama hayırlı olan durum",
+        "✨"
+      ],
+      [
+        "hit the nail on the head",
+        "tam üstüne basmak / taşı gediğine koymak",
+        "🔨"
+      ],
+      [
+        "once in a blue moon",
+        "kırk yılda bir / nadiren",
+        "🌕"
+      ],
+      [
+        "break the ice",
+        "buzları eritmek / samimiyet kurmak",
+        "🧊"
+      ],
+      [
+        "spill the beans",
+        "ağzındaki baklayı çıkarmak / sırrı açığa vurmak",
+        "🫘"
+      ],
+      [
+        "under the weather",
+        "biraz keyifsiz / hafif hasta",
+        "🌧️"
+      ],
+      [
+        "burn the midnight oil",
+        "gece gündüz harıl harıl çalışmak",
+        "🕯️"
+      ],
+      [
+        "cost an arm and a leg",
+        "ateş pahası olmak / çok pahalı",
+        "🏷️"
+      ],
+      [
+        "see eye to eye",
+        "tamamen aynı fikirde olmak",
+        "👁️"
+      ],
+      [
+        "piece of cake",
+        "çocuk oyuncağı / çok kolay",
+        "🍰"
+      ],
+      [
+        "cut corners",
+        "kolaya kaçmak / kaliteden kısmak",
+        "✂️"
+      ]
+    ]
+  },
+  {
+    "id": "b2_inversion_emphasis",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Devrik Cümleler (Inversion)",
+    "en": "Inversion for Emphasis",
+    "emoji": "⚡",
+    "explain": "<h4>Vurgu İçin Devrik Cümle (Inversion)</h4>\n<p>Cümleye olumsuz veya kısıtlayıcı bir zarfla başlandığında (Never, Seldom, Rarely, Hardly, Under no circumstances) cümle soru kalıbı gibi <b>devrik (Inversion)</b> yapılır.</p>\n<table class=\"g-table\">\n  <tr><th>Zarf</th><th>Devrik Cümle Yapısı</th><th>Normal Cümle</th></tr>\n  <tr><td><b>Never</b></td><td>Never <b>have I seen</b> such beauty.</td><td>I have never seen...</td></tr>\n  <tr><td><b>Seldom</b></td><td>Seldom <b>does he complain</b>.</td><td>He seldom complains.</td></tr>\n  <tr><td><b>Hardly... when</b></td><td>Hardly <b>had we arrived</b> when it rained.</td><td>We had hardly arrived...</td></tr>\n</table>",
+    "examples": [
+      [
+        "Never have I witnessed such an extraordinary sunset.",
+        "Asla böylesine olağanüstü bir gün batımına tanık olmamıştım."
+      ],
+      [
+        "Seldom do people realize the value of peace.",
+        "İnsanlar barışın değerini pek nadir fark ederler."
+      ],
+      [
+        "Under no circumstances should you open this door.",
+        "Hiçbir koşul altında bu kapıyı açmamalısın."
+      ]
+    ],
+    "mc": [
+      [
+        "Never ___ such an amazing performance.",
+        [
+          "have I seen",
+          "I have seen",
+          "did I saw"
+        ]
+      ],
+      [
+        "Seldom ___ out on weekdays.",
+        [
+          "does he go",
+          "he goes",
+          "he did go"
+        ]
+      ],
+      [
+        "Hardly ___ home when the phone rang.",
+        [
+          "had I arrived",
+          "I had arrived",
+          "did I arrive"
+        ]
+      ],
+      [
+        "Not only ___ late, but he also forgot the tickets.",
+        [
+          "was he",
+          "he was",
+          "is he"
+        ]
+      ],
+      [
+        "Under no circumstances ___ the rules.",
+        [
+          "should you break",
+          "you should break",
+          "break you"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "Never have I felt so proud of myself",
+        "Kendimle asla bu kadar gurur duymamıştım."
+      ],
+      [
+        "Seldom do we see such dedication in work",
+        "İşte böyle bir adanmışlığı pek nadir görürüz."
+      ],
+      [
+        "Hardly had the meeting started when he left",
+        "Toplantı henüz başlamıştı ki ayrıldı."
+      ]
+    ]
+  },
+  {
+    "id": "b2_journalism_ethics",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Medya Etiği ve Araştırmacı Gazetecilik",
+    "en": "Journalism & Media Ethics",
+    "emoji": "📰",
+    "words": [
+      [
+        "investigative",
+        "araştırmacı",
+        "🔍"
+      ],
+      [
+        "censorship",
+        "sansür",
+        "✂️"
+      ],
+      [
+        "propaganda",
+        "propaganda / taraflı yönlendirme",
+        "📢"
+      ],
+      [
+        "objective",
+        "nesnel / tarafsız",
+        "⚖️"
+      ],
+      [
+        "misinformation",
+        "yanıltıcı bilgi / dezenformasyon",
+        "❌"
+      ],
+      [
+        "unbiased",
+        "önyargısız",
+        "🕊️"
+      ],
+      [
+        "whistleblower",
+        "içeriden bilgi sızdıran / ifşaatçı",
+        "🪈"
+      ],
+      [
+        "editorial",
+        "başyazı / editoryal",
+        "✍️"
+      ],
+      [
+        "sensationalism",
+        "sansasyonellik / abartı",
+        "📰"
+      ],
+      [
+        "credibility",
+        "güvenilirlik / inandırıcılık",
+        "⭐"
+      ],
+      [
+        "anonymous source",
+        "isimsiz kaynak",
+        "👤"
+      ],
+      [
+        "verify",
+        "doğrulamak / teyit etmek",
+        "✅"
+      ]
+    ]
+  },
+  {
+    "id": "b2_cleft_sentences",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Vurgu Cümleleri (Cleft Sentences)",
+    "en": "Cleft Sentences (It was... / What...)",
+    "emoji": "🎯",
+    "explain": "<h4>Vurgu Cümleleri: Cleft Sentences</h4>\n<p>Cümlede belirli bir bilgiyi (özneyi, nesneyi veya zamanı) öne çıkarıp <b>vurgulamak</b> için kullanılır.</p>\n<table class=\"g-table\">\n  <tr><th>Tür</th><th>Örnek Cümle</th><th>Vurgulanan Öğe</th></tr>\n  <tr><td><b>It-cleft</b></td><td><b>It was John who</b> broke the vase.</td><td>Vurgu: Yapan John idi!</td></tr>\n  <tr><td><b>Wh-cleft</b></td><td><b>What I need is</b> a long vacation.</td><td>Vurgu: İhtiyacım olan tek şey tatil!</td></tr>\n  <tr><td><b>All-cleft</b></td><td><b>All I want is</b> peace and quiet.</td><td>Vurgu: Tek istediğim sessizlik!</td></tr>\n</table>",
+    "examples": [
+      [
+        "What matters most is your health and well-being.",
+        "En çok önemli olan şey senin sağlığın ve esenliğindir."
+      ],
+      [
+        "It was my brother who introduced us.",
+        "Bizi tanıştıran kişi erkek kardeşimdi."
+      ],
+      [
+        "All she did was ask a simple question.",
+        "Yaptığı tek şey basit bir soru sormaktı."
+      ]
+    ],
+    "mc": [
+      [
+        "___ I really love about this city is the historic architecture.",
+        [
+          "What",
+          "That",
+          "Which"
+        ]
+      ],
+      [
+        "It was yesterday ___ we finalized the contract.",
+        [
+          "that",
+          "which",
+          "what"
+        ]
+      ],
+      [
+        "All I want for my birthday ___ to spend time with family.",
+        [
+          "is",
+          "are",
+          "were"
+        ]
+      ],
+      [
+        "It was Sarah ___ solved the difficult puzzle.",
+        [
+          "who",
+          "which",
+          "where"
+        ]
+      ],
+      [
+        "What annoys me most ___ people who interrupt.",
+        [
+          "is",
+          "are",
+          "was"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "What I need right now is some quiet time",
+        "Şu an ihtiyacım olan şey biraz sessizlik."
+      ],
+      [
+        "It was Mary who told me the secret",
+        "Bana sırrı söyleyen kişi Mary idi."
+      ],
+      [
+        "All they did was follow the instructions",
+        "Yaptıkları tek şey talimatları izlemekti."
+      ]
+    ]
+  },
+  {
+    "id": "b2_science_innovation",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Bilimsel İnovasyon ve Keşifler",
+    "en": "Science & Innovation",
+    "emoji": "🔬",
+    "words": [
+      [
+        "hypothesis",
+        "varsayım / hipotez",
+        "🧪"
+      ],
+      [
+        "experiment",
+        "deney",
+        "🔬"
+      ],
+      [
+        "genetic code",
+        "genetik kod",
+        "🧬"
+      ],
+      [
+        "quantum physics",
+        "kuantum fiziği",
+        "⚛️"
+      ],
+      [
+        "pioneer",
+        "öncü / çığır açan kişi",
+        "🚀"
+      ],
+      [
+        "laboratory",
+        "laboratuvar",
+        "🧫"
+      ],
+      [
+        "empirical",
+        "deneysel / gözleme dayalı",
+        "📊"
+      ],
+      [
+        "phenomenon",
+        "olgu / fenomen",
+        "🌌"
+      ],
+      [
+        "synthesize",
+        "sentezlemek",
+        "⚗️"
+      ],
+      [
+        "variable",
+        "değişken",
+        "📈"
+      ],
+      [
+        "astrophysics",
+        "astrofizik",
+        "🪐"
+      ],
+      [
+        "prototype",
+        "ilk örnek / prototip",
+        "🛠️"
+      ]
+    ]
+  },
+  {
+    "id": "b2_participle_clauses",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Ortaç Cümlecikleri (Participle Clauses)",
+    "en": "Participle Clauses (-ing / -ed / Having done)",
+    "emoji": "✂️",
+    "explain": "<h4>Cümle Kısaltmaları: Participle Clauses</h4>\n<p>Yazılı ve akıcı İngilizcede iki cümleyi bağlaç kullanmadan <b>zarf-fiil</b> ile kısaltıp zarifçe birleştirir.</p>\n<table class=\"g-table\">\n  <tr><th>Tür</th><th>Kısaltılmış Hali</th><th>Uzun Hali</th></tr>\n  <tr><td><b>Present Participle (-ing)</b></td><td><b>Walking down the street</b>, I met Tom.</td><td>While I was walking...</td></tr>\n  <tr><td><b>Past Participle (-ed)</b></td><td><b>Shocked by the news</b>, she cried.</td><td>Because she was shocked...</td></tr>\n  <tr><td><b>Perfect Participle</b></td><td><b>Having completed the work</b>, he slept.</td><td>After he had completed...</td></tr>\n</table>",
+    "examples": [
+      [
+        "Having finished his degree, he applied for an internship.",
+        "Diplomasını bitirdikten sonra staja başvurdu."
+      ],
+      [
+        "Not knowing what to say, she remained silent.",
+        "Ne söyleyeceğini bilemeyerek sessiz kaldı."
+      ],
+      [
+        "Written in simple language, the book is easy to understand.",
+        "Basit bir dille yazılmış olan kitabı anlamak kolaydır."
+      ]
+    ],
+    "mc": [
+      [
+        "___ his breakfast, he hurried to catch the morning train.",
+        [
+          "Having eaten",
+          "Ate",
+          "Eating have"
+        ]
+      ],
+      [
+        "___ in 1889, the Eiffel Tower remains an iconic monument.",
+        [
+          "Constructed",
+          "Constructing",
+          "Construct"
+        ]
+      ],
+      [
+        "Not ___ where to go, we asked a passerby for directions.",
+        [
+          "knowing",
+          "knew",
+          "known"
+        ]
+      ],
+      [
+        "___ by the noise outside, the baby woke up crying.",
+        [
+          "Frightened",
+          "Frightening",
+          "Frighten"
+        ]
+      ],
+      [
+        "___ for hours in the rain, their clothes were soaked.",
+        [
+          "Having walked",
+          "Walked",
+          "Walk"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "Having finished the report she closed her laptop",
+        "Raporu bitirdikten sonra dizüstü bilgisayarını kapattı."
+      ],
+      [
+        "Walking along the beach I found a seashell",
+        "Sahil boyunca yürürken bir deniz kabuğu buldum."
+      ],
+      [
+        "Shocked by the announcement everyone stayed silent",
+        "Duyuruyla sarsılan herkes sessiz kaldı."
+      ]
+    ]
+  },
+  {
+    "id": "b2_academic_formal",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Akademik ve Resmi Yazışma Dili",
+    "en": "Academic & Formal Discourse",
+    "emoji": "🖋️",
+    "words": [
+      [
+        "consequently",
+        "sonuç olarak / dolayısıyla",
+        "➡️"
+      ],
+      [
+        "furthermore",
+        "ayrıca / dahası",
+        "📑"
+      ],
+      [
+        "nevertheless",
+        "buna rağmen / yine de",
+        "⚖️"
+      ],
+      [
+        "substantiate",
+        "somut kanıtlarla desteklemek",
+        "📋"
+      ],
+      [
+        "imperative",
+        "zorunlu / hayati önemde",
+        "❗"
+      ],
+      [
+        "discourse",
+        "söylem / akademik tartışma",
+        "🎙️"
+      ],
+      [
+        "facilitate",
+        "kolaylaştırmak / olanak sağlamak",
+        "🗝️"
+      ],
+      [
+        "comprehensive",
+        "kapsamlı / etraflı",
+        "🌐"
+      ],
+      [
+        "coherent",
+        "tutarlı / bağlantılı",
+        "🧩"
+      ],
+      [
+        "notwithstanding",
+        "-e rağmen / karşın",
+        "🛡️"
+      ],
+      [
+        "prevalent",
+        "yaygın / hüküm süren",
+        "📊"
+      ],
+      [
+        "methodology",
+        "yöntembilim / metodoloji",
+        "📐"
+      ]
+    ]
+  },
+  {
+    "id": "b2_mixed_conditionals",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Karışık Koşullar (Mixed Conditionals)",
+    "en": "Mixed Conditionals",
+    "emoji": "🔀",
+    "explain": "<h4>Karışık Koşul Cümleleri (Mixed Conditionals)</h4>\n<p>Geçmişteki bir eylemin <b>şimdiki zamandaki sonucunu</b> veya genel bir özelliğin <b>geçmişteki sonucunu</b> ifade eder.</p>\n<table class=\"g-table\">\n  <tr><th>Koşul</th><th>Sonuç</th><th>Örnek</th><th>Anlamı</th></tr>\n  <tr><td>Geçmiş (had V3)</td><td>Şimdiki Zaman (would V1)</td><td>If I <b>had accepted</b> that job, I <b>would be</b> rich today.</td><td>Kabul etseydim bugün zengin olurdum.</td></tr>\n  <tr><td>Genel Durum (Past)</td><td>Geçmiş Sonuç (would have V3)</td><td>If I <b>weren't</b> so afraid of heights, I <b>would have climbed</b>.</td><td>Korkmasaydım tırmanırdım.</td></tr>\n</table>",
+    "examples": [
+      [
+        "If I had won that scholarship, I would be studying in London right now.",
+        "O bursu kazansaydım şu an Londra'da okuyor olurdum."
+      ],
+      [
+        "If she spoke German fluently, she would have gotten the job yesterday.",
+        "Almanca'yı akıcı konuşuyor olsaydı dün işe alınırdı."
+      ],
+      [
+        "If we had taken the map, we wouldn't be lost right now.",
+        "Haritayı alsaydık şu an kaybolmuş olmazdık."
+      ]
+    ],
+    "mc": [
+      [
+        "If I had saved more money last year, I ___ that apartment now.",
+        [
+          "would buy",
+          "would have bought",
+          "will buy"
+        ]
+      ],
+      [
+        "If he ___ so stubborn, he would have apologized yesterday.",
+        [
+          "weren't",
+          "hadn't been",
+          "isn't"
+        ]
+      ],
+      [
+        "If we had taken the earlier flight, we ___ at the beach right now.",
+        [
+          "would be relaxing",
+          "will relax",
+          "would have relaxed"
+        ]
+      ],
+      [
+        "If she had prepared better, she ___ so nervous today.",
+        [
+          "wouldn't be",
+          "wouldn't have been",
+          "won't be"
+        ]
+      ],
+      [
+        "If I were braver, I ___ that roller coaster yesterday.",
+        [
+          "would have ridden",
+          "would ride",
+          "will ride"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "If I had taken the map we would not be lost",
+        "Haritayı alsaydım kaybolmuş olmazdık."
+      ],
+      [
+        "If she were more patient she would have succeeded",
+        "Daha sabırlı olsaydı başarırdı."
+      ]
+    ]
+  },
+  {
+    "id": "b2_sophisticated_adjectives",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Sofistike ve Nüanslı Sıfatlar",
+    "en": "Sophisticated Adjectives",
+    "emoji": "💎",
+    "words": [
+      [
+        "meticulous",
+        "titiz / kılı kırk yaran",
+        "🔍"
+      ],
+      [
+        "inevitable",
+        "kaçınılmaz",
+        "⏳"
+      ],
+      [
+        "unprecedented",
+        "eşi benzeri görülmemiş",
+        "🌟"
+      ],
+      [
+        "profound",
+        "derin / etkileyici",
+        "🌊"
+      ],
+      [
+        "vulnerable",
+        "savunmasız / incinebilir",
+        "🛡️"
+      ],
+      [
+        "eloquent",
+        "etkili konuşan / beliğ",
+        "🎙️"
+      ],
+      [
+        "superficial",
+        "yüzeysel / sığ",
+        "🛶"
+      ],
+      [
+        "ambiguous",
+        "muğlak / çift anlamlı",
+        "🌫️"
+      ],
+      [
+        "relentless",
+        "aralıksız / amansız",
+        "⚡"
+      ],
+      [
+        "pragmatic",
+        "pratik / faydacı",
+        "🔧"
+      ],
+      [
+        "candid",
+        "samimi / içten / açık sözlü",
+        "🤍"
+      ],
+      [
+        "flawless",
+        "kusursuz / lekesiz",
+        "✨"
+      ]
+    ]
+  },
+  {
+    "id": "b2_unreal_past_subjunctive",
+    "level": "B2",
+    "type": "grammar",
+    "title": "Gerçek Dışı Geçmiş (It's high time, I'd rather)",
+    "en": "Unreal Past & Subjunctive",
+    "emoji": "⏳",
+    "explain": "<h4>Gerçek Dışı Geçmiş: Unreal Past (It's time, would rather)</h4>\n<p>Şimdiki veya gelecek zamandaki bir durumdan <b>acil beklenti</b> veya <b>güçlü tercih</b> belirtirken fiil geçmiş zamanda çekimlenir.</p>\n<table class=\"g-table\">\n  <tr><th>Kalıp</th><th>Kural</th><th>Örnek Cümle</th><th>Anlamı</th></tr>\n  <tr><td><b>It's high time</b></td><td>Özne + Past Simple</td><td>It's high time you <b>found</b> a job!</td><td>Çoktan bir iş bulmuş olmalıydın! (Vakti geldi de geçiyor).</td></tr>\n  <tr><td><b>I'd rather</b></td><td>Özne + Past Simple</td><td>I'd rather you <b>didn't smoke</b> here.</td><td>Burada sigara içmemeni tercih ederim.</td></tr>\n  <tr><td><b>as if / as though</b></td><td>Özne + Past Simple</td><td>He talks as if he <b>knew</b> everything.</td><td>Her şeyi biliyormuş gibi konuşuyor.</td></tr>\n</table>",
+    "examples": [
+      [
+        "It is high time we made a decision.",
+        "Bir karar almamızın vakti geldi de geçiyor."
+      ],
+      [
+        "I would rather you stayed with us tonight.",
+        "Bu gece bizimle kalmanı tercih ederim."
+      ],
+      [
+        "She acts as though she were the boss.",
+        "Sanki patron kendisiymiş gibi davranıyor."
+      ]
+    ],
+    "mc": [
+      [
+        "It's high time you ___ your bedroom.",
+        [
+          "cleaned",
+          "clean",
+          "cleaning"
+        ]
+      ],
+      [
+        "I'd rather you ___ anyone about our conversation.",
+        [
+          "didn't tell",
+          "don't tell",
+          "won't tell"
+        ]
+      ],
+      [
+        "He spends money as if he ___ a billionaire.",
+        [
+          "were",
+          "is",
+          "will be"
+        ]
+      ],
+      [
+        "It is time we ___ home; it is getting dark.",
+        [
+          "went",
+          "go",
+          "are going"
+        ]
+      ],
+      [
+        "Would you rather we ___ tomorrow instead?",
+        [
+          "met",
+          "meet",
+          "will meet"
+        ]
+      ]
+    ],
+    "order": [
+      [
+        "It is high time you made up your mind",
+        "Kararını vermenin vakti geldi de geçiyor."
+      ],
+      [
+        "I would rather you did not discuss this in public",
+        "Bunu herkesin içinde konuşmamanı tercih ederim."
+      ],
+      [
+        "He speaks as if he owned the entire building",
+        "Bütün binanın sahibiymiş gibi konuşuyor."
+      ]
+    ]
+  },
+  {
+    "id": "b2_rhetoric_debate",
+    "level": "B2",
+    "type": "vocab",
+    "title": "Hitabet, Retorik ve Argüman",
+    "en": "Rhetoric & Discourse",
+    "emoji": "🏛️",
+    "words": [
+      [
+        "persuasive",
+        "ikna edici",
+        "🎯"
+      ],
+      [
+        "eloquence",
+        "güzel ve etkili konuşma sanatı",
+        "🎙️"
+      ],
+      [
+        "controversy",
+        "ihtilaf / hararetli tartışma",
+        "⚡"
+      ],
+      [
+        "dilemma",
+        "ikilem / çıkmaz",
+        "🤔"
+      ],
+      [
+        "consensus",
+        "fikir birliği / uzlaşma",
+        "🤝"
+      ],
+      [
+        "plausible",
+        "makul / akla yatkın",
+        "💡"
+      ],
+      [
+        "counterargument",
+        "karşı sav / antitez",
+        "🛡️"
+      ],
+      [
+        "fallacy",
+        "mantık hatası / safsata",
+        "⚠️"
+      ],
+      [
+        "assert",
+        "iddia etmek / ileri sürmek",
+        "📢"
+      ],
+      [
+        "clarify",
+        "netleştirmek / açıklığa kavuşturmak",
+        "🔍"
+      ],
+      [
+        "advocate",
+        "savunmak / destekçi",
+        "🗣️"
+      ],
+      [
+        "validity",
+        "geçerlilik / doğruluk",
+        "✅"
+      ]
+    ]
+  }
+
+];
+
+/* ---------- CEFR Seviyeleri ---------- */
+const LEVELS = [
+  { id: 'A1', name: 'A1 Başlangıç (Beginner)', emoji: '🌱', desc: 'Temel kelimeler, tanışma ve günlük yaşam.', count: 27 },
+  { id: 'A2', name: 'A2 Temel Akıcılık (Elementary)', emoji: '🚀', desc: 'Geçmiş zaman, gelecek planları, seyahat ve alışveriş.', count: 25 },
+  { id: 'B1', name: 'B1 Bağımsız İletişim (Intermediate)', emoji: '⚡', desc: 'Edilgen çatı, dolaylı anlatım, koşul cümleleri ve kariyer.', count: 20 },
+  { id: 'B2', name: 'B2 İleri Düzey Yetkinlik (Upper-Intermediate)', emoji: '👑', desc: 'Devrik cümleler, nüanslar, deyimler ve akıcı argüman.', count: 20 }
 ];
 
 /* ---------- Normalize ---------- */
