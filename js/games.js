@@ -718,6 +718,7 @@ function screenSurvival(questId = null) {
 
 function renderSurvivalQuestsMap() {
   const curMascot = mascotService.getActive();
+  if (!state.survivalQuests) state.survivalQuests = {};
 
   view().innerHTML = `
     <div class="page survival-map-page">
@@ -732,27 +733,55 @@ function renderSurvivalQuestsMap() {
       </header>
 
       <div class="survival-quests-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:16px;">
-        ${SURVIVAL_QUESTS.map((q, idx) => `
-          <div class="card quest-card" style="padding:18px;display:flex;flex-direction:column;justify-content:space-between;border:2px solid var(--border);border-radius:16px;background:var(--card);transition:transform 0.2s ease;">
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
-                <span style="font-size:2.4rem;">${q.avatar}</span>
-                <span class="badge" style="background:color-mix(in srgb, var(--primary) 12%, var(--card));color:var(--primary);font-weight:800;font-size:0.74rem;">Bölüm ${idx + 1}</span>
+        ${SURVIVAL_QUESTS.map((q, idx) => {
+          const sq = state.survivalQuests[q.id] || {};
+          let status = 'current';
+          let statusLabel = 'Current';
+          if (sq.done) {
+            status = 'completed';
+            statusLabel = 'Completed';
+          } else if (sq.inProgress || sq.started) {
+            status = 'in-progress';
+            statusLabel = 'In-Progress';
+          } else if (idx === 0) {
+            status = 'current';
+            statusLabel = 'Current';
+          } else {
+            const prevDone = state.survivalQuests[SURVIVAL_QUESTS[idx - 1]?.id]?.done;
+            status = prevDone ? 'current' : 'current';
+            statusLabel = 'Current';
+          }
+          q.status = status;
+          q.statusLabel = statusLabel;
+
+          return `
+            <div class="card quest-card chapter-card" id="quest-${q.id}" data-status="${status}" style="padding:18px;display:flex;flex-direction:column;justify-content:space-between;border:2px solid var(--border);border-radius:16px;background:var(--card);transition:transform 0.2s ease;">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+                  <span style="font-size:2.4rem;">${q.avatar}</span>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="badge chapter-status-label status-${status}" data-status="${status}" style="font-weight:800;font-size:0.75rem;padding:3px 10px;border-radius:99px;">
+                      ${statusLabel}
+                    </span>
+                    <span class="badge" style="background:color-mix(in srgb, var(--primary) 12%, var(--card));color:var(--primary);font-weight:800;font-size:0.74rem;">Bölüm ${idx + 1}</span>
+                  </div>
+                </div>
+                <h3 style="margin:4px 0 6px;font-size:1.15rem;">${esc(q.title)}</h3>
+                <div class="muted small" style="font-weight:700;color:var(--primary);margin-bottom:6px;">📍 ${esc(q.location)}</div>
+                <p class="muted small" style="line-height:1.45;margin-bottom:12px;">${esc(q.desc)}</p>
               </div>
-              <h3 style="margin:4px 0 6px;font-size:1.15rem;">${esc(q.title)}</h3>
-              <div class="muted small" style="font-weight:700;color:var(--primary);margin-bottom:6px;">📍 ${esc(q.location)}</div>
-              <p class="muted small" style="line-height:1.45;margin-bottom:12px;">${esc(q.desc)}</p>
-            </div>
-            <div>
-              <div style="margin-bottom:12px;">
-                <span class="badge" style="background:#F59E0B;color:#000;font-weight:800;font-size:0.7rem;">Ödül: ${esc(q.badge)}</span>
+              <div>
+                <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
+                  <span class="badge" style="background:#F59E0B;color:#000;font-weight:800;font-size:0.7rem;">Ödül: ${esc(q.badge)}</span>
+                  <span class="chapter-status-label status-${status}" data-status="${status}" style="font-weight:700;font-size:0.78rem;">${statusLabel}</span>
+                </div>
+                <a href="#/survival/${q.id}" class="btn btn-primary" style="width:100%;text-align:center;justify-content:center;">
+                  ▶ Göreve Başla
+                </a>
               </div>
-              <a href="#/survival/${q.id}" class="btn btn-primary" style="width:100%;text-align:center;justify-content:center;">
-                ▶ Göreve Başla
-              </a>
             </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     </div>
   `;
@@ -760,30 +789,59 @@ function renderSurvivalQuestsMap() {
 
 function renderActiveSurvivalQuest(q) {
   activeSurvivalQuest = q;
+  if (!state.survivalQuests) state.survivalQuests = {};
+  const sq = state.survivalQuests[q.id] || {};
+  let status = 'current';
+  let statusLabel = 'Current';
+  if (sq.done) {
+    status = 'completed';
+    statusLabel = 'Completed';
+  } else if (sq.inProgress || sq.started) {
+    status = 'in-progress';
+    statusLabel = 'In-Progress';
+  } else {
+    status = 'current';
+    statusLabel = 'Current';
+  }
+  q.status = status;
+  q.statusLabel = statusLabel;
+
   survivalChatHistory = [
     { sender: 'officer', text: q.starterMsg }
   ];
 
   view().innerHTML = `
-    <div class="page survival-play-page">
+    <div class="page survival-play-page chapter-detail-panel" id="chapterDetailPanel" data-status="${status}" data-chapter="${q.id}">
       <header class="page-head" style="margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
               <a href="#/survival" class="btn btn-ghost sm">◀ Haritaya Dön</a>
               <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;">📍 ${esc(q.location)}</span>
+              <!-- Persistent Status Badge for the selected chapter -->
+              <span class="badge chapter-status-badge chapter-status-label status-${status}" id="chapterStatusBadge" data-status="${status}" style="font-weight:800;font-size:0.82rem;padding:4px 12px;border-radius:99px;text-transform:capitalize;">
+                Status: ${statusLabel}
+              </span>
             </div>
             <h1 style="margin-top:6px;">${esc(q.title)}</h1>
           </div>
-          <div>
-            <span class="badge" style="background:#F59E0B;color:#000;font-weight:800;" id="visaBadgeAward">${esc(q.badge)}</span>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="badge chapter-status-label status-${status}" id="chapterStatusPillTop" data-status="${status}" style="font-weight:800;font-size:0.82rem;padding:4px 12px;border-radius:99px;">
+              ${statusLabel}
+            </span>
+            <span class="badge" style="background:#F59E0B;color:#000;font-weight:800;" id="visaBadgeAward">Ödül: ${esc(q.badge)}</span>
           </div>
         </div>
       </header>
 
-      <!-- Görev Hedefleri Kontrol Paneli -->
-      <div class="card quest-objectives-card" style="padding:14px 18px;margin-bottom:16px;background:color-mix(in srgb, var(--primary) 6%, var(--card));border:2px solid var(--border);">
-        <b style="font-size:0.92rem;display:block;margin-bottom:8px;">🎯 Görevi Tamamlamak İçin Gerekenler:</b>
+      <!-- Görev Hedefleri Kontrol Paneli (Selected Chapter Details Area) -->
+      <div class="card quest-objectives-card chapter-details-area" id="chapterDetailsArea" data-status="${status}" style="padding:14px 18px;margin-bottom:16px;background:color-mix(in srgb, var(--primary) 6%, var(--card));border:2px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <b style="font-size:0.92rem;">🎯 Görevi Tamamlamak İçin Gerekenler:</b>
+          <span class="badge chapter-status-label status-${status}" id="chapterStatusPill" data-status="${status}" style="font-weight:800;padding:3px 10px;border-radius:99px;">
+            Chapter Status: ${statusLabel}
+          </span>
+        </div>
         <div style="display:flex;flex-direction:column;gap:6px;" id="questObjectivesList">
           ${q.objectives.map(obj => `
             <div class="quest-obj-row" id="obj-${obj.id}" style="display:flex;align-items:center;gap:8px;font-size:0.86rem;color:var(--text);">
@@ -818,7 +876,7 @@ function renderActiveSurvivalQuest(q) {
   $('#survivalInputForm').onsubmit = async e => {
     e.preventDefault();
     const input = $('#survivalTextIn');
-    const msg = (input ? input.value : '').trim();
+    const msg = input.value.trim();
     if (!msg) return;
     input.value = '';
     await handleSurvivalUserMessage(msg, q);
@@ -826,11 +884,11 @@ function renderActiveSurvivalQuest(q) {
 
   $('#survivalHintBtn').onclick = () => {
     const hintEl = $('#survivalHintText');
-    if (!hintEl) return;
-    const randomHint = q.hints[Math.floor(Math.random() * q.hints.length)];
-    hintEl.textContent = randomHint;
-    hintEl.style.display = 'inline';
-    if (typeof speak === 'function') speak(randomHint.replace(/"/g, ''), 'en');
+    if (hintEl) {
+      const h = q.hints[Math.floor(Math.random() * q.hints.length)];
+      hintEl.textContent = 'Öneri: ' + h;
+      hintEl.style.display = 'block';
+    }
   };
 }
 
@@ -865,6 +923,20 @@ async function handleSurvivalUserMessage(msg, q) {
     }
     if (!isMet) allDone = false;
   });
+
+  // Track status in-progress
+  if (!state.survivalQuests) state.survivalQuests = {};
+  if (!state.survivalQuests[q.id]?.done) {
+    state.survivalQuests[q.id] = { started: true, inProgress: true };
+    saveState();
+    q.status = 'in-progress';
+    q.statusLabel = 'In-Progress';
+    $('.chapter-status-label, .chapter-status-badge, #chapterStatusBadge, #chapterStatusPill, #chapterStatusPillTop').forEach(el => {
+      el.textContent = 'In-Progress';
+      el.className = 'badge chapter-status-badge chapter-status-label status-in-progress';
+      el.setAttribute('data-status', 'in-progress');
+    });
+  }
 
   // AI veya Akıllı Rol Simülatörü Yanıtı
   let reply = '';
@@ -902,6 +974,16 @@ async function handleSurvivalUserMessage(msg, q) {
   renderSurvivalChat();
 
   if (allDone) {
+    state.survivalQuests[q.id] = { done: true, completedAt: Date.now() };
+    saveState();
+    q.status = 'completed';
+    q.statusLabel = 'Completed';
+    $('.chapter-status-label, .chapter-status-badge, #chapterStatusBadge, #chapterStatusPill, #chapterStatusPillTop').forEach(el => {
+      el.textContent = 'Completed';
+      el.className = 'badge chapter-status-badge chapter-status-label status-completed';
+      el.setAttribute('data-status', 'completed');
+    });
+
     store.gainXP(50);
     if (typeof sfx !== 'undefined' && sfx.good) sfx.good();
     const m = mascotService.getActive();
