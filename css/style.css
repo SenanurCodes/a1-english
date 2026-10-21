@@ -3378,3 +3378,35 @@ body.onboarding-mode .main-content {
     flex-direction: column;
   }
 }
+
+
+/* Chapter Status & Progress Labels */
+.chapter-detail-panel {
+  display: block !important;
+}
+.chapter-status-label {
+  display: inline-flex !important;
+  align-items: center;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+.chapter-status-badge.status-completed, .badge.status-completed {
+  background: #2b8a3e !important;
+  color: #fff !important;
+}
+.chapter-status-badge.status-in-progress, .badge.status-in-progress {
+  background: #f59f00 !important;
+  color: #fff !important;
+}
+.chapter-status-badge.status-current, .badge.status-current {
+  background: var(--primary, #5c7cfa) !important;
+  color: #fff !important;
+}
+.chapter-status-badge.status-locked, .badge.status-locked {
+  background: var(--card-hover, #e9ecef) !important;
+  color: var(--muted, #495057) !important;
+}
+b.chapter-status-label.status-completed { color: #2b8a3e !important; }
+b.chapter-status-label.status-in-progress { color: #e67700 !important; }
+b.chapter-status-label.status-current { color: var(--primary, #5c7cfa) !important; }
+b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; }

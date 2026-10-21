@@ -2397,22 +2397,50 @@ function renderUnitProgressionCard(u) {
   const activeU = nextUnit() || UNITS[0];
   const unitUrl = x => x.type === 'vocab' ? `#/cards/${x.id}` : `#/grammar/${x.id}`;
 
+  // Chapter status calculation
+  const isCurrent = u.index === state.unlockedUpTo;
+  let status = 'locked';
+  let statusDisplay = 'Locked';
+  if (s.done) {
+    status = 'completed';
+    statusDisplay = 'Completed';
+  } else if (unlocked) {
+    if (s.attempts > 0) {
+      status = 'in-progress';
+      statusDisplay = 'In-Progress';
+    } else if (isCurrent) {
+      status = 'current';
+      statusDisplay = 'Current';
+    } else {
+      status = 'in-progress';
+      statusDisplay = 'In-Progress';
+    }
+  }
+  u.status = status;
+  u.statusLabel = statusDisplay;
+  u.progress = s.done ? 100 : (s.best || (s.attempts ? 50 : 0));
+
   return `
-    <div class="card chapter-progression-card" id="chapterProgressionCard" style="margin-bottom:16px;border-left:4px solid ${u.color};">
+    <div class="card chapter-progression-card chapter-detail-panel" id="chapterProgressionCard" data-status="${status}" data-chapter="${chapterNum}" style="margin-bottom:16px;border-left:4px solid ${u.color};">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
         <div>
           <div class="muted small" style="font-weight:700;">📚 Bölüm İlerlemesi (Chapter Progression)</div>
           <h3 style="margin:2px 0 0;font-size:1.05rem;">Bölüm ${chapterNum} / ${levelUnits.length} · ${u.level} Müfredatı (${esc(u.title)})</h3>
         </div>
-        <span class="badge" style="font-weight:800;background:${unlocked ? 'var(--primary)' : 'var(--card-hover)'};color:${unlocked ? '#fff' : 'var(--text)'};">
-          ${unlocked ? (s.done ? '✅ Tamamlandı' : '🔓 Açık Bölüm') : '🔒 Kilitli Bölüm'}
-        </span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="badge chapter-status-label status-${status}" id="chapterProgressionStatusLabel" data-status="${status}" style="font-weight:800;text-transform:capitalize;padding:4px 12px;border-radius:99px;">
+            Status: ${statusDisplay}
+          </span>
+          <span class="badge" style="font-weight:800;background:${unlocked ? 'var(--primary)' : 'var(--card-hover)'};color:${unlocked ? '#fff' : 'var(--text)'};">
+            ${unlocked ? (s.done ? '✅ Tamamlandı' : '🔓 Açık') : '🔒 Kilitli'}
+          </span>
+        </div>
       </div>
 
       <div style="background:var(--card-hover);padding:12px;border-radius:10px;border:1px solid var(--border);margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;font-size:0.88rem;">
           <span><b>${u.level} Bölüm İlerlemesi:</b> ${doneInLevel} / ${levelUnits.length} Bölüm (%${levelPct})</span>
-          <span><b>Bu Ünite Skoru:</b> %${s.best} (${s.attempts} deneme)</span>
+          <span class="chapter-status-label" data-status="${status}"><b>Durum (Status):</b> ${statusDisplay} (%${u.progress})</span>
         </div>
         <div class="progress thick" style="margin-bottom:6px;"><div class="bar rainbow" style="width:${levelPct}%;"></div></div>
         <div class="muted small">Genel Kurs Tamamlama: <b>${lvl.done} / ${UNITS.length} Ünite (%${lvl.pct})</b> tamamlandı.</div>
@@ -2421,7 +2449,7 @@ function renderUnitProgressionCard(u) {
       ${!unlocked ? `
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff));margin-bottom:10px;">
           <div class="small">
-            🔒 <b>Bu bölümün alıştırmaları henüz kilitli.</b> Konu anlatımını ve örnekleri inceleyebilirsin; alıştırmaları açmak için sıradaki açık bölümü tamamla${prevU ? ` (Önceki bölüm: <b>${esc(prevU.title)}</b>)` : ''}.
+            🔒 <b>Bu bölümün alıştırmaları henüz kilitli (Status: ${statusDisplay}).</b> Konu anlatımını ve örnekleri inceleyebilirsin; alıştırmaları açmak için sıradaki açık bölümü tamamla${prevU ? ` (Önceki bölüm: <b>${esc(prevU.title)}</b>)` : ''}.
           </div>
           <a class="btn btn-primary sm" href="#/lesson/${activeU.id}">▶ Sıradaki Açık Bölüme Git: ${esc(activeU.title)}</a>
         </div>
@@ -2443,39 +2471,77 @@ function unitModal(u) {
   const doneInLevel = levelUnits.filter(x => unitStats(x.id).done).length;
   const levelPct = Math.round((doneInLevel / levelUnits.length) * 100);
 
+  // Chapter status calculation
+  const isCurrent = u.index === state.unlockedUpTo;
+  let status = 'locked';
+  let statusDisplay = 'Locked';
+  if (s.done) {
+    status = 'completed';
+    statusDisplay = 'Completed';
+  } else if (unlocked) {
+    if (s.attempts > 0) {
+      status = 'in-progress';
+      statusDisplay = 'In-Progress';
+    } else if (isCurrent) {
+      status = 'current';
+      statusDisplay = 'Current';
+    } else {
+      status = 'in-progress';
+      statusDisplay = 'In-Progress';
+    }
+  }
+  u.status = status;
+  u.statusLabel = statusDisplay;
+  u.progress = s.done ? 100 : (s.best || (s.attempts ? 50 : 0));
+
   openModal(`
-    <div class="modal-head" style="--c:${u.color}">
-      <div class="modal-emoji">${u.emoji}</div>
-      <div>
-        <div class="muted small" style="font-weight:700;">Bölüm ${chapterNum} / ${levelUnits.length} · ${u.level} Müfredatı</div>
-        <h2>${esc(u.title)}</h2>
-        <div class="muted">${esc(u.en)} · ${u.type === 'vocab' ? `${u.words.length} kelime` : 'Gramer'}</div>
+    <div class="chapter-detail-panel modal-chapter-detail" id="chapterDetailPanel" data-status="${status}" data-chapter="${chapterNum}" data-progress="${u.progress}%">
+      <div class="modal-head" style="--c:${u.color}">
+        <div class="modal-emoji">${u.emoji}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+            <div class="muted small" style="font-weight:700;">Bölüm ${chapterNum} / ${levelUnits.length} · ${u.level} Müfredatı</div>
+            <span class="badge chapter-status-badge chapter-status-label status-${status}" id="chapterStatusBadge" data-status="${status}" style="font-weight:800;padding:4px 10px;border-radius:99px;">
+              ${statusDisplay}
+            </span>
+          </div>
+          <h2>${esc(u.title)}</h2>
+          <div class="muted">${esc(u.en)} · ${u.type === 'vocab' ? `${u.words.length} kelime` : 'Gramer'}</div>
+        </div>
       </div>
-    </div>
-    <div class="modal-stats">
-      <div><b>%${s.best}</b><span>en iyi</span></div>
-      <div><b>${s.attempts}</b><span>deneme</span></div>
-      <div><b>${unlocked ? (s.done ? '✅' : '🔓') : '🔒'}</b><span>durum</span></div>
-    </div>
-    <div style="background:var(--card-hover);padding:10px 12px;border-radius:10px;margin:10px 0;">
-      <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;">
-        <span>📚 Bölüm İlerlemesi (${u.level})</span>
-        <b>${doneInLevel} / ${levelUnits.length} (%${levelPct})</b>
+
+      <div class="modal-stats">
+        <div><b>%${s.best}</b><span>en iyi</span></div>
+        <div><b>${s.attempts}</b><span>deneme</span></div>
+        <div id="modalStatusCol">
+          <b class="chapter-status-label status-${status}" id="chapterStatusLabel" data-status="${status}">${statusDisplay}</b>
+          <span>durum (status)</span>
+        </div>
       </div>
-      <div class="progress"><div class="bar rainbow" style="width:${levelPct}%;"></div></div>
+
+      <div class="chapter-progress-box" style="background:var(--card-hover);padding:10px 12px;border-radius:10px;margin:10px 0;border:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;margin-bottom:4px;flex-wrap:wrap;gap:4px;">
+          <span>📚 <b>Bölüm İlerlemesi &amp; Durumu:</b></span>
+          <span class="badge chapter-status-label status-${status}" id="chapterModalStatusPill" data-status="${status}">
+            <b>${statusDisplay}</b> (%${u.progress})
+          </span>
+        </div>
+        <div class="progress"><div class="bar rainbow" style="width:${levelPct}%;"></div></div>
+        <div class="muted small" style="margin-top:4px;">Seviye İlerlemesi: ${doneInLevel} / ${levelUnits.length} Bölüm (%${levelPct})</div>
+      </div>
+
+      ${unlocked ? `
+        <div class="modal-actions">
+          ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kelime Kartları</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konu Anlatımı</a>`}
+          <a class="btn btn-big btn-primary" href="#/lesson/${u.id}">▶ ${s.attempts ? 'Tekrar Çalış' : 'Derse Başla'}</a>
+        </div>` : `
+        <p class="muted center">Bu ünite henüz kilitli (Status: ${statusDisplay}) 🔒 Önceki üniteleri tamamlayarak sırayla ilerle!</p>
+        <div class="modal-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kartlara göz at</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konuya göz at</a>`}
+        </div>`}
     </div>
-    ${unlocked ? `
-      <div class="modal-actions">
-        ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kelime Kartları</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konu Anlatımı</a>`}
-        <a class="btn btn-big btn-primary" href="#/lesson/${u.id}">▶ ${s.attempts ? 'Tekrar Çalış' : 'Derse Başla'}</a>
-      </div>` : `
-      <p class="muted center">Bu ünite henüz kilitli 🔒 Önceki üniteleri tamamlayarak sırayla ilerle!</p>
-      <div class="modal-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-        ${u.type === 'vocab' ? `<a class="btn btn-secondary" href="#/cards/${u.id}">${icon('cards', '', 16)} Kartlara göz at</a>` : `<a class="btn btn-secondary" href="#/grammar/${u.id}">📖 Konuya göz at</a>`}
-      </div>`}
   `);
 }
-
 /* ============================================================
    Ders
    ============================================================ */
