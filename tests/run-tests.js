@@ -632,6 +632,70 @@ test('10. Oyun Modları: Lokomotif SVO yapbozu, Tuzak Avcısı arcade ve Hayatta
   ok(survivalHtml.includes('Hayatta Kalma') && survivalHtml.includes('Heathrow'), 'Hayatta Kalma Haritası başarıyla render edilmeli');
 });
 
+
+/* ============================================================
+   11. E2E User-Flow: Landing Hero Transition & Simulator Example Switching
+   ============================================================ */
+test('11. User-Flow: Landing hero aksiyonu ve Dil Mantığı simülatör örnek geçişleri', () => {
+  const { window, run } = createEnv();
+
+  // Test 1: Enter setup from the landing page hero action
+  const state = run('state');
+  state.onboarded = false;
+  window.location.hash = '#/onboarding';
+  window.router();
+
+  const heroSection = window.document.getElementById('landingHeroSection');
+  ok(heroSection, 'Landing Hero bölümü (#landingHeroSection) sayfada bulunmalı');
+  const heroStartBtn = window.document.getElementById('landingHeroStartBtn');
+  ok(heroStartBtn, 'Landing Hero Başlat butonu (#landingHeroStartBtn) bulunmalı');
+  const setupCard = window.document.getElementById('onboardSetupCard');
+  ok(setupCard, 'Kişiselleştirme kartı (#onboardSetupCard) bulunmalı');
+
+  // Hero başlat aksiyonunu tetikle
+  heroStartBtn.click();
+  const nameIn = window.document.getElementById('nameIn');
+  ok(nameIn, 'İsim input alanı (#nameIn) mevcut olmalı');
+  nameIn.value = 'TestKullanici';
+
+  const zeroBtn = window.document.getElementById('zeroBtn');
+  ok(zeroBtn, 'Hemen Başla butonu (#zeroBtn) bulunmalı');
+  zeroBtn.click();
+
+  ok(state.onboarded === true, 'Kişiselleştirme sonrası onboarded=true olmalı');
+
+  // Test 2: Open another simulator example & switch away from Örnek 3
+  window.location.hash = '#/logic?example=3';
+  window.router();
+
+  let trText = window.document.getElementById('locoTrText')?.textContent || '';
+  let enText = window.document.getElementById('locoEnFull')?.textContent || '';
+  ok(trText.includes("Sarah yarın Londra"), 'Örnek 3 Türkçe cümlesi Sarah olmalı: ' + trText);
+  ok(enText.includes("Sarah will fly to London"), 'Örnek 3 İngilizce cümlesi Sarah olmalı: ' + enText);
+
+  // Şimdi Örnek 1'e geç (Örnek 3'ten başka bir örneğe geçiş)
+  const ex1Btn = window.document.getElementById('loco-example-1');
+  ok(ex1Btn, 'Örnek 1 butonu (#loco-example-1) bulunmalı');
+  ex1Btn.click();
+
+  trText = window.document.getElementById('locoTrText')?.textContent || '';
+  enText = window.document.getElementById('locoEnFull')?.textContent || '';
+  ok(!trText.includes("Sarah yarın Londra"), 'Örnek 1 seçilince Sarah cümlesi KALKMALI: ' + trText);
+  ok(trText.includes("Ben dün kafede"), 'Örnek 1 cümlesi görünmeli: ' + trText);
+  ok(enText.includes("I drank coffee"), 'Örnek 1 İngilizce cümlesi görünmeli: ' + enText);
+  ok(ex1Btn.classList.contains('active'), 'Örnek 1 butonu active class almalı');
+
+  // Örnek 2'ye geç
+  const ex2Btn = window.document.getElementById('loco-example-2');
+  ok(ex2Btn, 'Örnek 2 butonu (#loco-example-2) bulunmalı');
+  ex2Btn.click();
+
+  trText = window.document.getElementById('locoTrText')?.textContent || '';
+  enText = window.document.getElementById('locoEnFull')?.textContent || '';
+  ok(trText.includes("Biz her sabah"), 'Örnek 2 cümlesi görünmeli: ' + trText);
+  ok(enText.includes("We run in the park"), 'Örnek 2 İngilizce cümlesi görünmeli: ' + enText);
+});
+
 /* ============================================================
    Test Çalıştırıcı (Runner)
    ============================================================ */

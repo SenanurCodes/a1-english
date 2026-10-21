@@ -254,11 +254,25 @@ function screenOnboarding() {
 
   view().innerHTML = `
     <div class="onboard-isolated-wrap">
-      <div class="onboard-isolated-card">
+      <!-- Landing Hero Section & Primary Hero Start Action CTA -->
+      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:14px 16px 20px;max-width:540px;width:100%;box-sizing:border-box;">
+        <div class="onboard-hero-bubble">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
+        <h1 class="onboard-brand-title rainbow-text" style="font-size:2.4rem;margin:6px 0 4px;">PatiLingo</h1>
+        <p class="onboard-tagline lead" style="margin-bottom:14px;">Oyunlaştırılmış & AI Destekli İngilizce Öğrenme Platformu 🎈</p>
+        <div id="landingCtaRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0 8px;">
+          <button class="btn btn-big btn-primary hero-action-btn" id="landingHeroStartBtn" style="min-width:210px;font-size:1.15rem;font-weight:800;border-radius:16px;box-shadow:0 6px 0 var(--primary-d, #3b5bdb);">
+            🚀 Öğrenmeye Başla
+          </button>
+          <a class="btn btn-big btn-ghost" id="landingPlacementBtn" href="#/placement" style="font-weight:700;border-radius:16px;">📝 Seviye Testi</a>
+        </div>
+      </div>
+
+      <!-- Kişiselleştirme & Kurulum Kartı (Personalization Setup Card) -->
+      <div class="onboard-isolated-card card onboard-card" id="onboardSetupCard">
         <div class="onboard-brand-header">
-          <div class="onboard-hero-bubble">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
-          <h1 class="onboard-brand-title rainbow-text">PatiLingo</h1>
-          <p class="onboard-tagline">Oyunlaştırılmış & AI Destekli İngilizce Öğrenme Platformu 🎈</p>
+          <div class="onboard-hero-bubble" style="font-size:2.4rem;margin-bottom:6px;">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
+          <h2 style="margin:0 0 4px;font-size:1.35rem;font-weight:800;">Profilini & Yoldaşını Ayarla</h2>
+          <p class="onboard-tagline" style="margin:0;font-size:0.88rem;">Sana özel yoldaşın ve renklerinle maceraya adım at!</p>
         </div>
 
         <div class="onboard-field-group">
@@ -312,6 +326,18 @@ function screenOnboarding() {
       </div>
     </div>`;
 
+  // Landing Hero Start CTA - scroll to setup form and focus name
+  const landingHeroBtn = $('#landingHeroStartBtn');
+  if (landingHeroBtn) {
+    landingHeroBtn.onclick = () => {
+      const setupCard = $('#onboardSetupCard');
+      if (setupCard) {
+        setupCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        $('#nameIn')?.focus();
+      }
+    };
+  }
+
   // Yoldaş seçimi
   $$('.mascot-card').forEach(card => {
     card.onclick = () => {
@@ -321,7 +347,9 @@ function screenOnboarding() {
       state.mascot = selectedMascot;
       store.setMascot(selectedMascot);
       saveState();
-      if ($('.onboard-hero-bubble')) $('.onboard-hero-bubble').textContent = (MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾';
+      $$('.onboard-hero-bubble').forEach(b => {
+        b.textContent = (MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾';
+      });
     };
   });
 
@@ -375,7 +403,6 @@ function screenOnboarding() {
   $('#onboardAuthBtn').onclick = () => openAuthModal();
   $('#nameIn').onkeydown = e => { if (e.key === 'Enter') go('zero'); };
 }
-
 /* ============================================================
    Seviye testi
    ============================================================ */
@@ -1319,9 +1346,9 @@ function screenLogic(param) {
         ${LOGIC_CATEGORIES.map(c => `
           <button class="logic-tab-pill ${currentLogicTab === c.id ? 'active' : ''}" 
                   data-cat="${c.id}" 
-                  id="logic-tab-${c.id}"
+                  id="logic-tab-${c.id}" 
                   role="tab"
-                  aria-selected="${currentLogicTab === c.id ? 'true' : 'false'}"
+                  aria-selected="${currentLogicTab === c.id ? 'true' : 'false'}" 
                   aria-label="${esc(c.label)} kategorisi">
             ${c.label}
           </button>
@@ -1330,7 +1357,7 @@ function screenLogic(param) {
 
       <!-- İnteraktif Kategori & Cümle Simülatörü -->
       ${activeLoco ? `
-        <div class="card loco-simulator-card" id="logicSimulatorCard" data-category="${curSim.id || currentLogicTab}" data-example="${currentLocoIdx + 1}">
+        <div class="card loco-simulator-card" id="logicSimulatorCard" data-category="${curSim.id || currentLogicTab}" data-example="${currentLocoIdx + 1}" role="region" aria-label="Simülatör Örnek ${currentLocoIdx + 1}">
           <div class="loco-head">
             <div>
               <span class="badge-loco" id="simBadge">${esc(curSim.badge || '⚡ İNTERAKTİF SİMÜLATÖR')}</span>
@@ -1349,10 +1376,16 @@ function screenLogic(param) {
                         aria-label="Örnek ${idx + 1}" 
                         aria-pressed="${currentLocoIdx === idx ? 'true' : 'false'}" 
                         aria-selected="${currentLocoIdx === idx ? 'true' : 'false'}" 
+                        tabindex="${currentLocoIdx === idx ? '0' : '-1'}"
                         role="tab">
                   Örnek ${idx + 1}
                 </button>
               `).join('')}
+              <select class="loco-sel-dropdown" id="locoExampleSelect" aria-label="Örnek Cümle Seçici" style="display:none;">
+                ${simExamples.map((ex, idx) => `
+                  <option value="${idx}" ${currentLocoIdx === idx ? 'selected' : ''}>Örnek ${idx + 1}</option>
+                `).join('')}
+              </select>
             </div>
           </div>
 
@@ -1441,6 +1474,10 @@ function screenLogic(param) {
     </div>`;
 
   function updateLocoSimulator(idx) {
+    if (typeof idx === 'string') {
+      const parsed = parseInt(idx, 10);
+      idx = isNaN(parsed) ? 0 : parsed;
+    }
     const curSim = (typeof getSimulatorForCategory === 'function' ? getSimulatorForCategory(currentLogicTab) : (typeof LOGIC_SIMULATORS !== 'undefined' ? (LOGIC_SIMULATORS[currentLogicTab] || LOGIC_SIMULATORS.mindset) : null)) || { examples: (typeof LOKOMOTIF_EXAMPLES !== 'undefined' ? LOKOMOTIF_EXAMPLES : []) };
     const list = curSim.examples || [];
     if (!list.length) return;
@@ -1452,14 +1489,16 @@ function screenLogic(param) {
     if (card) {
       card.setAttribute('data-example', String(currentLocoIdx + 1));
       card.setAttribute('data-category', curSim.id || currentLogicTab);
+      card.setAttribute('aria-label', `Simülatör Örnek ${currentLocoIdx + 1}`);
     }
 
     $$('.loco-sel-btn').forEach(btn => {
-      const bIdx = parseInt(btn.dataset.lidx, 10);
+      const bIdx = parseInt(btn.dataset.lidx !== undefined ? btn.dataset.lidx : (btn.dataset.example ? parseInt(btn.dataset.example, 10) - 1 : 0), 10);
       const isActive = bIdx === currentLocoIdx;
       btn.classList.toggle('active', isActive);
       btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      btn.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
     const selectEl = $('#locoExampleSelect');
@@ -1501,6 +1540,28 @@ function screenLogic(param) {
       `;
       box.querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
     }
+
+    // Direct DOM text nodes update (guarantee freshness)
+    const trEl = $('#locoTrText');
+    if (trEl) trEl.textContent = `"${activeLoco.tr}"`;
+    const enEl = $('#locoEnFull');
+    if (enEl) enEl.textContent = activeLoco.fullEn;
+    const tipEl = $('#locoTip');
+    if (tipEl) tipEl.innerHTML = `💡 <b>Püf Noktası:</b> ${esc(activeLoco.explanation)}`;
+    const speakBtn = $('#locoSpeakBtn');
+    if (speakBtn) speakBtn.setAttribute('data-say', activeLoco.fullEn);
+
+    // Sync URL query state to prevent route reversion
+    try {
+      const hashBase = location.hash.split('?')[0] || '#/logic';
+      const q = new URLSearchParams(location.hash.includes('?') ? location.hash.split('?')[1] : '');
+      q.set('example', String(currentLocoIdx + 1));
+      if (currentLogicTab && currentLogicTab !== 'all') q.set('cat', currentLogicTab);
+      const newHash = hashBase + '?' + q.toString();
+      if (location.hash !== newHash) {
+        history.replaceState(null, '', newHash);
+      }
+    } catch (e) {}
   }
 
   window.updateLocoSimulator = updateLocoSimulator;
@@ -1524,7 +1585,7 @@ function screenLogic(param) {
     btn.onclick = () => onCategoryChange(btn.dataset.cat);
   });
 
-  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama ve pointer desteği)
+  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama, pointer ve klavye desteği)
   const onExampleSelect = (idx) => {
     if (!isNaN(idx)) {
       currentLocoIdx = idx;
@@ -1535,22 +1596,62 @@ function screenLogic(param) {
   const navBtns = $('.loco-nav-btns');
   if (navBtns) {
     navBtns.addEventListener('click', e => {
-      const btn = e.target.closest('.loco-sel-btn');
-      if (btn) onExampleSelect(parseInt(btn.dataset.lidx, 10));
+      const btn = e.target.closest('.loco-sel-btn, [data-lidx], [data-example], [role="tab"]');
+      if (btn) {
+        let idx = NaN;
+        if (btn.dataset.lidx !== undefined && btn.dataset.lidx !== '') {
+          idx = parseInt(btn.dataset.lidx, 10);
+        } else if (btn.dataset.example !== undefined && btn.dataset.example !== '') {
+          idx = parseInt(btn.dataset.example, 10) - 1;
+        } else {
+          const m = (btn.textContent || '').match(/\d+/);
+          if (m) idx = parseInt(m[0], 10) - 1;
+        }
+        if (!isNaN(idx)) onExampleSelect(idx);
+      }
+    });
+
+    navBtns.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const next = (currentLocoIdx + 1) % simExamples.length;
+        onExampleSelect(next);
+        $(`#loco-example-${next + 1}`)?.focus();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prev = (currentLocoIdx - 1 + simExamples.length) % simExamples.length;
+        onExampleSelect(prev);
+        $(`#loco-example-${prev + 1}`)?.focus();
+      }
     });
   }
+
   $$('.loco-sel-btn').forEach(btn => {
     const handler = () => {
-      onExampleSelect(parseInt(btn.dataset.lidx, 10));
+      let idx = NaN;
+      if (btn.dataset.lidx !== undefined && btn.dataset.lidx !== '') {
+        idx = parseInt(btn.dataset.lidx, 10);
+      } else if (btn.dataset.example !== undefined && btn.dataset.example !== '') {
+        idx = parseInt(btn.dataset.example, 10) - 1;
+      }
+      if (!isNaN(idx)) onExampleSelect(idx);
     };
     btn.onclick = handler;
     btn.onpointerdown = handler;
+    btn.onpointerup = handler;
   });
+
+  const selectEl = $('#locoExampleSelect');
+  if (selectEl) {
+    selectEl.onchange = (e) => {
+      const idx = parseInt(e.target.value, 10);
+      if (!isNaN(idx)) onExampleSelect(idx);
+    };
+  }
 
   // Sesli Telaffuz Butonları
   $$('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
 }
-
 function screenLeaderboard() {
   if (state.leagueRoomId) {
     syncCloudLeague().then(() => {
