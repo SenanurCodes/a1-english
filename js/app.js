@@ -4351,10 +4351,9 @@ function initShimejiCompanion() {
   };
 
   if (spriteWrapEl) {
-    // Tek yol Pointer Events + setPointerCapture (Mouse & Touch uyumlu)
+    // 1. Modern Pointer Events (Mouse, Pen & Modern Mobile)
     spriteWrapEl.onpointerdown = (e) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
-      e.preventDefault();
       handleDragStart(e.clientX, e.clientY);
       if (spriteWrapEl.setPointerCapture) {
         try { spriteWrapEl.setPointerCapture(e.pointerId); } catch (_) {}
@@ -4363,7 +4362,6 @@ function initShimejiCompanion() {
 
     spriteWrapEl.onpointermove = (e) => {
       if (!isDragging) return;
-      e.preventDefault();
       handleDragMove(e.clientX, e.clientY);
     };
 
@@ -4379,6 +4377,29 @@ function initShimejiCompanion() {
     spriteWrapEl.addEventListener('lostpointercapture', () => {
       if (isDragging) handleDragEnd();
     });
+
+    // 2. Native Touch Events (iOS Safari, Mobile Chrome & PWA Standalone Uyumluluğu)
+    spriteWrapEl.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      if (e.touches && e.touches.length > 0) {
+        if (e.cancelable) e.preventDefault();
+        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
+
+    window.addEventListener('touchend', () => {
+      if (isDragging) handleDragEnd();
+    }, { passive: true });
+
+    window.addEventListener('touchcancel', () => {
+      if (isDragging) handleDragEnd();
+    }, { passive: true });
   }
 
   // Davranış Kuralı: Baloncuk günde yalnızca BİR KEZ otomatik açılsın (localStorage ile kontrol edilir)
