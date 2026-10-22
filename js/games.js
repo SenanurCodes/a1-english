@@ -83,15 +83,66 @@ const LOCOMOTIVE_PUZZLES = [
     ],
     correctOrder: ['w1', 'w2', 'w3', 'w4', 'w5'],
     sovWarning: '5 vagonlu dev katar! Unutma: Yüklem (read) lokomotifin hemen peşinde olmalı!'
+  },
+  {
+    id: 'loco-6',
+    level: 6,
+    title: 'Geçmiş Zaman & Mekan',
+    tr: 'Babam dün garajda arabayı tamir etti.',
+    explanation: 'Özne + Geçmiş Fiil (fixed) + Nesne (the car) + Mekan + Zaman zinciri.',
+    wagons: [
+      { id: 'w1', text: 'My dad', role: 'subj', roleLabel: '🚂 Özne', color: '#EF4444' },
+      { id: 'w2', text: 'fixed', role: 'verb', roleLabel: '🚃 Geçmiş Yüklem', color: '#3B82F6' },
+      { id: 'w3', text: 'the car', role: 'obj', roleLabel: '📦 Nesne', color: '#10B981' },
+      { id: 'w4', text: 'in the garage', role: 'place', roleLabel: '🚊 Mekan', color: '#8B5CF6' },
+      { id: 'w5', text: 'yesterday', role: 'time', roleLabel: '🚊 Zaman', color: '#F59E0B' }
+    ],
+    correctOrder: ['w1', 'w2', 'w3', 'w4', 'w5'],
+    sovWarning: 'Geçmiş zamanda da kural aynı: Eylem (fixed) öznenin hemen ardına bağlanır!'
+  },
+  {
+    id: 'loco-7',
+    level: 7,
+    title: 'Gelecek Zaman (Will) Vagonu',
+    tr: 'Biz yarın parkta buluşacağız.',
+    explanation: 'Gelecek zaman yardımcısı ve fiil birlikte öne gelir: will meet.',
+    wagons: [
+      { id: 'w1', text: 'We', role: 'subj', roleLabel: '🚂 Özne', color: '#EF4444' },
+      { id: 'w2', text: 'will meet', role: 'verb', roleLabel: '🚃 Gelecek Fiil', color: '#3B82F6' },
+      { id: 'w3', text: 'at the park', role: 'place', roleLabel: '🚊 Mekan', color: '#8B5CF6' },
+      { id: 'w4', text: 'tomorrow', role: 'time', roleLabel: '🚊 Zaman', color: '#F59E0B' }
+    ],
+    correctOrder: ['w1', 'w2', 'w3', 'w4'],
+    sovWarning: 'Zaman vagonunu (tomorrow) trene en arkadan tak! Önce nereye gideceğini (at the park) bağla.'
+  },
+  {
+    id: 'loco-8',
+    level: 8,
+    title: 'Yetenek (Can) & Zarf Vagonu',
+    tr: 'Kız kardeşim çok güzel piyano çalabilir.',
+    explanation: 'Özne + Can play + Nesne (the piano) + Durum Zarfı (beautifully).',
+    wagons: [
+      { id: 'w1', text: 'My sister', role: 'subj', roleLabel: '🚂 Özne', color: '#EF4444' },
+      { id: 'w2', text: 'can play', role: 'verb', roleLabel: '🚃 Fiil Grubu', color: '#3B82F6' },
+      { id: 'w3', text: 'the piano', role: 'obj', roleLabel: '📦 Nesne', color: '#10B981' },
+      { id: 'w4', text: 'beautifully', role: 'manner', roleLabel: '🚊 Durum Zarfı', color: '#10B981' }
+    ],
+    correctOrder: ['w1', 'w2', 'w3', 'w4'],
+    sovWarning: 'Nasıl çaldığını bildiren zarf vagonu nesneden sonra gelir!'
   }
 ];
 
 /* ------------------------------------------------------------
    2. TUZAK AVCISI (TRAP HUNTER) VERİTABANI
+   Kademe 1: Isınma (Bariz Mantık)
+   Kademe 2: Dedektif (Edat & Kalıp)
+   Kademe 3: Kırmızı Alarm (Sinsi Türk Mantık Tuzakları)
    ------------------------------------------------------------ */
 const TRAP_HUNTER_DATABASE = [
+  // --- KADEME 1: ISINMA (Bariz Mantık Hataları) ---
   {
     id: 'trap-1',
+    difficulty: 1,
     sentence: ['I', 'am', 'agree', 'with', 'you'],
     trapIndex: 1, // 'am'
     correctReplacement: '',
@@ -101,6 +152,7 @@ const TRAP_HUNTER_DATABASE = [
   },
   {
     id: 'trap-2',
+    difficulty: 1,
     sentence: ['She', 'has', 'twenty', 'years', 'old'],
     trapIndex: 1, // 'has'
     correctReplacement: 'is',
@@ -110,6 +162,7 @@ const TRAP_HUNTER_DATABASE = [
   },
   {
     id: 'trap-3',
+    difficulty: 1,
     sentence: ['I', 'very', 'like', 'this', 'music'],
     trapIndex: 1, // 'very'
     correctReplacement: 'really',
@@ -118,7 +171,40 @@ const TRAP_HUNTER_DATABASE = [
     category: 'very_like'
   },
   {
+    id: 'trap-6',
+    difficulty: 1,
+    sentence: ['He', 'go', 'to', 'work', 'by', 'bus'],
+    trapIndex: 1, // 'go'
+    correctReplacement: 'goes',
+    trapTitle: 'He/She/It "-s" Unutulması',
+    tip: 'He tek başına durduğunda geniş zamanda fiil mutlaka "-s" takısı alır: "He goes"!',
+    category: 'he_she_it_s'
+  },
+  {
+    id: 'trap-t1-1',
+    difficulty: 1,
+    sentence: ['My', 'brother', 'make', 'delicious', 'pizzas'],
+    trapIndex: 2, // 'make'
+    correctReplacement: 'makes',
+    trapTitle: 'Tekil Öznede Fiil Takısı Tuzağı',
+    tip: '"My brother" (o) tekildir, geniş zamanda fiil "makes" olmalıdır!',
+    category: 'he_she_it_s'
+  },
+  {
+    id: 'trap-t1-2',
+    difficulty: 1,
+    sentence: ['They', 'are', 'live', 'in', 'Istanbul'],
+    trapIndex: 1, // 'are'
+    correctReplacement: '',
+    trapTitle: 'Fiil Cümlesine "Are" Sıkıştırma Tuzağı',
+    tip: 'Zaten "live" (yaşamak) fiili varken "are" kullanılmaz: "They live in Istanbul"!',
+    category: 'extra_be'
+  },
+
+  // --- KADEME 2: DEDEKTİF (Edat & Kalıp Tuzakları) ---
+  {
     id: 'trap-4',
+    difficulty: 2,
     sentence: ['We', 'are', 'four', 'people', 'here'],
     trapIndex: 1, // 'are four people' -> 'are'
     correctReplacement: 'There are four of us',
@@ -128,6 +214,7 @@ const TRAP_HUNTER_DATABASE = [
   },
   {
     id: 'trap-5',
+    difficulty: 2,
     sentence: ['Can', 'you', 'explain', 'me', 'the', 'rule'],
     trapIndex: 3, // 'me'
     correctReplacement: 'to me',
@@ -136,16 +223,8 @@ const TRAP_HUNTER_DATABASE = [
     category: 'explain_me'
   },
   {
-    id: 'trap-6',
-    sentence: ['He', 'go', 'to', 'work', 'by', 'bus'],
-    trapIndex: 1, // 'go'
-    correctReplacement: 'goes',
-    trapTitle: 'He/She/It "-s" Unutulması',
-    tip: 'He tek başına durduğunda fiil mutlaka "-s" takısı alır: "He goes"!',
-    category: 'he_she_it_s'
-  },
-  {
     id: 'trap-7',
+    difficulty: 2,
     sentence: ['I', 'am', 'waiting', 'you', 'here'],
     trapIndex: 3, // 'you' -> 'for you'
     correctReplacement: 'for you',
@@ -155,12 +234,115 @@ const TRAP_HUNTER_DATABASE = [
   },
   {
     id: 'trap-8',
+    difficulty: 2,
     sentence: ['I', 'went', 'to', 'home', 'yesterday'],
     trapIndex: 2, // 'to'
     correctReplacement: '',
     trapTitle: '"Go to home" Fazla Edat Tuzağı',
     tip: '"Home" sözcüğü yönelme içerir, önüne "to" almaz: "I went home"!',
     category: 'go_home'
+  },
+  {
+    id: 'trap-t2-1',
+    difficulty: 2,
+    sentence: ['I', 'listen', 'music', 'in', 'my', 'room', 'every', 'night'],
+    trapIndex: 2, // 'music'
+    correctReplacement: 'to music',
+    trapTitle: '"Listen music" Edat Eksikliği',
+    tip: 'Listen fiili her zaman "TO" edatıyla kullanılır: "listen to music"!',
+    category: 'listen_to'
+  },
+  {
+    id: 'trap-t2-2',
+    difficulty: 2,
+    sentence: ['She', 'is', 'married', 'with', 'a', 'kind', 'doctor'],
+    trapIndex: 3, // 'with'
+    correctReplacement: 'to',
+    trapTitle: '"Married with" Yanılgısı',
+    tip: 'Türkçede "biriyle evli" denir ama İngilizcede yönelme kullanılır: "married TO someone"!',
+    category: 'married_to'
+  },
+  {
+    id: 'trap-t2-3',
+    difficulty: 2,
+    sentence: ['I', 'am', 'afraid', 'from', 'spiders', 'and', 'darkness'],
+    trapIndex: 3, // 'from'
+    correctReplacement: 'of',
+    trapTitle: '"Afraid from" Türkçe Çeviri Tuzağı',
+    tip: 'Türkçedeki "-den korkmak" İngilizcede "afraid OF" şeklinde ifade edilir.',
+    category: 'afraid_of'
+  },
+  {
+    id: 'trap-t2-4',
+    difficulty: 2,
+    sentence: ['Look', 'that', 'cute', 'dog', 'over', 'there'],
+    trapIndex: 1, // 'that'
+    correctReplacement: 'at that',
+    trapTitle: '"Look" Yönelme Tuzağı',
+    tip: 'Bir şeye bakarken mutlaka "LOOK AT" kullanılır: "Look at that cute dog"!',
+    category: 'look_at'
+  },
+
+  // --- KADEME 3: KIRMIZI ALARM (Sinsi Türk Mantık Tuzakları) ---
+  {
+    id: 'trap-t3-1',
+    difficulty: 3,
+    sentence: ['I', 'have', 'seen', 'him', 'yesterday', 'at', 'noon'],
+    trapIndex: 1, // 'have'
+    correctReplacement: '',
+    trapTitle: 'Yesterday Varken Present Perfect Tuzağı',
+    tip: '"Yesterday", "ago", "last week" gibi kesin zaman bildiren geçmiş ifadelerde have/has kullanılmaz; Past Simple ("I saw") kullanılır!',
+    category: 'past_time_trap'
+  },
+  {
+    id: 'trap-t3-2',
+    difficulty: 3,
+    sentence: ['Actually', 'I', 'need', 'a', 'modern', 'laptop', 'now'],
+    trapIndex: 0, // 'Actually'
+    correctReplacement: 'Currently / Nowadays',
+    trapTitle: '"Actually" Yalancı Eşdeğer (False Friend)',
+    tip: '"Actually" aktüel/güncel demek DEĞİLDİR, "aslında / doğrusu" demektir. Güncel durum için "currently" kullanılır!',
+    category: 'false_friend'
+  },
+  {
+    id: 'trap-t3-3',
+    difficulty: 3,
+    sentence: ['He', 'told', 'to', 'me', 'the', 'entire', 'secret'],
+    trapIndex: 2, // 'to'
+    correctReplacement: '',
+    trapTitle: '"Told to me" Fazla Edat Tuzağı',
+    tip: '"Say to me" denir ama "tell" doğrudan nesne alır: "He told me the secret"!',
+    category: 'tell_vs_say'
+  },
+  {
+    id: 'trap-t3-4',
+    difficulty: 3,
+    sentence: ['I', 'lost', 'my', 'morning', 'bus', 'because', 'of', 'rain'],
+    trapIndex: 1, // 'lost'
+    correctReplacement: 'missed',
+    trapTitle: '"Otobüsü kaybetmek" Çeviri Tuzağı',
+    tip: 'Otobüs, tren veya uçak "lose" edilmez, kaçırılır ("miss the bus")!',
+    category: 'lose_vs_miss'
+  },
+  {
+    id: 'trap-t3-5',
+    difficulty: 3,
+    sentence: ['She', 'does', 'not', 'have', 'no', 'free', 'time'],
+    trapIndex: 4, // 'no'
+    correctReplacement: 'any',
+    trapTitle: 'Çift Olumsuzluk (Double Negative) Tuzağı',
+    tip: 'İngilizcede "does not" varsa tekrar "no" denmez, "any" kullanılır: "does not have any free time"!',
+    category: 'double_negative'
+  },
+  {
+    id: 'trap-t3-6',
+    difficulty: 3,
+    sentence: ['Can', 'you', 'borrow', 'me', 'your', 'pen', 'today'],
+    trapIndex: 2, // 'borrow'
+    correctReplacement: 'lend',
+    trapTitle: '"Borrow" vs "Lend" Karıştırma Tuzağı',
+    tip: 'Birine ödünç vermek "LEND"dir; birinden ödünç almak "BORROW"dur! "Can you lend me..." denir.',
+    category: 'borrow_vs_lend'
   }
 ];
 
@@ -248,13 +430,38 @@ const SURVIVAL_QUESTS = [
    ============================================================ */
 let currentLocoPuzzleIdx = 0;
 let assembledWagonIds = [];
+let locoFreePlayMode = false;
+let locoCountdownTimerId = null;
+
+function getMidnightCountdownStr() {
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  const diffMs = Math.max(0, midnight - now);
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
+  return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
+
+function isLocoDailyCompletedToday() {
+  const today = typeof todayStr === 'function' ? todayStr() : new Date().toISOString().slice(0, 10);
+  return Boolean(state && state.dailyLocomotive && state.dailyLocomotive[today] && state.dailyLocomotive[today].completed);
+}
 
 function screenLocomotive() {
+  if (locoCountdownTimerId) {
+    clearInterval(locoCountdownTimerId);
+    locoCountdownTimerId = null;
+  }
+
   const p = LOCOMOTIVE_PUZZLES[currentLocoPuzzleIdx] || LOCOMOTIVE_PUZZLES[0];
   const curMascot = mascotService.getActive();
   assembledWagonIds = [];
 
   const availableWagons = [...p.wagons].sort(() => Math.random() - 0.5);
+  const isDailyDone = isLocoDailyCompletedToday();
+  const totalStages = locoFreePlayMode ? LOCOMOTIVE_PUZZLES.length : 5;
+  const currentStep = Math.min(currentLocoPuzzleIdx + 1, totalStages);
 
   view().innerHTML = `
     <div class="page loco-puzzle-page">
@@ -264,18 +471,46 @@ function screenLocomotive() {
             <h1 style="font-size:clamp(1.2rem, 4.5vw, 1.45rem);margin:0 0 2px;">🚂 Cümle Lokomotifi</h1>
             <p class="muted small" style="margin:0;font-size:0.82rem;line-height:1.4;">Metin yazmak yok! Vagonları rayların üstüne kenetle, SVO mantığını çöz.</p>
           </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <span class="badge" style="background:var(--card-hover);color:var(--primary);border:1.5px solid var(--primary);font-weight:800;font-size:0.75rem;padding:4px 10px;border-radius:10px;">Seviye ${p.level} / ${LOCOMOTIVE_PUZZLES.length}</span>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="badge" style="background:var(--card-hover);color:var(--primary);border:1.5px solid var(--primary);font-weight:800;font-size:0.75rem;padding:4px 10px;border-radius:10px;">
+              ${locoFreePlayMode ? `🔁 Serbest Mod: Seviye ${p.level} / ${LOCOMOTIVE_PUZZLES.length}` : `📅 Günün Seferi: Vagon ${currentStep} / 5`}
+            </span>
+            <button type="button" class="btn btn-ghost sm" id="locoModeToggleBtn" style="padding:5px 10px;font-size:0.78rem;border-radius:10px;">
+              ${locoFreePlayMode ? '📅 Günün Seferine Dön' : '🔁 Serbest Pratik Modu'}
+            </button>
             <a href="#/logic" class="btn btn-ghost sm" style="padding:5px 10px;font-size:0.78rem;border-radius:10px;">📘 Kural Rehberi</a>
           </div>
         </div>
       </header>
 
+      ${isDailyDone && !locoFreePlayMode ? `
+        <!-- Günün Görevi Tamamlandı Bildirim Kartı -->
+        <div class="card" style="padding:14px 18px;margin-bottom:14px;background:rgba(16,185,129,0.08);border:2px solid #10B981;border-radius:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:2rem;">🎉</span>
+            <div>
+              <b style="color:#059669;font-size:0.98rem;">Bugünkü Lokomotif Seferini Başarıyla Tamamladın (5/5)!</b>
+              <div class="muted small">Tebrikler! Günlük serin korundu. Dilersen sınırsız pratik modunda tüm vagonları çözmeye devam edebilirsin.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <div style="text-align:right;">
+              <div class="muted small" style="font-weight:700;">Yeni Günlük Sefer:</div>
+              <b style="font-family:monospace;color:var(--primary);" id="locoHeaderCountdown">${getMidnightCountdownStr()}</b>
+            </div>
+            <button type="button" class="btn btn-primary sm" id="locoSwitchToFreeQuickBtn">🔁 Serbest Mod</button>
+          </div>
+        </div>
+      ` : ''}
+
       <!-- Hedef Cümle Paneli -->
       <div class="card loco-target-card" style="padding:14px 18px;margin-bottom:14px;background:color-mix(in srgb, var(--primary) 6%, var(--card));border:2px solid var(--border);">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
           <div>
-            <span class="badge" style="font-weight:800;font-size:0.72rem;padding:2px 8px;border-radius:99px;background:var(--card);border:1px solid var(--border);margin-bottom:4px;display:inline-block;">🎯 Kurulacak Cümle</span>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+              <span class="badge" style="font-weight:800;font-size:0.72rem;padding:2px 8px;border-radius:99px;background:var(--card);border:1px solid var(--border);">🎯 Kurulacak Cümle</span>
+              <span class="muted small" style="font-size:0.75rem;font-weight:700;">${esc(p.title)}</span>
+            </div>
             <h2 style="margin:2px 0 4px;font-size:1.15rem;font-weight:800;color:var(--text);">${esc(p.tr)}</h2>
             <div class="muted small" style="font-size:0.82rem;line-height:1.35;">${esc(p.explanation)}</div>
           </div>
@@ -339,12 +574,41 @@ function screenLocomotive() {
         <button type="button" class="btn btn-big btn-primary" id="locoCheckTrainBtn" style="padding:12px 28px;font-size:1.05rem;">
           🚀 Treni Çalıştır & Test Et
         </button>
-        <button type="button" class="btn btn-ghost" id="locoNextBtn" ${currentLocoPuzzleIdx === LOCOMOTIVE_PUZZLES.length - 1 ? 'disabled' : ''}>Sonraki Bulmaca ▶</button>
+        <button type="button" class="btn btn-ghost" id="locoNextBtn" ${currentLocoPuzzleIdx === (locoFreePlayMode ? LOCOMOTIVE_PUZZLES.length - 1 : 4) ? 'disabled' : ''}>Sonraki Bulmaca ▶</button>
       </div>
+
+      <!-- Günlük Tamamlama Kutlama Modalı Alanı -->
+      <div id="locoCompleteModalContainer"></div>
     </div>
   `;
 
   renderCoupledWagons();
+
+  // Canlı Geri Sayım Zamanlayıcısı
+  if ($('#locoHeaderCountdown')) {
+    locoCountdownTimerId = setInterval(() => {
+      const el = $('#locoHeaderCountdown');
+      if (el) el.textContent = getMidnightCountdownStr();
+    }, 1000);
+  }
+
+  // Mod Değiştirme Butonları
+  const modeBtn = $('#locoModeToggleBtn');
+  if (modeBtn) {
+    modeBtn.onclick = () => {
+      locoFreePlayMode = !locoFreePlayMode;
+      currentLocoPuzzleIdx = 0;
+      screenLocomotive();
+    };
+  }
+  const quickFreeBtn = $('#locoSwitchToFreeQuickBtn');
+  if (quickFreeBtn) {
+    quickFreeBtn.onclick = () => {
+      locoFreePlayMode = true;
+      currentLocoPuzzleIdx = 0;
+      screenLocomotive();
+    };
+  }
 
   // Olay Dinleyicileri
   $('#depotWagonsGrid').onclick = e => {
@@ -380,7 +644,8 @@ function screenLocomotive() {
   };
 
   $('#locoNextBtn').onclick = () => {
-    if (currentLocoPuzzleIdx < LOCOMOTIVE_PUZZLES.length - 1) {
+    const maxIdx = locoFreePlayMode ? LOCOMOTIVE_PUZZLES.length - 1 : 4;
+    if (currentLocoPuzzleIdx < maxIdx) {
       currentLocoPuzzleIdx++;
       screenLocomotive();
     }
@@ -464,12 +729,23 @@ function checkLocomotiveAssembly(p) {
 
     showLocoAlert(`🎉 <b>Kusursuz Kenetleme!</b> Tren tam vaktinde hareket etti (+25 ${m.itemIcon} XP). İngilizce SVO dizilimi başarıyla kuruldu!`, true);
 
+    // Günlük Sefer Tamamlanması (5/5 puzzle bittiğinde)
+    const isDailyFinalStep = !locoFreePlayMode && currentLocoPuzzleIdx === 4;
+
     setTimeout(() => {
-      if (currentLocoPuzzleIdx < LOCOMOTIVE_PUZZLES.length - 1) {
-        currentLocoPuzzleIdx++;
-        screenLocomotive();
+      if (isDailyFinalStep) {
+        finishDailyLocomotive();
+      } else {
+        const maxIdx = locoFreePlayMode ? LOCOMOTIVE_PUZZLES.length - 1 : 4;
+        if (currentLocoPuzzleIdx < maxIdx) {
+          currentLocoPuzzleIdx++;
+          screenLocomotive();
+        } else if (locoFreePlayMode) {
+          // Serbest modda tüm bulmacalar tamamlandı
+          showLocoAlert(`🌟 <b>Tüm Serbest Vagonlar Tamamlandı!</b> Lokomotifi baştan çalıştırmak için 1. bulmacaya dönebilirsin.`, true);
+        }
       }
-    }, 2800);
+    }, 2400);
   } else {
     // Hatalı dizilim (Türkçe SOV Mantığı Uyarısı)
     if (typeof sfx !== 'undefined' && sfx.bad) sfx.bad();
@@ -485,24 +761,145 @@ function checkLocomotiveAssembly(p) {
   }
 }
 
+function finishDailyLocomotive() {
+  const today = typeof todayStr === 'function' ? todayStr() : new Date().toISOString().slice(0, 10);
+  if (!state.dailyLocomotive) state.dailyLocomotive = {};
+  state.dailyLocomotive[today] = { completed: true, timestamp: Date.now() };
+
+  if (typeof store !== 'undefined') {
+    if (store._save) store._save();
+    if (store.gainXP) store.gainXP(50);
+    if (store.recordActivity) store.recordActivity();
+  }
+
+  if (typeof confetti === 'function') confetti(160);
+  if (typeof sfx !== 'undefined' && sfx.win) sfx.win();
+
+  const curMascot = mascotService.getActive();
+  if (typeof window.shimejiSay === 'function') {
+    window.shimejiSay(`🚂🏆 <b>TEBRİKLER!</b> Bugünkü 5/5 Lokomotif seferini tamamladın! Günlük serin korundu ve +50 ${curMascot.itemIcon} XP kazandın!`, `🎉 ${curMascot.name}`);
+  }
+
+  renderDailyLocoCompleteModal();
+}
+
+function renderDailyLocoCompleteModal() {
+  const container = $('#locoCompleteModalContainer');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="loco-complete-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.72);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;">
+      <div class="card" style="max-width:480px;width:100%;text-align:center;padding:28px 22px;border-radius:20px;border:2px solid var(--primary);box-shadow:0 12px 36px rgba(0,0,0,0.3);animation:wagonCouplePop 0.3s ease;">
+        <div style="font-size:3.6rem;line-height:1;margin-bottom:8px;">🚂💨 🏅</div>
+        <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;padding:4px 12px;border-radius:99px;font-size:0.8rem;margin-bottom:8px;display:inline-block;">GÜNÜN SEFERİ 5/5 BİTTİ</span>
+        <h2 style="margin:6px 0 10px;font-size:1.45rem;">Tebrikler Başmakinist!</h2>
+        <p class="muted" style="margin-bottom:18px;font-size:0.92rem;line-height:1.45;">
+          Bugünkü 5 vagonu da kusursuz SVO sırasıyla kenetledin ve treni vaktinde istasyona ulaştırdın!
+        </p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+          <div style="padding:12px;border-radius:12px;background:rgba(16,185,129,0.1);border:1.5px solid #10B981;">
+            <div style="font-size:1.4rem;">🔥</div>
+            <b style="color:#059669;font-size:0.95rem;">Seri Korundu</b>
+            <div class="muted small">Günün alıştırması yapıldı</div>
+          </div>
+          <div style="padding:12px;border-radius:12px;background:rgba(59,130,246,0.1);border:1.5px solid #3B82F6;">
+            <div style="font-size:1.4rem;">⭐</div>
+            <b style="color:#2563EB;font-size:0.95rem;">+50 XP Bonus</b>
+            <div class="muted small">Hesabına eklendi</div>
+          </div>
+        </div>
+
+        <div style="background:var(--card-hover);padding:10px 14px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+          <span class="muted small" style="font-weight:700;">⏱️ Yeni Günlük Sefer:</span>
+          <b style="font-family:monospace;font-size:1.05rem;color:var(--primary);" id="locoModalCountdown">${getMidnightCountdownStr()}</b>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button type="button" class="btn btn-big btn-primary" id="locoModalFreePlayBtn" style="padding:12px 18px;font-weight:800;">
+            🔁 Sınırsız Serbest Pratik Modu
+          </button>
+          <a href="#/" class="btn btn-ghost" style="padding:10px 16px;">🏠 Ana Sayfaya Dön</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const modalCountdown = setInterval(() => {
+    const el = $('#locoModalCountdown');
+    if (el) el.textContent = getMidnightCountdownStr();
+    else clearInterval(modalCountdown);
+  }, 1000);
+
+  const freeBtn = $('#locoModalFreePlayBtn');
+  if (freeBtn) {
+    freeBtn.onclick = () => {
+      clearInterval(modalCountdown);
+      locoFreePlayMode = true;
+      currentLocoPuzzleIdx = 0;
+      screenLocomotive();
+    };
+  }
+}
+
 /* ============================================================
    EKRAN 2: TUZAK AVCISI (TRAP HUNTER ARCADE MODU)
+   Dinamik Zorlaşma Katmanları:
+   - Kademe 1: Isınma (0 - 29 Puan)
+   - Kademe 2: Dedektif (30 - 74 Puan)
+   - Kademe 3: Kırmızı Alarm (75+ Puan)
    ============================================================ */
 let trapScore = 0;
 let trapCombo = 0;
 let trapTimeLeft = 60;
 let trapTimerId = null;
-let currentTrapIndex = 0;
+let currentTrap = null;
 let isTrapGameActive = false;
 let defusedHistory = [];
+let usedTrapIdsInRun = new Set();
+let maxTrapTierReached = 1;
+
+const TRAP_TIERS = {
+  1: { label: '🟢 Kademe 1: Isınma (Bariz Mantık)', minScore: 0, bonusSec: 3, penaltySec: 4 },
+  2: { label: '🟡 Kademe 2: Dedektif (Edat & Kalıp)', minScore: 30, bonusSec: 3, penaltySec: 5 },
+  3: { label: '🔴 Kademe 3: Kırmızı Alarm (Sinsi Mantık)', minScore: 75, bonusSec: 4, penaltySec: 6 }
+};
+
+function getTrapCurrentTier(score) {
+  if (score >= 75) return 3;
+  if (score >= 30) return 2;
+  return 1;
+}
+
+function pickNextTrapSentence() {
+  const tier = getTrapCurrentTier(trapScore);
+  if (tier > maxTrapTierReached) maxTrapTierReached = tier;
+
+  let pool = TRAP_HUNTER_DATABASE.filter(t => (t.difficulty || 1) === tier && !usedTrapIdsInRun.has(t.id));
+  if (pool.length === 0) {
+    // Bu kademedeki tüm tuzaklar tüketildi, geçmişi temizleyip yeniden çevir
+    usedTrapIdsInRun = new Set(Array.from(usedTrapIdsInRun).filter(id => {
+      const match = TRAP_HUNTER_DATABASE.find(x => x.id === id);
+      return match && match.difficulty !== tier;
+    }));
+    pool = TRAP_HUNTER_DATABASE.filter(t => (t.difficulty || 1) === tier);
+  }
+
+  const selected = pool[Math.floor(Math.random() * pool.length)] || TRAP_HUNTER_DATABASE[0];
+  usedTrapIdsInRun.add(selected.id);
+  currentTrap = selected;
+  return selected;
+}
 
 function screenTrapHunter() {
   trapScore = 0;
   trapCombo = 0;
   trapTimeLeft = 60;
-  currentTrapIndex = 0;
   isTrapGameActive = false;
   defusedHistory = [];
+  usedTrapIdsInRun = new Set();
+  maxTrapTierReached = 1;
+  currentTrap = null;
   if (trapTimerId) clearInterval(trapTimerId);
 
   const curMascot = mascotService.getActive();
@@ -512,8 +909,8 @@ function screenTrapHunter() {
       <header class="page-head" style="margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
-            <h1 style="font-size:clamp(1.25rem, 4.5vw, 1.55rem);margin:0 0 4px;">💣 Tuzak Avcısı</h1>
-            <p class="muted">Ekrana gelen cümlelerdeki gizli Türkçe mantık tuzaklarını tespit et, üstüne tıklayıp süren bitmeden İMHA ET!</p>
+            <h1 style="font-size:clamp(1.25rem, 4.5vw, 1.55rem);margin:0 0 4px;">💣 Tuzak Avcısı (Arcade Modu)</h1>
+            <p class="muted">Ekrana gelen cümlelerdeki gizli Türkçe düşünme tuzaklarını tespit et, hatalı kelimeye dokunup süren bitmeden İMHA ET!</p>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
             <span class="badge" style="background:var(--card-hover);color:var(--text);border:1.5px solid var(--border);font-weight:700;font-size:0.78rem;padding:4px 10px;border-radius:99px;">⚡ 60 Saniye Meydan Okuma</span>
@@ -523,7 +920,7 @@ function screenTrapHunter() {
 
       <!-- Arcade HUD Gösterge Paneli -->
       <div class="card trap-hud-card" style="padding:14px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:var(--card);border:2px solid var(--border);">
-        <div style="display:flex;gap:18px;align-items:center;">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
           <div>
             <div class="muted small" style="font-weight:700;">⏱️ KALAN SÜRE</div>
             <div style="font-size:1.6rem;font-weight:900;color:${trapTimeLeft <= 15 ? '#EF4444' : 'var(--text)'};" id="trapTimerVal">60s</div>
@@ -538,6 +935,13 @@ function screenTrapHunter() {
             <div class="muted small" style="font-weight:700;">🔥 KOMBO</div>
             <div style="font-size:1.6rem;font-weight:900;color:#F59E0B;" id="trapComboVal">0x</div>
           </div>
+          <div style="height:32px;width:1px;background:var(--border);"></div>
+          <div>
+            <div class="muted small" style="font-weight:700;">🎯 DİNAMİK KADEME</div>
+            <span class="badge" id="trapTierBadge" style="background:var(--card-hover);font-weight:800;font-size:0.76rem;padding:4px 10px;border-radius:8px;">
+              🟢 Kademe 1: Isınma
+            </span>
+          </div>
         </div>
         <div>
           <button type="button" class="btn btn-big btn-primary" id="startTrapGameBtn" style="padding:10px 22px;font-weight:800;">
@@ -550,9 +954,9 @@ function screenTrapHunter() {
       <div class="card trap-stage-card" id="trapStageCard" style="padding:32px 20px;text-align:center;margin-bottom:18px;min-height:220px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:color-mix(in srgb, var(--primary) 4%, var(--card));border:2px dashed var(--border);border-radius:16px;">
         <div id="trapStageContent">
           <div style="font-size:3.2rem;margin-bottom:8px;">🎯 💣 ⚡</div>
-          <h3>Hazır mısın?</h3>
+          <h3>Hazır mısın Dedektif?</h3>
           <p class="muted" style="max-width:440px;margin:0 auto 16px;">
-            "I am agree", "She has 20 years old" gibi Türk beyninin alışkanlıklarını yakala, hatalı kelimeye dokunup patlat!
+            Puanın arttıkça tuzaklar kurnazlaşacak! Doğru imhalar <b>+3s bonus</b> kazandırırken, yanlış tıklamalar <b>-5s ceza</b> keser.
           </p>
           <button type="button" class="btn btn-primary" onclick="$('#startTrapGameBtn').click()">Hemen Başla</button>
         </div>
@@ -572,9 +976,10 @@ function startTrapHunterGame() {
   trapScore = 0;
   trapCombo = 0;
   trapTimeLeft = 60;
-  currentTrapIndex = 0;
   isTrapGameActive = true;
   defusedHistory = [];
+  usedTrapIdsInRun = new Set();
+  maxTrapTierReached = 1;
 
   $('#startTrapGameBtn').style.display = 'none';
   renderCurrentTrapSentence();
@@ -586,6 +991,7 @@ function startTrapHunterGame() {
     if (timerEl) {
       timerEl.textContent = `${trapTimeLeft}s`;
       if (trapTimeLeft <= 15) timerEl.style.color = '#EF4444';
+      else timerEl.style.color = 'var(--text)';
     }
     if (trapTimeLeft <= 0) {
       endTrapHunterGame();
@@ -596,11 +1002,26 @@ function startTrapHunterGame() {
 function renderCurrentTrapSentence() {
   const stage = $('#trapStageContent');
   if (!stage) return;
-  const t = TRAP_HUNTER_DATABASE[currentTrapIndex % TRAP_HUNTER_DATABASE.length];
+  const t = pickNextTrapSentence();
+  const tier = getTrapCurrentTier(trapScore);
+  const tierConfig = TRAP_TIERS[tier] || TRAP_TIERS[1];
+
+  // Kademe Göstergesini Güncelle
+  const tierBadge = $('#trapTierBadge');
+  if (tierBadge) {
+    tierBadge.textContent = tierConfig.label;
+    tierBadge.style.color = tier === 3 ? '#EF4444' : (tier === 2 ? '#F59E0B' : '#10B981');
+    tierBadge.style.borderColor = tier === 3 ? '#EF4444' : (tier === 2 ? '#F59E0B' : '#10B981');
+  }
 
   stage.innerHTML = `
-    <div style="margin-bottom:12px;">
-      <span class="badge" style="background:var(--card-hover);color:var(--text);border:1.5px solid var(--border);font-weight:700;font-size:0.75rem;padding:4px 10px;border-radius:99px;">💣 TUZAKLI CÜMLE · Hatalı Kelimeye Dokun!</span>
+    <div style="margin-bottom:12px;display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap;">
+      <span class="badge" style="background:var(--card-hover);color:var(--text);border:1.5px solid var(--border);font-weight:700;font-size:0.75rem;padding:4px 10px;border-radius:99px;">
+        💣 TUZAKLI CÜMLE · Hatalı Kelimeye Dokun!
+      </span>
+      <span class="badge" style="background:var(--card-hover);font-weight:800;font-size:0.72rem;padding:4px 10px;border-radius:99px;color:${tier === 3 ? '#EF4444' : (tier === 2 ? '#F59E0B' : '#10B981')};">
+        ${esc(tierConfig.label.split(':')[1]?.trim() || '')}
+      </span>
     </div>
     <div class="trap-tokens-wrap" style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0;">
       ${t.sentence.map((word, wIdx) => `
@@ -609,7 +1030,7 @@ function renderCurrentTrapSentence() {
         </button>
       `).join('')}
     </div>
-    <div class="muted small">Tuzak bu cümlenin içine gizlendi. Yanlış kelimeyi imha et!</div>
+    <div class="muted small">Bu cümlenin içine bir Türkçe mantık tuzağı gizlendi. Yanlış kelimeyi imha et!</div>
   `;
 
   $$('.trap-word-token', stage).forEach(btn => {
@@ -624,16 +1045,20 @@ function renderCurrentTrapSentence() {
 function handleTrapClick(clickedIdx, t) {
   const isCorrect = clickedIdx === t.trapIndex;
   const fbCard = $('#trapFeedbackCard');
+  const tier = getTrapCurrentTier(trapScore);
+  const tierConfig = TRAP_TIERS[tier] || TRAP_TIERS[1];
 
   if (isCorrect) {
     // Doğru imha!
     trapCombo++;
     const points = 10 * Math.min(trapCombo, 4);
     trapScore += points;
+    trapTimeLeft = Math.min(99, trapTimeLeft + tierConfig.bonusSec);
     store.gainXP(5);
 
     $('#trapScoreVal').textContent = trapScore;
     $('#trapComboVal').textContent = `${trapCombo}x`;
+    $('#trapTimerVal').textContent = `${trapTimeLeft}s`;
 
     if (typeof sfx !== 'undefined' && sfx.good) sfx.good();
 
@@ -645,20 +1070,26 @@ function handleTrapClick(clickedIdx, t) {
         <div style="display:flex;align-items:center;gap:10px;">
           <span style="font-size:1.6rem;">💥</span>
           <div>
-            <b style="color:#059669;">Tuzak İmha Edildi! (+${points} Puan ${trapCombo >= 2 ? `· 🔥 ${trapCombo}x Kombo` : ''})</b>
+            <b style="color:#059669;">Tuzak İmha Edildi! (+${points} Puan · ⏱️ +${tierConfig.bonusSec}s Süre Kazandın ${trapCombo >= 2 ? `· 🔥 ${trapCombo}x Kombo` : ''})</b>
             <div style="font-size:0.86rem;margin-top:2px;"><b>${esc(t.trapTitle)}:</b> ${esc(t.tip)}</div>
           </div>
         </div>
       `;
     }
 
+    if (trapCombo === 3 || trapCombo === 5) {
+      const curMascot = mascotService.getActive();
+      if (typeof window.shimejiSay === 'function') {
+        window.shimejiSay(`🔥 <b>${trapCombo}x Kombo!</b> Dedektif gibi çalışıyorsun ortak! (+${tierConfig.bonusSec}s süre eklendi)`, `🎯 ${curMascot.name}`);
+      }
+    }
+
     defusedHistory.push(t);
-    currentTrapIndex++;
     renderCurrentTrapSentence();
   } else {
     // Yanlış kelime
     trapCombo = 0;
-    trapTimeLeft = Math.max(0, trapTimeLeft - 3);
+    trapTimeLeft = Math.max(0, trapTimeLeft - tierConfig.penaltySec);
     $('#trapComboVal').textContent = '0x';
     $('#trapTimerVal').textContent = `${trapTimeLeft}s`;
 
@@ -672,11 +1103,15 @@ function handleTrapClick(clickedIdx, t) {
         <div style="display:flex;align-items:center;gap:10px;">
           <span style="font-size:1.6rem;">⚠️</span>
           <div>
-            <b style="color:#DC2626;">Orada tuzak yok! (-3 saniye ceza)</b>
+            <b style="color:#DC2626;">Orada tuzak yok! (-${tierConfig.penaltySec}s ceza)</b>
             <div style="font-size:0.86rem;margin-top:2px;">Bu cümledeki asıl tuzak: <b>"${esc(t.sentence[t.trapIndex])}"</b> kelimesiydi. ${esc(t.tip)}</div>
           </div>
         </div>
       `;
+    }
+
+    if (trapTimeLeft <= 0) {
+      endTrapHunterGame();
     }
   }
 }
@@ -688,13 +1123,38 @@ function endTrapHunterGame() {
   const stage = $('#trapStageContent');
   if (stage) {
     const curMascot = mascotService.getActive();
+    const highestTierConfig = TRAP_TIERS[maxTrapTierReached] || TRAP_TIERS[1];
+
     stage.innerHTML = `
       <div style="font-size:3.5rem;margin-bottom:8px;">🏆</div>
       <h2>Süre Doldu! Skorun: <span style="color:var(--primary);">${trapScore} Puan</span></h2>
-      <p class="muted">Toplam <b>${defusedHistory.length}</b> Türkçe düşünme tuzağını başarıyla imha ettin ve zihnini temizledin!</p>
-      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">
-        <button type="button" class="btn btn-primary" onclick="screenTrapHunter()">🔄 Yeniden Oyna</button>
-        <a href="#/logic" class="btn btn-ghost">📘 Kuralları İncele</a>
+      <div style="display:flex;gap:8px;justify-content:center;margin:8px 0 14px;flex-wrap:wrap;">
+        <span class="badge" style="background:var(--card-hover);color:var(--text);border:1px solid var(--border);padding:4px 10px;border-radius:99px;">
+          🎖️ Maksimum Kademe: <b>${esc(highestTierConfig.label.split(':')[1]?.trim() || '')}</b>
+        </span>
+        <span class="badge" style="background:var(--card-hover);color:var(--primary);border:1px solid var(--border);padding:4px 10px;border-radius:99px;">
+          💣 İmha Edilen: <b>${defusedHistory.length} Tuzak</b>
+        </span>
+      </div>
+
+      <p class="muted" style="max-width:480px;margin:0 auto 16px;">
+        Zihnindeki Türkçe düşünme kalıplarını kırdın! Aşağıdaki tuzakları inceleyerek kuralları pekiştirebilirsin.
+      </p>
+
+      ${defusedHistory.length > 0 ? `
+        <div class="defused-traps-log" style="text-align:left;max-height:180px;overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin:12px 0 16px;font-size:0.84rem;">
+          <div style="font-weight:800;color:var(--muted);margin-bottom:8px;">📚 Bu Oyunda Temizlediğin Tuzaklar:</div>
+          ${defusedHistory.map((d, i) => `
+            <div style="padding:6px 0;border-bottom:1px solid var(--border);">
+              <b>${i + 1}. ${esc(d.trapTitle)}:</b> ${esc(d.tip)}
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" onclick="screenTrapHunter()">🔄 Yeniden Meydan Oku</button>
+        <a href="#/logic" class="btn btn-ghost">📘 Mantık Kurallarını İncele</a>
       </div>
     `;
   }
