@@ -43,6 +43,14 @@ function createEnv(options = {}) {
     fillText() {}, restore() {}, beginPath() {}, moveTo() {}, lineTo() {},
     closePath() {}, stroke() {}, strokeRect() {}, arc() {}, fill() {}
   });
+  // TextEncoder & TextDecoder stubs for jsdom environment
+  if (!window.TextEncoder && typeof TextEncoder !== 'undefined') {
+    window.TextEncoder = TextEncoder;
+  }
+  if (!window.TextDecoder && typeof TextDecoder !== 'undefined') {
+    window.TextDecoder = TextDecoder;
+  }
+
   window.scrollTo = () => {};
   window.Element.prototype.scrollIntoView = () => {};
 

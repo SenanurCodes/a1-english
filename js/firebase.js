@@ -299,7 +299,12 @@ class AuthService {
       ? window.crypto
       : ((typeof crypto !== 'undefined' && crypto.subtle) ? crypto : null);
     if (cryptoObj && cryptoObj.subtle && typeof cryptoObj.subtle.digest === 'function') {
-      const enc = new TextEncoder();
+      const EncoderClass = (typeof TextEncoder !== 'undefined')
+        ? TextEncoder
+        : ((typeof window !== 'undefined' && window.TextEncoder)
+          ? window.TextEncoder
+          : ((typeof globalThis !== 'undefined' && globalThis.TextEncoder) ? globalThis.TextEncoder : null));
+      const enc = EncoderClass ? new EncoderClass() : { encode: s => new Uint8Array(Array.from(s).map(c => c.charCodeAt(0))) };
       const data = enc.encode(salt + ':' + password);
       const digest = await cryptoObj.subtle.digest('SHA-256', data);
       return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
