@@ -2122,7 +2122,7 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: none;
+  touch-action: auto;
   will-change: left, bottom;
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.22));
 }
@@ -2141,6 +2141,11 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   justify-content: center;
   transform-origin: center bottom;
   transition: transform 0.18s ease;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
 }
 
 .shimeji-pet.face-left .shimeji-sprite-wrap {
@@ -2716,16 +2721,24 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 @media (max-width: 768px) {
   /* Mobilde kartların arkasında kalmaması ve rahatça dolaşabilmesi için optimize edildi */
   .shimeji-stage {
-    z-index: 950 !important;
+    z-index: 940;
     pointer-events: none;
   }
   .shimeji-pet {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
     width: 48px !important;
     height: 48px !important;
-    touch-action: none;
+    touch-action: auto;
     pointer-events: auto;
     filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.22));
+  }
+  .shimeji-sprite-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    min-width: 56px;
+    min-height: 56px;
+    pointer-events: auto;
   }
   .shimeji-legend-badge {
     font-size: 0.62rem !important;

@@ -4288,7 +4288,8 @@ function initShimejiCompanion() {
     startPointerX = clientX;
     startPointerY = clientY;
     startPetX = posX;
-    startPetBottom = posY;
+    const computedBottom = petEl ? (parseFloat(window.getComputedStyle(petEl).bottom) || 0) : 0;
+    startPetBottom = posY > 0 ? posY : computedBottom;
   };
 
   const handleDragMove = (clientX, clientY) => {
@@ -4302,7 +4303,7 @@ function initShimejiCompanion() {
       }
       const minW = getSafeMinX();
       const maxW = getSafeMaxX();
-      const maxH = Math.max(120, (window.innerHeight || 600) - 96);
+      const maxH = Math.max(120, (window.innerHeight || 600) - ((window.innerWidth || 800) > 768 ? 96 : 56));
       posX = Math.max(minW, Math.min(maxW, startPetX + dx));
       posY = Math.max(0, Math.min(maxH, startPetBottom + dy));
       petEl.style.left = `${Math.round(posX)}px`;
@@ -4350,10 +4351,10 @@ function initShimejiCompanion() {
   };
 
   if (spriteWrapEl) {
-    // 1. Mouse / Pointer Events
+    // Tek yol Pointer Events + setPointerCapture (Mouse & Touch uyumlu)
     spriteWrapEl.onpointerdown = (e) => {
-      if (e.pointerType === 'touch') return; // Touchstart işleyecek
-      if (e.button && e.button !== 0) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();
       handleDragStart(e.clientX, e.clientY);
       if (spriteWrapEl.setPointerCapture) {
         try { spriteWrapEl.setPointerCapture(e.pointerId); } catch (_) {}
@@ -4361,45 +4362,23 @@ function initShimejiCompanion() {
     };
 
     spriteWrapEl.onpointermove = (e) => {
-      if (e.pointerType === 'touch') return;
+      if (!isDragging) return;
+      e.preventDefault();
       handleDragMove(e.clientX, e.clientY);
     };
 
-    spriteWrapEl.onpointerup = (e) => {
-      if (e.pointerType === 'touch') return;
+    const onPointerUpOrCancel = (e) => {
       if (spriteWrapEl.releasePointerCapture && e.pointerId !== undefined) {
         try { spriteWrapEl.releasePointerCapture(e.pointerId); } catch (_) {}
       }
-      handleDragEnd();
+      if (isDragging) handleDragEnd();
     };
 
-    spriteWrapEl.onpointercancel = (e) => {
-      if (e.pointerType === 'touch') return;
-      handleDragEnd();
-    };
-
-    // 2. Mobil Parmakla Sürükleme (Touch Events)
-    spriteWrapEl.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches.length > 0) {
-        handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      if (e.touches && e.touches.length > 0) {
-        if (e.cancelable) e.preventDefault(); // Sayfa kaymasını önler
-        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: false });
-
-    window.addEventListener('touchend', () => {
+    spriteWrapEl.onpointerup = onPointerUpOrCancel;
+    spriteWrapEl.onpointercancel = onPointerUpOrCancel;
+    spriteWrapEl.addEventListener('lostpointercapture', () => {
       if (isDragging) handleDragEnd();
-    }, { passive: true });
-
-    window.addEventListener('touchcancel', () => {
-      if (isDragging) handleDragEnd();
-    }, { passive: true });
+    });
   }
 
   // Davranış Kuralı: Baloncuk günde yalnızca BİR KEZ otomatik açılsın (localStorage ile kontrol edilir)
