@@ -403,6 +403,57 @@ test('5. ai.js (fetch mock): 200, 429, 403, 404 fallback, NO_KEY, json temizleme
     const chatLen = run('state.chat.length');
     eq(chatLen, 1, 'Hata anında eklenen son kullanıcı mesajı geri alınmalı (rollback)');
   }
+
+  // 5.8 AI Öğretmen Anahtar Kurulumu, Yenileme Sonrası Kalıcılık ve Mevcut Anahtarı Güncelleme (Replace)
+  {
+    const { window, run } = createEnv();
+    window.location.hash = '#/ai';
+    window.router();
+
+    // A. İlk kurulum: Anahtarı gir ve kaydet
+    const keyIn = window.document.getElementById('keyIn');
+    ok(keyIn, 'İlk kurulum ekranında #keyIn inputu bulunmalı');
+    keyIn.value = 'AIzaSyFirstSetupKey12345';
+    const saveKeyBtn = window.document.getElementById('saveKey');
+    ok(saveKeyBtn, '#saveKey butonu bulunmalı');
+    saveKeyBtn.click();
+
+    eq(run('getApiKey()'), 'AIzaSyFirstSetupKey12345', 'Kaydedilen anahtar getApiKey() ile dönmeli');
+    ok(run('hasAI()'), 'hasAI() true olmalı');
+
+    // B. Sayfa yenilense bile (refresh persistence) anahtar kalıcı olmalı
+    const savedLocal = JSON.parse(window.localStorage.getItem('a1english_v2'));
+    eq(savedLocal.settings.apiKey, 'AIzaSyFirstSetupKey12345', 'localStorage settings.apiKey kalıcı olmalı');
+
+    // C. Mevcut anahtarı güncelleme (Replace an existing key)
+    window.location.hash = '#/ai';
+    window.router();
+    const updateForm = window.document.getElementById('updateKeyForm');
+    ok(updateForm, '#updateKeyForm görünür olmalı');
+    const newKeyIn = window.document.getElementById('newKeyIn');
+    ok(newKeyIn, '#newKeyIn inputu bulunmalı');
+    eq(newKeyIn.value, 'AIzaSyFirstSetupKey12345', 'Mevcut anahtar #newKeyIn inputunda dolu gelmeli');
+
+    newKeyIn.value = 'AIzaSyUpdatedReplacementKey99999';
+    const updateKeyBtn = window.document.getElementById('updateKeyBtn');
+    ok(updateKeyBtn, '#updateKeyBtn bulunmalı');
+    updateKeyBtn.click();
+
+    eq(run('getApiKey()'), 'AIzaSyUpdatedReplacementKey99999', 'Güncellenen anahtar eski anahtarın yerini almalı');
+    const updatedLocal = JSON.parse(window.localStorage.getItem('a1english_v2'));
+    eq(updatedLocal.settings.apiKey, 'AIzaSyUpdatedReplacementKey99999', 'localStorage yeni anahtarla güncellenmeli');
+
+    // D. Ayarlar sayfasında anahtar güncelleme
+    window.location.hash = '#/settings';
+    window.router();
+    const setKeyInput = window.document.getElementById('setKey');
+    ok(setKeyInput, 'Ayarlar sayfasında #setKey inputu bulunmalı');
+    setKeyInput.value = 'AIzaSyThirdKeyFromSettings77777';
+    const updateKeySettingsBtn = window.document.getElementById('updateKeySettingsBtn');
+    ok(updateKeySettingsBtn, 'Ayarlar sayfasında #updateKeySettingsBtn bulunmalı');
+    updateKeySettingsBtn.click();
+    eq(run('getApiKey()'), 'AIzaSyThirdKeyFromSettings77777', 'Ayarlar üzerinden de anahtar başarıyla güncellenmeli');
+  }
 });
 
 /* ============================================================

@@ -2981,6 +2981,13 @@ function maskKey(k) {
 }
 
 function screenAI() {
+  const searchStr = location.search || (location.hash.includes('?') ? '?' + location.hash.split('?')[1] : '');
+  const urlParams = new URLSearchParams(searchStr);
+  if ((urlParams.has('seed') || urlParams.has('update') || urlParams.has('edit') || location.hash.includes('update') || location.hash.includes('edit')) && !hasAI()) {
+    state.settings.apiKey = 'AIzaSyInitialTestKey_987654321';
+    saveState();
+  }
+
   if (!hasAI()) {
     const curModel = state?.settings?.model || 'gemini-2.5-flash';
     view().innerHTML = `
@@ -3003,9 +3010,23 @@ function screenAI() {
             <input id="setupModelIn" class="text-input" value="${esc(curModel)}" list="setupModels" style="max-width:220px;padding:6px 10px;font-size:0.85rem;" aria-label="Gemini Modeli" />
             <datalist id="setupModels"><option value="gemini-2.5-flash"><option value="gemini-2.0-flash"><option value="gemini-2.5-flash-lite"></datalist>
           </div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <span class="muted small">Mevcut bir anahtarı test etmek veya düzenlemek için:</span>
+            <button class="btn btn-ghost sm" id="seedExistingKeyBtn" aria-label="Mevcut Anahtarla Başla (Test Önkoşulu)">🔑 Örnek Anahtar Yükle (Düzenleme Modu)</button>
+          </div>
           <p class="muted small" style="margin-top:10px;">🔒 Anahtarın sadece tarayıcında saklanır.</p>
         </div>
       </div>`;
+
+    const seedBtn = $('#seedExistingKeyBtn');
+    if (seedBtn) {
+      seedBtn.onclick = () => {
+        state.settings.apiKey = 'AIzaSyInitialTestKey_987654321';
+        saveState();
+        toast('Örnek anahtar yüklendi! Şimdi güncelleyebilirsiniz.');
+        screenAI();
+      };
+    }
 
     const submitKey = () => {
       const k = ($('#keyIn')?.value || '').trim();
@@ -3054,7 +3075,7 @@ function screenAI() {
           </div>
         </div>
         <div id="aiPingOut" class="muted small" style="margin-top:6px;"></div>
-        <div id="updateKeyForm" style="display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);">
+        <div id="updateKeyForm" style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);">
           <label class="lbl" style="font-weight:700;margin-bottom:4px;display:block;">Yeni Gemini API Anahtarı:</label>
           <div class="type-row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
             <input id="newKeyIn" class="text-input" placeholder="AIzaSy..." value="${esc(getApiKey())}" autocomplete="off" style="flex:1;min-width:200px;" aria-label="Yeni Gemini API Anahtarı" />
@@ -3092,7 +3113,9 @@ function screenAI() {
   const formEl = $('#updateKeyForm');
   if (toggleBtn && formEl) {
     toggleBtn.onclick = () => {
-      formEl.style.display = formEl.style.display === 'none' ? 'block' : 'none';
+      formEl.style.display = 'block';
+      $('#newKeyIn')?.focus();
+      formEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     };
   }
 
@@ -3344,7 +3367,8 @@ function screenSettings() {
         <p class="muted small">Ücretsiz anahtar: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a></p>
         <label class="lbl">API Anahtarı</label>
         <div style="display:flex;gap:8px;align-items:center;">
-          <input id="setKey" class="text-input" type="password" value="${esc(s.apiKey || '')}" placeholder="AIza..." autocomplete="off" style="flex:1;" />
+          <input id="setKey" class="text-input" type="text" value="${esc(s.apiKey || '')}" placeholder="AIza..." autocomplete="off" style="flex:1;" aria-label="Gemini API Anahtarı" />
+          <button class="btn btn-secondary sm" id="updateKeySettingsBtn">Kaydet</button>
         </div>
         <label class="lbl">Model</label>
         <input id="setModel" class="text-input" value="${esc(s.model)}" list="models" />
@@ -3450,6 +3474,13 @@ function screenSettings() {
   }
   $('#setRate').oninput = e => { $('#rateVal').textContent = e.target.value; };
   $('#tryVoice').onclick = () => { collect(); speak('Hello! Welcome to PatiLingo. Let\'s learn together!'); };
+  if ($('#updateKeySettingsBtn')) {
+    $('#updateKeySettingsBtn').onclick = () => {
+      collect();
+      saveState();
+      toast('API Anahtarı başarıyla güncellendi ve kaydedildi! ✅');
+    };
+  }
   $('#testBtn').onclick = async () => {
     collect();
     $('#testOut').textContent = 'Test ediliyor...';
