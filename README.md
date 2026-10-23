@@ -1,56 +1,87 @@
-# 🐾 PatiLingo — Interactive A1–A2 English Learning PWA
+# PatiLingo — Kural Ezberletmeyen A1-A2 Ingilizce Ogrenme Platformu (PWA)
 
-[![PatiLingo CI & Automated Verification](https://github.com/SenanurCodes/a1-english/actions/workflows/ci.yml/badge.svg)](https://github.com/SenanurCodes/a1-english/actions/workflows/ci.yml)
-
-**Live Application URL:** [https://senanurcodes.github.io/a1-english](https://senanurcodes.github.io/a1-english)  
-**Repository:** [https://github.com/SenanurCodes/a1-english](https://github.com/SenanurCodes/a1-english)
+**Canli Uygulama:** [https://senanurcodes.github.io/a1-english](https://senanurcodes.github.io/a1-english)  
+**Kaynak Kod:** [https://github.com/SenanurCodes/a1-english](https://github.com/SenanurCodes/a1-english)
 
 ---
 
-## 🌍 Overview (English)
+## Ekran Goruntuleri
 
-**PatiLingo** is a client-side Progressive Web App (PWA) designed to help Turkish speakers learn CEFR **A1 and A2 English** through structured grammar logic, spaced repetition (SRS), interactive exercises, and an optional Google Gemini AI tutor.
+> [!NOTE]
+> Projenin gorsel etkisini en iyi sekilde yansitmak icin asagidaki 4 ekran goruntusunu kaydedip `screenshots/` dizinine ekleyebilirsiniz:
+> 1. `screenshots/01-dil-mantigi-simulasyonu.png` -> Dil Mantigi sayfasindaki interaktif vagon dizilimi ekrani (`#/logic`).
+> 2. `screenshots/02-cumle-lokomotifi-oyunu.png` -> Cumle Lokomotifi SVO vagon kenetleme oyunu (`#/locomotive`).
+> 3. `screenshots/03-tuzak-avcisi-bomba-arcade.png` -> Tuzak Avcisi dinamik zorlasan bomba imha ekrani (`#/trap-hunter`).
+> 4. `screenshots/04-shimeji-maskot-ve-harita.png` -> Ekranda gezinen interaktif maskot ve Hayatta Kalma Haritasi (`#/survival`).
 
-### ✨ Key Features
-- **52 Structured Units (27 A1 + 25 A2):** Step-by-step course map with vocabulary decks, grammar explanations, interactive exercises (multiple-choice, word ordering, listening, speaking, matching), and level-unlock Boss Exams (`buildA1BossTest`, `buildA2BossTest`).
-- **Language Logic Simulator (`Dil Mantığı`):** Interactive "Sentence Locomotive" and category-specific simulators (`mindset`, `culture`, `traps`, `survival`) that visually map Turkish agglutinative suffixes to English SVO word order across multiple interactive examples.
-- **Smart Spaced Repetition (`Akıllı Tekrar` - SRS):** Box-based memory retention system (Boxes 1–5) that schedules vocabulary reviews based on learner performance, plus an on-demand practice review session when no scheduled words are currently due.
-- **AI Teacher & Personal Tutor (`AI Öğretmen`):** Optional Google Gemini integration (`gemini-2.5-flash` / `gemini-2.0-flash`) offering personalized level analysis, custom 10-question practice generation, and voice/text conversation practice with **Sunny**.
-- **Cross-Device Sync & Live Leagues:** Firebase Auth / Realtime Database integration with offline-resilient local fallback and shareable sync codes.
-- **Interactive Squirrel Companion (`Fındık` · 5 Growth Stages & Live Helper):** Starts directly as a **Baby Squirrel (`Minik Yavru Sincap`)** and grows through 5 stages (`Baby` → `Explorer` → `Student` → `Scholar` → `Master Professor`) as you collect XP and vocabulary acorns (`🌰`). Actively helps learners via on-demand **Vocabulary Hints**, **Grammar Tips**, and **In-Lesson Question Clues** (`getSquirrelQuestionClue`) without spoiling answers.
-- **Customizable Companions & Themes:** 5 interactive animal companions (`Fındık`, `Pamuk`, `Dost`, `Bilge`, `Bambu`) and 5 color palettes (including dark mode).
-
----
-
-## 🧪 What Our Test Suite Covers (TestSprite E2E + Automated CI)
-
-Our verification pipeline combines **TestSprite 3.0 E2E browser testing** against the live deployment with an automated Node/CI suite ([`tests/run-tests.js`](tests/run-tests.js)) executed on every push and Pull Request via [GitHub Actions](.github/workflows/ci.yml). All 11 automated test suites and TestSprite E2E user-flow suites pass with 100% success in **v2.9.26**.
-
-| Test Area | Covered User Flows & Assertions |
-| :--- | :--- |
-| **1. Home Dashboard & Squirrel Companion** | • Rendering Daily Goal (`50 XP`), Streak, and Next Lesson (`#/lesson/u1`) CTAs<br>• **Squirrel Companion (`Fındık`)** 5-stage growth progression (`getSquirrelGrowth`), custom stage SVG, vocabulary/grammar helper actions (`#squirrelWordHelpBtn`, `#squirrelGrammarHelpBtn`, `#squirrelFeedBtn`), and in-lesson clue helper (`#lessonSquirrelBtn`)<br>• Top-level Course Progress Summary card (`Genel Kurs Tamamlama Özeti`)<br>• Direct dashboard shortcuts to **Smart Review (`#/review`)** and **AI Teacher Setup (`#/ai`)** |
-| **2. Language Logic Simulator (`#/logic`)** | • Switching between Simulator examples (`Örnek 1`, `Örnek 2`, `Örnek 3`) with immediate DOM & token-mapping re-render<br>• Category filtering (`Tümü`, `Düşünce Yapısı`, `Nezaket & Kültür`, `Klasik Tuzaklar`, `Hayatta Kalma`)<br>• Interactive wagon/token selection and Web Speech TTS playback |
-| **3. Smart Review / Spaced Repetition (`#/review`)** | • Accurate SRS box progression (`recordWord`, `syncUnitWordsToBox1`, `dueWords`)<br>• Honest empty-state rendering when `0` scheduled words are due, with a direct **Practice Review Session** launcher (`#startReviewBtn`)<br>• Configurable daily review word limit (`reviewLimit`) |
-| **4. Course Map, Units & Flashcards (`#/learn`, `#/cards`)** | • 52-unit curriculum integrity (27 A1 + 25 A2 units) and `>= 70%` unlock progression<br>• **Chapter Progression & Status Badges** rendered on both unlocked and locked grammar/vocabulary unit pages as well as Survival Quest maps<br>• Interactive 3D flip flashcards, shuffle, audio pronunciation, and A1/A2 level filtering |
-| **5. AI Teacher & Gemini API (`#/ai`, `#/settings`)** | • Setup instructions, API key & model configuration (`#keyIn`, `#setupModelIn`), and `localStorage` persistence across reloads<br>• Updating an existing masked API key (`#changeKeyToggleBtn`, `#newKeyIn`, `#updateKeyBtn`)<br>• Live connection verification (`aiTest()`) and error handling (`NO_KEY`, `BAD_KEY`, `RATE_LIMIT`) |
-| **6. State Migration, Sync & Code Purity** | • Schema migration (`v0 -> v1`), JSON export/import, and cross-device sync code merging<br>• **Production Code Purity Guard:** Static analysis test ensuring zero test-environment detection (`navigator.webdriver`) or hardcoded fake keys exist in `js/*.js` |
-
-### Running Tests Locally
-
-```bash
-# 1. Check JavaScript syntax across all modules
-node --check js/app.js
-
-# 2. Run the 34-test automated verification suite
-node tests/run-tests.js
+```
+[ Ekran Goruntusu: 1. Dil Mantigi Simulasyonu | screenshots/01-dil-mantigi-simulasyonu.png ]
+[ Ekran Goruntusu: 2. Cumle Lokomotifi SVO   | screenshots/02-cumle-lokomotifi-oyunu.png ]
+[ Ekran Goruntusu: 3. Tuzak Avcisi Bomba     | screenshots/03-tuzak-avcisi-bomba-arcade.png ]
+[ Ekran Goruntusu: 4. Canli Shimeji Maskotu  | screenshots/04-shimeji-maskot-ve-harita.png ]
 ```
 
 ---
 
-## 🇹🇷 Türkçe Proje Özeti
+## Proje Ozeti
 
-**PatiLingo**, A1 ve A2 seviyesindeki İngilizce konularını görsel cümle mantığı simülatörü, aralıklı tekrar (Spaced Repetition) sistemi, sesli telaffuz ve yapay zeka öğretmen desteğiyle sunan açık kaynaklı bir web uygulamasıdır (PWA).
+PatiLingo, Turk ogrencilerin Ingilizce ogrenirken yasadigi en buyuk bilissel engel olan Turkce SOV (Ozne-Nesne-Yuklem) ile Ingilizce SVO (Ozne-Yuklem-Nesne) cumle yapisi catismasini cozmek amaciyla gelistirilmis etkilesimli bir A1-A2 Ingilizce Progressive Web App (PWA) platformudur.
 
-- **Canlı Uygulama:** [https://senanurcodes.github.io/a1-english](https://senanurcodes.github.io/a1-english)
-- **Teknoloji Yığını:** Saf HTML5, CSS3, Vanilla JavaScript (ES6+), Web Speech API, Firebase (Auth & Realtime DB), Google Gemini API (`v1beta`), Service Worker (Offline PWA).
-- **Gizlilik:** Kullanıcı ilerlemesi ve isteğe bağlı Gemini API anahtarı doğrudan kullanıcının kendi tarayıcısında (`localStorage`) saklanır; kaynak kodda hiçbir gizli anahtar (secret) bulunmaz.
+Uygulama; klasik kurallari ezberletmek yerine Turkcenin sondan eklemeli yapisini Ingilizcenin kelime sirasi mantigiyla esleyen gorsel bir Cumle Lokomotifi simulasyonu, Turkce dusunme kaliplarindaki hatalari yakalayan Tuzak Avcisi bomba imha oyunu, 5 asamali Leitner aralikli tekrar (SRS) sistemi ve sayfada kullaniciya eslik eden canli bir Shimeji maskot arkadasi sunar.
+
+Istemci tarafinda sifir harici kutuphane bagimliligiyla (Vanilla JavaScript) gelistirilen proje, cevrimdisi (offline-first) calisabilme yetenegi, yapay zeka destekli rol yapma senaryolari (Google Gemini AI) ve 11/11 modulluk tam kapsamli otomatik test mimarisine sahiptir.
+
+---
+
+## Bu Projede Neler Ogrendim?
+
+### Kendi Kurguladigim ve Gelistirdigim Kisimlar
+* **Pedagojik Dil Mantigi Tasarimi:** Turkcenin sondan eklemeli ekleriyle Ingilizcenin sira tabanli yuklem-nesne duzenini gorsel olarak esleyen mantik simulasyonunu ve vagon kenetleme mekanigini tasarladim.
+* **Mufredat ve Veritabani Mimarisi:** 27 A1 ve 25 A2 olmak uzere toplam 52 unitelik kapsamli kurs haritasini, kelime destelerini, gramer aciklamalarini ve Boss sinavlarini kurguladim.
+* **Oyunlastirma Donguleri:** Gunluk 5/5 lokomotif seferi (Daily Challenge), puan artisina bagli 3 kademeli (Isinma -> Dedektif -> Kirmizi Alarm) Tuzak Avcisi bomba imha dinamikleri ve 5 kutulu Spaced Repetition (SRS) algoritmasini insa ettim.
+
+### Yapay Zeka (AI) Destegiyle Gelistirdigim Kisimlar
+* **Otomatik Test Suiti (CI/CD):** Node.js ve `jsdom` uzerinde calisan, API yanitlarini (200, 403, 429, fallback), XSS korumasini ve kullanici akislarini dogrulayan 11/11 kapsamli otomatik test suiti mimarisini yapay zeka ile pair-programming yaparak kurdum.
+* **PWA ve Service Worker Onbellegi:** Uygulamanin cebe yuklenebilmesini, cevrimdisi calismasini ve her yeni surumde tarayici onbellegini dinamik olarak temizleyen Service Worker altyapisini olusturdum.
+* **Donanim & Mobil Uyum:** Shimeji maskotunun masaustunde fareyle, mobil ekranlarda ise Pointer Events ve `setPointerCapture` ile pürüzsüz suruklenebilmesi icin gerekli dokunmatik olay optimizasyonlarini yaptim.
+
+### En Cok Zorlandigim Noktalar ve Cozumlerim
+* **Mobil Dokunmatik (Touch/Pointer) Olaylari:** Mobilde (ozellikle iOS Safari ve PWA standalone modunda) maskotu tutup suruklerken tarayicinin varsayilan dikey sayfa kaydirma (`overscroll`) hareketiyle surukleme olayinin cakismasi beni cok zorladi. Bu sorunu `touch-action: none`, SVG path pointer izolasyonu ve Pointer Events + Touch fallback cift katmanli olay dinleyicileriyle cozdum.
+* **PWA Onbellek Kilitlenmesi:** Gelistirme sirasinda mobil tarayicilarin eski JavaScript dosyalarini inatla onbellekte tutmasi nedeniyle yapilan guncellemelerin yansimamasi karsilastigim en buyuk engellerden biriydi. Otomatik surum artirma (`bump-version.js`) betigi yazarak her yayinda Service Worker onbellegini otomatik tazeleyen bir yapi kurdum.
+
+---
+
+## Temel Ozellikler
+
+* **52 Yapilandirilmis Unite (27 A1 + 25 A2):** Kelime desteleri, gramer anlatimlari, etkilesimli alistirmalar (coktan secmeli, kelime dizme, dinleme, eslestirme) ve kilit acmali Boss Sinavlari.
+* **Cumle Lokomotifi (SVO Vagon Kenetleme):** Turkcenin SOV dizilimi yerine Ingilizcenin Ozne + Yuklem + Nesne + Mekan + Zaman vagonlarini dogru kenetlemeyi ogreten gunluk interaktif alistirma motoru.
+* **Tuzak Avcisi (Bomba Imha Arcade):** Turk ogrencilerin en cok yaptigi mantik hatalarini (*"I am agree"*, *"She has 20 years old"*, *"Listen music"*, *"Actually"*) zamana karsi tespit edip patlatan dinamik zorlasan oyun.
+* **Canli Shimeji Maskot Arkadasi:** Ekranda yuruyen, kullaniciyla konusan, parmakla veya fareyle suruklenebilen interaktif masaustu/mobil evcil hayvan (5 farkli maskot secenegi: Pamuk, Findik, Dost, Bilge, Bambu).
+* **Hayatta Kalma Haritasi (Gemini AI Rol Yapma):** Heathrow Havalimani pasaport kontrolu, Soho'da kahve siparisi veya metroda adres sorma gibi gercek senaryolarda yapay zekayla rol yapma alistirmalari.
+* **Akilli Tekrar (Spaced Repetition - SRS):** 5 kutulu Leitner sistemiyle kelimelerin unutulma egrisini takip eden ve zamani gelen kelimeleri pratik ettiren hafiza motoru.
+* **Tam Cevrimdisi Destek (PWA):** Internetsiz ortamda calisabilen, ana ekrana yuklenebilen ve verileri yerel depolamada (`localStorage`) guvenle saklayan istemci tarafi mimari.
+
+---
+
+## Mimari ve Teknoloji Yigini
+
+* **On Yuz:** Saf HTML5, Semantik CSS3, Vanilla JavaScript (ES6+ Moduller)
+* **PWA:** Service Worker (`Cache Storage` ve `Offline Fallback`), Web App Manifest
+* **Ses & Telaffuz:** Web Speech API (`SpeechSynthesis`)
+* **Yapay Zeka:** Google Gemini API (`gemini-2.5-flash` / `gemini-2.0-flash` REST entegrasyonu)
+* **Veri Depolama & Senkronizasyon:** `localStorage` ve coklu cihaz senkronizasyon motoru
+* **Test & Kalite Guvencesi:** Node.js, `jsdom`, 11/11 Otomatik Entegrasyon Test Suiti
+
+---
+
+## Testleri Calistirma
+
+Projenin tum mimari, guvenlik (XSS, TDZ), dil mantigi ve rota dogrulamalarini iceren test suiti tek komutla calistirilabilir:
+
+```bash
+# 1. Tum JavaScript dosyalarinin soz dizimini dogrula
+node --check js/app.js
+
+# 2. 11/11 Otomatik test suitini calistir
+node tests/run-tests.js
+```
