@@ -486,21 +486,26 @@ function screenPlacement() {
     color: '#CC5DE8',
     exitTo: state.onboarded ? '#/home' : '#/',
     onFinish: (results) => {
-      // Baştan itibaren %75 doğruluk korunan en uzak üniteyi bul
-      let correct = 0, reach = -1;
-      results.forEach((r, i) => { if (r.ok) correct++; if (correct >= 0.75 * (i + 1)) reach = i; });
-      const unlockTo = Math.max(0, Math.min(reach + 1, UNITS.length - 1));
+      let correct = 0, maxUnlocked = 0;
+      results.forEach((r) => {
+        if (r.ok) {
+          correct++;
+          const uIdx = (r.q && typeof r.q.unitIndex === 'number') ? r.q.unitIndex : 0;
+          maxUnlocked = Math.max(maxUnlocked, uIdx);
+        }
+      });
+      const unlockTo = correct <= 2 ? 0 : Math.min(maxUnlocked, UNITS.length - 1);
       state.unlockedUpTo = Math.max(state.unlockedUpTo, unlockTo);
       state.onboarded = true;
-      state.placement = { at: Date.now(), score: correct, reach };
-      const xp = correct * 5;
+      state.placement = { at: Date.now(), score: correct, reach: unlockTo, total: results.length };
+      const xp = correct * 10;
       addXP(xp);
       const opened = state.unlockedUpTo + 1;
       return {
         xp, exitTo: '#/learn',
         message: opened > 1
-          ? `Süper! İlk <b>${opened}</b> ünite senin için açıldı. <b>${esc(UNITS[state.unlockedUpTo].title)}</b> ünitesinden devam edebilirsin.`
-          : 'En baştan başlamak senin için en iyisi. Hadi ilk üniteye! 🚀'
+          ? `Tebrikler! Seviyen başarıyla belirlendi ve ilk <b>${opened}</b> ünite senin için açıldı. <b>${esc(UNITS[state.unlockedUpTo].title)}</b> ünitesinden devam edebilirsin.`
+          : 'Temelden sağlam başlamak en iyisi! Hadi ilk üniteyle maceraya başla 🚀'
       };
     }
   });

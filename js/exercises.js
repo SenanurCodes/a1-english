@@ -77,7 +77,15 @@ function buildReviewLesson(words) {
 }
 
 function buildPlacementTest() {
-  return UNITS.map(u => {
+  // 97 ünite yerine tüm müfredatı (A1, A2, B1, B2) dengeli temsil eden 15 soruluk pratik seviye testi
+  const count = 15;
+  const step = (UNITS.length - 1) / (count - 1);
+  const selectedUnits = [];
+  for (let i = 0; i < count; i++) {
+    const idx = Math.round(i * step);
+    selectedUnits.push(UNITS[idx]);
+  }
+  return selectedUnits.map(u => {
     const q = u.type === 'vocab' ? qTrToEn(sample(u.words, 1)[0]) : qGrammarMC(u, sample(u.mc, 1)[0]);
     q.unitIndex = u.index;
     delete q.wordKey; // seviye testi kelime istatistiğini etkilemesin
