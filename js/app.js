@@ -205,7 +205,24 @@ function router() {
   }
 
   const [rawRoute, param] = location.hash.replace(/^#\/?/, '').split('/');
-  const route = rawRoute ? rawRoute.split('?')[0] : '';
+  let route = rawRoute ? rawRoute.split('?')[0] : '';
+
+  // Soğuk başlangıçta tarayıcı önbelleğinde #/settings kalmışsa veya hash boşsa ana sayfaya veya son gezilen sayfaya yönlendir
+  if (!window.__patilingoAppStarted) {
+    window.__patilingoAppStarted = true;
+    if (route === 'settings') {
+      route = 'home';
+      try { history.replaceState(null, '', location.pathname + '#/home'); } catch (_) {}
+    } else if (!route) {
+      let saved = null;
+      try { saved = localStorage.getItem('patilingo_last_route'); } catch (_) {}
+      if (saved && saved !== 'settings' && saved !== 'onboarding') {
+        route = saved;
+      } else {
+        route = 'home';
+      }
+    }
+  }
 
   if (!state.onboarded && (!route || route === 'onboarding')) {
     if (roomParam) state.pendingLeagueRoom = roomParam;
@@ -226,6 +243,11 @@ function router() {
   document.body.classList.remove('onboarding-mode');
   window.currentActiveLessonQuestion = null;
   const r = route || 'home';
+
+  // Geçerli bir içerik sekmesindeyse son rotayı kaydet
+  if (state.onboarded && r && r !== 'settings' && r !== 'auth' && r !== 'onboarding') {
+    try { localStorage.setItem('patilingo_last_route', r); } catch (_) {}
+  }
   renderNav(r === 'grammar' ? 'learn' : r);
   window.scrollTo(0, 0);
   const screens = {
@@ -964,10 +986,10 @@ function screenHome() {
               </div>
             </div>
           </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-            <button type="button" class="btn btn-primary sm" id="squirrelWordHelpBtn" style="padding:6px 10px;font-size:0.78rem;">💡 Kelime İpucu</button>
-            <button type="button" class="btn btn-secondary sm" id="squirrelGrammarHelpBtn" style="padding:6px 10px;font-size:0.78rem;">📘 Gramer Tüyosu</button>
-            <button type="button" class="btn btn-ghost sm" id="squirrelFeedBtn" style="padding:6px 10px;font-size:0.78rem;">${curMascot.feedAction}</button>
+          <div class="mascot-action-btns" style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
+            <button type="button" class="btn btn-primary sm" id="squirrelWordHelpBtn" style="padding:4px 8px;font-size:0.74rem;">💡 Kelime</button>
+            <button type="button" class="btn btn-secondary sm" id="squirrelGrammarHelpBtn" style="padding:4px 8px;font-size:0.74rem;">📘 Gramer</button>
+            <button type="button" class="btn btn-ghost sm" id="squirrelFeedBtn" style="padding:4px 8px;font-size:0.74rem;">${curMascot.feedAction}</button>
             <button type="button" class="speak-btn sm" id="mascotSpeakBtn" title="Yoldaşını Dinle" aria-label="Yoldaşını İngilizce Dinle">🔊</button>
           </div>
         </div>

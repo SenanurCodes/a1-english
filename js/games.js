@@ -1231,9 +1231,8 @@ function renderSurvivalQuestsMap() {
                 <p class="muted small" style="line-height:1.45;margin-bottom:12px;">${esc(q.desc)}</p>
               </div>
               <div>
-                <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
-                  <span class="badge" style="background:#F59E0B;color:#000;font-weight:800;font-size:0.7rem;">Ödül: ${esc(q.badge)}</span>
-                  <span class="chapter-status-label status-${status}" data-status="${status}" style="font-weight:700;font-size:0.78rem;">${statusLabel}</span>
+                <div style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+                  <span class="badge badge-reward">🎁 ${esc(q.badge)}</span>
                 </div>
                 <a href="#/survival/${q.id}" class="btn btn-primary" style="width:100%;text-align:center;justify-content:center;">
                   ▶ Göreve Başla
@@ -1276,31 +1275,21 @@ function renderActiveSurvivalQuest(q) {
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-              <a href="#/survival" class="btn btn-ghost sm">◀ Haritaya Dön</a>
+              <a href="#/survival" class="btn btn-ghost sm">◀ Harita</a>
               <span class="badge" style="background:var(--primary);color:#fff;font-weight:800;">📍 ${esc(q.location)}</span>
-              <!-- Persistent Status Badge for the selected chapter -->
-              <span class="badge chapter-status-badge chapter-status-label status-${status}" id="chapterStatusBadge" data-status="${status}" style="font-weight:800;font-size:0.82rem;padding:4px 12px;border-radius:99px;text-transform:capitalize;">
-                Status: ${statusLabel}
-              </span>
             </div>
-            <h1 style="margin-top:6px;">${esc(q.title)}</h1>
+            <h1 style="margin-top:6px;font-size:1.25rem;">${esc(q.title)}</h1>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span class="badge chapter-status-label status-${status}" id="chapterStatusPillTop" data-status="${status}" style="font-weight:800;font-size:0.82rem;padding:4px 12px;border-radius:99px;">
-              ${statusLabel}
-            </span>
-            <span class="badge" style="background:#F59E0B;color:#000;font-weight:800;" id="visaBadgeAward">Ödül: ${esc(q.badge)}</span>
+            <span class="badge badge-reward" id="visaBadgeAward">🎁 ${esc(q.badge)}</span>
           </div>
         </div>
       </header>
 
       <!-- Görev Hedefleri Kontrol Paneli (Selected Chapter Details Area) -->
       <div class="card quest-objectives-card chapter-details-area" id="chapterDetailsArea" data-status="${status}" style="padding:14px 18px;margin-bottom:16px;background:color-mix(in srgb, var(--primary) 6%, var(--card));border:2px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-          <b style="font-size:0.92rem;">🎯 Görevi Tamamlamak İçin Gerekenler:</b>
-          <span class="badge chapter-status-label status-${status}" id="chapterStatusPill" data-status="${status}" style="font-weight:800;padding:3px 10px;border-radius:99px;">
-            Chapter Status: ${statusLabel}
-          </span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <b style="font-size:0.88rem;">🎯 Görev Hedefleri:</b>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;" id="questObjectivesList">
           ${q.objectives.map(obj => `
