@@ -1002,11 +1002,11 @@ function screenHome() {
 
       <!-- 3. HIZLI ERİŞİM ŞERİDİ (3 Kompakt Şık Kart) -->
       <div class="home-quick-grid">
-        <a href="#/locomotive" class="card home-quick-card" title="Oyun Modları">
-          <span class="hqc-icon">🎮</span>
+        <a href="#/locomotive" class="card home-quick-card" title="Cümle Lokomotifi">
+          <span class="hqc-icon">🚂</span>
           <div class="hqc-info">
-            <b>Oyun Modları</b>
-            <span class="muted small">Lokomotif & Tuzak</span>
+            <b>Cümle Lokomotifi</b>
+            <span class="muted small">Vagon Yapbozu</span>
           </div>
         </a>
 
@@ -1376,6 +1376,29 @@ function screenLogic(param) {
       card.setAttribute('data-example', String(currentLocoIdx + 1));
       card.setAttribute('data-category', curSim.id || currentLogicTab);
       card.setAttribute('aria-label', `Simülatör Örnek ${currentLocoIdx + 1}`);
+    }
+
+    const simTitleEl = $('#simTitle');
+    if (simTitleEl) simTitleEl.textContent = curSim.title || '🚂 İngilizce Cümle Lokomotifi';
+    const simBadgeEl = $('#simBadge');
+    if (simBadgeEl) simBadgeEl.textContent = curSim.badge || '⚡ İNTERAKTİF SİMÜLATÖR';
+    const simDescEl = $('#simDesc');
+    if (simDescEl) simDescEl.textContent = curSim.desc || '';
+
+    const categoryGameMap = {
+      traps: { href: '#/trap-hunter', label: '💣 Tuzak Avcısı Arcade Modunu Oyna ➔', color: '#DC2626' },
+      survival: { href: '#/survival', label: '🗺️ Hayatta Kalma Haritasına Git ➔', color: '#059669' },
+      culture: { href: '#/ai', label: '🤖 Sunny AI ile Nezaket Pratiği Yap ➔', color: '#7C3AED' },
+      mindset: { href: '#/locomotive', label: '🚂 Vagon Kenetleme Yapbozunu Oyna ➔', color: 'var(--primary)' },
+      all: { href: '#/locomotive', label: '🚂 Cümle Lokomotifini Oyna ➔', color: 'var(--primary)' }
+    };
+    const activeGame = categoryGameMap[currentLogicTab] || categoryGameMap.mindset;
+    const gameBtn = $('#logicActiveGameBtn');
+    if (gameBtn) {
+      gameBtn.setAttribute('href', activeGame.href);
+      gameBtn.textContent = activeGame.label;
+      gameBtn.style.background = activeGame.color;
+      gameBtn.style.borderColor = activeGame.color;
     }
 
     $$('.loco-sel-btn').forEach(btn => {
@@ -2634,7 +2657,6 @@ function screenCards(id) {
       <div class="page cards-page" style="--c:${u.color}">
         <header class="page-head"><div><a href="#/cards" class="back">← Konular</a><h1>${u.emoji} ${esc(u.title)}</h1></div>
           <button class="btn btn-ghost" id="shuf" aria-label="Kelimeleri karıştır">🔀 Karıştır</button></header>
-        ${renderUnitProgressionCard(u)}
         <div class="flash-wrap">
           <div class="flash" id="flash">
             <div class="flash-face front"><div class="flash-emoji">${w.emoji}</div><div class="flash-en">${esc(w.en)}</div><div class="muted small">çevirmek için tıkla</div></div>
@@ -2652,11 +2674,7 @@ function screenCards(id) {
           ${i + 1} / ${words.length}${st ? ` · ${'⭐'.repeat(Math.min(st.box, 5)) || '·'}` : ''}
         </div>
 
-        <div class="center" style="margin-bottom:26px;">
-          ${unlocked
-            ? `<a class="btn btn-primary" href="#/lesson/${u.id}" style="padding:13px 30px;font-size:1.02rem;">▶ Bu Konuyla Derse Başla</a>`
-            : `<p class="muted">🔒 Bu ünitenin alıştırmaları henüz kilitli.</p>`}
-        </div>
+
 
         <!-- Dağınık Butonlar Yerine Düzenli, Açılır-Kapanır Kelime Listesi -->
         <details class="card" style="border-radius:18px;margin-top:20px;cursor:pointer;">
@@ -2807,7 +2825,8 @@ function screenProgress() {
             <span class="badge" style="font-size:0.75rem;">🚀 A2: ${lvl.doneA2}/25</span>
           </div>
         </div>
-        <div class="unit-bars">
+        <!-- Kompakt Kaydırılabilir Liste (Sayfanın sonsuza uzamasını engeller) -->
+        <div class="unit-bars" style="max-height:280px;overflow-y:auto;padding-right:4px;">
           ${UNITS.map(u => {
             const s = unitStats(u.id);
             const unlocked = isUnlocked(u.index) && (u.level === 'A1' || state.a2Unlocked);
@@ -4270,7 +4289,7 @@ function initShimejiCompanion() {
     syncViewportEdgeClasses();
   });
 
-  // Sürükle-Bırak ve Tıklama (Mouse + Mobil Touch Desteği)
+  // Sürükle-Bırak ve Tıklama (Tüm cihazlarda kesintisiz çalışan Akıcı Pointer Akışı)
   let isDragging = false;
   let dragMoved = false;
   let startPointerX = 0;
@@ -4284,6 +4303,7 @@ function initShimejiCompanion() {
     startPointerX = clientX;
     startPointerY = clientY;
     startPetX = posX;
+    if (petEl) petEl.style.transition = 'none'; // Sürükleme anında gecikmeli geçişi sıfırla
     const computedBottom = petEl ? (parseFloat(window.getComputedStyle(petEl).bottom) || 0) : 0;
     startPetBottom = posY > 0 ? posY : computedBottom;
   };
@@ -4292,7 +4312,7 @@ function initShimejiCompanion() {
     if (!isDragging) return;
     const dx = clientX - startPointerX;
     const dy = startPointerY - clientY;
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
       if (!dragMoved) {
         dragMoved = true;
         setMode('dragging', 999);
@@ -4312,6 +4332,7 @@ function initShimejiCompanion() {
     if (!isDragging) return;
     isDragging = false;
     if (dragMoved) {
+      dragMoved = false;
       const winH = window.innerHeight || 600;
       petEl.style.transition = 'bottom 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
       if (posY > winH * 0.55) {
@@ -4347,64 +4368,27 @@ function initShimejiCompanion() {
   };
 
   if (spriteWrapEl) {
-    // 1. Modern Pointer Events (Mouse, Pen & Modern Mobile)
-    spriteWrapEl.onpointerdown = (e) => {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      handleDragStart(e.clientX, e.clientY);
-      if (spriteWrapEl.setPointerCapture) {
-        try { spriteWrapEl.setPointerCapture(e.pointerId); } catch (_) {}
-      }
-    };
-
-    spriteWrapEl.onpointermove = (e) => {
+    const onWindowPointerMove = (e) => {
       if (!isDragging) return;
+      if (e.cancelable) e.preventDefault();
       handleDragMove(e.clientX, e.clientY);
     };
 
-    const onPointerUpOrCancel = (e) => {
-      if (spriteWrapEl.releasePointerCapture && e.pointerId !== undefined) {
-        try { spriteWrapEl.releasePointerCapture(e.pointerId); } catch (_) {}
-      }
+    const onWindowPointerUp = () => {
+      window.removeEventListener('pointermove', onWindowPointerMove);
+      window.removeEventListener('pointerup', onWindowPointerUp);
+      window.removeEventListener('pointercancel', onWindowPointerUp);
       if (isDragging) handleDragEnd();
     };
 
-    spriteWrapEl.onpointerup = onPointerUpOrCancel;
-    spriteWrapEl.onpointercancel = onPointerUpOrCancel;
-    spriteWrapEl.addEventListener('lostpointercapture', () => {
-      if (isDragging) handleDragEnd();
-    });
-
-    // 2. Native Touch Events (iOS Safari, Mobile Chrome & Android TWA Uyumluluğu)
-    spriteWrapEl.addEventListener('touchstart', (e) => {
-      if (e.touches && e.touches.length > 0) {
-        if (e.cancelable) e.preventDefault();
-        handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: false });
-
-    spriteWrapEl.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      if (e.touches && e.touches.length > 0) {
-        if (e.cancelable) e.preventDefault();
-        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: false });
-
-    window.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      if (e.touches && e.touches.length > 0) {
-        if (e.cancelable) e.preventDefault();
-        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: false });
-
-    window.addEventListener('touchend', () => {
-      if (isDragging) handleDragEnd();
-    }, { passive: true });
-
-    window.addEventListener('touchcancel', () => {
-      if (isDragging) handleDragEnd();
-    }, { passive: true });
+    spriteWrapEl.onpointerdown = (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.cancelable) e.preventDefault();
+      handleDragStart(e.clientX, e.clientY);
+      window.addEventListener('pointermove', onWindowPointerMove, { passive: false });
+      window.addEventListener('pointerup', onWindowPointerUp);
+      window.addEventListener('pointercancel', onWindowPointerUp);
+    };
   }
 
   // Teşhis paneli: adres sonuna ?dragdebug=1 eklenince telefonda hangi dokunma olaylarının geldiğini gösterir
