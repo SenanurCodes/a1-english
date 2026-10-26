@@ -483,6 +483,7 @@ function screenPlacement() {
   runLesson({
     title: '📝 Seviye Belirleme Testi',
     questions: buildPlacementTest(),
+    isExam: true,
     color: '#CC5DE8',
     exitTo: state.onboarded ? '#/home' : '#/',
     onFinish: (results) => {
