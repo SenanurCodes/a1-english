@@ -1336,12 +1336,24 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 .chat-input { display: flex; gap: 10px; padding-top: 10px; }
 .chat-card .tag-list { margin: 6px 0; }
 
-/* Toast */
+/* Toast (En üstte, modal veya klavye arkasında kalmaz) */
 .toast {
-  position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 30px); opacity: 0; transition: .3s; z-index: 999999 !important;
-  background: #2B2D42; color: #fff; padding: 12px 22px; border-radius: 14px; font-weight: 800; box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  position: fixed; left: 50%; top: 24px; transform: translate(-50%, -20px); opacity: 0; transition: .3s; z-index: 999999 !important;
+  background: #1e293b; color: #fff; padding: 12px 22px; border-radius: 14px; font-weight: 800; box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  border: 1px solid rgba(255, 255, 255, 0.15); max-width: 90vw; text-align: center; pointer-events: none;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+.text-input.error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+  animation: inputShake 0.3s ease;
+}
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; }
 
 /* Yeni sürüm bandı (sw.js güncellemesi) */
