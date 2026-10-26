@@ -4296,6 +4296,7 @@ function initShimejiCompanion() {
   let startPointerY = 0;
   let startPetX = 0;
   let startPetBottom = 0;
+  let activePointerId = null;
 
   const handleDragStart = (clientX, clientY) => {
     isDragging = true;
@@ -4334,27 +4335,25 @@ function initShimejiCompanion() {
     if (dragMoved) {
       dragMoved = false;
       const winH = window.innerHeight || 600;
-      petEl.style.transition = 'bottom 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)';
-      if (posY > winH * 0.55) {
-        roamZone = 'top';
-        posY = Math.max(120, winH - 96);
-        petEl.style.bottom = `${Math.round(posY)}px`;
-        showBubble('🐿️ Ekranın <b>üst kenarına</b> tutundum, buradan dersine eşlik edeceğim!', null, 4500);
-      } else {
+      if (posY < 35) {
+        // Zemin sınırındaysa temiz sıfır konumuna al
         roamZone = 'bottom';
         posY = 0;
         petEl.style.bottom = '';
-        showBubble(null, null, 4500);
+      } else if (posY > winH * 0.7) {
+        // Üst sınıra yakınsa tavana tutun
+        roamZone = 'top';
+        petEl.style.bottom = `${Math.round(posY)}px`;
+      } else {
+        // Serbest konum: Kullanıcı maskotu nereye bıraktıysa tam orada kalsın (zorla alta fırlatma yok)
+        roamZone = 'bottom';
+        petEl.style.bottom = `${Math.round(posY)}px`;
       }
       syncViewportEdgeClasses();
-      const fallTimer = setTimeout(() => {
-        if (petEl) petEl.style.transition = '';
-        setMode('jump', 18);
-      }, 430);
-      if (fallTimer && typeof fallTimer.unref === 'function') fallTimer.unref();
+      setMode('jump', 18);
     } else {
       // Sadece tıklandı: Baloncuk kapalıysa bağlamsal mesajı aç, açıksa yeni ipucu ver
-      if (bubbleEl.classList.contains('visible')) {
+      if (bubbleEl && bubbleEl.classList.contains('visible')) {
         giveSmartHelp();
       } else {
         if (window.currentActiveLessonQuestion && typeof getSquirrelQuestionClue === 'function') {
@@ -4367,48 +4366,78 @@ function initShimejiCompanion() {
     }
   };
 
-  if (spriteWrapEl) {
-    const onWindowPointerMove = (e) => {
+  // Güçlendirilmiş Pointer Events & Touch Entegrasyonu (Mobilde 2. kez hareket edememe sorununu çözer)
+  if (petEl) {
+    petEl.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('#shimejiHideBtn') || e.target.closest('#shimejiBubble')) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      activePointerId = e.pointerId;
+      try {
+        petEl.setPointerCapture(e.pointerId);
+      } catch (_) {}
+      handleDragStart(e.clientX, e.clientY);
+    });
+
+    petEl.addEventListener('pointermove', (e) => {
       if (!isDragging) return;
+      if (activePointerId !== null && e.pointerId !== activePointerId) return;
       if (e.cancelable) e.preventDefault();
       handleDragMove(e.clientX, e.clientY);
+    });
+
+    const finishPointerDrag = (e) => {
+      if (!isDragging) return;
+      if (activePointerId !== null && e && e.pointerId !== undefined && e.pointerId !== activePointerId) return;
+      if (activePointerId !== null) {
+        try {
+          if (petEl.hasPointerCapture(activePointerId)) {
+            petEl.releasePointerCapture(activePointerId);
+          }
+        } catch (_) {}
+        activePointerId = null;
+      }
+      handleDragEnd();
     };
 
-    const onWindowPointerUp = () => {
-      window.removeEventListener('pointermove', onWindowPointerMove);
-      window.removeEventListener('pointerup', onWindowPointerUp);
-      window.removeEventListener('pointercancel', onWindowPointerUp);
+    petEl.addEventListener('pointerup', finishPointerDrag);
+    petEl.addEventListener('pointercancel', finishPointerDrag);
+    petEl.addEventListener('lostpointercapture', finishPointerDrag);
+
+    // Mobil doğrudan Dokunmatik (Touch) Desteği - Pointer olayları aksarsa kesin yedek
+    petEl.addEventListener('touchstart', (e) => {
+      if (e.target.closest('#shimejiHideBtn') || e.target.closest('#shimejiBubble')) return;
+      if (e.touches && e.touches.length === 1) {
+        const t = e.touches[0];
+        handleDragStart(t.clientX, t.clientY);
+      }
+    }, { passive: true });
+
+    petEl.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      if (e.touches && e.touches.length === 1) {
+        if (e.cancelable) e.preventDefault();
+        const t = e.touches[0];
+        handleDragMove(t.clientX, t.clientY);
+      }
+    }, { passive: false });
+
+    const finishTouchDrag = () => {
       if (isDragging) handleDragEnd();
     };
-
-    spriteWrapEl.onpointerdown = (e) => {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      if (e.cancelable) e.preventDefault();
-      handleDragStart(e.clientX, e.clientY);
-      window.addEventListener('pointermove', onWindowPointerMove, { passive: false });
-      window.addEventListener('pointerup', onWindowPointerUp);
-      window.addEventListener('pointercancel', onWindowPointerUp);
-    };
+    petEl.addEventListener('touchend', finishTouchDrag, { passive: true });
+    petEl.addEventListener('touchcancel', finishTouchDrag, { passive: true });
   }
 
-  // Teşhis paneli: adres sonuna ?dragdebug=1 eklenince telefonda hangi dokunma olaylarının geldiğini gösterir
-  if (spriteWrapEl && /[?&]dragdebug=1/.test(location.search)) {
-    const dbg = document.createElement('div');
-    dbg.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#000;color:#0f0;font:11px/1.3 monospace;padding:4px 6px;pointer-events:none;white-space:pre-wrap;';
-    document.body.appendChild(dbg);
-    const verMatch = (document.querySelector('link[href*="style.css"]') || {}).href || '';
-    const pageVer = (verMatch.match(/[?&]v=([\d.]+)/) || [])[1] || '?';
-    const counts = {};
-    ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'touchstart', 'touchmove', 'touchend', 'touchcancel', 'lostpointercapture'].forEach((t) => {
-      spriteWrapEl.addEventListener(t, () => {
-        counts[t] = (counts[t] || 0) + 1;
-        dbg.textContent = `v${pageVer} ${window.innerWidth}x${window.innerHeight}\n` +
-          Object.entries(counts).map(([k, v]) => `${k}:${v}`).join(' ') +
-          `\ndragging:${isDragging} moved:${dragMoved} left:${petEl.style.left} bottom:${petEl.style.bottom || 'css'}`;
-      }, true);
-    });
-    dbg.textContent = 'dragdebug açık: maskota dokun ve sürükle';
-  }
+  // Window düzeyinde güvenlik ağı: Pencere dışına çıkıldığında sürükleme durumunun kilitli kalmasını önler
+  window.addEventListener('pointerup', () => {
+    if (isDragging) {
+      if (activePointerId !== null && petEl) {
+        try { petEl.releasePointerCapture(activePointerId); } catch (_) {}
+        activePointerId = null;
+      }
+      handleDragEnd();
+    }
+  });
 
   // Davranış Kuralı: Baloncuk günde yalnızca BİR KEZ otomatik açılsın (localStorage ile kontrol edilir)
   if (state.onboarded) {

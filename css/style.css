@@ -2440,7 +2440,7 @@ body.onboarding-mode .shimeji-restore-btn {
   font-size: 0.68rem;
   font-weight: 800;
   white-space: nowrap;
-  pointer-events: auto;
+  pointer-events: none !important;
   cursor: help;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
   letter-spacing: 0.3px;
@@ -2877,6 +2877,7 @@ body.onboarding-mode .shimeji-restore-btn {
   }
   .shimeji-legend-badge {
     font-size: 0.62rem !important;
+    pointer-events: none !important;
     padding: 2px 5px !important;
     bottom: -13px !important;
     border-radius: 6px !important;
@@ -4133,4 +4134,20 @@ b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; 
 .menu-sheet,
 .bottom-sheet {
   padding-bottom: env(safe-area-inset-bottom, 16px) !important;
+}
+
+/* Genişletilmiş Mobil Maskot Dokunma Alanı (48px görsel boyutu bozmadan 72px rahat dokunma) */
+.shimeji-pet::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  pointer-events: auto;
+  z-index: 1;
+}
+.shimeji-sprite-wrap {
+  position: relative;
+  z-index: 2;
+}
+.shimeji-hide-btn {
+  z-index: 10;
 }
