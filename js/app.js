@@ -947,6 +947,16 @@ function screenHome() {
 
   view().innerHTML = `
     <div class="page home-page-clean">
+      ${isGuest ? `
+      <!-- İnce Sarı Misafir Uyarı Banner'ı (Devasa kart yerine) -->
+      <div class="guest-warning-banner" id="guestWarningBanner">
+        <div class="gwb-text">
+          <span>⚠️</span>
+          <span><b>Misafir Modundasınız:</b> İlerlemenizi kaybetmemek için giriş yapın.</span>
+        </div>
+        <a href="#/settings" class="btn btn-secondary sm gwb-btn">Giriş Yap</a>
+      </div>` : ''}
+
       <!-- 1. Üst Başlık (Minimalist & Sakin) -->
       <header class="home-hero-head">
         <div>
@@ -972,13 +982,10 @@ function screenHome() {
           <p class="hfc-desc muted small">${nu ? esc(nu.desc || 'Yeni kelimeler öğren, pratik yap ve serini koru.') : 'Harika iş başardın, dilediğin üniteyi tekrar edebilirsin.'}</p>
         </div>
 
-        <div class="hfc-actions">
-          <a class="btn btn-primary hfc-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu ? nu.id : 'u1'}">
-            ▶ ${nu ? 'Derse Başla' : 'Tekrar Et'} (+15 ${curMascot.itemIcon || 'XP'})
-          </a>
-          ${nu && nu.type === 'grammar' 
-            ? `<a class="btn btn-ghost sm" href="#/grammar/${nu.id}">📖 Kural</a>` 
-            : (nu ? `<a class="btn btn-ghost sm" href="#/cards/${nu.id}">🃏 Kelimeler</a>` : '')}
+        <div class="hfc-actions">
+          <a class="btn btn-primary hfc-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu ? nu.id : 'u1'}" style="width:100%;text-align:center;justify-content:center;font-size:1.02rem;padding:14px 20px;">
+            ▶ ${nu ? 'Sonraki Derse Başla' : 'Derse Başla'} (+15 ${curMascot.itemIcon || 'XP'})
+          </a>
         </div>
 
         <!-- İnce, sakin tek günlük hedef çubuğu -->

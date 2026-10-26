@@ -630,6 +630,14 @@ function screenLocomotive() {
     renderCoupledWagons();
   };
 
+  // Mobil Dokunma ve Dikey Kaydırma (Overscroll) İptali
+  const wagonTouchContainers = [$('#depotWagonsGrid'), $('#coupledWagonsList'), $('.rail-scene-container')].filter(Boolean);
+  wagonTouchContainers.forEach(container => {
+    container.addEventListener('touchmove', (e) => {
+      if (e.cancelable) e.preventDefault();
+    }, { passive: false });
+  });
+
   $('#locoResetWagonsBtn').onclick = () => {
     assembledWagonIds = [];
     renderCoupledWagons();
