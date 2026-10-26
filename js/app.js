@@ -4368,9 +4368,13 @@ function initShimejiCompanion() {
 
   // Güçlendirilmiş Pointer Events & Touch Entegrasyonu (Mobilde 2. kez hareket edememe sorununu çözer)
   if (petEl) {
+    petEl.ondragstart = (e) => e.preventDefault();
     petEl.addEventListener('pointerdown', (e) => {
       if (e.target.closest('#shimejiHideBtn') || e.target.closest('#shimejiBubble')) return;
       if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (e.pointerType === 'mouse') {
+        if (e.cancelable) e.preventDefault();
+      }
       activePointerId = e.pointerId;
       try {
         petEl.setPointerCapture(e.pointerId);

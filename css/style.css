@@ -141,7 +141,7 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: auto;
   padding-top: env(safe-area-inset-top, 0px);
   padding-right: env(safe-area-inset-right, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -178,6 +178,7 @@ p { line-height: 1.6; margin: 0 0 .75em; }
 #app { display: flex; min-height: 100vh; width: 100%; }
 .sidebar {
   width: 240px; flex-shrink: 0; position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
   background: rgba(255, 255, 255, .85); backdrop-filter: blur(10px);
   border-right: 2px solid var(--line); padding: 22px 14px; display: flex; flex-direction: column; gap: 6px;
 }
