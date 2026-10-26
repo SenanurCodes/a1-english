@@ -3757,6 +3757,29 @@ function openAuthModal() {
    ============================================================ */
 let shimejiController = null;
 
+/* Maskot gizliyken ekranda kalan küçük "geri getir" butonu */
+function syncShimejiRestoreBtn() {
+  let btn = $('#shimejiRestoreBtn');
+  const isHidden = !!(state.settings && state.settings.shimeji === false);
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'shimejiRestoreBtn';
+    btn.className = 'shimeji-restore-btn';
+    btn.setAttribute('aria-label', 'Maskotu geri getir');
+    btn.title = 'Maskotu geri getir';
+    btn.textContent = '🐾';
+    btn.onclick = () => {
+      state.settings.shimeji = true;
+      saveState();
+      applyShimejiVisibility();
+      toast('Yüzen ekran yoldaşı geri geldi! 🐾');
+    };
+    document.body.appendChild(btn);
+  }
+  btn.classList.toggle('visible', isHidden);
+}
+
 function applyShimejiVisibility() {
   const root = $('#shimeji-root');
   if (!root) return;
@@ -3765,6 +3788,9 @@ function applyShimejiVisibility() {
   if (isEnabled && !shimejiController) {
     initShimejiCompanion();
   }
+  syncShimejiRestoreBtn();
+  const settingsToggle = $('#toggleShimeji');
+  if (settingsToggle) settingsToggle.checked = isEnabled;
 }
 
 function initShimejiCompanion() {
@@ -3773,6 +3799,7 @@ function initShimejiCompanion() {
 
   if (state.settings && state.settings.shimeji === false) {
     root.style.display = 'none';
+    syncShimejiRestoreBtn();
     return;
   }
   root.style.display = '';
@@ -3919,6 +3946,7 @@ function initShimejiCompanion() {
           ${renderMascotStageSVG(mascotService.getActive().id, sq.id, 'normal')}
         </div>
       </div>
+      <button type="button" id="shimejiHideBtn" class="shimeji-hide-btn" aria-label="Maskotu gizle" title="Maskotu gizle">✕</button>
       <div id="shimejiLegendBadge" class="shimeji-legend-badge" tabindex="0" data-tooltip="${esc(starTooltipText(sq))}" title="${esc(starTooltipText(sq))}" aria-label="${esc(starTooltipText(sq))}">${starsText(sq.stage)} ${esc(mascotService.getActive().name)}</div>
     </div>
   `;
@@ -3938,6 +3966,18 @@ function initShimejiCompanion() {
   const hintBtnEl = $('#shimejiHintBtn');
   const spriteWrapEl = $('#shimejiSpriteWrap');
   const spriteInnerEl = $('#shimejiSpriteInner');
+  const hideBtnEl = $('#shimejiHideBtn');
+
+  // Maskotu kendi üzerinden gizle (ayarlara girmeden); geri getirmek için köşedeki 🐾 butonu kullanılır
+  if (hideBtnEl) {
+    hideBtnEl.onclick = (e) => {
+      e.stopPropagation();
+      state.settings.shimeji = false;
+      saveState();
+      applyShimejiVisibility();
+      toast('Maskot gizlendi. Geri getirmek için köşedeki 🐾 butonuna dokun.');
+    };
+  }
   const remindBtnEl = $('#shimejiRemindBtn');
   const sleepBtnEl = $('#shimejiSleepBtn');
 
@@ -4400,6 +4440,25 @@ function initShimejiCompanion() {
     window.addEventListener('touchcancel', () => {
       if (isDragging) handleDragEnd();
     }, { passive: true });
+  }
+
+  // Teşhis paneli: adres sonuna ?dragdebug=1 eklenince telefonda hangi dokunma olaylarının geldiğini gösterir
+  if (spriteWrapEl && /[?&]dragdebug=1/.test(location.search)) {
+    const dbg = document.createElement('div');
+    dbg.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#000;color:#0f0;font:11px/1.3 monospace;padding:4px 6px;pointer-events:none;white-space:pre-wrap;';
+    document.body.appendChild(dbg);
+    const verMatch = (document.querySelector('link[href*="style.css"]') || {}).href || '';
+    const pageVer = (verMatch.match(/[?&]v=([\d.]+)/) || [])[1] || '?';
+    const counts = {};
+    ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'touchstart', 'touchmove', 'touchend', 'touchcancel', 'lostpointercapture'].forEach((t) => {
+      spriteWrapEl.addEventListener(t, () => {
+        counts[t] = (counts[t] || 0) + 1;
+        dbg.textContent = `v${pageVer} ${window.innerWidth}x${window.innerHeight}\n` +
+          Object.entries(counts).map(([k, v]) => `${k}:${v}`).join(' ') +
+          `\ndragging:${isDragging} moved:${dragMoved} left:${petEl.style.left} bottom:${petEl.style.bottom || 'css'}`;
+      }, true);
+    });
+    dbg.textContent = 'dragdebug açık: maskota dokun ve sürükle';
   }
 
   // Davranış Kuralı: Baloncuk günde yalnızca BİR KEZ otomatik açılsın (localStorage ile kontrol edilir)

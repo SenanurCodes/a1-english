@@ -2133,6 +2133,74 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.32));
 }
 
+/* Maskotun üzerindeki küçük gizle butonu (sürükleme alanının dışında, sağ üst köşe) */
+.shimeji-hide-btn {
+  position: absolute;
+  top: -20px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(30, 30, 40, 0.62);
+  color: #fff;
+  font-size: 11px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 4;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Dokunma alanı sprite'ın üstüne taşmasın: sürükleme alanını bozmamak için küçük tutuldu */
+.shimeji-hide-btn::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+.shimeji-hide-btn:hover,
+.shimeji-hide-btn:focus-visible {
+  background: rgba(220, 38, 38, 0.9);
+}
+.shimeji-pet.dragging .shimeji-hide-btn,
+.shimeji-bubble.visible ~ .shimeji-hide-btn {
+  display: none;
+}
+
+/* Maskot gizliyken görünen geri getir butonu */
+.shimeji-restore-btn {
+  display: none;
+  position: fixed;
+  right: 12px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 76px);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid var(--border, #ddd);
+  border-radius: 50%;
+  background: var(--card, #fff);
+  font-size: 20px;
+  line-height: 40px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 940;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  touch-action: manipulation;
+}
+.shimeji-restore-btn.visible {
+  display: block;
+}
+body.onboarding-mode .shimeji-restore-btn {
+  display: none !important;
+}
+@media (min-width: 769px) {
+  .shimeji-restore-btn {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
 .shimeji-sprite-wrap svg,
 .shimeji-sprite-wrap svg * {
   pointer-events: none;
