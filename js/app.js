@@ -211,19 +211,19 @@ function router() {
   const [rawRoute, param] = location.hash.replace(/^#\/?/, '').split('/');
   let route = rawRoute ? rawRoute.split('?')[0] : '';
 
-  // Soğuk başlangıçta tarayıcı önbelleğinde #/settings kalmışsa veya hash boşsa ana sayfaya veya son gezilen sayfaya yönlendir
+  // Soğuk başlangıçta yönlendirme
   if (!window.__patilingoAppStarted) {
     window.__patilingoAppStarted = true;
     if (route === 'settings') {
-      route = 'home';
-      try { history.replaceState(null, '', location.pathname + '#/home'); } catch (_) {}
+      route = state.onboarded ? 'home' : 'onboarding';
+      try { history.replaceState(null, '', location.pathname + (state.onboarded ? '#/home' : '#/onboarding')); } catch (_) {}
     } else if (!route) {
       let saved = null;
       try { saved = localStorage.getItem('patilingo_last_route'); } catch (_) {}
-      if (saved && saved !== 'settings' && saved !== 'onboarding') {
+      if (state.onboarded && saved && saved !== 'settings' && saved !== 'onboarding') {
         route = saved;
       } else {
-        route = 'home';
+        route = state.onboarded ? 'home' : 'onboarding';
       }
     }
   }
