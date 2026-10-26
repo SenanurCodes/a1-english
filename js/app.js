@@ -35,7 +35,8 @@ const MORE_LINKS = [
   { id: 'ai', icon: icon('bot'), title: 'AI Öğretmen', desc: 'Google Gemini ile seviye analizi ve pratik' },
   { id: 'review', icon: icon('repeat'), title: 'Akıllı Tekrar', desc: 'Aralıklı tekrar sistemi ve hata havuzu' },
   { id: 'progress', icon: icon('chart'), title: 'İlerleme Grafiği', desc: 'Haftalık XP ve ünite başarı tablosu' },
-  { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, ses hızı ve Gemini API anahtarı' }
+  { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, ses hızı ve Gemini API anahtarı' },
+  { id: 'privacy', icon: '📄', title: 'Gizlilik Politikası', desc: 'Google Play & KVKK / GDPR Uyumlu Bildirim', external: 'privacy.html' }
 ];
 
 function pushOverlayHistoryState(overlayType) {
@@ -68,13 +69,13 @@ function openMenuSheet(active) {
         </div>
         <div class="menu-sheet-grid">
           ${MORE_LINKS.map(item => `
-            <a href="#/${item.id}" class="menu-item ${active === item.id ? 'active' : ''}">
+            <a href="${item.external ? item.external : '#/' + item.id}" ${item.external ? 'target="_blank" rel="noopener"' : ''} class="menu-item ${active === item.id ? 'active' : ''}">
               <span class="menu-icon">${item.icon}</span>
               <div class="menu-info">
                 <b>${esc(item.title)}</b>
                 <p class="muted small">${esc(item.desc)}</p>
               </div>
-              <span class="menu-arr">${icon('chevronRight', '', 18)}</span>
+              <span class="menu-arr">${item.external ? '↗' : icon('chevronRight', '', 18)}</span>
             </a>
           `).join('')}
         </div>
@@ -144,6 +145,9 @@ function renderNav(active) {
                <span style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;">${esc(state.auth?.user?.displayName || state.name)}</span>
              </button>`
         }
+        <div style="display:flex;justify-content:center;margin-top:2px;">
+          <a href="privacy.html" target="_blank" rel="noopener" class="muted small" style="text-decoration:none;font-size:0.75rem;opacity:0.8;">📄 Gizlilik Politikası</a>
+        </div>
       </div>
     </div>
 
@@ -257,7 +261,8 @@ function router() {
     auth: () => { screenHome(); openAuthModal(); },
     locomotive: typeof screenLocomotive === 'function' ? screenLocomotive : screenHome,
     'trap-hunter': typeof screenTrapHunter === 'function' ? screenTrapHunter : screenHome,
-    survival: typeof screenSurvival === 'function' ? screenSurvival : screenHome
+    survival: typeof screenSurvival === 'function' ? screenSurvival : screenHome,
+    privacy: () => { window.location.href = 'privacy.html'; }
   };
   (screens[r] || screenHome)(param);
   initShimejiCompanion();
@@ -3380,6 +3385,28 @@ function screenSettings() {
           <button class="btn btn-danger sm" id="resetBtn">${icon('trash', '', 16)} İlerlemeyi Sıfırla</button>
         </div>
       </div>
+
+      <!-- Güvenlik & Gizlilik (Google Play & KVKK) -->
+      <div class="card">
+        <h3>🔒 Güvenlik &amp; Gizlilik</h3>
+        <p class="muted small">Verileriniz ve gizliliğiniz Google Play, COPPA ve KVKK/GDPR standartlarına tam uyumludur.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
+            <div>
+              <b>📄 Gizlilik Politikası (Privacy Policy)</b>
+              <p class="muted small" style="margin:2px 0 0;">Mikrofon erişimi, çerezsiz yerel depolama ve yapay zeka kullanım şartları.</p>
+            </div>
+            <a href="privacy.html" target="_blank" rel="noopener" class="btn btn-secondary sm" style="text-decoration:none;">Görüntüle ↗</a>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
+            <div>
+              <b style="color:var(--danger);">⚠️ Hesabı ve Tüm Verileri Kalıcı Sil</b>
+              <p class="muted small" style="margin:2px 0 0;">Cihazdaki ve sunucudaki tüm XP puanı, kelime hafızası ve hesap bilgilerini yok eder.</p>
+            </div>
+            <button class="btn btn-danger sm" id="deleteAccountBtn">Hesabı &amp; Verileri Sil</button>
+          </div>
+        </div>
+      </div>
       <div class="center mt-4"><button class="btn btn-big btn-primary" id="saveBtn">${icon('check', '', 18)} Kaydet</button></div>
     </div>`;
 
@@ -3488,6 +3515,24 @@ function screenSettings() {
   $('#resetBtn').onclick = () => {
     if (confirm('Tüm ilerlemen silinecek. Emin misin?')) { resetState(); location.hash = '#/'; router(); }
   };
+  if ($('#deleteAccountBtn')) {
+    $('#deleteAccountBtn').onclick = async () => {
+      const confirmed = confirm('DİKKAT: Hesabınız, tüm XP puanlarınız, seviye ilerlemeniz ve verileriniz kalıcı olarak silinecektir. Bu işlem geri alınamaz!\n\nSilmek istediğinizden emin misiniz?');
+      if (!confirmed) return;
+      try {
+        if (typeof authService !== 'undefined' && authService.deleteCurrentAccount) {
+          await authService.deleteCurrentAccount();
+        }
+      } catch (err) {
+        console.warn('Auth deletion error:', err);
+      }
+      resetState();
+      try { localStorage.clear(); } catch (_) {}
+      toast('Hesabınız ve tüm verileriniz kalıcı olarak silindi. 👋');
+      location.hash = '#/';
+      router();
+    };
+  }
 }
 
 /* ============================================================

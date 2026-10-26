@@ -347,6 +347,27 @@ class AuthService {
     this.store.setAuth(null, true, 'guest');
   }
 
+  // Hesabı & Verileri Kalıcı Olarak Sil (Google Play & KVKK / GDPR Uyumlu)
+  async deleteCurrentAccount() {
+    const user = this.auth?.currentUser;
+    if (user && typeof user.delete === 'function') {
+      try {
+        await user.delete();
+      } catch (e) {
+        console.warn('Firebase user deletion warning:', e);
+      }
+    }
+    const currentEmail = this.store?.state?.auth?.user?.email;
+    if (currentEmail) {
+      const accs = this._getLocalAccounts();
+      if (accs[currentEmail.toLowerCase()]) {
+        delete accs[currentEmail.toLowerCase()];
+        this._saveLocalAccounts(accs);
+      }
+    }
+    await this.logout();
+  }
+
   // Misafir Modu ile Devam Et
   continueAsGuest(name = 'Öğrenci') {
     this.store.state.name = name;

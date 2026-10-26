@@ -4,30 +4,31 @@
    index.html'deki ?v= parametrelerini ve aşağıdaki listeyi birlikte günceller.
    ============================================================ */
 
-const APP_VERSION = '2.9.42';
+const APP_VERSION = '2.9.43';
 const CACHE_NAME = 'patilingo-cache-v' + APP_VERSION;
 
 const PRECACHE_ASSETS = [
   './',
   'index.html',
   'manifest.json',
+  'privacy.html',
   'icons/icon-192.png',
   'icons/icon-192-maskable.png',
   'icons/icon-512.png',
   'icons/icon-512-maskable.png',
   'icons/favicon.png',
-  'css/style.css?v=2.9.42',
-  'js/theme-init.js?v=2.9.42',
-  'js/data.js?v=2.9.42',
-  'js/logic.js?v=2.9.42',
-  'js/storage.js?v=2.9.42',
-  'js/firebase.js?v=2.9.42',
-  'js/icons.js?v=2.9.42',
-  'js/utils.js?v=2.9.42',
-  'js/ai.js?v=2.9.42',
-  'js/exercises.js?v=2.9.42',
-  'js/games.js?v=2.9.42',
-  'js/app.js?v=2.9.42'
+  'css/style.css?v=2.9.43',
+  'js/theme-init.js?v=2.9.43',
+  'js/data.js?v=2.9.43',
+  'js/logic.js?v=2.9.43',
+  'js/storage.js?v=2.9.43',
+  'js/firebase.js?v=2.9.43',
+  'js/icons.js?v=2.9.43',
+  'js/utils.js?v=2.9.43',
+  'js/ai.js?v=2.9.43',
+  'js/exercises.js?v=2.9.43',
+  'js/games.js?v=2.9.43',
+  'js/app.js?v=2.9.43'
 ];
 
 // Install: Core dosyaları önbelleğe al ve beklemeden anında aktif et
