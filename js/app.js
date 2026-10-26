@@ -38,14 +38,30 @@ const MORE_LINKS = [
   { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, ses hızı ve Gemini API anahtarı' }
 ];
 
-function closeMenuSheet() {
+let _handlingPopState = false;
+
+function pushOverlayHistoryState(overlayType) {
+  if (_handlingPopState || typeof history === 'undefined' || typeof history.pushState !== 'function') return;
+  try {
+    const currentState = history.state || {};
+    if (currentState.patilingoOverlay === overlayType) return;
+    history.pushState({ ...currentState, patilingoOverlay: overlayType }, '', location.href);
+  } catch (_) {}
+}
+
+function closeMenuSheet(fromPopState = false) {
   const root = $('#sheet-root');
+  const wasOpen = Boolean(root && root.innerHTML.trim());
   if (root) root.innerHTML = '';
+  if (wasOpen && !fromPopState && !_handlingPopState && typeof history !== 'undefined' && history.state && history.state.patilingoOverlay === 'sheet') {
+    try { history.back(); } catch (_) {}
+  }
 }
 
 function openMenuSheet(active) {
   const root = $('#sheet-root');
   if (!root) return;
+  pushOverlayHistoryState('sheet');
   root.innerHTML = `
     <div class="menu-sheet-overlay" id="menuOverlay">
       <div class="menu-sheet">
@@ -71,7 +87,7 @@ function openMenuSheet(active) {
       </div>
     </div>
   `;
-  $('#closeMenuBtn').onclick = closeMenuSheet;
+  $('#closeMenuBtn').onclick = () => closeMenuSheet();
   $('#menuOverlay').onclick = e => {
     if (e.target.id === 'menuOverlay') closeMenuSheet();
   };
@@ -234,13 +250,78 @@ function router() {
 window.addEventListener('hashchange', router);
 window.addEventListener('DOMContentLoaded', router);
 
-/* ---------- Modal ---------- */
+/* ---------- Modal & Android Geri Tuşu (History API) ---------- */
 function openModal(html) {
   const root = $('#modal-root');
+  if (!root) return;
+  const alreadyOpen = Boolean(root.innerHTML.trim());
   root.innerHTML = `<div class="modal-bg"><div class="modal">${html}</div></div>`;
   root.querySelector('.modal-bg').onclick = e => { if (e.target.classList.contains('modal-bg')) closeModal(); };
+  if (!alreadyOpen) {
+    pushOverlayHistoryState('modal');
+  }
 }
-function closeModal() { $('#modal-root').innerHTML = ''; }
+
+function closeModal(fromPopState = false) {
+  const root = $('#modal-root');
+  const wasOpen = Boolean(root && root.innerHTML.trim());
+  if (root) root.innerHTML = '';
+  if (wasOpen && !fromPopState && !_handlingPopState && typeof history !== 'undefined' && history.state && history.state.patilingoOverlay === 'modal') {
+    try { history.back(); } catch (_) {}
+  }
+}
+
+function initAndroidBackNavigation() {
+  if (typeof window === 'undefined' || window.__patilingoBackNavInitialized) return;
+  window.__patilingoBackNavInitialized = true;
+
+  // Uygulama ilk açıldığında taban bir history kaydı oluştur (geri tuşunda hemen çıkışı önlemek için)
+  try {
+    if (typeof history !== 'undefined' && typeof history.replaceState === 'function') {
+      const initRoute = (location.hash || '#/home').replace(/^#\/?/, '') || 'home';
+      history.replaceState({ patilingoBase: true, route: initRoute }, '', location.href);
+      if (initRoute !== 'home' && initRoute !== 'onboarding') {
+        history.pushState({ patilingoSubRoute: initRoute }, '', location.href);
+      }
+    }
+  } catch (_) {}
+
+  window.addEventListener('popstate', (e) => {
+    _handlingPopState = true;
+    try {
+      // 1. Açık Modal varsa uygulamadan çıkmak yerine modalı kapat
+      const modalRoot = $('#modal-root');
+      if (modalRoot && modalRoot.innerHTML.trim() !== '') {
+        closeModal(true);
+        return;
+      }
+
+      // 2. Açık Bottom Sheet (Diğer Bölümler menüsü) varsa kapat
+      const sheetRoot = $('#sheet-root');
+      if (sheetRoot && sheetRoot.innerHTML.trim() !== '') {
+        closeMenuSheet(true);
+        return;
+      }
+
+      // 3. Açık Shimeji konuşma baloncuğu varsa kapat
+      const bubbleEl = document.getElementById('shimejiBubble');
+      if (bubbleEl && bubbleEl.classList.contains('visible')) {
+        bubbleEl.classList.remove('visible');
+        return;
+      }
+
+      // 4. Alt sekmelerde veya dersteysek (home dışında), çıkışı önleyip Ana Sayfaya (#/home) dön
+      const currentRoute = (location.hash || '#/home').replace(/^#\/?/, '').split('/')[0] || 'home';
+      if (state.onboarded && currentRoute !== 'home' && currentRoute !== 'onboarding') {
+        location.hash = '#/home';
+        return;
+      }
+    } finally {
+      setTimeout(() => { _handlingPopState = false; }, 20);
+    }
+  });
+}
+initAndroidBackNavigation();
 
 /* ============================================================
    Karşılama & Kişiselleştirme (Onboarding v2.0)
@@ -3196,19 +3277,69 @@ function screenAILesson() {
 }
 
 function aiChatTab(el) {
+  const renderQuotaBar = () => {
+    const q = typeof getAiQuotaStatus === 'function'
+      ? getAiQuotaStatus()
+      : { used: 0, limit: 15, remaining: 15, isPro: false, locked: false };
+    if (q.isPro) {
+      return `
+        <div class="ai-quota-bar" id="aiQuotaBar">
+          <div><span class="ai-quota-badge pro">👑 PatiLingo Pro</span> <span class="muted small" style="margin-left:6px;">Sınırsız AI Öğretmen ve konuşma pratiği aktif!</span></div>
+        </div>`;
+    }
+    return `
+      <div class="ai-quota-bar" id="aiQuotaBar">
+        <div>
+          <span class="ai-quota-badge ${q.locked ? 'locked' : ''}" id="aiQuotaBadge">
+            ${q.locked ? '🔒 Günlük Kota Doldu' : `⚡ Günlük Ücretsiz Hak: ${q.remaining} / ${q.limit}`}
+          </span>
+          <span class="muted small" style="margin-left:6px;">(${q.used}/${q.limit} mesaj kullanıldı)</span>
+        </div>
+        <button type="button" class="btn btn-primary sm" id="openProModalBtn" style="background:linear-gradient(135deg,#F59E0B,#EC4899);border:none;color:#fff;">
+          👑 Pro'ya Geç
+        </button>
+      </div>`;
+  };
+
+  const initQuota = typeof getAiQuotaStatus === 'function' ? getAiQuotaStatus() : { locked: false };
+
   el.innerHTML = `
+    ${renderQuotaBar()}
     <div class="card chat-card">
       <div class="chat-head"><div class="chat-avatar">☀️</div><div><b>Sunny</b><div class="muted small">İngilizce sohbet arkadaşın · hatalarını düzeltir</div></div>
         <button class="btn btn-ghost sm" id="clearChat">🗑️ Temizle</button></div>
       <div class="chat-log" id="chatLog"></div>
       <div class="tag-list" id="starters">${['Hello! My name is ' + state.name, 'Let\'s talk about my family', 'I like food!', 'Ask me about my day', 'Bana hobilerimi anlatmayı öğret'].map(t => `<button class="tag" style="--c:#339AF0">${esc(t)}</button>`).join('')}</div>
       <div class="chat-input">
-        <button class="speak-btn" id="voiceChatBtn" title="Mikrofonla Konuş" aria-label="Mikrofonla konuş">🎙️</button>
-        <input id="chatIn" class="text-input" placeholder="İngilizce yaz veya mikrofona bas..." autocomplete="off" />
-        <button class="btn btn-primary" id="sendBtn">Gönder</button>
+        <button class="speak-btn" id="voiceChatBtn" title="Mikrofonla Konuş" aria-label="Mikrofonla konuş" ${initQuota.locked ? 'disabled' : ''}>🎙️</button>
+        <input id="chatIn" class="text-input" placeholder="${initQuota.locked ? 'Günlük 15 mesaj limitin doldu — Pro ile sınırsız konuş 👑' : 'İngilizce yaz veya mikrofona bas...'}" autocomplete="off" ${initQuota.locked ? 'disabled' : ''} />
+        <button class="btn btn-primary" id="sendBtn" ${initQuota.locked ? 'disabled' : ''}>${initQuota.locked ? '🔒 Kilitli' : 'Gönder'}</button>
       </div>
       <div id="voiceChatStatus" class="muted small center" style="margin-top:4px;"></div>
     </div>`;
+
+  const bindQuotaUi = () => {
+    const proBtn = $('#openProModalBtn');
+    if (proBtn && typeof openProUpgradeModal === 'function') {
+      proBtn.onclick = () => openProUpgradeModal();
+    }
+    const q = typeof getAiQuotaStatus === 'function' ? getAiQuotaStatus() : { locked: false };
+    const chatInEl = $('#chatIn');
+    const sendBtnEl = $('#sendBtn');
+    const voiceBtnEl = $('#voiceChatBtn');
+    if (q.locked) {
+      if (chatInEl) {
+        chatInEl.disabled = true;
+        chatInEl.placeholder = 'Günlük 15 mesaj limitin doldu — Pro ile sınırsız konuş 👑';
+      }
+      if (sendBtnEl) {
+        sendBtnEl.disabled = true;
+        sendBtnEl.textContent = '🔒 Kilitli';
+      }
+      if (voiceBtnEl) voiceBtnEl.disabled = true;
+    }
+  };
+  bindQuotaUi();
   const log = $('#chatLog');
   const drawLog = () => {
     log.innerHTML = state.chat.length ? state.chat.map(m => `
@@ -3230,13 +3361,26 @@ function aiChatTab(el) {
     try {
       const reply = await aiChat(text);
       drawLog();
+      const barEl = $('#aiQuotaBar');
+      if (barEl) {
+        barEl.outerHTML = renderQuotaBar();
+        bindQuotaUi();
+      }
       speak(reply.split('💡')[0]);
     } catch (e) {
       $('#typing')?.remove();
       log.insertAdjacentHTML('beforeend', errorBox(e));
+      const barEl = $('#aiQuotaBar');
+      if (barEl) {
+        barEl.outerHTML = renderQuotaBar();
+        bindQuotaUi();
+      }
     }
-    $('#sendBtn').disabled = false;
-    $('#chatIn').focus();
+    const latestQ = typeof getAiQuotaStatus === 'function' ? getAiQuotaStatus() : { locked: false };
+    if (!latestQ.locked) {
+      $('#sendBtn').disabled = false;
+      $('#chatIn').focus();
+    }
   };
   $('#sendBtn').onclick = () => send();
   $('#chatIn').onkeydown = e => { if (e.key === 'Enter') send(); };
@@ -4418,12 +4562,21 @@ function initShimejiCompanion() {
       if (isDragging) handleDragEnd();
     });
 
-    // 2. Native Touch Events (iOS Safari, Mobile Chrome & PWA Standalone Uyumluluğu)
+    // 2. Native Touch Events (iOS Safari, Mobile Chrome & Android TWA Uyumluluğu)
     spriteWrapEl.addEventListener('touchstart', (e) => {
       if (e.touches && e.touches.length > 0) {
+        if (e.cancelable) e.preventDefault();
         handleDragStart(e.touches[0].clientX, e.touches[0].clientY);
       }
-    }, { passive: true });
+    }, { passive: false });
+
+    spriteWrapEl.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      if (e.touches && e.touches.length > 0) {
+        if (e.cancelable) e.preventDefault();
+        handleDragMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: false });
 
     window.addEventListener('touchmove', (e) => {
       if (!isDragging) return;

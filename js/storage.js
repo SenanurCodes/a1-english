@@ -45,7 +45,7 @@ function defaultState() {
     friends: [],          // Kod ile eklenen gerçek arkadaşlar
     leagueRoomId: null,   // Canlı senkronize lig oda ID'si
     leagueMembers: {},    // Canlı lig üyeleri { userId: { id, name, xp, streak, unitsDone, avatar, mascot, lastActive } }
-    settings: { apiKey: '', model: 'gemini-2.5-flash', rate: 0.9, sound: true, reviewLimit: 25, shimeji: true }
+    settings: { apiKey: '', model: 'gemini-2.5-flash', rate: 0.9, sound: true, reviewLimit: 25, shimeji: true, isPro: false, proPlan: null }
   };
 }
 
@@ -159,9 +159,11 @@ class AppStore {
       else if (b1Unlocked) unlockedUpTo = Math.max(unlockedUpTo, 52);
       else if (a2Unlocked) unlockedUpTo = Math.max(unlockedUpTo, 27);
 
+      const safeXP = Number.isFinite(Number(s.xp)) ? Math.max(0, Math.floor(Number(s.xp))) : 0;
       return {
         ...d,
         ...s,
+        xp: safeXP,
         a1BossPassed,
         a2Unlocked,
         a2BossPassed,
@@ -194,41 +196,94 @@ class AppStore {
     }
   }
 
+  // Veri Doğrulama Yardımcıları (Setter Validation)
+  static sanitizeXP(val, fallback = 0) {
+    const num = Number(val);
+    if (!Number.isFinite(num)) return Math.max(0, Math.floor(Number(fallback) || 0));
+    return Math.max(0, Math.floor(num));
+  }
+
+  setXP(newXP) {
+    const validXP = AppStore.sanitizeXP(newXP, this._state.xp);
+    this._state.xp = validXP;
+    this.save();
+    this._notify('SET_XP', { total: this._state.xp });
+    return this._state.xp;
+  }
+
+  setName(newName) {
+    if (typeof newName !== 'string') return this._state.name;
+    const cleaned = newName.trim().slice(0, 32);
+    this._state.name = cleaned || 'Öğrenci';
+    this.save();
+    this._notify('NAME_CHANGE', this._state.name);
+    return this._state.name;
+  }
+
+  setProStatus(isPro, plan = 'monthly') {
+    if (!this._state.settings || typeof this._state.settings !== 'object') {
+      this._state.settings = defaultState().settings;
+    }
+    this._state.settings.isPro = Boolean(isPro);
+    this._state.settings.proPlan = isPro ? String(plan || 'monthly') : null;
+    try {
+      localStorage.setItem('patilingo_is_pro', isPro ? 'true' : 'false');
+      if (isPro && plan) localStorage.setItem('patilingo_pro_plan', String(plan));
+    } catch (_) {}
+    this.save();
+    this._notify('PRO_CHANGE', { isPro: this._state.settings.isPro, plan: this._state.settings.proPlan });
+    return this._state.settings.isPro;
+  }
+
   // Mutasyon / Eylem Metotları (Action Methods)
   setAuth(user, isGuest = false, provider = 'guest') {
+    const safeUser = (user && typeof user === 'object') ? user : null;
+    const safeProvider = typeof provider === 'string' && provider.trim() ? provider.trim() : 'guest';
     this._state.auth = {
-      isGuest,
-      user,
-      provider
+      isGuest: Boolean(isGuest),
+      user: safeUser,
+      provider: safeProvider
     };
-    if (user && user.displayName && (!this._state.name || this._state.name === 'Öğrenci')) {
-      this._state.name = user.displayName;
+    if (safeUser && typeof safeUser.displayName === 'string' && safeUser.displayName.trim() && (!this._state.name || this._state.name === 'Öğrenci')) {
+      this._state.name = safeUser.displayName.trim().slice(0, 32);
     }
     this.save();
     this._notify('AUTH_CHANGE', this._state.auth);
   }
 
   setMascot(mascotId) {
-    if (MASCOT_BY_ID && MASCOT_BY_ID[mascotId]) {
+    if (typeof mascotId === 'string' && MASCOT_BY_ID && MASCOT_BY_ID[mascotId]) {
       this._state.mascot = mascotId;
       this._state.avatar = MASCOT_BY_ID[mascotId].icon;
       this.save();
       this._notify('MASCOT_CHANGE', mascotId);
+    } else {
+      console.warn('[AppStore] Geçersiz maskot ID reddedildi:', mascotId);
     }
   }
 
   setTheme(themeId) {
-    if (PALETTE_BY_ID && PALETTE_BY_ID[themeId]) {
+    if (typeof themeId === 'string' && PALETTE_BY_ID && PALETTE_BY_ID[themeId]) {
       this._state.theme = themeId;
       this.save();
       this._notify('THEME_CHANGE', themeId);
+    } else {
+      console.warn('[AppStore] Geçersiz tema ID reddedildi:', themeId);
     }
   }
 
   gainXP(amount) {
-    this._state.xp += amount;
+    const parsed = Number(amount);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      console.warn('[AppStore] Geçersiz veya negatif XP artışı engellendi:', amount);
+      this._state.xp = AppStore.sanitizeXP(this._state.xp, 0);
+      return this._state.xp;
+    }
+    const safeDelta = Math.floor(parsed);
+    this._state.xp = AppStore.sanitizeXP((Number(this._state.xp) || 0) + safeDelta, 0);
     const t = todayStr();
-    this._state.daily[t] = (this._state.daily[t] || 0) + amount;
+    const prevDaily = Number.isFinite(Number(this._state.daily[t])) ? Math.max(0, Number(this._state.daily[t])) : 0;
+    this._state.daily[t] = prevDaily + safeDelta;
     if (this._state.streak.last !== t) {
       this._state.streak.count = this._state.streak.last === daysAgoStr(1) ? this._state.streak.count + 1 : 1;
       this._state.streak.last = t;
@@ -413,6 +468,19 @@ const state = new Proxy({}, {
     return store.state[prop];
   },
   set(target, prop, value) {
+    if (prop === 'xp') {
+      store.state.xp = AppStore.sanitizeXP(value, store.state.xp);
+      return true;
+    }
+    if (prop === 'unlockedUpTo') {
+      const num = Number(value);
+      store.state.unlockedUpTo = Number.isFinite(num) ? Math.max(0, Math.floor(num)) : (store.state.unlockedUpTo || 0);
+      return true;
+    }
+    if (prop === 'name') {
+      store.state.name = (typeof value === 'string' && value.trim()) ? value.trim().slice(0, 32) : 'Öğrenci';
+      return true;
+    }
     store.state[prop] = value;
     return true;
   },
@@ -1422,3 +1490,69 @@ class OfflineSyncManager {
 
 syncManager = new OfflineSyncManager(store);
 
+
+/* ============================================================
+   Global Error Boundary (Play Store / TWA Crash Koruması)
+   Uygulamanın beyaz ekranda çökmesini önler ve güvenli kurtarma sunar.
+   ============================================================ */
+function showCrashRecoveryBanner(message) {
+  if (typeof document === 'undefined' || !document.body) return;
+  if (document.getElementById('patilingo-error-boundary')) return;
+
+  // Takılı kalmış yükleme ekranı veya bozuk modal varsa temizle
+  try {
+    const modalRoot = document.getElementById('modal-root');
+    if (modalRoot && modalRoot.innerHTML.includes('loader')) modalRoot.innerHTML = '';
+  } catch (_) {}
+
+  const banner = document.createElement('div');
+  banner.id = 'patilingo-error-boundary';
+  banner.className = 'global-error-banner';
+  banner.setAttribute('role', 'alert');
+  banner.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+      <span style="font-size:1.3rem;flex-shrink:0;">🛡️</span>
+      <div style="min-width:0;">
+        <b style="display:block;font-size:0.86rem;color:#FBBF24;">Küçük bir aksaklık yakalandı</b>
+        <span style="font-size:0.76rem;color:#CBD5E1;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">İlerlemen güvende, çalışmaya devam edebilirsin.</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+      <button type="button" id="errBoundaryDismissBtn" style="background:rgba(255,255,255,0.12);color:#fff;border:none;border-radius:10px;padding:6px 10px;font-weight:700;font-size:0.78rem;cursor:pointer;">Tamam</button>
+    </div>
+  `;
+  document.body.appendChild(banner);
+
+  const dismissBtn = document.getElementById('errBoundaryDismissBtn');
+  if (dismissBtn) {
+    dismissBtn.onclick = () => banner.remove();
+  }
+  const autoHide = setTimeout(() => {
+    if (banner && banner.parentNode) banner.remove();
+  }, 6000);
+  if (autoHide && typeof autoHide.unref === 'function') autoHide.unref();
+}
+
+if (typeof window !== 'undefined') {
+  window.onerror = function (message, source, lineno, colno, error) {
+    console.error('[GlobalErrorBoundary] Yakalanan Hata:', { message, source, lineno, colno, error });
+    try {
+      if (store && store.state) {
+        store.state.xp = AppStore.sanitizeXP(store.state.xp, 0);
+      }
+      showCrashRecoveryBanner(String(message || 'Bilinmeyen hata'));
+    } catch (_) {}
+    // true döndürerek tarayıcının/WebView'ın beyaz ekranda çökmesini engelle
+    return true;
+  };
+
+  window.addEventListener('unhandledrejection', function (event) {
+    const reason = event && event.reason;
+    // AIError hataları kendi UI kutularında gösterildiği için sessizce logla
+    if (reason && reason.name === 'AIError') return;
+    console.error('[GlobalErrorBoundary] Yakalanan Promise Hatası:', reason);
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
+  });
+}

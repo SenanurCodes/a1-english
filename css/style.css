@@ -88,9 +88,21 @@ body {
   background: var(--background);
   color: var(--text);
   min-height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  overscroll-behavior-y: contain;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
 }
 a { color: var(--primary-d); }
 h1, h2, h3, h4 { margin: 0 0 .4em; font-weight: 800; letter-spacing: -.02em; }
@@ -2122,7 +2134,7 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: auto;
+  touch-action: none !important;
   will-change: left, bottom;
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.22));
 }
@@ -2214,7 +2226,7 @@ body.onboarding-mode .shimeji-restore-btn {
   justify-content: center;
   transform-origin: center bottom;
   transition: transform 0.18s ease;
-  touch-action: none;
+  touch-action: none !important;
   -webkit-touch-callout: none;
   user-select: none;
   -webkit-user-select: none;
@@ -3548,4 +3560,124 @@ b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; 
   .node-label {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   }
+}
+
+
+/* ============================================================
+   PatiLingo Pro Modal, AI Kotası & Global Error Boundary (v2.9.32)
+   ============================================================ */
+.ai-quota-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--primary) 10%, var(--card));
+  border: 1.5px solid color-mix(in srgb, var(--primary) 26%, var(--border));
+  font-size: 0.85rem;
+}
+.ai-quota-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.78rem;
+  background: rgba(92, 124, 250, 0.14);
+  color: var(--primary);
+}
+.ai-quota-badge.pro {
+  background: linear-gradient(135deg, #F59E0B, #EC4899);
+  color: #fff;
+}
+.ai-quota-badge.locked {
+  background: rgba(224, 49, 49, 0.15);
+  color: var(--danger);
+}
+.pro-modal-wrap {
+  text-align: center;
+  padding: 4px 2px;
+}
+.pro-crown-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(236, 72, 153, 0.2));
+  border: 2px solid rgba(245, 158, 11, 0.45);
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
+}
+.pro-plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 16px 0;
+  text-align: left;
+}
+.pro-plan-card {
+  position: relative;
+  padding: 14px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.pro-plan-card.selected {
+  border-color: #F59E0B;
+  background: color-mix(in srgb, #F59E0B 10%, var(--card));
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.18);
+}
+.pro-plan-tag {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  background: linear-gradient(90deg, #F59E0B, #EC4899);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.pro-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 18px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+.pro-feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.global-error-banner {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  width: min(92vw, 420px);
+  background: #1E293B;
+  color: #F8FAFC;
+  border: 1.5px solid #F59E0B;
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.85rem;
 }

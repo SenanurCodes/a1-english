@@ -12,6 +12,158 @@ class AIError extends Error {
   }
 }
 
+/* ============================================================
+   Freemium AI Kotası & PatiLingo Pro Yönetimi (Günlük 15 Mesaj)
+   ============================================================ */
+const AI_QUOTA_STORAGE_KEY = 'patilingo_ai_daily_quota_v1';
+const AI_DAILY_FREE_LIMIT = 15;
+
+function getQuotaTodayKey() {
+  if (typeof todayStr === 'function') return todayStr();
+  return new Date().toISOString().slice(0, 10);
+}
+
+function isProUser() {
+  try {
+    if (state && state.settings && state.settings.isPro === true) return true;
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('patilingo_is_pro') === 'true') return true;
+  } catch (_) {}
+  return false;
+}
+
+function getAiQuotaStatus() {
+  const today = getQuotaTodayKey();
+  const pro = isProUser();
+  let used = 0;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(AI_QUOTA_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.date === today && Number.isFinite(Number(parsed.count))) {
+          used = Math.max(0, Math.floor(Number(parsed.count)));
+        } else {
+          localStorage.setItem(AI_QUOTA_STORAGE_KEY, JSON.stringify({ date: today, count: 0 }));
+        }
+      }
+    }
+  } catch (_) {}
+
+  const remaining = pro ? Infinity : Math.max(0, AI_DAILY_FREE_LIMIT - used);
+  return {
+    date: today,
+    used,
+    limit: AI_DAILY_FREE_LIMIT,
+    remaining,
+    isPro: pro,
+    locked: !pro && used >= AI_DAILY_FREE_LIMIT
+  };
+}
+
+function incrementAiQuota() {
+  const status = getAiQuotaStatus();
+  if (status.isPro) return status;
+  const nextCount = status.used + 1;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(AI_QUOTA_STORAGE_KEY, JSON.stringify({
+        date: status.date,
+        count: nextCount
+      }));
+    }
+  } catch (_) {}
+  return getAiQuotaStatus();
+}
+
+function activatePatiLingoPro(planType = 'monthly') {
+  try {
+    if (typeof store !== 'undefined' && typeof store.setProStatus === 'function') {
+      store.setProStatus(true, planType);
+    } else if (state && state.settings) {
+      state.settings.isPro = true;
+      state.settings.proPlan = planType;
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('patilingo_is_pro', 'true');
+        localStorage.setItem('patilingo_pro_plan', planType);
+      }
+      if (typeof saveState === 'function') saveState();
+    }
+  } catch (_) {}
+
+  if (typeof closeModal === 'function') closeModal();
+  if (typeof confettiBurst === 'function') confettiBurst();
+  const planLabel = planType === 'weekly' ? 'Haftalık Pro' : 'Aylık Pro';
+  if (typeof toast === 'function') {
+    toast(`👑 PatiLingo ${planLabel} aktif edildi! Sınırsız AI Öğretmen açıldı 🎉`);
+  }
+  if (typeof screenAI === 'function' && typeof location !== 'undefined' && location.hash.startsWith('#/ai')) {
+    screenAI();
+  }
+  return true;
+}
+
+function openProUpgradeModal(reasonText = '') {
+  if (typeof openModal !== 'function') return;
+  const quota = getAiQuotaStatus();
+  let selectedPlan = 'monthly';
+
+  openModal(`
+    <div class="pro-modal-wrap">
+      <div class="pro-crown-badge">👑</div>
+      <h2 style="margin:0 0 6px;font-size:1.45rem;">PatiLingo Pro'ya Geç</h2>
+      <p class="muted small" style="margin:0 0 12px;">
+        ${reasonText ? reasonText : `Günlük ücretsiz <b>${quota.limit}/${quota.limit} AI mesaj</b> hakkını tamamladın! Kesintisiz konuşma pratiği ve sınırsız yapay zeka koçluğu için Pro'ya yükselt.`}
+      </p>
+
+      <ul class="pro-feature-list">
+        <li><span>✅</span> <span><b>Sınırsız Sunny AI Sohbet:</b> Günlük 15 mesaj sınırı olmadan 7/24 konuşma pratiği</span></li>
+        <li><span>✅</span> <span><b>Sınırsız Özel Alıştırma & Analiz:</b> Eksiklerine göre anında yeni testler üret</span></li>
+        <li><span>✅</span> <span><b>Hayatta Kalma & Maskot Koçu:</b> Aşamalı ipuçları ve detaylı gramer açıklamaları</span></li>
+        <li><span>✅</span> <span><b>Reklamsız & Öncelikli Deneyim:</b> Tüm cihazlarında Pro rozeti</span></li>
+      </ul>
+
+      <div class="pro-plan-grid" id="proPlanGrid">
+        <div class="pro-plan-card" data-plan="weekly">
+          <div class="muted small" style="font-weight:700;">Haftalık Paket</div>
+          <div style="font-size:1.25rem;font-weight:900;margin:4px 0;">₺49,99</div>
+          <div class="muted small">Haftalık esnek ödeme</div>
+        </div>
+        <div class="pro-plan-card selected" data-plan="monthly">
+          <span class="pro-plan-tag">%40 İNDİRİM</span>
+          <div class="muted small" style="font-weight:700;">Aylık Paket</div>
+          <div style="font-size:1.25rem;font-weight:900;margin:4px 0;">₺119,99</div>
+          <div class="muted small">₺29,99 / hafta'ya gelir</div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" id="confirmProPurchaseBtn" style="width:100%;padding:13px 18px;font-size:1rem;background:linear-gradient(135deg,#F59E0B,#EC4899);border:none;color:#fff;">
+        👑 PatiLingo Pro'yu Başlat (Demo Aktif Et)
+      </button>
+      <button type="button" class="btn btn-ghost sm" id="cancelProModalBtn" style="width:100%;margin-top:8px;">
+        Şimdilik Ücretsiz Devam Et (Yarın Yenilenir)
+      </button>
+    </div>
+  `);
+
+  const cards = document.querySelectorAll('#proPlanGrid .pro-plan-card');
+  cards.forEach(card => {
+    card.onclick = () => {
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedPlan = card.getAttribute('data-plan') || 'monthly';
+    };
+  });
+
+  const buyBtn = document.getElementById('confirmProPurchaseBtn');
+  if (buyBtn) {
+    buyBtn.onclick = () => activatePatiLingoPro(selectedPlan);
+  }
+  const cancelBtn = document.getElementById('cancelProModalBtn');
+  if (cancelBtn) {
+    cancelBtn.onclick = () => closeModal();
+  }
+}
+
 function getApiKey() {
   const fromState = state?.settings?.apiKey;
   if (typeof fromState === 'string' && fromState.trim()) return fromState.trim();
@@ -211,6 +363,14 @@ Rules:
 Learner info: ${'{INFO}'}`;
 
 async function aiChat(userText) {
+  const quota = getAiQuotaStatus();
+  if (quota.locked) {
+    if (typeof openProUpgradeModal === 'function') {
+      openProUpgradeModal();
+    }
+    throw new AIError('QUOTA_EXCEEDED', 'Günlük 15 ücretsiz AI mesaj hakkın doldu. Sınırsız pratik için PatiLingo Pro\'ya geçebilirsin! 👑');
+  }
+
   state.chat.push({ role: 'user', text: userText });
   const history = state.chat.slice(-20).map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.text }] }));
   const info = `name=${state.name || 'friend'}, completed units=${UNITS.filter(u => unitStats(u.id).done).map(u => u.en).join(', ') || 'none yet'}`;
@@ -218,6 +378,7 @@ async function aiChat(userText) {
     const reply = await gemini({ system: CHAT_PERSONA.replace('{INFO}', info), contents: history, temperature: 0.8 });
     state.chat.push({ role: 'model', text: reply.trim() });
     state.chat = state.chat.slice(-40);
+    incrementAiQuota();
     saveState();
     return reply;
   } catch (e) {
