@@ -946,329 +946,103 @@ function screenHome() {
   const sq = getSquirrelGrowth();
 
   view().innerHTML = `
-    <div class="page">
-      <header class="page-head" style="margin-bottom:14px;">
+    <div class="page home-page-clean">
+      <!-- 1. Üst Başlık (Minimalist & Sakin) -->
+      <header class="home-hero-head">
         <div>
-          <h1>${greet}, ${esc(state.name)}! 👋</h1>
-          <p class="muted">Bugün ${esc(curMascot.vaultName)}'na <b>${todayXP} ${curMascot.itemIcon} ${curMascot.itemName}</b> kattın. ${todayXP >= 50 ? '🎉 Günlük hedefin tamamlandı!' : `Günlük hedefe <b>${50 - todayXP} ${curMascot.itemsName}</b> kaldı.`}</p>
+          <h1 class="home-hero-title">${greet}, ${esc(state.name)} 👋</h1>
+          <p class="home-hero-sub muted">${todayXP >= 50 ? '🎉 Günlük hedefin tamamlandı!' : `Bugün ${todayXP}/50 ${curMascot.itemsName || 'XP'} toplandı`}</p>
+        </div>
+        <div class="home-hero-badges">
+          <span class="badge" title="Çalışma Ritmi">🌿 ${currentStreak()} Gün</span>
+          <span class="badge" title="Toplam XP">${curMascot.itemIcon || '🌰'} ${state.xp} XP</span>
         </div>
       </header>
 
-      ${isGuest ? `
-        <div class="guest-banner">
-          <div>
-            <div class="gb-title">✨ Misafir Modundasın</div>
-            <div class="gb-sub">İlerlemen şu anda bu cihazda tutuluyor. ${esc(curMascot.vaultName || 'Hazinelerini')} ve ilerlemeni kaybetmemek için Google hesabını bağlayabilirsin.</div>
+      <!-- 2. ANA ODAK: Tek ve Net Sıradaki Ders Kartı (Hero Action) -->
+      <div class="card home-focus-card" id="homeFocusCard">
+        <div class="hfc-top">
+          <div class="hfc-meta">
+            <span class="badge" style="background:rgba(92,124,250,0.12);color:var(--primary);">
+              ${nu ? `Ünite ${nu.index + 1} · ${nu.type === 'grammar' ? 'Gramer' : 'Kelime'}` : 'Tüm Üniteler Tamam'}
+            </span>
+            <span class="muted small">%${lvl.pct} Genel İlerleme</span>
           </div>
-          <button class="btn btn-primary sm" id="homeLinkAuthBtn">🚀 Hesaba Bağla</button>
-        </div>
-      ` : ''}
-
-      <!-- Kompakt Minik Efsane (Fındık) Durum & İlerleme Şeridi -->
-      <div class="card" id="mascotHeroCard" style="padding:12px 16px;margin-bottom:14px;">
-        <div id="squirrelCompanionPanel" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-          <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:220px;">
-            <div id="mascotAvatarWrap" title="${esc(curMascot.name)}'a seslen!" style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb, var(--primary) 14%, var(--card));font-size:1.35rem;">
-              <span id="mascotIconEl">${curMascot.icon || '🐿️'}</span>
-            </div>
-            <div style="flex:1;min-width:160px;">
-              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <b style="font-size:0.92rem;" id="mascotHeroName">${esc(curMascot.name)}</b>
-                <button type="button" class="btn btn-ghost sm" id="mascotQuickSwitchBtn" style="padding:2px 8px;font-size:0.72rem;height:auto;line-height:1.2;border-radius:99px;" title="Farklı bir hayvan seç">🐾 Değiştir</button>
-                <span class="badge" id="squirrelStageBadge" style="background:var(--primary);color:#fff;font-weight:800;padding:2px 8px;border-radius:99px;font-size:0.72rem;">${esc(sq.badge)} · ${esc(sq.title)}</span>
-                <span class="badge" id="squirrelAcornBadge" style="background:color-mix(in srgb, #F59E0B 18%, var(--card));color:var(--text);font-weight:800;font-size:0.72rem;">${curMascot.itemIcon} ${sq.acorns} ${curMascot.itemsName}</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
-                <div class="progress" id="squirrelGrowthBar" style="height:6px;flex:1;max-width:190px;margin:0;"><div class="bar rainbow" style="width:${sq.stagePct}%;"></div></div>
-                <span class="muted small" style="font-size:0.74rem;font-weight:700;">
-                  ${sq.nextXP !== null ? `Sonraki evre: ${sq.xpLeft} ${curMascot.itemsName} (%${sq.stagePct})` : '👑 Maksimum Evre'}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="mascot-action-btns" style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
-            <button type="button" class="btn btn-primary sm" id="squirrelWordHelpBtn" style="padding:4px 8px;font-size:0.74rem;">💡 Kelime</button>
-            <button type="button" class="btn btn-secondary sm" id="squirrelGrammarHelpBtn" style="padding:4px 8px;font-size:0.74rem;">📘 Gramer</button>
-            <button type="button" class="btn btn-ghost sm" id="squirrelFeedBtn" style="padding:4px 8px;font-size:0.74rem;">${curMascot.feedAction}</button>
-            <button type="button" class="speak-btn sm" id="mascotSpeakBtn" title="Yoldaşını Dinle" aria-label="Yoldaşını İngilizce Dinle">🔊</button>
-          </div>
-        </div>
-        <div id="mascotSpeechEn" style="display:none;">"${esc(enQuote)}"</div>
-        <div id="mascotSpeechTr" style="display:none;">${esc(trQuote)}</div>
-        <div id="squirrelHelperOutput" style="display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb, var(--primary) 10%, var(--card));border:1px solid var(--border);font-size:0.86rem;"></div>
-      </div>
-
-      <!-- Kompakt Metrik Şeridi (Sakin Motivasyon & Palamut) -->
-      <div class="metrics-strip">
-        <div class="metric-pill" title="Sakin çalışma ritmi - Baskı yok!">
-          <div class="mp-icon">🌿</div>
-          <div class="mp-content">
-            <div class="mp-val">${currentStreak()} <span class="mp-unit">Gün</span></div>
-            <div class="mp-lbl">${currentStreak() > 0 ? 'Çalışma Ritmi' : `${esc(curMascot.name)} Seni Bekliyor`}</div>
-          </div>
-        </div>
-        <div class="metric-pill">
-          <div class="mp-icon">${curMascot.itemIcon || '🌰'}</div>
-          <div class="mp-content">
-            <div class="mp-val">${state.xp} <span class="mp-unit">${curMascot.itemsName || 'Palamut'}</span></div>
-            <div class="mp-lbl">Toplam Birikim · Lv ${xl.level}</div>
-          </div>
-        </div>
-        <div class="metric-pill">
-          <div class="mp-icon">🏅</div>
-          <div class="mp-content">
-            <div class="mp-val">${lvl.done}/${UNITS.length} <span class="mp-unit">(%${lvl.pct})</span></div>
-            <div class="mp-lbl">Ünite Tamamlandı</div>
-          </div>
-        </div>
-        <div class="metric-pill" id="dashDailyGoalPill" title="Günlük hedef ilerlemesi">
-          <div class="mp-icon">🎯</div>
-          <div class="mp-content">
-            <div class="mp-val">${todayXP} / 50 <span class="mp-unit">XP</span></div>
-            <div class="mp-lbl">Günlük Hedef (%${Math.min(100, Math.round((todayXP / 50) * 100))})</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Birleşik Odak & Görev Kartı (Ders + Günlük Hedef Tek Odakta) -->
-      <div class="card mission-card">
-        <div class="mission-top">
-          <div class="mission-top-header">
-            <div class="mission-badge">🎯 Günlük Hedef</div>
-            <div class="mission-level-badge">${lvl.label} · %${lvl.pct} Tamamlandı</div>
-          </div>
-          
-          <div class="mission-goal-bar-wrap">
-            <div class="mission-goal-info">
-              <span class="mgi-title"><b>Günlük Hedef:</b> <b>${Math.min(todayXP, 50)} / 50 ${curMascot.itemIcon} ${curMascot.itemsName}</b></span>
-              <span class="mgi-sub muted small">${todayXP >= 50 ? '🎉 Günlük Hedef Tamamlandı!' : `Günlük hedefe ${50 - todayXP} ${curMascot.itemName ? curMascot.itemName.toLowerCase() : 'palamut'} kaldı`}</span>
-            </div>
-            <div class="progress thick"><div class="bar rainbow" style="width:${Math.min(100, (todayXP / 50) * 100)}%;"></div></div>
-          </div>
+          <h2 class="hfc-title">${nu ? esc(nu.title) : 'Tebrikler! Seviye Tamamlandı'}</h2>
+          <p class="hfc-desc muted small">${nu ? esc(nu.desc || 'Yeni kelimeler öğren, pratik yap ve serini koru.') : 'Harika iş başardın, dilediğin üniteyi tekrar edebilirsin.'}</p>
         </div>
 
-        <div class="mission-divider"></div>
-
-        <div class="next-lesson-section">
-          <div class="next-lesson-header" style="margin-bottom:8px;">
-            <span class="badge" style="background:var(--card-hover);font-weight:700;">📖 Sonraki Ders</span>
-          </div>
-          ${nu ? `
-            <div class="mission-unit-row" style="--c:${nu.color}">
-              <div class="mission-unit-left">
-                <div class="mission-unit-avatar">${nu.emoji}</div>
-                <div class="mission-unit-text">
-                  <div class="mission-step-tag">Sonraki ders · ${nu.type === 'vocab' ? 'Kelime Dünyası' : 'Gramer Mantığı'}</div>
-                  <h2 class="mission-unit-name">Sonraki ders: ${esc(nu.title)}</h2>
-                  <div class="mission-unit-desc">${esc(nu.desc || ('Konuyu pekiştir, yeni kelimeler öğren ve ' + curMascot.vaultName.toLowerCase() + 'na ' + curMascot.itemsName.toLowerCase() + ' topla!'))}</div>
-                </div>
-              </div>
-              <div class="mission-unit-btns">
-                ${nu.type === 'grammar' 
-                  ? `<a class="btn btn-ghost" href="#/grammar/${nu.id}">📖 Konu Özeti</a>` 
-                  : `<a class="btn btn-ghost" href="#/cards/${nu.id}">🃏 Kelimeler</a>`}
-                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu.id}">▶ Sonraki Derse Başla (+15 ${curMascot.itemIcon})</a>
-              </div>
-            </div>
-          ` : `
-            <div class="mission-unit-row" style="--c:#10B981">
-              <div class="mission-unit-left">
-                <div class="mission-unit-avatar">🎓</div>
-                <div class="mission-unit-text">
-                  <div class="mission-step-tag">Sonraki ders · A1 Finali</div>
-                  <h2 class="mission-unit-name">Sonraki ders: Tüm A1 Üniteleri Tamamlandı!</h2>
-                  <div class="mission-unit-desc">${state.a1BossPassed ? 'Tebrikler! A1 Seviye Sınavını geçtin.' : 'Haritadaki Final Sınavına girerek A2 seviyesini açabilirsin!'}</div>
-                </div>
-              </div>
-              <div class="mission-unit-btns">
-                <a class="btn btn-primary mission-play-btn" id="homeNextLessonBtn" href="#/lesson/u1">▶ Dersi Tekrar Et (+15 ${curMascot.itemIcon})</a>
-              </div>
-            </div>
-          `}
-        </div>
-      </div>
-
-      <!-- Oyun & Mühendislik Laboratuvarı Hub'ı -->
-      <div class="card game-hub-card" style="margin-bottom:20px;padding:18px;border:2px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-          <div>
-            <span class="badge" style="background:rgba(92, 124, 250, 0.1);color:var(--primary);border:1px solid rgba(92, 124, 250, 0.25);font-weight:800;font-size:0.72rem;padding:3px 10px;border-radius:99px;">🎮 YENİ · OYUN & MÜHENDİSLİK MODLARI</span>
-            <h2 style="margin:4px 0 2px;font-size:1.18rem;">🎮 İngilizceyi Oynayarak Keşfet</h2>
-            <p class="muted small" style="margin:0;">Metin çevirmek yerine vagonları kenetle, Türk tuzaklarını imha et veya yapay zeka ile hayatta kal!</p>
-          </div>
-        </div>
-
-        <div class="game-hub-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:12px;margin-top:12px;">
-          <a href="#/locomotive" class="game-hub-item" style="display:flex;flex-direction:column;justify-content:space-between;padding:14px;border-radius:14px;background:color-mix(in srgb, #3B82F6 8%, var(--card));border:1.5px solid #3B82F6;text-decoration:none;color:var(--text);transition:transform 0.2s ease;">
-            <div>
-              <div style="font-size:2rem;margin-bottom:6px;">🚂</div>
-              <b style="font-size:1rem;color:var(--text);display:block;">Cümle Lokomotifi</b>
-              <p class="muted small" style="margin:4px 0 10px;line-height:1.4;">Özne, Yüklem, Nesne vagonlarını raylara kenetle; SVO yapbozunu çöz!</p>
-            </div>
-            <span class="btn btn-primary sm" style="width:100%;text-align:center;justify-content:center;">▶ Oyna (+25 XP)</span>
+        <div class="hfc-actions">
+          <a class="btn btn-primary hfc-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu ? nu.id : 'u1'}">
+            ▶ ${nu ? 'Derse Başla' : 'Tekrar Et'} (+15 ${curMascot.itemIcon || 'XP'})
           </a>
-
-          <a href="#/trap-hunter" class="game-hub-item" style="display:flex;flex-direction:column;justify-content:space-between;padding:14px;border-radius:14px;background:color-mix(in srgb, #EF4444 8%, var(--card));border:1.5px solid #EF4444;text-decoration:none;color:var(--text);transition:transform 0.2s ease;">
-            <div>
-              <div style="font-size:2rem;margin-bottom:6px;">💣</div>
-              <b style="font-size:1rem;color:var(--text);display:block;">Tuzak Avcısı</b>
-              <p class="muted small" style="margin:4px 0 10px;line-height:1.4;">60 saniyelik arcade yarış! Cümlelerdeki Türkçe düşünce tuzaklarını imha et!</p>
-            </div>
-            <span class="btn btn-primary sm" style="width:100%;text-align:center;justify-content:center;background:#EF4444;border-color:#EF4444;">▶ İmha Et (Arcade)</span>
-          </a>
-
-          <a href="#/survival" class="game-hub-item" style="display:flex;flex-direction:column;justify-content:space-between;padding:14px;border-radius:14px;background:color-mix(in srgb, #10B981 8%, var(--card));border:1.5px solid #10B981;text-decoration:none;color:var(--text);transition:transform 0.2s ease;">
-            <div>
-              <div style="font-size:2rem;margin-bottom:6px;">🗺️</div>
-              <b style="font-size:1rem;color:var(--text);display:block;">Hayatta Kalma Haritası</b>
-              <p class="muted small" style="margin:4px 0 10px;line-height:1.4;">Pasaport kontrolü, kahve siparişi ve yol tarifinde Gemini AI ile canlı rol yap!</p>
-            </div>
-            <span class="btn btn-primary sm" style="width:100%;text-align:center;justify-content:center;background:#10B981;border-color:#10B981;">▶ Göreve Çık (+50 XP)</span>
-          </a>
+          ${nu && nu.type === 'grammar' 
+            ? `<a class="btn btn-ghost sm" href="#/grammar/${nu.id}">📖 Kural</a>` 
+            : (nu ? `<a class="btn btn-ghost sm" href="#/cards/${nu.id}">🃏 Kelimeler</a>` : '')}
         </div>
-      </div>
 
-      <!-- Genel Kurs İlerlemesi Özeti (Top-Level Course Progress Summary Card) -->
-      <div class="card course-progress-card" style="margin-bottom:20px;">
-        <div class="course-progress-top" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
-          <h2 style="margin:0;font-size:1.05rem;display:flex;align-items:center;gap:6px;" aria-label="Course Progress Summary">🧩 Kurs İlerlemesi</h2>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <a href="#/lesson/${nu ? nu.id : 'u1'}" class="btn btn-primary sm" id="dashCourseMapPlayBtn" aria-label="Sonraki Derse Başla">▶ Derse Devam</a>
-            <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm Kurs İlerlemesini Gör">Tümü ➔</a>
+        <!-- İnce, sakin tek günlük hedef çubuğu -->
+        <div class="hfc-goal-wrap" id="dashDailyGoalPill">
+          <div class="hfc-goal-meta">
+            <span class="muted small">🎯 Günlük Hedef</span>
+            <span class="muted small"><b>${Math.min(todayXP, 50)} / 50 XP</b></span>
           </div>
-        </div>
-        <div class="course-progress-summary">
-          <div class="cps-head">
-            <div class="cps-title">
-              <span class="cps-icon">📊</span>
-              <div>
-                <div class="cps-heading">Genel Kurs Tamamlama Özeti</div>
-                <div class="cps-sub muted">Tüm A1 &amp; A2 müfredatı ilerleme durumu</div>
-              </div>
-            </div>
-            <div class="cps-badge-wrap">
-              <span class="cps-badge">%${lvl.pct} Tamamlandı</span>
-            </div>
-          </div>
-          <div class="progress cps-progress"><div class="bar rainbow" style="width:${Math.max(lvl.pct, 3)}%;"></div></div>
-          <div class="cps-foot">
-            <span>🎯 Tamamlanan: <b>${lvl.done} / ${UNITS.length} Ünite</b></span>
-            <span class="muted">${UNITS.length - lvl.done} ünite kaldı</span>
+          <div class="progress" style="height:6px;border-radius:99px;margin:0;">
+            <div class="bar rainbow" style="width:${Math.min(100, (todayXP / 50) * 100)}%;"></div>
           </div>
         </div>
       </div>
 
-      <!-- İkincil Eylemler Grid (Rekabet, Akıllı Tekrar, Günün Kelimesi, AI) -->
-      ${(() => {
-        const list = getLeaderboardList();
-        const rivals = list.filter(u => !u.isMe);
-        if (rivals.length === 0) return '';
-        const topRival = rivals[0];
-        const diff = state.xp - topRival.xp;
-        let rivalryMsg = diff > 0 
-          ? `🔥 <b>${esc(topRival.name)}</b>'ın <b>${diff} 🌰</b> önündesin! Liderliği bırakma!` 
-          : diff < 0 
-          ? `⚡ <b>${esc(topRival.name)}</b> <b>${Math.abs(diff)} 🌰</b> ile önünde! Hemen bir ders yapıp yetiş!` 
-          : `🤝 <b>${esc(topRival.name)}</b> ile kafa kafayasınız! (İkiniz de ${state.xp} 🌰)`;
-        return `
-        <div class="card rivalry-card" style="margin-bottom:20px;">
-          <div class="rivalry-head">
-            <div class="rivalry-avatar">${esc(topRival.avatar || '🧑')}</div>
-            <div class="rivalry-info">
-              <div class="muted small">⚔️ Arkadaş Rekabeti ${state.leagueRoomId ? '· 🟢 Canlı Lig' : ''}</div>
-              <div class="rivalry-text">${rivalryMsg}</div>
-            </div>
-            <a class="btn btn-primary sm" href="#/leaderboard">🏆 Sıralamaya Bak</a>
+      <!-- 3. HIZLI ERİŞİM ŞERİDİ (3 Kompakt Şık Kart) -->
+      <div class="home-quick-grid">
+        <a href="#/locomotive" class="card home-quick-card" title="Oyun Modları">
+          <span class="hqc-icon">🎮</span>
+          <div class="hqc-info">
+            <b>Oyun Modları</b>
+            <span class="muted small">Lokomotif & Tuzak</span>
           </div>
-        </div>`;
-      })()}
+        </a>
 
-      <div class="grid-2">
-        <div class="card action-card" id="dashReviewCard" style="--c:#20C997">
-          <div class="ac-emoji">🌰</div>
-          <div class="ac-body">
-            <div class="muted small">🔄 Aralıklı Kelime Tekrarı</div>
-            <h3>${due > 0 ? `${esc(curMascot.vaultName)}: ${due} Kelime Bekliyor` : `${esc(curMascot.name)}'ın ${esc(curMascot.vaultName || 'Hazinesi')}`}</h3>
-            <p class="muted small">${due > 0 ? `${esc(curMascot.name)} ile unutulma riski olan kelimeleri zuladan çıkarıp tazeleyelim.` : `${esc(curMascot.name)} tüm kelimeleri çok iyi hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.`}</p>
-            <div class="ac-actions" style="margin-top:10px;">
-              <a class="btn btn-primary" id="dashReviewBtn" href="#/review" aria-label="Akıllı Tekrar sayfasını aç">${curMascot.itemIcon} ${due > 0 ? `Tazelemeye Başla (${due})` : `${esc(curMascot.vaultName)}'na Git`}</a>
-            </div>
+        <a href="#/review" class="card home-quick-card" id="dashReviewCard" title="Aralıklı Kelime Tekrarı">
+          <span class="hqc-icon">🔄</span>
+          <div class="hqc-info">
+            <b>Akıllı Tekrar</b>
+            <span class="muted small">${due > 0 ? `${due} kelime hazır` : 'Kelimeler taze'}</span>
           </div>
-        </div>
+        </a>
 
-        <div class="card wotd" style="--c:${UNIT_BY_ID[wotd.unitId].color}">
-          <div class="muted small">✨ Günün kelimesi</div>
-          <div class="wotd-row">
-            <div class="wotd-emoji">${wotd.emoji}</div>
-            <div>
-              <div class="wotd-en">${esc(wotd.en)}</div>
-              <div class="muted">${esc(wotd.tr)}</div>
-            </div>
-            <button class="speak-btn" data-say="${esc(wotd.en)}" aria-label="Günün kelimesini dinle" title="Dinle">🔊</button>
+        <a href="#/ai" class="card home-quick-card" id="dashAiCard" title="Yapay Zeka Sunny ile Sohbet">
+          <span class="hqc-icon">🤖</span>
+          <div class="hqc-info">
+            <b>Sunny AI</b>
+            <span class="muted small">Konuşma pratiği</span>
           </div>
-        </div>
+        </a>
       </div>
 
-      <div class="card ai-teaser mt-4" id="dashAiCard">
-        <div class="muted small">${icon('bot', '', 16)} AI Öğretmen & Kişisel Rehber</div>
-        <h3>${hasAI() ? 'Seviyeni analiz etmemi ister misin?' : 'Yapay zeka öğretmenini etkinleştir'}</h3>
-        <p class="muted">${hasAI() ? 'Hatalarına bakıp sana özel plan ve alıştırma hazırlarım.' : 'Ücretsiz bir Gemini API anahtarıyla sana özel analiz, alıştırma ve sohbet pratiği.'}</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-          ${hasAI()
-            ? '<a class="btn btn-primary" id="dashAiBtn" href="#/ai">🤖 AI Öğretmene Git</a><a class="btn btn-secondary" id="dashAiSetupBtn" href="#/ai" aria-label="Gemini API Anahtarı Ayarları">🔑 Gemini API Ayarları</a>'
-            : '<a class="btn btn-primary sm" id="dashAiSetupBtn" href="#/ai" aria-label="AI Öğretmeni Kur: Gemini API anahtarı ayarları">🔑 AI Öğretmeni Kur</a><a class="btn btn-ghost sm" id="dashAiHowtoBtn" href="#/ai">Nasıl yapılır?</a>'}
+      <!-- 4. GÜNÜN KELİMESİ (Zarif, Sade & Göz Yormayan) -->
+      <div class="card home-wotd-clean" style="--c:${UNIT_BY_ID[wotd.unitId]?.color || 'var(--primary)'};">
+        <div class="hwc-head">
+          <span class="badge" style="background:transparent;border:none;padding:0;color:var(--muted);font-size:0.75rem;">✨ Günün Kelimesi</span>
+          <button type="button" class="speak-btn sm" data-say="${esc(wotd.en)}" aria-label="Günün kelimesini dinle" title="Dinle">🔊</button>
+        </div>
+        <div class="hwc-body">
+          <span class="hwc-emoji">${wotd.emoji}</span>
+          <div class="hwc-text">
+            <b class="hwc-en">${esc(wotd.en)}</b>
+            <span class="hwc-tr muted small">${esc(wotd.tr)}</span>
+          </div>
         </div>
       </div>
     </div>`;
 
-  if ($('#homeLinkAuthBtn')) {
-    $('#homeLinkAuthBtn').onclick = () => openAuthModal();
-  }
+  // Günün kelimesi sesli telaffuz
+  document.querySelectorAll('.home-wotd-clean [data-say]').forEach(b => { b.onclick = () => speak(b.dataset.say, 'en'); });
 
-  // Yoldaş İnteraktif Tıklama ve Konuşma
-  const mascotAvatar = $('#mascotAvatarWrap');
-  const mascotIcon = $('#mascotIconEl');
-  const mascotEnEl = $('#mascotSpeechEn');
-  const mascotTrEl = $('#mascotSpeechTr');
-  const mascotSpeak = $('#mascotSpeakBtn');
-
-  const triggerCompanionReaction = (andSpeak = false) => {
-    companionEncouragementIdx++;
-    const nextMsg = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
-    const nextEn = typeof nextMsg === 'object' ? nextMsg.en : nextMsg;
-    const nextTr = typeof nextMsg === 'object' ? nextMsg.tr : '';
-    if (mascotEnEl) mascotEnEl.textContent = `"${nextEn}"`;
-    if (mascotTrEl) mascotTrEl.textContent = nextTr;
-    if (mascotIcon) {
-      mascotIcon.classList.remove('cheer');
-      void mascotIcon.offsetWidth; // reflow
-      mascotIcon.classList.add('cheer');
-    }
-    if (andSpeak) {
-      speak(nextEn, 'en');
-    }
-  };
-
-  if (mascotAvatar) {
-    mascotAvatar.onclick = () => triggerCompanionReaction(true);
-  }
-  if (mascotSpeak) {
-    mascotSpeak.onclick = (e) => {
-      e.stopPropagation();
-      const currentMsg = encouragements[companionEncouragementIdx % encouragements.length] || curMascot.motto;
-      const say = typeof currentMsg === 'object' ? currentMsg.en : (mascotEnEl ? mascotEnEl.textContent.replace(/^"|"$/g, '') : curMascot.motto);
-      speak(say, 'en');
-    };
-  }
-
-  const helperOut = $('#squirrelHelperOutput');
   const wordHelpBtn = $('#squirrelWordHelpBtn');
   const grammarHelpBtn = $('#squirrelGrammarHelpBtn');
-  const avatarWrap = $('#mascotAvatarWrap');
-  if (avatarWrap) avatarWrap.onclick = () => openMascotSelectModal();
-  const switchBtn = $('#mascotQuickSwitchBtn');
-  if (switchBtn) switchBtn.onclick = () => openMascotSelectModal();
   const feedBtn = $('#squirrelFeedBtn');
+  const helperOut = $('#squirrelHelperOutput');
   const acornBadge = $('#squirrelAcornBadge');
 
   if (wordHelpBtn) {

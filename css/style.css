@@ -3904,3 +3904,178 @@ b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; 
     padding: 10px 12px !important;
   }
 }
+
+/* ============================================================
+   Minimalist & Ferah Ana Sayfa Tasarımı (v2.9.35)
+   ============================================================ */
+.home-page-clean {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 14px 16px 88px;
+}
+.home-hero-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.home-hero-title {
+  margin: 0;
+  font-size: 1.25rem !important;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+.home-hero-sub {
+  margin: 2px 0 0;
+  font-size: 0.8rem !important;
+}
+.home-hero-badges {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.home-focus-card {
+  padding: 18px 18px 16px !important;
+  border-radius: 20px !important;
+  margin-bottom: 14px !important;
+  border: 1.5px solid var(--border) !important;
+  background: var(--card) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+.hfc-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.hfc-title {
+  margin: 0 0 4px;
+  font-size: 1.2rem !important;
+  font-weight: 900;
+}
+.hfc-desc {
+  margin: 0 0 14px;
+  font-size: 0.85rem !important;
+  line-height: 1.4;
+}
+.hfc-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.hfc-play-btn {
+  flex: 1;
+  padding: 12px 18px !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  text-align: center;
+  justify-content: center;
+}
+.hfc-goal-wrap {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.hfc-goal-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 0.76rem;
+}
+.home-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.home-quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px 8px !important;
+  border-radius: 16px !important;
+  margin: 0 !important;
+  text-decoration: none;
+  color: var(--text);
+  border: 1.5px solid var(--border) !important;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.home-quick-card:active {
+  transform: scale(0.96);
+}
+.hqc-icon {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.hqc-info b {
+  display: block;
+  font-size: 0.82rem;
+  margin-bottom: 1px;
+}
+.hqc-info span {
+  font-size: 0.68rem;
+  display: block;
+}
+.home-wotd-clean {
+  padding: 12px 14px !important;
+  border-radius: 16px !important;
+  margin: 0 !important;
+  border: 1.5px solid var(--border) !important;
+}
+.hwc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.hwc-body {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hwc-emoji {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.hwc-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hwc-en {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.hwc-tr {
+  font-size: 0.82rem;
+}
+
+@media (max-width: 480px) {
+  .home-page-clean {
+    padding: 10px 10px 84px;
+  }
+  .hfc-title {
+    font-size: 1.1rem !important;
+  }
+  .hfc-actions .btn {
+    padding: 10px 12px !important;
+    font-size: 0.86rem !important;
+  }
+  .home-quick-grid {
+    gap: 6px;
+  }
+  .home-quick-card {
+    padding: 10px 6px !important;
+  }
+  .hqc-icon {
+    font-size: 1.35rem;
+  }
+  .hqc-info b {
+    font-size: 0.76rem;
+  }
+}
