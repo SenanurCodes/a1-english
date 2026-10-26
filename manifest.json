@@ -3,9 +3,14 @@
   "short_name": "PatiLingo",
   "description": "PatiLingo ile A1 seviye İngilizceyi rengarenk derslerle ve eğlenceli pratiklerle öğren.",
   "start_url": "./",
+  "scope": "./",
+  "id": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#0d1117",
   "theme_color": "#6366f1",
+  "lang": "tr",
+  "categories": ["education"],
   "icons": [
     {
       "src": "icons/icon-192.png",
