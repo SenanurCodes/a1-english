@@ -982,10 +982,10 @@ function screenHome() {
           <p class="hfc-desc muted small">${nu ? esc(nu.desc || 'Yeni kelimeler öğren, pratik yap ve serini koru.') : 'Harika iş başardın, dilediğin üniteyi tekrar edebilirsin.'}</p>
         </div>
 
-        <div class="hfc-actions">
-          <a class="btn btn-primary hfc-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu ? nu.id : 'u1'}" style="width:100%;text-align:center;justify-content:center;font-size:1.02rem;padding:14px 20px;">
-            ▶ ${nu ? 'Sonraki Derse Başla' : 'Derse Başla'} (+15 ${curMascot.itemIcon || 'XP'})
-          </a>
+        <div class="hfc-actions">
+          <a class="btn btn-primary hfc-play-btn" id="homeNextLessonBtn" href="#/lesson/${nu ? nu.id : 'u1'}" style="width:100%;text-align:center;justify-content:center;font-size:1.02rem;padding:14px 20px;">
+            ▶ ${nu ? 'Sonraki Derse Başla' : 'Derse Başla'} (+15 ${curMascot.itemIcon || 'XP'})
+          </a>
         </div>
 
         <!-- İnce, sakin tek günlük hedef çubuğu -->
@@ -1144,24 +1144,31 @@ let currentLogicTab = 'all';
 let currentLocoIdx = 0;
 
 function screenLogic(param) {
-  // URL parametresi veya hash parametresi varsa kategoriye ata
+  // 1. Parametre doğrudan çağrıldıysa ('traps', 'mindset', 'survival' vb.)
   if (param && LOGIC_CATEGORIES.some(c => c.id === param)) {
     currentLogicTab = param;
     currentLocoIdx = 0;
   } else {
-    const hashQuery = location.hash.includes('?') ? location.hash.split('?')[1] : '';
-    const q = new URLSearchParams(hashQuery || location.search);
-    const catQ = q.get('cat') || q.get('category') || q.get('tab');
-    if (catQ && LOGIC_CATEGORIES.some(c => c.id === catQ)) {
-      currentLogicTab = catQ;
+    // 2. Hash üzerindeki alt rotayı veya query parametrelerini kontrol et
+    const [rawRoute, subParam] = location.hash.replace(/^#\/?/, '').split('/');
+    if (subParam && LOGIC_CATEGORIES.some(c => c.id === subParam)) {
+      currentLogicTab = subParam;
       currentLocoIdx = 0;
-    }
-    const exQ = q.get('example') || q.get('ex');
-    if (exQ) {
-      const pIdx = parseInt(exQ, 10) - 1;
-      if (!isNaN(pIdx) && pIdx >= 0) currentLocoIdx = pIdx;
+    } else {
+      const hashQuery = location.hash.includes('?') ? location.hash.split('?')[1] : '';
+      const q = new URLSearchParams(hashQuery || location.search);
+      const catQ = q.get('cat') || q.get('category') || q.get('tab');
+      if (catQ && LOGIC_CATEGORIES.some(c => c.id === catQ)) {
+        currentLogicTab = catQ;
+      }
+      const exQ = q.get('example') || q.get('ex');
+      if (exQ) {
+        const pIdx = parseInt(exQ, 10) - 1;
+        if (!isNaN(pIdx) && pIdx >= 0) currentLocoIdx = pIdx;
+      }
     }
   }
+  window.currentLogicTab = currentLogicTab;
 
   const isAll = currentLogicTab === 'all';
   const filtered = isAll ? LOGIC_GUIDES : LOGIC_GUIDES.filter(g => g.category === currentLogicTab);
@@ -1180,6 +1187,36 @@ function screenLogic(param) {
     currentLocoIdx = 0;
   }
   const activeLoco = simExamples[currentLocoIdx] || simExamples[0];
+
+  // Kategoriye özel doğru oyun butonu eşleşmesi (Her kategoriyi kendi oyununa bağla)
+  const categoryGameMap = {
+    traps: {
+      href: '#/trap-hunter',
+      label: '💣 Tuzak Avcısı Arcade Modunu Oyna ➔',
+      color: '#DC2626'
+    },
+    survival: {
+      href: '#/survival',
+      label: '🗺️ Hayatta Kalma Haritasına Git ➔',
+      color: '#059669'
+    },
+    culture: {
+      href: '#/ai',
+      label: '🤖 Sunny AI ile Nezaket Pratiği Yap ➔',
+      color: '#7C3AED'
+    },
+    mindset: {
+      href: '#/locomotive',
+      label: '🚂 Vagon Kenetleme Yapbozunu Oyna ➔',
+      color: 'var(--primary)'
+    },
+    all: {
+      href: '#/locomotive',
+      label: '🚂 Cümle Lokomotifini Oyna ➔',
+      color: 'var(--primary)'
+    }
+  };
+  const activeGame = categoryGameMap[currentLogicTab] || categoryGameMap.mindset;
 
   view().innerHTML = `
     <div class="page">
@@ -1212,7 +1249,7 @@ function screenLogic(param) {
               <span class="badge-loco" id="simBadge">${esc(curSim.badge || '⚡ İNTERAKTİF SİMÜLATÖR')}</span>
               <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
                 <h2 style="margin:4px 0;font-size:1.2rem;" id="simTitle">${esc(curSim.title || '🚂 İngilizce Cümle Lokomotifi')}</h2>
-                <a href="#/locomotive" class="btn btn-primary sm" style="font-weight:800;padding:6px 14px;border-radius:12px;">🚂 Vagon Kenetleme Yapbozunu Oyna ➔</a>
+                <a href="${activeGame.href}" class="btn btn-primary sm" id="logicActiveGameBtn" style="font-weight:800;padding:6px 14px;border-radius:12px;background:${activeGame.color};border-color:${activeGame.color};color:#fff;">${activeGame.label}</a>
               </div>
               <p class="muted small" style="margin:0;" id="simDesc">${esc(curSim.desc || '')}</p>
             </div>
@@ -1415,26 +1452,34 @@ function screenLogic(param) {
 
   window.updateLocoSimulator = updateLocoSimulator;
 
-  // Kategori Değiştirme Fonksiyonu
+  // Kategori Değiştirme Fonksiyonu (URL Hash ile tam senkronize)
   const onCategoryChange = (cat) => {
     if (!cat) return;
     currentLogicTab = cat;
+    window.currentLogicTab = cat;
     currentLocoIdx = 0; // Kategori değiştiğinde 1. örnekle başla
-    screenLogic();
+    try {
+      const hashBase = location.hash.split('?')[0] || '#/logic';
+      const q = new URLSearchParams(location.hash.includes('?') ? location.hash.split('?')[1] : '');
+      q.set('cat', cat);
+      q.set('example', '1');
+      history.replaceState(null, '', hashBase + '?' + q.toString());
+    } catch (_) {}
+    screenLogic(cat);
   };
 
   const tabsBar = $('.logic-tabs-bar');
   if (tabsBar) {
-    tabsBar.addEventListener('click', e => {
+    tabsBar.onclick = e => {
       const btn = e.target.closest('.logic-tab-pill');
-      if (btn && btn.dataset.cat) onCategoryChange(btn.dataset.cat);
-    });
+      if (btn && btn.dataset.cat) {
+        e.preventDefault();
+        onCategoryChange(btn.dataset.cat);
+      }
+    };
   }
-  $$('.logic-tab-pill').forEach(btn => {
-    btn.onclick = () => onCategoryChange(btn.dataset.cat);
-  });
 
-  // Lokomotif Örnek Seçici (Delegasyon, doğrudan tıklama, pointer ve klavye desteği)
+  // Örnek Seçici
   const onExampleSelect = (idx) => {
     if (!isNaN(idx)) {
       currentLocoIdx = idx;
@@ -1444,9 +1489,10 @@ function screenLogic(param) {
 
   const navBtns = $('.loco-nav-btns');
   if (navBtns) {
-    navBtns.addEventListener('click', e => {
+    navBtns.onclick = e => {
       const btn = e.target.closest('.loco-sel-btn, [data-lidx], [data-example], [role="tab"]');
       if (btn) {
+        e.preventDefault();
         let idx = NaN;
         if (btn.dataset.lidx !== undefined && btn.dataset.lidx !== '') {
           idx = parseInt(btn.dataset.lidx, 10);
@@ -1458,7 +1504,7 @@ function screenLogic(param) {
         }
         if (!isNaN(idx)) onExampleSelect(idx);
       }
-    });
+    };
 
     navBtns.addEventListener('keydown', e => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
@@ -1475,8 +1521,9 @@ function screenLogic(param) {
     });
   }
 
-  $$('.loco-sel-btn').forEach(btn => {
-    const handler = () => {
+  document.querySelectorAll('.loco-sel-btn').forEach(btn => {
+    btn.onclick = (e) => {
+      e.preventDefault();
       let idx = NaN;
       if (btn.dataset.lidx !== undefined && btn.dataset.lidx !== '') {
         idx = parseInt(btn.dataset.lidx, 10);
@@ -1485,9 +1532,6 @@ function screenLogic(param) {
       }
       if (!isNaN(idx)) onExampleSelect(idx);
     };
-    btn.onclick = handler;
-    btn.onpointerdown = handler;
-    btn.onpointerup = handler;
   });
 
   const selectEl = $('#locoExampleSelect');
