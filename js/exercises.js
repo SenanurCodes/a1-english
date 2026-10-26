@@ -225,14 +225,6 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         <div class="lesson-count" id="lcount"></div>
       </div>
       <div class="lesson-title">${esc(title)}</div>
-      <div class="lesson-logic-card" id="lessonLogicBanner" style="padding:10px 14px;margin-bottom:10px;border-radius:12px;background:color-mix(in srgb, var(--primary, #7c3aed) 10%, var(--card-bg, #151c2c));border-left:4px solid var(--primary, #7c3aed);font-size:0.82rem;line-height:1.45;">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px;">
-          <b style="color:var(--primary, #a78bfa);">${esc(logicInfo.badge)}</b>
-          <span class="muted small" style="font-size:0.72rem;">30 sn Mantık Kartı</span>
-        </div>
-        <div>🇹🇷 <b>Türkçe Düşünüş:</b> ${esc(logicInfo.trWay)}</div>
-        <div style="margin-top:2px;">🇬🇧 <b>İngilizce Mantığı:</b> ${esc(logicInfo.enWay)}</div>
-      </div>
       <div class="lesson-squirrel-bar" id="lessonSquirrelHelper" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:12px;background:color-mix(in srgb, var(--primary, #4F46E5) 8%, var(--card-bg, #fff));border:1px dashed var(--border, #e2e8f0);flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.86rem;">
           <span style="font-size:1.25rem;">🐿️</span>
@@ -398,6 +390,7 @@ const RENDERERS = {
   },
 
   listen(q, area, done) {
+    let answered = false;
     area.innerHTML = `
       <div class="q-head">
         <div class="q-prompt">Dinle ve duyduğunu seç 🎧</div>
@@ -406,11 +399,26 @@ const RENDERERS = {
           <button class="speak-btn slow" id="spkSlow" title="Yavaş" aria-label="Yavaş sesli dinle">🐢</button>
         </div>
       </div>
-      <div class="options">${q.options.map((o, i) => `<button class="option" data-v="${esc(o)}"><span class="key">${i + 1}</span>${esc(o)}</button>`).join('')}</div>`;
+      <div class="options">${q.options.map((o, i) => `<button class="option" data-v="${esc(o)}"><span class="key">${i + 1}</span>${esc(o)}</button>`).join('')}</div>
+      <div style="text-align:center;margin-top:14px;">
+        <button type="button" class="btn btn-ghost sm cant-listen-btn" id="cantListenBtn" style="color:var(--muted);font-weight:700;">🔇 Şu an dinleyemiyorum</button>
+      </div>`;
     $('#spk').onclick = () => speak(q.speak);
     $('#spkSlow').onclick = () => { const r = state.settings.rate; state.settings.rate = 0.5; speak(q.speak); state.settings.rate = r; };
     setTimeout(() => speak(q.speak), 300);
-    bindOptions(area, q, done);
+    bindOptions(area, q, (ok, meta) => {
+      answered = true;
+      done(ok, meta);
+    });
+
+    const cantListenBtn = $('#cantListenBtn');
+    if (cantListenBtn) {
+      cantListenBtn.onclick = () => {
+        if (answered) return;
+        answered = true;
+        done(false, { given: '(Şu an dinleyemiyorum)', correct: q.answer, skipped: true, cantListen: true });
+      };
+    }
   },
 
   type(q, area, done) {
@@ -461,12 +469,28 @@ const RENDERERS = {
     $('#checkBtn').onclick = check;
     inp.oninput = () => { warnBox.style.display = 'none'; };
 
-    $('#dontKnowBtn').onclick = () => {
-      if (answered) return;
-      answered = true;
-      inp.classList.add('bad');
-      inp.disabled = true;
-      done(false, { given: '(Bilmiyorum)', correct: q.answer });
+    let dontKnowStep = 0;
+    const dontKnowBtn = $('#dontKnowBtn');
+    if (dontKnowBtn) {
+      dontKnowBtn.onclick = () => {
+        if (answered) return;
+        if (dontKnowStep === 0) {
+          dontKnowStep = 1;
+          dontKnowBtn.textContent = '👀 Emin misin? Doğru cevabı aç';
+          dontKnowBtn.style.color = '#e03131';
+          hintBox.style.display = 'block';
+          warnBox.style.display = 'none';
+          const half = Math.ceil(q.answer.length / 2);
+          hintBox.innerHTML = `💡 <b>İpucu:</b> Bu ifade "<b>${esc(q.answer.slice(0, half))}...</b>" ile başlıyor (${q.answer.length} harf). Bir kez daha dene, vazgeçmek istersen tekrar tıkla!`;
+          inp.placeholder = q.answer.slice(0, half) + '...';
+          inp.focus();
+        } else {
+          answered = true;
+          inp.classList.add('bad');
+          inp.disabled = true;
+          done(false, { given: '(Bilmiyorum)', correct: q.answer });
+        }
+      };
     };
 
     hintBtn.onclick = () => {

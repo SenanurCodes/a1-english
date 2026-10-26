@@ -4540,42 +4540,50 @@ function initShimejiCompanion() {
   // Oyunlaştırma (Gamification): Doğru cevapta dans et & kutla, yanlış cevapta üzül & ipucu/moral ver!
   window.shimejiOnLessonAnswer = (isCorrect, q) => {
     if (mode === 'sleep') return;
+    if (bubbleTimer) {
+      clearTimeout(bubbleTimer);
+      bubbleTimer = null;
+    }
+
     if (isCorrect) {
       lessonCombo++;
       updateLegendBadge();
-      setMode('dance', 52, 'dance');
-      const comboTag = lessonCombo >= 2 ? ` <b>(🔥 ${lessonCombo}x Kombo!)</b>` : '';
-      const praises = [
-        `💃 <b>Harika bildin!</b> Senin için zafer dansı yapıyorum!${comboTag}`,
-        `🎉 <b>Süpersin!</b> Bir altın palamut daha kazandık, böyle devam et!${comboTag}`,
-        `⭐ <b>Tam isabet!</b> İngilizcen her soruda daha da güçleniyor!${comboTag}`,
-        `🎵 <b>Muhteşem!</b> Seninle gurur duyuyorum ortak!${comboTag}`
-      ];
-      showBubble(
-        praises[Math.floor(Math.random() * praises.length)],
-        null,
-        4600,
-        'dance'
-      );
+      // Maskot sevinsin (dans & emote)
+      setMode('dance', 50, 'dance');
+      setEmote('🎉 ✨');
+      // Kullanıcı talebi: Doğru cevapta baloncuk çıkmasın, ekran sade ve temiz kalsın
+      closeBubble();
     } else {
       lessonCombo = 0;
       updateLegendBadge();
-      setMode('sad', 65, 'sad');
+      // Maskot üzülsün (üzgün mod & damla)
+      setMode('sad', 70, 'sad');
+      setEmote('🥺 💧');
+      closeBubble();
+
+      // Kullanıcı talebi: Yanlış yapıldığında baloncuk hemen çıkıp maskotu kapatmasın,
+      // önce maskotun üzüldüğü ve tepkisi net görülsün (1.2 saniye sonra nazikçe açılsın)
       const morals = [
-        '🥺 <b>Hiç üzülme!</b> Hata yaparak öğrenmek en kalıcı yoldur. Bak sana küçük bir sır vereyim:',
-        '💧 <b>Canın sağ olsun ortak!</b> Birlikte doğrusunu hemen kavrayacağız:',
-        '💪 <b>Pes etmek yok!</b> Ben yanındayım, bu sorunun püf noktası şöyle:'
+        '🥺 Hiç üzülme! Yanlışlar en iyi öğretmendir.',
+        '💧 Canın sağ olsun, bir dahakine kesin yaparsın!',
+        '💪 Pes etmek yok, adım adım birlikte öğreniyoruz!'
       ];
       const moralIntro = morals[Math.floor(Math.random() * morals.length)];
       const cluePart = (q && typeof getSquirrelQuestionClue === 'function')
         ? `<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);">${getSquirrelQuestionClue(q)}</div>`
         : '';
-      showBubble(
-        `${moralIntro}${cluePart}`,
-        null,
-        9000,
-        'sad'
-      );
+
+      const delayedBubbleTimer = setTimeout(() => {
+        if (mode === 'sad' || mode === 'idle') {
+          showBubble(
+            `${moralIntro}${cluePart}`,
+            null,
+            7500,
+            'sad'
+          );
+        }
+      }, 1200);
+      if (delayedBubbleTimer && typeof delayedBubbleTimer.unref === 'function') delayedBubbleTimer.unref();
     }
   };
 }
