@@ -188,10 +188,10 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   const preferred = (state?.settings?.model || '').trim();
   const candidateModels = [
     preferred,
-    'gemini-2.5-flash',
     'gemini-2.0-flash',
-    'gemini-2.5-flash-lite',
-    'gemini-flash-latest'
+    'gemini-1.5-flash',
+    'gemini-2.0-flash-lite',
+    'gemini-1.5-pro'
   ].filter(Boolean);
 
   // Tekrarlayanları temizle
@@ -200,7 +200,7 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   let lastError = null;
   for (const model of modelsToTry) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
       const body = {
         contents,
         generationConfig: { temperature, ...(json ? { responseMimeType: 'application/json' } : {}) }
@@ -234,7 +234,11 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
           throw new AIError('RATE_LIMIT', 'Google Gemini ücretsiz kullanım sınırına ulaşıldı. Biraz bekleyip tekrar dene.', err);
         }
         if (res.status === 400 || res.status === 403) {
-          throw new AIError('BAD_KEY', `API anahtarı geçersiz veya yetkisiz: ${msg}`, err);
+          let userMsg = msg;
+          if (msg.toLowerCase().includes('api key not valid') || msg.includes('API_KEY_INVALID')) {
+            userMsg = 'API key not valid (Google Gemini anahtarı geçersiz. Lütfen aistudio.google.com/apikey adresinden aldığınız AIzaSy... anahtarını girdiğinizden emin olun)';
+          }
+          throw new AIError('BAD_KEY', `API anahtarı geçersiz veya yetkisiz: ${userMsg}`, err);
         }
         throw new AIError('UNKNOWN', msg, err);
       }

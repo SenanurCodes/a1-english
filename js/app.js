@@ -2901,7 +2901,7 @@ function screenAI() {
   }
 
   if (!hasAI()) {
-    const curModel = state?.settings?.model || 'gemini-2.5-flash';
+    const curModel = state?.settings?.model || 'gemini-2.0-flash';
     view().innerHTML = `
       <div class="page">
         <header class="page-head"><div><h1>🤖 AI Öğretmen</h1><p class="muted">Google Gemini ile çalışır, ücretsizdir.</p></div></header>
@@ -2920,7 +2920,7 @@ function screenAI() {
           <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <label class="muted small" for="setupModelIn" style="font-weight:700;">Model:</label>
             <input id="setupModelIn" class="text-input" value="${esc(curModel)}" list="setupModels" style="max-width:220px;padding:6px 10px;font-size:0.85rem;" aria-label="Gemini Modeli" />
-            <datalist id="setupModels"><option value="gemini-2.5-flash"><option value="gemini-2.0-flash"><option value="gemini-2.5-flash-lite"></datalist>
+            <datalist id="setupModels"><option value="gemini-2.0-flash"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash-lite"><option value="gemini-1.5-pro"></datalist>
           </div>
           <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
             <span class="muted small">Mevcut bir anahtarı test etmek veya düzenlemek için:</span>
@@ -2946,7 +2946,7 @@ function screenAI() {
         toast('Lütfen geçerli bir Gemini API anahtarı gir.');
         return;
       }
-      const chosenModel = ($('#setupModelIn')?.value || '').trim() || 'gemini-2.5-flash';
+      const chosenModel = ($('#setupModelIn')?.value || '').trim() || 'gemini-2.0-flash';
       state.settings.apiKey = k;
       state.settings.model = chosenModel;
       saveState();
@@ -2979,7 +2979,7 @@ function screenAI() {
               AI Öğretmen Etkinleştirildi (Active)
             </span>
             <span class="muted small" style="display:inline-flex;align-items:center;gap:4px;">Anahtar: <code class="ai-key-chip">${maskKey(getApiKey())}</code></span>
-            <span class="muted small">Model: <b>${esc(state.settings.model || 'gemini-2.5-flash')}</b></span>
+            <span class="muted small">Model: <b>${esc(state.settings.model || 'gemini-2.0-flash')}</b></span>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
             <button class="btn btn-secondary sm" id="aiPingBtn" aria-label="Gemini Bağlantısını Test Et">🔌 Bağlantıyı Test Et</button>
@@ -3347,7 +3347,7 @@ function screenSettings() {
         </div>
         <label class="lbl">Model</label>
         <input id="setModel" class="text-input" value="${esc(s.model)}" list="models" />
-        <datalist id="models"><option value="gemini-2.5-flash"><option value="gemini-2.5-flash-lite"><option value="gemini-2.0-flash"><option value="gemini-flash-latest"></datalist>
+        <datalist id="models"><option value="gemini-2.0-flash"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash-lite"><option value="gemini-1.5-pro"></datalist>
         <div class="row-gap"><button class="btn btn-secondary sm" id="testBtn">🔌 Bağlantıyı Test Et</button><span id="testOut" class="muted"></span></div>
       </div>
 
@@ -3429,7 +3429,7 @@ function screenSettings() {
   const collect = () => {
     state.name = $('#setName').value.trim() || state.name;
     state.settings.apiKey = $('#setKey').value.trim();
-    state.settings.model = $('#setModel').value.trim() || 'gemini-2.5-flash';
+    state.settings.model = $('#setModel').value.trim() || 'gemini-2.0-flash';
     state.settings.rate = parseFloat($('#setRate').value);
     state.settings.sound = $('#setSound').checked;
     if ($('#toggleShimeji')) {
