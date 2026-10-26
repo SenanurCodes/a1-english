@@ -62,6 +62,39 @@ class AppStore {
     return this._state;
   }
 
+  get xp() {
+    return this._state.xp;
+  }
+
+  set xp(val) {
+    this.setXP(val);
+  }
+
+  get streak() {
+    if (!this._state.streak || typeof this._state.streak !== 'object') {
+      this._state.streak = { count: 0, last: null };
+    }
+    return this._state.streak;
+  }
+
+  set streak(val) {
+    if (val && typeof val === 'object') {
+      this._state.streak = {
+        count: Math.max(0, Math.floor(Number(val.count) || 0)),
+        last: val.last || null
+      };
+      this._notify('STREAK_CHANGE', this._state.streak);
+    }
+  }
+
+  get name() {
+    return this._state.name;
+  }
+
+  set name(val) {
+    this.setName(val);
+  }
+
   getState() {
     return this._state;
   }
@@ -75,6 +108,18 @@ class AppStore {
     this._subscribers.forEach(fn => {
       try { fn(this._state, action, payload); } catch (e) { console.error('Store subscriber error:', e); }
     });
+    if (typeof window !== 'undefined' && window.PatiLingoArch && window.PatiLingoArch.eventBus) {
+      const eventMap = {
+        GAIN_XP: 'xp:changed',
+        SET_XP: 'xp:changed',
+        MASCOT_CHANGE: 'mascot:changed',
+        THEME_CHANGE: 'theme:changed',
+        STREAK_CHANGE: 'streak:updated',
+        PRO_CHANGE: 'pro:changed'
+      };
+      const mapped = eventMap[action] || `store:${String(action).toLowerCase()}`;
+      window.PatiLingoArch.eventBus.emit(mapped, payload);
+    }
   }
 
   save() {

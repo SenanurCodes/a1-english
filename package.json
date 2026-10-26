@@ -1,10 +1,16 @@
 {
   "name": "a1-english",
-  "version": "2.9.26",
+  "version": "2.9.32",
   "description": "PatiLingo - A1 & A2 English Learning PWA",
   "main": "sw.js",
   "scripts": {
-    "test": "node tests/run-tests.js"
+    "test": "node tests/run-tests.js",
+    "test:comprehensive": "node tests/comprehensive-analysis-tests.js",
+    "test:architecture": "node tests/architecture-tests.js",
+    "test:all": "node tests/run-tests.js && node tests/comprehensive-analysis-tests.js && node tests/architecture-tests.js",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [
     "english",
