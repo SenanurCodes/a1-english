@@ -38,10 +38,8 @@ const MORE_LINKS = [
   { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, ses hızı ve Gemini API anahtarı' }
 ];
 
-let _handlingPopState = false;
-
 function pushOverlayHistoryState(overlayType) {
-  if (_handlingPopState || typeof history === 'undefined' || typeof history.pushState !== 'function') return;
+  if (typeof history === 'undefined' || typeof history.pushState !== 'function') return;
   try {
     const currentState = history.state || {};
     if (currentState.patilingoOverlay === overlayType) return;
@@ -49,13 +47,9 @@ function pushOverlayHistoryState(overlayType) {
   } catch (_) {}
 }
 
-function closeMenuSheet(fromPopState = false) {
+function closeMenuSheet() {
   const root = $('#sheet-root');
-  const wasOpen = Boolean(root && root.innerHTML.trim());
   if (root) root.innerHTML = '';
-  if (wasOpen && !fromPopState && !_handlingPopState && typeof history !== 'undefined' && history.state && history.state.patilingoOverlay === 'sheet') {
-    try { history.back(); } catch (_) {}
-  }
 }
 
 function openMenuSheet(active) {
@@ -262,62 +256,33 @@ function openModal(html) {
   }
 }
 
-function closeModal(fromPopState = false) {
+function closeModal() {
   const root = $('#modal-root');
-  const wasOpen = Boolean(root && root.innerHTML.trim());
   if (root) root.innerHTML = '';
-  if (wasOpen && !fromPopState && !_handlingPopState && typeof history !== 'undefined' && history.state && history.state.patilingoOverlay === 'modal') {
-    try { history.back(); } catch (_) {}
-  }
 }
 
 function initAndroidBackNavigation() {
   if (typeof window === 'undefined' || window.__patilingoBackNavInitialized) return;
   window.__patilingoBackNavInitialized = true;
 
-  // Uygulama ilk açıldığında taban bir history kaydı oluştur (geri tuşunda hemen çıkışı önlemek için)
-  try {
-    if (typeof history !== 'undefined' && typeof history.replaceState === 'function') {
-      const initRoute = (location.hash || '#/home').replace(/^#\/?/, '') || 'home';
-      history.replaceState({ patilingoBase: true, route: initRoute }, '', location.href);
-      if (initRoute !== 'home' && initRoute !== 'onboarding') {
-        history.pushState({ patilingoSubRoute: initRoute }, '', location.href);
-      }
+  // Donanımsal geri tuşuna basıldığında yalnızca açık olan Modal / Bottom Sheet / Baloncuk katmanlarını kapatır.
+  // Normal sekme geçişlerine (#/learn, #/logic, #/cards vb.) asla müdahale etmez.
+  window.addEventListener('popstate', () => {
+    const modalRoot = $('#modal-root');
+    if (modalRoot && modalRoot.innerHTML.trim() !== '') {
+      closeModal();
+      return;
     }
-  } catch (_) {}
 
-  window.addEventListener('popstate', (e) => {
-    _handlingPopState = true;
-    try {
-      // 1. Açık Modal varsa uygulamadan çıkmak yerine modalı kapat
-      const modalRoot = $('#modal-root');
-      if (modalRoot && modalRoot.innerHTML.trim() !== '') {
-        closeModal(true);
-        return;
-      }
+    const sheetRoot = $('#sheet-root');
+    if (sheetRoot && sheetRoot.innerHTML.trim() !== '') {
+      closeMenuSheet();
+      return;
+    }
 
-      // 2. Açık Bottom Sheet (Diğer Bölümler menüsü) varsa kapat
-      const sheetRoot = $('#sheet-root');
-      if (sheetRoot && sheetRoot.innerHTML.trim() !== '') {
-        closeMenuSheet(true);
-        return;
-      }
-
-      // 3. Açık Shimeji konuşma baloncuğu varsa kapat
-      const bubbleEl = document.getElementById('shimejiBubble');
-      if (bubbleEl && bubbleEl.classList.contains('visible')) {
-        bubbleEl.classList.remove('visible');
-        return;
-      }
-
-      // 4. Alt sekmelerde veya dersteysek (home dışında), çıkışı önleyip Ana Sayfaya (#/home) dön
-      const currentRoute = (location.hash || '#/home').replace(/^#\/?/, '').split('/')[0] || 'home';
-      if (state.onboarded && currentRoute !== 'home' && currentRoute !== 'onboarding') {
-        location.hash = '#/home';
-        return;
-      }
-    } finally {
-      setTimeout(() => { _handlingPopState = false; }, 20);
+    const bubbleEl = document.getElementById('shimejiBubble');
+    if (bubbleEl && bubbleEl.classList.contains('visible')) {
+      bubbleEl.classList.remove('visible');
     }
   });
 }
@@ -1143,11 +1108,11 @@ function screenHome() {
 
       <!-- Genel Kurs İlerlemesi Özeti (Top-Level Course Progress Summary Card) -->
       <div class="card course-progress-card" style="margin-bottom:20px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h2 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:8px;">🧩 Kurs İlerlemesi (Course Progress Summary)</h2>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <a href="#/lesson/${nu ? nu.id : 'u1'}" class="btn btn-primary sm" id="dashCourseMapPlayBtn" aria-label="Sonraki Derse Başla">▶ Derse Devam Et</a>
-            <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm Kurs İlerlemesini Gör">Tümünü Gör ➔</a>
+        <div class="course-progress-top" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+          <h2 style="margin:0;font-size:1.05rem;display:flex;align-items:center;gap:6px;" aria-label="Course Progress Summary">🧩 Kurs İlerlemesi</h2>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <a href="#/lesson/${nu ? nu.id : 'u1'}" class="btn btn-primary sm" id="dashCourseMapPlayBtn" aria-label="Sonraki Derse Başla">▶ Derse Devam</a>
+            <a href="#/progress" class="btn btn-ghost sm" aria-label="Tüm Kurs İlerlemesini Gör">Tümü ➔</a>
           </div>
         </div>
         <div class="course-progress-summary">
@@ -1200,7 +1165,7 @@ function screenHome() {
         <div class="card action-card" id="dashReviewCard" style="--c:#20C997">
           <div class="ac-emoji">🌰</div>
           <div class="ac-body">
-            <div class="muted small">${esc(curMascot.name)}'ın ${esc(curMascot.vaultName || 'Hazinesi')} (Aralıklı Tekrar)</div>
+            <div class="muted small">🔄 Aralıklı Kelime Tekrarı</div>
             <h3>${due > 0 ? `${esc(curMascot.vaultName)}: ${due} Kelime Bekliyor` : `${esc(curMascot.name)}'ın ${esc(curMascot.vaultName || 'Hazinesi')}`}</h3>
             <p class="muted small">${due > 0 ? `${esc(curMascot.name)} ile unutulma riski olan kelimeleri zuladan çıkarıp tazeleyelim.` : `${esc(curMascot.name)} tüm kelimeleri çok iyi hatırlıyor! Dilediğin an serbest tekrar yapabilirsin.`}</p>
             <div class="ac-actions" style="margin-top:10px;">
@@ -1229,7 +1194,7 @@ function screenHome() {
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
           ${hasAI()
             ? '<a class="btn btn-primary" id="dashAiBtn" href="#/ai">🤖 AI Öğretmene Git</a><a class="btn btn-secondary" id="dashAiSetupBtn" href="#/ai" aria-label="Gemini API Anahtarı Ayarları">🔑 Gemini API Ayarları</a>'
-            : '<a class="btn btn-primary" id="dashAiSetupBtn" href="#/ai" aria-label="AI Öğretmeni Kur: Gemini API anahtarı ayarları">🔑 AI Öğretmeni Kur (Gemini API Ayarları)</a><a class="btn btn-ghost" id="dashAiHowtoBtn" href="#/ai">Nasıl yapılır?</a>'}
+            : '<a class="btn btn-primary sm" id="dashAiSetupBtn" href="#/ai" aria-label="AI Öğretmeni Kur: Gemini API anahtarı ayarları">🔑 AI Öğretmeni Kur</a><a class="btn btn-ghost sm" id="dashAiHowtoBtn" href="#/ai">Nasıl yapılır?</a>'}
         </div>
       </div>
     </div>`;
