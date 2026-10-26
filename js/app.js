@@ -3646,6 +3646,8 @@ function openAuthModal() {
         <input type="password" id="modalPassIn" class="text-input" placeholder="En az 4 karakter" autocomplete="current-password" />
       </div>
 
+      <div id="modalAuthError" style="display:none;color:#ef4444;font-size:0.86rem;font-weight:700;background:rgba(239,68,68,0.12);padding:9px 12px;border-radius:10px;border-left:3px solid #ef4444;margin-top:2px;"></div>
+
       <div class="flex gap-2 mt-1">
         <button class="btn btn-primary btn-big flex-1 justify-center" id="modalEmailRegBtn">${icon('sparkles', '', 16)} Kayıt Ol</button>
         <button class="btn btn-secondary btn-big flex-1 justify-center" id="modalEmailLoginBtn">🔑 Giriş Yap</button>
@@ -3735,6 +3737,21 @@ function openAuthModal() {
     router();
   };
 
+  const showModalError = (msg) => {
+    const errBox = $('#modalAuthError');
+    if (errBox) {
+      errBox.textContent = msg;
+      errBox.style.display = 'block';
+    }
+    toast(msg);
+  };
+  const clearModalError = () => {
+    const errBox = $('#modalAuthError');
+    if (errBox) errBox.style.display = 'none';
+  };
+  if ($('#modalEmailIn')) $('#modalEmailIn').oninput = clearModalError;
+  if ($('#modalPassIn')) $('#modalPassIn').oninput = clearModalError;
+
   $('#modalGoogleBtn').onclick = async () => {
     try {
       const u = await authService.signInWithGoogle();
@@ -3743,7 +3760,7 @@ function openAuthModal() {
       closeModal();
       router();
     } catch (err) {
-      toast(err.message);
+      showModalError(err.message);
     }
   };
 
@@ -3751,28 +3768,28 @@ function openAuthModal() {
     const email = $('#modalEmailIn').value.trim();
     const pass = $('#modalPassIn').value.trim();
     const name = $('#modalNameIn').value.trim() || state.name;
-    if (!email || !pass) return toast('Lütfen e-posta ve şifreni gir.');
+    if (!email || !pass) return showModalError('Lütfen e-posta ve şifreni gir.');
     try {
       const u = await authService.registerWithEmail(email, pass, name);
       toast(`🎉 Tebrikler! Hesabın oluşturuldu. Hoş geldin, ${u.displayName}!`);
       closeModal();
       router();
     } catch (err) {
-      toast(err.message);
+      showModalError(err.message);
     }
   };
 
   $('#modalEmailLoginBtn').onclick = async () => {
     const email = $('#modalEmailIn').value.trim();
     const pass = $('#modalPassIn').value.trim();
-    if (!email || !pass) return toast('Lütfen e-posta ve şifreni gir.');
+    if (!email || !pass) return showModalError('Lütfen e-posta ve şifreni gir.');
     try {
       const u = await authService.signInWithEmail(email, pass);
       toast(`Giriş yapıldı: ${u.displayName || u.email} ✅`);
       closeModal();
       router();
     } catch (err) {
-      toast(err.message);
+      showModalError(err.message);
     }
   };
 }

@@ -1338,7 +1338,7 @@ button.tag:hover, a.tag:hover { background: color-mix(in srgb, var(--c) 24%, whi
 
 /* Toast */
 .toast {
-  position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 30px); opacity: 0; transition: .3s; z-index: 100;
+  position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 30px); opacity: 0; transition: .3s; z-index: 999999 !important;
   background: #2B2D42; color: #fff; padding: 12px 22px; border-radius: 14px; font-weight: 800; box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
