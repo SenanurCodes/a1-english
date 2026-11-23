@@ -178,11 +178,23 @@ function getApiKey() {
   return '';
 }
 
-function hasAI() { return !!getApiKey(); }
+// Cloudflare Worker AI Proxy adresi (yayınlandıktan sonra buraya yapıştırılır; API anahtarı sunucuda gizli kalır)
+const AI_PROXY_URL = '';
+
+function getAIProxyUrl() {
+  if (typeof window !== 'undefined' && typeof window.PATILINGO_AI_PROXY_URL === 'string' && window.PATILINGO_AI_PROXY_URL.trim()) {
+    return window.PATILINGO_AI_PROXY_URL.trim();
+  }
+  return AI_PROXY_URL.trim();
+}
+
+function hasAI() { return Boolean(getApiKey() || getAIProxyUrl()); }
 
 async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   const key = getApiKey();
-  if (!key) throw new AIError('NO_KEY', 'API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
+  const proxyUrl = getAIProxyUrl();
+  if (!key && !proxyUrl) throw new AIError('NO_KEY', 'API anahtarı yok. Ayarlar sayfasından ekleyebilirsin.');
+  const useProxy = !key && Boolean(proxyUrl);
 
   // Kullanıcının seçtiği model ve yedek kararlı modeller sırası
   const preferred = (state?.settings?.model || '').trim();
@@ -200,12 +212,18 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
   let lastError = null;
   for (const model of modelsToTry) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+      const url = useProxy
+        ? proxyUrl
+        : `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
       const body = {
+        ...(useProxy ? { model } : {}),
         contents,
         generationConfig: { temperature, ...(json ? { responseMimeType: 'application/json' } : {}) }
       };
       if (system) body.systemInstruction = { parts: [{ text: system }] };
+
+      const headers = { 'Content-Type': 'application/json' };
+      if (!useProxy) headers['x-goog-api-key'] = key;
 
       const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
       const timeoutId = controller ? setTimeout(() => controller.abort(), 18000) : null;
@@ -213,10 +231,7 @@ async function gemini({ system, contents, json = false, temperature = 0.8 }) {
       try {
         res = await fetch(url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': key
-          },
+          headers,
           body: JSON.stringify(body),
           signal: controller ? controller.signal : undefined
         });
