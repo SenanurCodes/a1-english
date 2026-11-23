@@ -16,7 +16,7 @@ class AIError extends Error {
    Freemium AI Kotası & PatiLingo Pro Yönetimi (Günlük 15 Mesaj)
    ============================================================ */
 const AI_QUOTA_STORAGE_KEY = 'patilingo_ai_daily_quota_v1';
-const AI_DAILY_FREE_LIMIT = 15;
+const AI_DAILY_FREE_LIMIT = 5;
 
 function getQuotaTodayKey() {
   if (typeof todayStr === 'function') return todayStr();
@@ -92,7 +92,7 @@ function activatePatiLingoPro(planType = 'monthly') {
 
   if (typeof closeModal === 'function') closeModal();
   if (typeof confettiBurst === 'function') confettiBurst();
-  const planLabel = planType === 'weekly' ? 'Haftalık Pro' : 'Aylık Pro';
+  const planLabel = planType === 'yearly' ? 'Yıllık Pro' : (planType === 'weekly' ? 'Haftalık Pro' : 'Aylık Pro');
   if (typeof toast === 'function') {
     toast(`👑 PatiLingo ${planLabel} aktif edildi! Sınırsız AI Öğretmen açıldı 🎉`);
   }
@@ -105,42 +105,42 @@ function activatePatiLingoPro(planType = 'monthly') {
 function openProUpgradeModal(reasonText = '') {
   if (typeof openModal !== 'function') return;
   const quota = getAiQuotaStatus();
-  let selectedPlan = 'monthly';
+  let selectedPlan = 'yearly';
 
   openModal(`
     <div class="pro-modal-wrap">
       <div class="pro-crown-badge">👑</div>
       <h2 style="margin:0 0 6px;font-size:1.45rem;">PatiLingo Pro'ya Geç</h2>
       <p class="muted small" style="margin:0 0 12px;">
-        ${reasonText ? reasonText : `Günlük ücretsiz <b>${quota.limit}/${quota.limit} AI mesaj</b> hakkını tamamladın! Kesintisiz konuşma pratiği ve sınırsız yapay zeka koçluğu için Pro'ya yükselt.`}
+        ${reasonText ? reasonText : `Günlük ücretsiz <b>${quota.limit} AI mesaj</b> sınırını kaldır; sınırsız yapay zeka koçluğu, seri koruma ve akıllı tekrar ile hızlan!`}
       </p>
 
       <ul class="pro-feature-list">
-        <li><span>✅</span> <span><b>Sınırsız Sunny AI Sohbet:</b> Günlük 15 mesaj sınırı olmadan 7/24 konuşma pratiği</span></li>
-        <li><span>✅</span> <span><b>Sınırsız Özel Alıştırma & Analiz:</b> Eksiklerine göre anında yeni testler üret</span></li>
-        <li><span>✅</span> <span><b>Hayatta Kalma & Maskot Koçu:</b> Aşamalı ipuçları ve detaylı gramer açıklamaları</span></li>
-        <li><span>✅</span> <span><b>Reklamsız & Öncelikli Deneyim:</b> Tüm cihazlarında Pro rozeti</span></li>
+        <li><span>🤖</span> <span><b>Sınırsız AI Öğretmen &amp; Rol Yapma:</b> Günlük 5 mesaj sınırı olmadan 7/24 sohbet ve gerçek hayat diyalogları</span></li>
+        <li><span>🎯</span> <span><b>Hatalardan Özel AI Ders &amp; Analiz:</b> Yanlış yaptığın kelimelerden anında kişiye özel test üretimi</span></li>
+        <li><span>🧊</span> <span><b>Seri Koruma (Streak Freeze):</b> Gün kaçırsan bile öğrenme serin sıfırlanmaz</span></li>
+        <li><span>📱</span> <span><b>Akıllı Widget &amp; C1–C2 Erken Erişim:</b> Zorlandığın kelimelere odaklı ana ekran kartı + ileri seviyelere ilk erişim</span></li>
       </ul>
 
       <div class="pro-plan-grid" id="proPlanGrid">
-        <div class="pro-plan-card" data-plan="weekly">
-          <div class="muted small" style="font-weight:700;">Haftalık Paket</div>
-          <div style="font-size:1.25rem;font-weight:900;margin:4px 0;">₺49,99</div>
-          <div class="muted small">Haftalık esnek ödeme</div>
-        </div>
-        <div class="pro-plan-card selected" data-plan="monthly">
-          <span class="pro-plan-tag">%40 İNDİRİM</span>
+        <div class="pro-plan-card" data-plan="monthly">
           <div class="muted small" style="font-weight:700;">Aylık Paket</div>
-          <div style="font-size:1.25rem;font-weight:900;margin:4px 0;">₺119,99</div>
-          <div class="muted small">₺29,99 / hafta'ya gelir</div>
+          <div style="font-size:1.25rem;font-weight:900;margin:4px 0;">₺89,99</div>
+          <div class="muted small">İstediğin zaman iptal et</div>
+        </div>
+        <div class="pro-plan-card selected" data-plan="yearly">
+          <span class="pro-plan-tag">%45 İNDİRİM · 7 GÜN ÜCRETSİZ</span>
+          <div class="muted small" style="font-weight:700;">Yıllık Paket</div>
+          <div style="font-size:1.25rem;font-weight:900;margin:4px 0;">₺599,99</div>
+          <div class="muted small">Aylık sadece ₺49,99'a gelir</div>
         </div>
       </div>
 
       <button type="button" class="btn btn-primary" id="confirmProPurchaseBtn" style="width:100%;padding:13px 18px;font-size:1rem;background:linear-gradient(135deg,#F59E0B,#EC4899);border:none;color:#fff;">
-        👑 PatiLingo Pro'yu Başlat (Demo Aktif Et)
+        👑 7 Gün Ücretsiz Dene (Beta Önizleme)
       </button>
       <button type="button" class="btn btn-ghost sm" id="cancelProModalBtn" style="width:100%;margin-top:8px;">
-        Şimdilik Ücretsiz Devam Et (Yarın Yenilenir)
+        Şimdilik Ücretsiz Devam Et (Günde ${quota.limit} AI Mesajı)
       </button>
     </div>
   `);

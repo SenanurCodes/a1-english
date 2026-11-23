@@ -3366,6 +3366,16 @@ function screenSettings() {
               : `<button class="btn btn-ghost sm" id="settingsLogoutBtn">🚪 Çıkış Yap</button>`}
           </div>
         </div>
+
+        <div style="margin-top:10px;padding:12px 14px;background:linear-gradient(135deg, rgba(245,158,11,0.12), rgba(236,72,153,0.10));border-radius:14px;border:1px solid rgba(245,158,11,0.32);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <div>
+            <b style="font-size:0.92rem;">👑 ${typeof isProUser === 'function' && isProUser() ? 'PatiLingo Pro Aktif' : 'PatiLingo Pro'}</b>
+            <p class="muted small" style="margin:2px 0 0;">${typeof isProUser === 'function' && isProUser() ? 'Sınırsız AI Öğretmen ve 🧊 Seri Koruma açık.' : 'Sınırsız AI sohbet, seri koruma ve akıllı widget.'}</p>
+          </div>
+          ${typeof isProUser === 'function' && isProUser()
+            ? `<span class="badge" style="background:#F59E0B;color:#fff;font-weight:800;">PRO ✨</span>`
+            : `<button class="btn btn-primary sm" id="settingsProBtn" style="background:linear-gradient(135deg,#F59E0B,#EC4899);border:none;color:#fff;">İncele →</button>`}
+        </div>
       </div>
 
       <!-- Yoldaş Hayvan Seçimi -->
@@ -3513,6 +3523,9 @@ function screenSettings() {
 
   if ($('#settingsAuthBtn')) {
     $('#settingsAuthBtn').onclick = () => openAuthModal();
+  }
+  if ($('#settingsProBtn') && typeof openProUpgradeModal === 'function') {
+    $('#settingsProBtn').onclick = () => openProUpgradeModal();
   }
   if ($('#settingsLogoutBtn')) {
     $('#settingsLogoutBtn').onclick = async () => {

@@ -766,6 +766,8 @@ function addXP(amount) {
 function currentStreak() {
   const { count, last } = state.streak;
   if (last === todayStr() || last === daysAgoStr(1)) return count;
+  const proActive = (typeof isProUser === 'function' && isProUser()) || Boolean(state?.settings?.isPro);
+  if (proActive && count > 0 && last === daysAgoStr(2)) return count;
   return 0;
 }
 
