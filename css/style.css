@@ -4069,28 +4069,108 @@ b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; 
   font-size: 0.82rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .home-page-clean {
-    padding: 10px 10px 84px;
+    padding: 8px 10px 82px;
+  }
+  .guest-warning-banner {
+    padding: 6px 10px;
+    font-size: 0.76rem;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .guest-warning-banner .gwb-btn {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+  .home-hero-head {
+    margin-bottom: 10px;
+  }
+  .home-hero-title {
+    font-size: 1.06rem !important;
+  }
+  .home-hero-sub {
+    font-size: 0.74rem !important;
+  }
+  /* Mobil üst barda zaten seri ve XP göründüğü için ana sayfa başlığındaki tekrarı gizle */
+  .home-hero-badges {
+    display: none;
+  }
+  .home-focus-card {
+    padding: 13px 14px 12px !important;
+    border-radius: 16px !important;
+    margin-bottom: 10px !important;
+  }
+  .hfc-meta {
+    margin-bottom: 4px;
+  }
+  .hfc-meta .badge,
+  .hfc-meta span {
+    font-size: 0.7rem !important;
   }
   .hfc-title {
-    font-size: 1.1rem !important;
+    font-size: 1.02rem !important;
+    margin-bottom: 3px;
   }
-  .hfc-actions .btn {
+  .hfc-desc {
+    font-size: 0.78rem !important;
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .hfc-actions {
+    margin-bottom: 10px;
+  }
+  .hfc-actions .btn,
+  .hfc-play-btn {
     padding: 10px 12px !important;
-    font-size: 0.86rem !important;
+    font-size: 0.88rem !important;
+    border-radius: 12px !important;
+  }
+  .hfc-goal-wrap {
+    padding-top: 8px;
+  }
+  .hfc-goal-meta {
+    font-size: 0.72rem;
+    margin-bottom: 4px;
   }
   .home-quick-grid {
     gap: 6px;
+    margin-bottom: 10px;
   }
   .home-quick-card {
-    padding: 10px 6px !important;
+    padding: 8px 5px !important;
+    border-radius: 13px !important;
   }
   .hqc-icon {
-    font-size: 1.35rem;
+    font-size: 1.2rem;
+    margin-bottom: 3px;
   }
   .hqc-info b {
-    font-size: 0.76rem;
+    font-size: 0.73rem;
+  }
+  .hqc-info span {
+    font-size: 0.63rem;
+    line-height: 1.2;
+  }
+  .home-wotd-clean {
+    padding: 9px 12px !important;
+    border-radius: 14px !important;
+  }
+  .hwc-head {
+    margin-bottom: 4px;
+  }
+  .hwc-body {
+    gap: 8px;
+  }
+  .hwc-emoji {
+    font-size: 1.45rem;
+  }
+  .hwc-en {
+    font-size: 0.94rem;
+  }
+  .hwc-tr {
+    font-size: 0.75rem;
   }
 }
 
