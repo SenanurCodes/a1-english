@@ -26,8 +26,7 @@ const MORE_LINKS = [
   { id: 'leaderboard', icon: icon('trophy'), title: 'Rekabet & Liderlik', desc: 'Arkadaşlarınla yarış ve skorunu paylaş' },
   { id: 'progress', icon: icon('chart'), title: 'İlerleme Grafiği', desc: 'Haftalık XP ve ünite başarı tablosu' },
   { id: 'ai', icon: icon('bot'), title: 'AI Öğretmen (İsteğe Bağlı)', desc: 'Kendi ücretsiz Gemini anahtarınla sohbet pratiği' },
-  { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, maskot, tema ve ses hızı' },
-  { id: 'privacy', icon: '📄', title: 'Gizlilik Politikası', desc: 'Google Play & KVKK / GDPR Uyumlu Bildirim', external: 'privacy.html' }
+  { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, maskot, tema ve ses hızı' }
 ];
 
 function pushOverlayHistoryState(overlayType) {
@@ -136,9 +135,6 @@ function renderNav(active) {
                <span style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;">${esc(state.auth?.user?.displayName || state.name)}</span>
              </button>`
         }
-        <div style="display:flex;justify-content:center;margin-top:2px;">
-          <a href="privacy.html" target="_blank" rel="noopener" class="muted small" style="text-decoration:none;font-size:0.75rem;opacity:0.8;">📄 Gizlilik Politikası</a>
-        </div>
       </div>
     </div>
 
