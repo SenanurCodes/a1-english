@@ -1,0 +1,5618 @@
+[
+  {
+    "en": "hello",
+    "tr": "merhaba",
+    "emoji": "👋",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hi",
+    "tr": "selam",
+    "emoji": "🙋",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "good morning",
+    "tr": "günaydın",
+    "emoji": "🌅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "good afternoon",
+    "tr": "tünaydın",
+    "emoji": "☀️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "good evening",
+    "tr": "iyi akşamlar",
+    "emoji": "🌆",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "good night",
+    "tr": "iyi geceler",
+    "emoji": "🌙",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "goodbye",
+    "tr": "hoşça kal",
+    "emoji": "🚶",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "see you",
+    "tr": "görüşürüz",
+    "emoji": "😉",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thank you",
+    "tr": "teşekkür ederim",
+    "emoji": "🙏",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "please",
+    "tr": "lütfen",
+    "emoji": "🥺",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sorry",
+    "tr": "özür dilerim",
+    "emoji": "😔",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "yes",
+    "tr": "evet",
+    "emoji": "✅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "no",
+    "tr": "hayır",
+    "emoji": "❌",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "excuse me",
+    "tr": "affedersiniz",
+    "emoji": "🙋‍♂️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "how are you",
+    "tr": "nasılsın",
+    "emoji": "🤔",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fine",
+    "tr": "iyi",
+    "emoji": "🙂",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "nice to meet you",
+    "tr": "tanıştığıma memnun oldum",
+    "emoji": "🤝",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "welcome",
+    "tr": "hoş geldin",
+    "emoji": "🎉",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "zero",
+    "tr": "sıfır",
+    "emoji": "0️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "one",
+    "tr": "bir",
+    "emoji": "1️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "two",
+    "tr": "iki",
+    "emoji": "2️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "three",
+    "tr": "üç",
+    "emoji": "3️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "four",
+    "tr": "dört",
+    "emoji": "4️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "five",
+    "tr": "beş",
+    "emoji": "5️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "six",
+    "tr": "altı",
+    "emoji": "6️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seven",
+    "tr": "yedi",
+    "emoji": "7️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eight",
+    "tr": "sekiz",
+    "emoji": "8️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "nine",
+    "tr": "dokuz",
+    "emoji": "9️⃣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ten",
+    "tr": "on",
+    "emoji": "🔟",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eleven",
+    "tr": "on bir",
+    "emoji": "11",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twelve",
+    "tr": "on iki",
+    "emoji": "12",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirteen",
+    "tr": "on üç",
+    "emoji": "13",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fourteen",
+    "tr": "on dört",
+    "emoji": "14",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifteen",
+    "tr": "on beş",
+    "emoji": "15",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixteen",
+    "tr": "on altı",
+    "emoji": "16",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventeen",
+    "tr": "on yedi",
+    "emoji": "17",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighteen",
+    "tr": "on sekiz",
+    "emoji": "18",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "nineteen",
+    "tr": "on dokuz",
+    "emoji": "19",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty",
+    "tr": "yirmi",
+    "emoji": "20",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-one",
+    "tr": "yirmi bir",
+    "emoji": "21",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-two",
+    "tr": "yirmi iki",
+    "emoji": "22",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-three",
+    "tr": "yirmi üç",
+    "emoji": "23",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-four",
+    "tr": "yirmi dört",
+    "emoji": "24",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-five",
+    "tr": "yirmi beş",
+    "emoji": "25",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-six",
+    "tr": "yirmi altı",
+    "emoji": "26",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-seven",
+    "tr": "yirmi yedi",
+    "emoji": "27",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-eight",
+    "tr": "yirmi sekiz",
+    "emoji": "28",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-nine",
+    "tr": "yirmi dokuz",
+    "emoji": "29",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty",
+    "tr": "otuz",
+    "emoji": "30",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-one",
+    "tr": "otuz bir",
+    "emoji": "31",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-two",
+    "tr": "otuz iki",
+    "emoji": "32",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-three",
+    "tr": "otuz üç",
+    "emoji": "33",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-four",
+    "tr": "otuz dört",
+    "emoji": "34",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-five",
+    "tr": "otuz beş",
+    "emoji": "35",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-six",
+    "tr": "otuz altı",
+    "emoji": "36",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-seven",
+    "tr": "otuz yedi",
+    "emoji": "37",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-eight",
+    "tr": "otuz sekiz",
+    "emoji": "38",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-nine",
+    "tr": "otuz dokuz",
+    "emoji": "39",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty",
+    "tr": "kırk",
+    "emoji": "40",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-one",
+    "tr": "kırk bir",
+    "emoji": "41",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-two",
+    "tr": "kırk iki",
+    "emoji": "42",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-three",
+    "tr": "kırk üç",
+    "emoji": "43",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-four",
+    "tr": "kırk dört",
+    "emoji": "44",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-five",
+    "tr": "kırk beş",
+    "emoji": "45",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-six",
+    "tr": "kırk altı",
+    "emoji": "46",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-seven",
+    "tr": "kırk yedi",
+    "emoji": "47",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-eight",
+    "tr": "kırk sekiz",
+    "emoji": "48",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "forty-nine",
+    "tr": "kırk dokuz",
+    "emoji": "49",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty",
+    "tr": "elli",
+    "emoji": "50",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-one",
+    "tr": "elli bir",
+    "emoji": "51",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-two",
+    "tr": "elli iki",
+    "emoji": "52",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-three",
+    "tr": "elli üç",
+    "emoji": "53",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-four",
+    "tr": "elli dört",
+    "emoji": "54",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-five",
+    "tr": "elli beş",
+    "emoji": "55",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-six",
+    "tr": "elli altı",
+    "emoji": "56",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-seven",
+    "tr": "elli yedi",
+    "emoji": "57",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-eight",
+    "tr": "elli sekiz",
+    "emoji": "58",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty-nine",
+    "tr": "elli dokuz",
+    "emoji": "59",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty",
+    "tr": "altmış",
+    "emoji": "60",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-one",
+    "tr": "altmış bir",
+    "emoji": "61",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-two",
+    "tr": "altmış iki",
+    "emoji": "62",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-three",
+    "tr": "altmış üç",
+    "emoji": "63",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-four",
+    "tr": "altmış dört",
+    "emoji": "64",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-five",
+    "tr": "altmış beş",
+    "emoji": "65",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-six",
+    "tr": "altmış altı",
+    "emoji": "66",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-seven",
+    "tr": "altmış yedi",
+    "emoji": "67",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-eight",
+    "tr": "altmış sekiz",
+    "emoji": "68",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixty-nine",
+    "tr": "altmış dokuz",
+    "emoji": "69",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy",
+    "tr": "yetmiş",
+    "emoji": "70",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-one",
+    "tr": "yetmiş bir",
+    "emoji": "71",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-two",
+    "tr": "yetmiş iki",
+    "emoji": "72",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-three",
+    "tr": "yetmiş üç",
+    "emoji": "73",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-four",
+    "tr": "yetmiş dört",
+    "emoji": "74",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-five",
+    "tr": "yetmiş beş",
+    "emoji": "75",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-six",
+    "tr": "yetmiş altı",
+    "emoji": "76",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-seven",
+    "tr": "yetmiş yedi",
+    "emoji": "77",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-eight",
+    "tr": "yetmiş sekiz",
+    "emoji": "78",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventy-nine",
+    "tr": "yetmiş dokuz",
+    "emoji": "79",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty",
+    "tr": "seksen",
+    "emoji": "80",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-one",
+    "tr": "seksen bir",
+    "emoji": "81",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-two",
+    "tr": "seksen iki",
+    "emoji": "82",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-three",
+    "tr": "seksen üç",
+    "emoji": "83",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-four",
+    "tr": "seksen dört",
+    "emoji": "84",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-five",
+    "tr": "seksen beş",
+    "emoji": "85",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-six",
+    "tr": "seksen altı",
+    "emoji": "86",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-seven",
+    "tr": "seksen yedi",
+    "emoji": "87",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-eight",
+    "tr": "seksen sekiz",
+    "emoji": "88",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighty-nine",
+    "tr": "seksen dokuz",
+    "emoji": "89",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety",
+    "tr": "doksan",
+    "emoji": "90",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-one",
+    "tr": "doksan bir",
+    "emoji": "91",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-two",
+    "tr": "doksan iki",
+    "emoji": "92",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-three",
+    "tr": "doksan üç",
+    "emoji": "93",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-four",
+    "tr": "doksan dört",
+    "emoji": "94",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-five",
+    "tr": "doksan beş",
+    "emoji": "95",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-six",
+    "tr": "doksan altı",
+    "emoji": "96",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-seven",
+    "tr": "doksan yedi",
+    "emoji": "97",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-eight",
+    "tr": "doksan sekiz",
+    "emoji": "98",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninety-nine",
+    "tr": "doksan dokuz",
+    "emoji": "99",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "one hundred",
+    "tr": "yüz",
+    "emoji": "💯",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "red",
+    "tr": "kırmızı",
+    "emoji": "🔴",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "blue",
+    "tr": "mavi",
+    "emoji": "🔵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "green",
+    "tr": "yeşil",
+    "emoji": "🟢",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "yellow",
+    "tr": "sarı",
+    "emoji": "🟡",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "orange",
+    "tr": "turuncu",
+    "emoji": "🟠",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "purple",
+    "tr": "mor",
+    "emoji": "🟣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "black",
+    "tr": "siyah",
+    "emoji": "⚫",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "white",
+    "tr": "beyaz",
+    "emoji": "⚪",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "brown",
+    "tr": "kahverengi",
+    "emoji": "🟤",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "pink",
+    "tr": "pembe",
+    "emoji": "🌸",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "grey",
+    "tr": "gri",
+    "emoji": "🐘",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "colour",
+    "tr": "renk",
+    "emoji": "🎨",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "mother",
+    "tr": "anne",
+    "emoji": "👩",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "father",
+    "tr": "baba",
+    "emoji": "👨",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sister",
+    "tr": "kız kardeş",
+    "emoji": "👧",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "brother",
+    "tr": "erkek kardeş",
+    "emoji": "👦",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "grandmother",
+    "tr": "büyükanne",
+    "emoji": "👵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "grandfather",
+    "tr": "büyükbaba",
+    "emoji": "👴",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "parents",
+    "tr": "ebeveynler",
+    "emoji": "👫",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "son",
+    "tr": "oğul",
+    "emoji": "🧒",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "daughter",
+    "tr": "kız evlat",
+    "emoji": "👧",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "baby",
+    "tr": "bebek",
+    "emoji": "👶",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "uncle",
+    "tr": "amca / dayı",
+    "emoji": "🧔",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "aunt",
+    "tr": "teyze / hala",
+    "emoji": "👩‍🦰",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cousin",
+    "tr": "kuzen",
+    "emoji": "🧑",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "husband",
+    "tr": "koca",
+    "emoji": "🤵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "wife",
+    "tr": "eş (kadın)",
+    "emoji": "👰",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "family",
+    "tr": "aile",
+    "emoji": "👨‍👩‍👧‍👦",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "Monday",
+    "tr": "Pazartesi",
+    "emoji": "📅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "Tuesday",
+    "tr": "Salı",
+    "emoji": "📅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "Wednesday",
+    "tr": "Çarşamba",
+    "emoji": "📅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "Thursday",
+    "tr": "Perşembe",
+    "emoji": "📅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "Friday",
+    "tr": "Cuma",
+    "emoji": "📅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "Saturday",
+    "tr": "Cumartesi",
+    "emoji": "🎈",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "Sunday",
+    "tr": "Pazar",
+    "emoji": "🎈",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "January",
+    "tr": "Ocak",
+    "emoji": "❄️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "February",
+    "tr": "Şubat",
+    "emoji": "💘",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "March",
+    "tr": "Mart",
+    "emoji": "🌱",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "April",
+    "tr": "Nisan",
+    "emoji": "🌷",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "May",
+    "tr": "Mayıs",
+    "emoji": "🌼",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "June",
+    "tr": "Haziran",
+    "emoji": "🍓",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "July",
+    "tr": "Temmuz",
+    "emoji": "🏖️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "August",
+    "tr": "Ağustos",
+    "emoji": "🍉",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "September",
+    "tr": "Eylül",
+    "emoji": "🎒",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "October",
+    "tr": "Ekim",
+    "emoji": "🎃",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "November",
+    "tr": "Kasım",
+    "emoji": "🍂",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "December",
+    "tr": "Aralık",
+    "emoji": "🎄",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "spring",
+    "tr": "ilkbahar",
+    "emoji": "🌸",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "summer",
+    "tr": "yaz",
+    "emoji": "☀️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "autumn",
+    "tr": "sonbahar",
+    "emoji": "🍁",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "winter",
+    "tr": "kış",
+    "emoji": "⛄",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "week",
+    "tr": "hafta",
+    "emoji": "🗓️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "year",
+    "tr": "yıl",
+    "emoji": "🎆",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bread",
+    "tr": "ekmek",
+    "emoji": "🍞",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "water",
+    "tr": "su",
+    "emoji": "💧",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "milk",
+    "tr": "süt",
+    "emoji": "🥛",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "apple",
+    "tr": "elma",
+    "emoji": "🍎",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "banana",
+    "tr": "muz",
+    "emoji": "🍌",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "egg",
+    "tr": "yumurta",
+    "emoji": "🥚",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cheese",
+    "tr": "peynir",
+    "emoji": "🧀",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "tea",
+    "tr": "çay",
+    "emoji": "🍵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "coffee",
+    "tr": "kahve",
+    "emoji": "☕",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "juice",
+    "tr": "meyve suyu",
+    "emoji": "🧃",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "chicken",
+    "tr": "tavuk eti",
+    "emoji": "🍗",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fish",
+    "tr": "balık",
+    "emoji": "🐟",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "rice",
+    "tr": "pirinç / pilav",
+    "emoji": "🍚",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "soup",
+    "tr": "çorba",
+    "emoji": "🍲",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cake",
+    "tr": "pasta / kek",
+    "emoji": "🍰",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "tomato",
+    "tr": "domates",
+    "emoji": "🍅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "potato",
+    "tr": "patates",
+    "emoji": "🥔",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "breakfast",
+    "tr": "kahvaltı",
+    "emoji": "🍳",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "dinner",
+    "tr": "akşam yemeği",
+    "emoji": "🍽️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "head",
+    "tr": "baş / kafa",
+    "emoji": "🙂",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eye",
+    "tr": "göz",
+    "emoji": "👁️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ear",
+    "tr": "kulak",
+    "emoji": "👂",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "nose",
+    "tr": "burun",
+    "emoji": "👃",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "mouth",
+    "tr": "ağız",
+    "emoji": "👄",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "tooth",
+    "tr": "diş",
+    "emoji": "🦷",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hair",
+    "tr": "saç",
+    "emoji": "💇",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hand",
+    "tr": "el",
+    "emoji": "✋",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "arm",
+    "tr": "kol",
+    "emoji": "💪",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "leg",
+    "tr": "bacak",
+    "emoji": "🦵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "foot",
+    "tr": "ayak",
+    "emoji": "🦶",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "finger",
+    "tr": "parmak",
+    "emoji": "☝️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "face",
+    "tr": "yüz",
+    "emoji": "😊",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "heart",
+    "tr": "kalp",
+    "emoji": "❤️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "shirt",
+    "tr": "gömlek",
+    "emoji": "👔",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "T-shirt",
+    "tr": "tişört",
+    "emoji": "👕",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "trousers",
+    "tr": "pantolon",
+    "emoji": "👖",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "dress",
+    "tr": "elbise",
+    "emoji": "👗",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "skirt",
+    "tr": "etek",
+    "emoji": "🩱",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "shoes",
+    "tr": "ayakkabı",
+    "emoji": "👟",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "socks",
+    "tr": "çorap",
+    "emoji": "🧦",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hat",
+    "tr": "şapka",
+    "emoji": "🎩",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "coat",
+    "tr": "palto / mont",
+    "emoji": "🧥",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "scarf",
+    "tr": "atkı",
+    "emoji": "🧣",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "gloves",
+    "tr": "eldiven",
+    "emoji": "🧤",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bag",
+    "tr": "çanta",
+    "emoji": "👜",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "glasses",
+    "tr": "gözlük",
+    "emoji": "👓",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "boots",
+    "tr": "bot / çizme",
+    "emoji": "👢",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "wake up",
+    "tr": "uyanmak",
+    "emoji": "⏰",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "get up",
+    "tr": "kalkmak",
+    "emoji": "🛏️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "have breakfast",
+    "tr": "kahvaltı yapmak",
+    "emoji": "🍳",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "brush my teeth",
+    "tr": "dişlerimi fırçalamak",
+    "emoji": "🪥",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "take a shower",
+    "tr": "duş almak",
+    "emoji": "🚿",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "get dressed",
+    "tr": "giyinmek",
+    "emoji": "👕",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "go to school",
+    "tr": "okula gitmek",
+    "emoji": "🏫",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "go to work",
+    "tr": "işe gitmek",
+    "emoji": "💼",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "have lunch",
+    "tr": "öğle yemeği yemek",
+    "emoji": "🥪",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "come home",
+    "tr": "eve gelmek",
+    "emoji": "🏠",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "do homework",
+    "tr": "ödev yapmak",
+    "emoji": "📚",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "watch TV",
+    "tr": "televizyon izlemek",
+    "emoji": "📺",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "go to bed",
+    "tr": "yatmak",
+    "emoji": "😴",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "o'clock",
+    "tr": "saat (tam)",
+    "emoji": "🕐",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "half past",
+    "tr": "buçuk",
+    "emoji": "🕧",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "quarter past",
+    "tr": "çeyrek geçe",
+    "emoji": "🕒",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "morning",
+    "tr": "sabah",
+    "emoji": "🌅",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "evening",
+    "tr": "akşam",
+    "emoji": "🌆",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "house",
+    "tr": "ev",
+    "emoji": "🏠",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "kitchen",
+    "tr": "mutfak",
+    "emoji": "🍳",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bedroom",
+    "tr": "yatak odası",
+    "emoji": "🛏️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bathroom",
+    "tr": "banyo",
+    "emoji": "🛁",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "living room",
+    "tr": "oturma odası",
+    "emoji": "🛋️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "garden",
+    "tr": "bahçe",
+    "emoji": "🌳",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "door",
+    "tr": "kapı",
+    "emoji": "🚪",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "window",
+    "tr": "pencere",
+    "emoji": "🪟",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "table",
+    "tr": "masa",
+    "emoji": "🍽️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "chair",
+    "tr": "sandalye",
+    "emoji": "🪑",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bed",
+    "tr": "yatak",
+    "emoji": "🛌",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sofa",
+    "tr": "kanepe",
+    "emoji": "🛋️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "lamp",
+    "tr": "lamba",
+    "emoji": "💡",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fridge",
+    "tr": "buzdolabı",
+    "emoji": "🧊",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "stairs",
+    "tr": "merdiven",
+    "emoji": "🪜",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "wall",
+    "tr": "duvar",
+    "emoji": "🧱",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cat",
+    "tr": "kedi",
+    "emoji": "🐱",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "dog",
+    "tr": "köpek",
+    "emoji": "🐶",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bird",
+    "tr": "kuş",
+    "emoji": "🐦",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "horse",
+    "tr": "at",
+    "emoji": "🐴",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cow",
+    "tr": "inek",
+    "emoji": "🐄",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sheep",
+    "tr": "koyun",
+    "emoji": "🐑",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "rabbit",
+    "tr": "tavşan",
+    "emoji": "🐰",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "mouse",
+    "tr": "fare",
+    "emoji": "🐭",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "lion",
+    "tr": "aslan",
+    "emoji": "🦁",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "elephant",
+    "tr": "fil",
+    "emoji": "🐘",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "monkey",
+    "tr": "maymun",
+    "emoji": "🐵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bear",
+    "tr": "ayı",
+    "emoji": "🐻",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "snake",
+    "tr": "yılan",
+    "emoji": "🐍",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "duck",
+    "tr": "ördek",
+    "emoji": "🦆",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "teacher",
+    "tr": "öğretmen",
+    "emoji": "👩‍🏫",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "doctor",
+    "tr": "doktor",
+    "emoji": "👨‍⚕️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "nurse",
+    "tr": "hemşire",
+    "emoji": "👩‍⚕️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "student",
+    "tr": "öğrenci",
+    "emoji": "🧑‍🎓",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "police officer",
+    "tr": "polis memuru",
+    "emoji": "👮",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cook",
+    "tr": "aşçı",
+    "emoji": "👨‍🍳",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "farmer",
+    "tr": "çiftçi",
+    "emoji": "👨‍🌾",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "driver",
+    "tr": "şoför",
+    "emoji": "🚕",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "engineer",
+    "tr": "mühendis",
+    "emoji": "👷",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "singer",
+    "tr": "şarkıcı",
+    "emoji": "🎤",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "waiter",
+    "tr": "garson",
+    "emoji": "🤵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "firefighter",
+    "tr": "itfaiyeci",
+    "emoji": "🧑‍🚒",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "pilot",
+    "tr": "pilot",
+    "emoji": "👨‍✈️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "dentist",
+    "tr": "diş hekimi",
+    "emoji": "🦷",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "artist",
+    "tr": "sanatçı",
+    "emoji": "🎨",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sunny",
+    "tr": "güneşli",
+    "emoji": "☀️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "rainy",
+    "tr": "yağmurlu",
+    "emoji": "🌧️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cloudy",
+    "tr": "bulutlu",
+    "emoji": "☁️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "windy",
+    "tr": "rüzgarlı",
+    "emoji": "💨",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "snowy",
+    "tr": "karlı",
+    "emoji": "🌨️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hot",
+    "tr": "sıcak",
+    "emoji": "🥵",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cold",
+    "tr": "soğuk",
+    "emoji": "🥶",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "warm",
+    "tr": "ılık",
+    "emoji": "🌤️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "rain",
+    "tr": "yağmur",
+    "emoji": "☔",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "snow",
+    "tr": "kar",
+    "emoji": "☃️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sun",
+    "tr": "güneş",
+    "emoji": "🌞",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "storm",
+    "tr": "fırtına",
+    "emoji": "⛈️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "rainbow",
+    "tr": "gökkuşağı",
+    "emoji": "🌈",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "weather",
+    "tr": "hava durumu",
+    "emoji": "🌦️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "school",
+    "tr": "okul",
+    "emoji": "🏫",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hospital",
+    "tr": "hastane",
+    "emoji": "🏥",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "park",
+    "tr": "park",
+    "emoji": "🏞️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "shop",
+    "tr": "dükkan",
+    "emoji": "🏪",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "supermarket",
+    "tr": "süpermarket",
+    "emoji": "🛒",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bank",
+    "tr": "banka",
+    "emoji": "🏦",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "restaurant",
+    "tr": "restoran",
+    "emoji": "🍝",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cinema",
+    "tr": "sinema",
+    "emoji": "🎬",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "library",
+    "tr": "kütüphane",
+    "emoji": "📚",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "station",
+    "tr": "istasyon",
+    "emoji": "🚉",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "airport",
+    "tr": "havalimanı",
+    "emoji": "✈️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "street",
+    "tr": "sokak",
+    "emoji": "🛣️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bus",
+    "tr": "otobüs",
+    "emoji": "🚌",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "car",
+    "tr": "araba",
+    "emoji": "🚗",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "train",
+    "tr": "tren",
+    "emoji": "🚆",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bike",
+    "tr": "bisiklet",
+    "emoji": "🚲",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "left",
+    "tr": "sol",
+    "emoji": "⬅️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "right",
+    "tr": "sağ",
+    "emoji": "➡️",
+    "level": "A1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "two hundred",
+    "tr": "iki yüz (200)",
+    "emoji": "2️⃣0️⃣0️⃣",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "five hundred",
+    "tr": "beş yüz (500)",
+    "emoji": "5️⃣0️⃣0️⃣",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "one thousand",
+    "tr": "bin (1.000)",
+    "emoji": "1️⃣0️⃣0️⃣0️⃣",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "two thousand",
+    "tr": "iki bin (2.000)",
+    "emoji": "2️⃣0️⃣0️⃣0️⃣",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ten thousand",
+    "tr": "on bin (10.000)",
+    "emoji": "🔟0️⃣0️⃣0️⃣",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifty thousand",
+    "tr": "elli bin (50.000)",
+    "emoji": "5️⃣0️⃣k",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "one hundred thousand",
+    "tr": "yüz bin (100.000)",
+    "emoji": "💯k",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "one million",
+    "tr": "bir milyon (1.000.000)",
+    "emoji": "💎",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "one billion",
+    "tr": "bir milyar",
+    "emoji": "🪐",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "first",
+    "tr": "birinci / ilk (1st)",
+    "emoji": "🥇",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "second",
+    "tr": "ikinci (2nd)",
+    "emoji": "🥈",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "third",
+    "tr": "üçüncü (3rd)",
+    "emoji": "🥉",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fourth",
+    "tr": "dördüncü (4th)",
+    "emoji": "4️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifth",
+    "tr": "beşinci (5th)",
+    "emoji": "5️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sixth",
+    "tr": "altıncı (6th)",
+    "emoji": "6️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "seventh",
+    "tr": "yedinci (7th)",
+    "emoji": "7️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eighth",
+    "tr": "sekizinci (8th)",
+    "emoji": "8️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ninth",
+    "tr": "dokuzuncu (9th)",
+    "emoji": "9️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "tenth",
+    "tr": "onuncu (10th)",
+    "emoji": "🔟th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eleventh",
+    "tr": "on birinci (11th)",
+    "emoji": "1️⃣1️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twelfth",
+    "tr": "on ikinci (12th)",
+    "emoji": "1️⃣2️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirteenth",
+    "tr": "on üçüncü (13th)",
+    "emoji": "1️⃣3️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fourteenth",
+    "tr": "on dördüncü (14th)",
+    "emoji": "1️⃣4️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fifteenth",
+    "tr": "on beşinci (15th)",
+    "emoji": "1️⃣5️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twentieth",
+    "tr": "yirminci (20th)",
+    "emoji": "2️⃣0️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-first",
+    "tr": "yirmi birinci (21st)",
+    "emoji": "2️⃣1️⃣st",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "twenty-second",
+    "tr": "yirmi ikinci (22nd)",
+    "emoji": "2️⃣2️⃣nd",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirtieth",
+    "tr": "otuzuncu (30th)",
+    "emoji": "3️⃣0️⃣th",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thirty-first",
+    "tr": "otuz birinci (31st)",
+    "emoji": "3️⃣1️⃣st",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "half",
+    "tr": "yarım / buçuk",
+    "emoji": "½",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "quarter",
+    "tr": "çeyrek",
+    "emoji": "¼",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "percent",
+    "tr": "yüzde (%)",
+    "emoji": "％",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "double",
+    "tr": "çift / iki katı",
+    "emoji": "✖️2",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "century",
+    "tr": "yüzyıl / asır",
+    "emoji": "🏛️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "date",
+    "tr": "tarih",
+    "emoji": "📅",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "passport",
+    "tr": "pasaport",
+    "emoji": "🛂",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "boarding pass",
+    "tr": "biniş kartı",
+    "emoji": "🎫",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "flight",
+    "tr": "uçuş",
+    "emoji": "🛫",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "luggage",
+    "tr": "bagaj",
+    "emoji": "🧳",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "suitcase",
+    "tr": "bavul",
+    "emoji": "💼",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "departure",
+    "tr": "kalkış",
+    "emoji": "🛫",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "arrival",
+    "tr": "varış",
+    "emoji": "🛬",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ticket",
+    "tr": "bilet",
+    "emoji": "🎟️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "gate",
+    "tr": "kapı (uçuş kapısı)",
+    "emoji": "🚪",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "passenger",
+    "tr": "yolcu",
+    "emoji": "🧑‍✈️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "delay",
+    "tr": "gecikme / rötar",
+    "emoji": "⏱️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "security",
+    "tr": "güvenlik kontrolü",
+    "emoji": "👮",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "land",
+    "tr": "iniş yapmak",
+    "emoji": "🛬",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "take off",
+    "tr": "havalanmak / kalkmak",
+    "emoji": "🛫",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "journey",
+    "tr": "yolculuk / seyahat",
+    "emoji": "🗺️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "customs",
+    "tr": "gümrük",
+    "emoji": "🛃",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hotel",
+    "tr": "otel",
+    "emoji": "🏨",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "reception",
+    "tr": "resepsiyon",
+    "emoji": "🛎️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "reservation",
+    "tr": "rezervasyon",
+    "emoji": "📋",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "single room",
+    "tr": "tek kişilik oda",
+    "emoji": "🛏️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "double room",
+    "tr": "çift kişilik oda",
+    "emoji": "🛌",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "key card",
+    "tr": "oda kartı / anahtarı",
+    "emoji": "💳",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "check-in",
+    "tr": "giriş yapma",
+    "emoji": "📥",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "check-out",
+    "tr": "çıkış yapma",
+    "emoji": "📤",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "elevator",
+    "tr": "asansör",
+    "emoji": "🛗",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "guest",
+    "tr": "konuk / misafir",
+    "emoji": "👤",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sea view",
+    "tr": "deniz manzarası",
+    "emoji": "🌊",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "breakfast included",
+    "tr": "kahvaltı dahil",
+    "emoji": "🍳",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "swimming pool",
+    "tr": "yüzme havuzu",
+    "emoji": "🏊",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "stay",
+    "tr": "konaklamak / kalmak",
+    "emoji": "🏠",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "available",
+    "tr": "müsait / boşta",
+    "emoji": "✅",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "air conditioning",
+    "tr": "klima",
+    "emoji": "❄️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "waitress",
+    "tr": "garson (kadın)",
+    "emoji": "👩‍🍳",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "menu",
+    "tr": "menü",
+    "emoji": "📜",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "order",
+    "tr": "sipariş vermek",
+    "emoji": "📝",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bill",
+    "tr": "hesap / adisyon",
+    "emoji": "🧾",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "appetizer",
+    "tr": "başlangıç / meze",
+    "emoji": "🥗",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "main course",
+    "tr": "ana yemek",
+    "emoji": "🥩",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "dessert",
+    "tr": "tatlı",
+    "emoji": "🍰",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "tip",
+    "tr": "bahşiş",
+    "emoji": "💵",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "delicious",
+    "tr": "lezzetli / nefis",
+    "emoji": "😋",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sparkling water",
+    "tr": "maden suyu",
+    "emoji": "🫧",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "napkin",
+    "tr": "peçete",
+    "emoji": "🧻",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fork and knife",
+    "tr": "çatal ve bıçak",
+    "emoji": "🍴",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "table for two",
+    "tr": "iki kişilik masa",
+    "emoji": "🪑",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "recommend",
+    "tr": "tavsiye etmek / önermek",
+    "emoji": "👍",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ready to order",
+    "tr": "siparişe hazır",
+    "emoji": "🙋",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "price",
+    "tr": "fiyat",
+    "emoji": "🏷️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "discount",
+    "tr": "indirim",
+    "emoji": "🔖",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "customer",
+    "tr": "müşteri",
+    "emoji": "🛍️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cashier",
+    "tr": "kasiyer",
+    "emoji": "🧑‍💼",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "receipt",
+    "tr": "fiş / makbuz",
+    "emoji": "🧾",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cheap",
+    "tr": "ucuz",
+    "emoji": "🪙",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "expensive",
+    "tr": "pahalı",
+    "emoji": "💎",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "size",
+    "tr": "beden / numara",
+    "emoji": "📏",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fitting room",
+    "tr": "soyunma / deneme kabini",
+    "emoji": "🚪",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "credit card",
+    "tr": "kredi kartı",
+    "emoji": "💳",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cash",
+    "tr": "nakit para",
+    "emoji": "💵",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "refund",
+    "tr": "para iadesi",
+    "emoji": "↩️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "on sale",
+    "tr": "indirimde / satışta",
+    "emoji": "🔥",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "buy",
+    "tr": "satın almak",
+    "emoji": "🛒",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sell",
+    "tr": "satmak",
+    "emoji": "🏪",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "turn left",
+    "tr": "sola dön",
+    "emoji": "⬅️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "turn right",
+    "tr": "sağa dön",
+    "emoji": "➡️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "go straight ahead",
+    "tr": "dümdüz ilerle",
+    "emoji": "⬆️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "opposite",
+    "tr": "karşısında",
+    "emoji": "↔️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "next to",
+    "tr": "yanında / bitişiğinde",
+    "emoji": "👉",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "between",
+    "tr": "arasında",
+    "emoji": "🥪",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "traffic lights",
+    "tr": "trafik ışıkları",
+    "emoji": "🚦",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "roundabout",
+    "tr": "dönel kavşak / göbek",
+    "emoji": "🔄",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cross the street",
+    "tr": "karşıya geç",
+    "emoji": "🚶‍♂️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "corner",
+    "tr": "köşe",
+    "emoji": "📐",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "near",
+    "tr": "yakın",
+    "emoji": "📍",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "far",
+    "tr": "uzak",
+    "emoji": "🔭",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bridge",
+    "tr": "köprü",
+    "emoji": "🌉",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bus stop",
+    "tr": "otobüs durağı",
+    "emoji": "🚏",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "map",
+    "tr": "harita",
+    "emoji": "🗺️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "headache",
+    "tr": "baş ağrısı",
+    "emoji": "🤕",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "stomachache",
+    "tr": "karın ağrısı",
+    "emoji": "🤢",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sore throat",
+    "tr": "boğaz ağrısı",
+    "emoji": "🗣️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fever",
+    "tr": "yüksek ateş",
+    "emoji": "🌡️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cough",
+    "tr": "öksürük",
+    "emoji": "😷",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "medicine",
+    "tr": "ilaç",
+    "emoji": "💊",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "pharmacy",
+    "tr": "eczane",
+    "emoji": "🏥",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "painkiller",
+    "tr": "ağrı kesici",
+    "emoji": "💉",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "appointment",
+    "tr": "randevu",
+    "emoji": "📅",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hurt",
+    "tr": "acımak / incinmek",
+    "emoji": "⚡",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "rest",
+    "tr": "dinlenmek",
+    "emoji": "🛌",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "feel sick",
+    "tr": "hasta hissetmek",
+    "emoji": "🤒",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "excited",
+    "tr": "heyecanlı",
+    "emoji": "🤩",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "nervous",
+    "tr": "gergin / endişeli",
+    "emoji": "😰",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "proud",
+    "tr": "gururlu",
+    "emoji": "🦁",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bored",
+    "tr": "canı sıkılmış",
+    "emoji": "🥱",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "angry",
+    "tr": "kızgın / öfkeli",
+    "emoji": "😡",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "polite",
+    "tr": "kibar / nazik",
+    "emoji": "🎩",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "generous",
+    "tr": "cömert / eli açık",
+    "emoji": "🎁",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "confident",
+    "tr": "kendine güvenen",
+    "emoji": "💪",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "patient",
+    "tr": "sabırlı",
+    "emoji": "🧘",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "honest",
+    "tr": "dürüst",
+    "emoji": "🤝",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hardworking",
+    "tr": "çalışkan",
+    "emoji": "🐝",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "lazy",
+    "tr": "tembel",
+    "emoji": "🦥",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "friendly",
+    "tr": "arkadaş canlısı",
+    "emoji": "🤗",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "calm",
+    "tr": "sakin / huzurlu",
+    "emoji": "🌊",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "creative",
+    "tr": "yaratıcı",
+    "emoji": "🎨",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "smartphone",
+    "tr": "akıllı telefon",
+    "emoji": "📱",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "download",
+    "tr": "indirmek",
+    "emoji": "⬇️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "upload",
+    "tr": "yüklemek",
+    "emoji": "⬆️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "password",
+    "tr": "şifre / parola",
+    "emoji": "🔑",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "charger",
+    "tr": "şarj aleti",
+    "emoji": "🔌",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "battery",
+    "tr": "pil / batarya",
+    "emoji": "🔋",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "screen",
+    "tr": "ekran",
+    "emoji": "🖥️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "send message",
+    "tr": "mesaj göndermek",
+    "emoji": "💬",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "attachment",
+    "tr": "ek / dosya eki",
+    "emoji": "📎",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "wireless",
+    "tr": "kablosuz (Wi-Fi)",
+    "emoji": "📶",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "headphones",
+    "tr": "kulaklık",
+    "emoji": "🎧",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "application",
+    "tr": "uygulama (app)",
+    "emoji": "📲",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "website",
+    "tr": "web sitesi",
+    "emoji": "🌐",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "click",
+    "tr": "tıklamak",
+    "emoji": "🖱️",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "connect",
+    "tr": "bağlanmak",
+    "emoji": "🔗",
+    "level": "A2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "applicant",
+    "tr": "başvuru sahibi / aday",
+    "emoji": "👤",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "resume",
+    "tr": "özgeçmiş (CV)",
+    "emoji": "📄",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "promotion",
+    "tr": "terfi / yükselme",
+    "emoji": "📈",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "deadline",
+    "tr": "son teslim tarihi",
+    "emoji": "⏰",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "salary",
+    "tr": "maaş / ücret",
+    "emoji": "💵",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "colleague",
+    "tr": "iş arkadaşı",
+    "emoji": "🤝",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "experience",
+    "tr": "deneyim / tecrübe",
+    "emoji": "🧠",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "skills",
+    "tr": "beceriler / yetenekler",
+    "emoji": "🛠️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "contract",
+    "tr": "sözleşme / kontrat",
+    "emoji": "📝",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "department",
+    "tr": "departman / bölüm",
+    "emoji": "🏢",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "interview",
+    "tr": "mülakat / iş görüşmesi",
+    "emoji": "🎤",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hire",
+    "tr": "işe almak",
+    "emoji": "👔",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "pollution",
+    "tr": "kirlilik",
+    "emoji": "🏭",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "recycle",
+    "tr": "geri dönüştürmek",
+    "emoji": "♻️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "climate change",
+    "tr": "iklim değişikliği",
+    "emoji": "🌡️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "renewable",
+    "tr": "yenilenebilir (enerji)",
+    "emoji": "☀️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "species",
+    "tr": "tür / canlı türü",
+    "emoji": "🐾",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "extinction",
+    "tr": "neslin tükenmesi",
+    "emoji": "🦕",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "deforestation",
+    "tr": "ormansızlaşma",
+    "emoji": "🪓",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ecosystem",
+    "tr": "ekosistem",
+    "emoji": "🌍",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "conservation",
+    "tr": "koruma / muhafaza",
+    "emoji": "🛡️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "drought",
+    "tr": "kuraklık",
+    "emoji": "🏜️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "flood",
+    "tr": "sel / su baskını",
+    "emoji": "🌊",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "waste",
+    "tr": "atık / israf",
+    "emoji": "🗑️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "argument",
+    "tr": "argüman / tartışma",
+    "emoji": "💬",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "perspective",
+    "tr": "bakış açısı",
+    "emoji": "🔭",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "disagree",
+    "tr": "aynı fikirde olmamak",
+    "emoji": "🙅",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "convince",
+    "tr": "ikna etmek",
+    "emoji": "💡",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "evidence",
+    "tr": "kanıt / delil",
+    "emoji": "🔍",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "conclusion",
+    "tr": "sonuç / vargı",
+    "emoji": "📌",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "clarify",
+    "tr": "netleştirmek / açıklamak",
+    "emoji": "✨",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "priority",
+    "tr": "öncelik",
+    "emoji": "⭐",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "propose",
+    "tr": "önermek / teklif etmek",
+    "emoji": "💍",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "solution",
+    "tr": "çözüm",
+    "emoji": "🔑",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "compromise",
+    "tr": "uzlaşma / anlaşma",
+    "emoji": "🤝",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "statement",
+    "tr": "ifade / beyan",
+    "emoji": "📢",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "scholarship",
+    "tr": "burs",
+    "emoji": "📜",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "lecture",
+    "tr": "üniversite dersi / konferans",
+    "emoji": "🧑‍🏫",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "assignment",
+    "tr": "ödev / görev",
+    "emoji": "📑",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "tuition",
+    "tr": "öğrenim harcı",
+    "emoji": "💳",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "campus",
+    "tr": "yerleşke / kampüs",
+    "emoji": "🏫",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "dormitory",
+    "tr": "öğrenci yurdu",
+    "emoji": "🛏️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "curriculum",
+    "tr": "müfredat / öğretim programı",
+    "emoji": "📚",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "graduate",
+    "tr": "mezun olmak / mezun",
+    "emoji": "🎓",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "semester",
+    "tr": "dönem / yarıyıl",
+    "emoji": "🗓️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "faculty",
+    "tr": "fakülte / akademik kadro",
+    "emoji": "🏛️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "thesis",
+    "tr": "tez / bitirme çalışması",
+    "emoji": "📖",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "internship",
+    "tr": "staj",
+    "emoji": "💼",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "give up",
+    "tr": "pes etmek / bırakmak",
+    "emoji": "🏳️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "look forward to",
+    "tr": "dört gözle beklemek",
+    "emoji": "👀",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "turn down",
+    "tr": "reddetmek / kısmak",
+    "emoji": "👎",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "figure out",
+    "tr": "çözmek / anlamak",
+    "emoji": "💡",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "carry on",
+    "tr": "devam etmek",
+    "emoji": "🚶",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "put off",
+    "tr": "ertelemek",
+    "emoji": "📅",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "run out of",
+    "tr": "tükenmek / bitmek",
+    "emoji": "⛽",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "catch up with",
+    "tr": "yetişmek / yakalamak",
+    "emoji": "🏃",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "break down",
+    "tr": "bozulmak (araç) / çökmek",
+    "emoji": "🚗",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "come across",
+    "tr": "tesadüfen karşılaşmak",
+    "emoji": "🔍",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "set up",
+    "tr": "kurmak / başlatmak",
+    "emoji": "⛺",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "look after",
+    "tr": "bakmak / ilgilenmek",
+    "emoji": "👶",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "destination",
+    "tr": "varış noktası / rota",
+    "emoji": "📍",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "itinerary",
+    "tr": "seyahat planı / güzergah",
+    "emoji": "🗺️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "heritage",
+    "tr": "kültürel miras",
+    "emoji": "🏛️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "souvenir",
+    "tr": "hediyelik eşya",
+    "emoji": "🎁",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "currency",
+    "tr": "para birimi",
+    "emoji": "💱",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "monument",
+    "tr": "anıt / abide",
+    "emoji": "🗿",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hospitality",
+    "tr": "misafirperverlik",
+    "emoji": "🍵",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "guide",
+    "tr": "rehber",
+    "emoji": "🧭",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "landmark",
+    "tr": "simge yapı / eser",
+    "emoji": "🗼",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "excursion",
+    "tr": "kısa gezi / tur",
+    "emoji": "🚌",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "tradition",
+    "tr": "gelenek / anane",
+    "emoji": "🎎",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "symptom",
+    "tr": "belirti / semptom",
+    "emoji": "🌡️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "prescription",
+    "tr": "reçete",
+    "emoji": "💊",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "nutrition",
+    "tr": "beslenme",
+    "emoji": "🥗",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "recovery",
+    "tr": "iyileşme / toparlanma",
+    "emoji": "🩹",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "infection",
+    "tr": "enfeksiyon / bulaş",
+    "emoji": "🦠",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fatigue",
+    "tr": "aşırı yorgunluk / halsizlik",
+    "emoji": "🥱",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "treatment",
+    "tr": "tedavi",
+    "emoji": "🩺",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "allergy",
+    "tr": "alerji",
+    "emoji": "🤧",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "immune",
+    "tr": "bağışıklık (sistemi)",
+    "emoji": "🛡️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "endurance",
+    "tr": "dayanıklılık",
+    "emoji": "🏋️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "therapy",
+    "tr": "terapi / tedavi seansı",
+    "emoji": "🧘",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "physician",
+    "tr": "hekim / doktor",
+    "emoji": "👨‍⚕️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "broadcast",
+    "tr": "yayın / yayınlamak",
+    "emoji": "📡",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "documentary",
+    "tr": "belgesel",
+    "emoji": "🎥",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "exhibition",
+    "tr": "sergi",
+    "emoji": "🖼️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sculpture",
+    "tr": "heykel",
+    "emoji": "🗿",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "audience",
+    "tr": "seyirci / izleyici kitlesi",
+    "emoji": "👥",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "critic",
+    "tr": "eleştirmen",
+    "emoji": "✍️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "genre",
+    "tr": "tür / janr (müzik, film)",
+    "emoji": "🎭",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "performance",
+    "tr": "performans / gösteri",
+    "emoji": "🎪",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "premiere",
+    "tr": "galâ / ilk gösterim",
+    "emoji": "🎟️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "plot",
+    "tr": "olay örgüsü / konu",
+    "emoji": "📖",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "soundtrack",
+    "tr": "film müziği albümü",
+    "emoji": "🎵",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "masterpiece",
+    "tr": "başyapıt / şaheser",
+    "emoji": "🎨",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ambitious",
+    "tr": "hırslı / azimli",
+    "emoji": "🧗",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "reliable",
+    "tr": "güvenilir",
+    "emoji": "🤝",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "stubborn",
+    "tr": "inatçı / dik kafalı",
+    "emoji": "🦙",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "empathetic",
+    "tr": "empati kurabilen / duyarlı",
+    "emoji": "❤️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "arrogant",
+    "tr": "kibirli / burnu havada",
+    "emoji": "🦚",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "punctual",
+    "tr": "dakik / zamanında gelen",
+    "emoji": "⏱️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "humble",
+    "tr": "alçakgönüllü / mütevazı",
+    "emoji": "🌱",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cautious",
+    "tr": "temkinli / dikkatli",
+    "emoji": "🛡️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sincere",
+    "tr": "samimi / içten",
+    "emoji": "😊",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "impatient",
+    "tr": "sabırsız / tez canlı",
+    "emoji": "⌛",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "regulation",
+    "tr": "yönetmelik / düzenleme",
+    "emoji": "📜",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "witness",
+    "tr": "tanık / görgü şahidi",
+    "emoji": "👁️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "verdict",
+    "tr": "mahkeme kararı / hüküm",
+    "emoji": "⚖️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "guilty",
+    "tr": "suçlu",
+    "emoji": "🚨",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "innocent",
+    "tr": "masum / suçsuz",
+    "emoji": "🕊️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "penalty",
+    "tr": "ceza / yaptırım",
+    "emoji": "🛑",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "investigation",
+    "tr": "soruşturma / tahkikat",
+    "emoji": "🔍",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "citizen",
+    "tr": "vatandaş / yurttaş",
+    "emoji": "🆔",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "constitution",
+    "tr": "anayasa",
+    "emoji": "🏛️",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "prohibit",
+    "tr": "yasaklamak / men etmek",
+    "emoji": "🚫",
+    "level": "B1",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "leverage",
+    "tr": "koz / avantaj sağlayan güç",
+    "emoji": "⚖️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "concession",
+    "tr": "taviz / ödün",
+    "emoji": "🤝",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "revenue",
+    "tr": "şirket geliri / hasılat",
+    "emoji": "💰",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "stakeholder",
+    "tr": "paydaş / ilgili taraf",
+    "emoji": "👔",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "acquisition",
+    "tr": "şirket satın alması",
+    "emoji": "🏢",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "lucrative",
+    "tr": "son derece karlı / kazançlı",
+    "emoji": "💎",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "liability",
+    "tr": "yükümlülük / borç / mali sorumluluk",
+    "emoji": "🧾",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "benchmark",
+    "tr": "kıyaslama ölçütü / standart",
+    "emoji": "📊",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "liquidity",
+    "tr": "likidite / nakit akış gücü",
+    "emoji": "💧",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "monopoly",
+    "tr": "tekel / monopol piyasa",
+    "emoji": "♟️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "dividend",
+    "tr": "kar payı / temettü",
+    "emoji": "📈",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "merger",
+    "tr": "şirket birleşmesi",
+    "emoji": "🔗",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "algorithm",
+    "tr": "algoritma / işlem basamağı",
+    "emoji": "💻",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "neural network",
+    "tr": "yapay sinir ağı",
+    "emoji": "🧠",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "autonomous",
+    "tr": "özerk / otonom (sürücüsüz)",
+    "emoji": "🚗",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "breakthrough",
+    "tr": "çığır açan buluş / devrim",
+    "emoji": "⚡",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cybersecurity",
+    "tr": "siber güvenlik",
+    "emoji": "🛡️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "encryption",
+    "tr": "şifreleme / kriptografi",
+    "emoji": "🔐",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "automation",
+    "tr": "otomasyon / makineleşme",
+    "emoji": "🦾",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "biotechnology",
+    "tr": "biyoteknoloji",
+    "emoji": "🧬",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "quantum computing",
+    "tr": "kuantum bilgisayar bilimi",
+    "emoji": "⚛️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "obsolete",
+    "tr": "kullanım dışı / modası geçmiş",
+    "emoji": "📟",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "disruptive",
+    "tr": "ezber bozan / dönüştürücü",
+    "emoji": "💥",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "interface",
+    "tr": "kullanıcı arayüzü",
+    "emoji": "🖥️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "subconscious",
+    "tr": "bilinçaltı",
+    "emoji": "🌊",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cognitive",
+    "tr": "bilişsel / zihinsel",
+    "emoji": "💭",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "perception",
+    "tr": "algı / idrak",
+    "emoji": "👁️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bias",
+    "tr": "önyargı / yanlılık",
+    "emoji": "⚖️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "resilience",
+    "tr": "psikolojik dayanıklılık / toparlanma",
+    "emoji": "🌱",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "intuition",
+    "tr": "sezgi / içgüdüsel his",
+    "emoji": "🔮",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "trauma",
+    "tr": "travma / ruhsal sarsıntı",
+    "emoji": "⚡",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "empathy",
+    "tr": "empati / duygudaşlık",
+    "emoji": "🤝",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "narcissism",
+    "tr": "narsisizm / özseverlik",
+    "emoji": "🪞",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "stimulus",
+    "tr": "uyarıcı / tetikleyici etken",
+    "emoji": "💡",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "conditioning",
+    "tr": "şartlanma / koşullanma",
+    "emoji": "🔔",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "temperament",
+    "tr": "mizaç / yaratılış",
+    "emoji": "🎭",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sanction",
+    "tr": "yaptırım / ambargo",
+    "emoji": "🛑",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "treaty",
+    "tr": "uluslararası antlaşma / pakt",
+    "emoji": "📜",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "humanitarian",
+    "tr": "insani / yardımsever",
+    "emoji": "🕊️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sovereignty",
+    "tr": "egemenlik / bağımsızlık",
+    "emoji": "👑",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "refugee",
+    "tr": "mülteci / sığınmacı",
+    "emoji": "🏕️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ceasefire",
+    "tr": "ateşkes",
+    "emoji": "🏳️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "diplomat",
+    "tr": "diplomat / elçi",
+    "emoji": "👔",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "famine",
+    "tr": "kıtlık / açlık krizi",
+    "emoji": "🌾",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bilateral",
+    "tr": "iki taraflı / ikili anlaşma",
+    "emoji": "🤝",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "escalate",
+    "tr": "tırmanmak / şiddetlenmek",
+    "emoji": "📈",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "mediator",
+    "tr": "arabulucu",
+    "emoji": "⚖️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "solidarity",
+    "tr": "dayanışma",
+    "emoji": "✊",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "bite the bullet",
+    "tr": "acı gerçeğe katlanmak / dişini sıkmak",
+    "emoji": "🦷",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "burn the midnight oil",
+    "tr": "gece gündüz harıl harıl çalışmak",
+    "emoji": "🕯️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "cut corners",
+    "tr": "kolaya kaçmak / kaliteden çalmak",
+    "emoji": "✂️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "devil's advocate",
+    "tr": "şeytanın avukatı / karşıt fikir savunucusu",
+    "emoji": "😈",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "see eye to eye",
+    "tr": "tamamen aynı fikirde olmak",
+    "emoji": "👁️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "take with a grain of salt",
+    "tr": "ihtiyatla karşılamak / şüpheyle yaklaşmak",
+    "emoji": "🧂",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "back to the drawing board",
+    "tr": "baştan başlamak / sıfırdan planlamak",
+    "emoji": "📐",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "spill the beans",
+    "tr": "ağzındaki baklayı çıkarmak / sırrı ifşa etmek",
+    "emoji": "🫘",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "blessing in disguise",
+    "tr": "gizli bir lütuf / şer görünen hayır",
+    "emoji": "🎭",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hit the nail on the head",
+    "tr": "tam üstüne basmak / taşı gediğine koymak",
+    "emoji": "🔨",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "on thin ice",
+    "tr": "riskli sularda yüzmek / bıçak sırtında olmak",
+    "emoji": "🧊",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "through the grapevine",
+    "tr": "kulaktan kulağa / dedikodu yoluyla",
+    "emoji": "🍇",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "censorship",
+    "tr": "sansür",
+    "emoji": "✂️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "propaganda",
+    "tr": "propaganda / algı yönetimi",
+    "emoji": "📢",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "defamation",
+    "tr": "karalama / iftira",
+    "emoji": "⚖️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "integrity",
+    "tr": "dürüstlük / mesleki ahlak",
+    "emoji": "💎",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "whistleblower",
+    "tr": "içeriden bilgi sızdıran / ifşacı",
+    "emoji": "🗣️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "investigative",
+    "tr": "araştırmacı (gazetecilik)",
+    "emoji": "🕵️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "misinformation",
+    "tr": "yanıltıcı bilgi / dezenformasyon",
+    "emoji": "❌",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "unbiased",
+    "tr": "tarafsız / objektif",
+    "emoji": "⚖️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "sensationalism",
+    "tr": "sansasyonellik / tiraj avcılığı",
+    "emoji": "💥",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "credibility",
+    "tr": "güvenilirlik / itibar",
+    "emoji": "🤝",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "editorial",
+    "tr": "başyazı / editör yorumu",
+    "emoji": "🖋️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "source",
+    "tr": "haber kaynağı",
+    "emoji": "📑",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hypothesis",
+    "tr": "hipotez / bilimsel varsayım",
+    "emoji": "💡",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "empirical",
+    "tr": "deneysel / ampirik kanıta dayalı",
+    "emoji": "📊",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "paradigm",
+    "tr": "paradigma / düşünce modeli",
+    "emoji": "🌀",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "phenomenon",
+    "tr": "fenomen / doğa olayı",
+    "emoji": "⚡",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "catalyst",
+    "tr": "katalizör / hızlandırıcı etken",
+    "emoji": "🧪",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "quantum",
+    "tr": "kuantum",
+    "emoji": "⚛️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "genome",
+    "tr": "genom / genetik harita",
+    "emoji": "🧬",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "synthesize",
+    "tr": "sentezlemek / birleştirmek",
+    "emoji": "🔬",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "velocity",
+    "tr": "vektörel hız / sürat",
+    "emoji": "🚀",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "radiation",
+    "tr": "radyasyon / ışıma",
+    "emoji": "☢️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fusion",
+    "tr": "füzyon / nükleer kaynaşma",
+    "emoji": "☀️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "correlation",
+    "tr": "korelasyon / karşılıklı ilişki",
+    "emoji": "📈",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "furthermore",
+    "tr": "dahası / üstelik / ayrıca",
+    "emoji": "➕",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "consequently",
+    "tr": "sonuç olarak / bu nedenle",
+    "emoji": "➡️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "notwithstanding",
+    "tr": "buna rağmen / -e karşın",
+    "emoji": "🛡️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "demonstrate",
+    "tr": "ortaya koymak / kanıtlamak",
+    "emoji": "🔍",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "substantial",
+    "tr": "kayda değer / önemli miktarda",
+    "emoji": "📈",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "advocate",
+    "tr": "savunmak / desteklemek",
+    "emoji": "🗣️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "implement",
+    "tr": "yürürlüğe koymak / uygulamak",
+    "emoji": "⚙️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "preliminary",
+    "tr": "ön / başlangıç niteliğinde",
+    "emoji": "🚦",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "facilitate",
+    "tr": "kolaylaştırmak / olanak sağlamak",
+    "emoji": "🤝",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "comprehensive",
+    "tr": "kapsamlı / etraflı",
+    "emoji": "📚",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "discrepancy",
+    "tr": "tutarsızlık / uyumsuzluk",
+    "emoji": "❓",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "feasible",
+    "tr": "uygulanabilir / yapılabilir",
+    "emoji": "✅",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "meticulous",
+    "tr": "titiz / kılı kırk yaran",
+    "emoji": "🔍",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ubiquitous",
+    "tr": "her yerde hazır ve nazır olan",
+    "emoji": "🌐",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "pragmatic",
+    "tr": "pratik / faydacı yaklaşan",
+    "emoji": "🛠️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "eloquent",
+    "tr": "etkili konuşan / beliğ",
+    "emoji": "🎙️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "vulnerable",
+    "tr": "savunmasız / kırılgan",
+    "emoji": "🛡️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "ambiguous",
+    "tr": "çift anlamlı / muğlak",
+    "emoji": "🌫️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "volatile",
+    "tr": "oynak / dengesiz / değişken",
+    "emoji": "💥",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "resilient",
+    "tr": "zorluklara göğüs geren / dirençli",
+    "emoji": "🌱",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "superfluous",
+    "tr": "gereksiz / fuzuli / fazlalık",
+    "emoji": "🗑️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "indispensable",
+    "tr": "vazgeçilmez / olmazsa olmaz",
+    "emoji": "🔑",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "lucid",
+    "tr": "açık seçik / berrak zihinli",
+    "emoji": "✨",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "spontaneous",
+    "tr": "anlık / kendiliğinden gelişen",
+    "emoji": "⚡",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "persuasion",
+    "tr": "ikna kabiliyeti",
+    "emoji": "🧠",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "fallacy",
+    "tr": "mantık hatası / safsata",
+    "emoji": "⚠️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "assertion",
+    "tr": "iddia / sav",
+    "emoji": "📌",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "refute",
+    "tr": "çürütmek / aksini ispatlamak",
+    "emoji": "🥊",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "anecdote",
+    "tr": "kısa anekdot / ibretli hikaye",
+    "emoji": "📖",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "consensus",
+    "tr": "ortak mutabakat / fikir birliği",
+    "emoji": "🤝",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "counterargument",
+    "tr": "karşı sav / antitez",
+    "emoji": "🛡️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "hyperbole",
+    "tr": "mübalağa / abartı sanatı",
+    "emoji": "🔍",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "articulate",
+    "tr": "düşüncelerini akıcı ve net ifade etmek",
+    "emoji": "🗣️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "rebuttal",
+    "tr": "itiraz / savunma cevabı",
+    "emoji": "⚖️",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  },
+  {
+    "en": "standpoint",
+    "tr": "görüş açısı / duruş noktası",
+    "emoji": "🔭",
+    "level": "B2",
+    "exEn": "",
+    "exTr": ""
+  }
+]
