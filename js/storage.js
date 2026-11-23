@@ -1,3 +1,20 @@
+const FORBIDDEN_OBJECT_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+const SAFE_FIREBASE_ID_RE = /^[a-zA-Z0-9_-]{3,64}$/;
+
+function isSafeObjectKey(k) {
+  return typeof k === 'string' && k.length > 0 && k.length <= 120 && !FORBIDDEN_OBJECT_KEYS.has(k);
+}
+
+function clampNonNegInt(val, max = 1000000) {
+  const n = Number(val);
+  if (!Number.isFinite(n) || n < 0) return 0;
+  return Math.min(Math.floor(n), max);
+}
+
+function isValidLeagueRoomId(id) {
+  return typeof id === 'string' && SAFE_FIREBASE_ID_RE.test(id.trim());
+}
+
 /* ============================================================
    A1 English v2.0 - OOP Durum Yönetimi & Servisler
    Store (Kapsüllenmiş Durum), ThemeService, MascotService, ProgressionManager
@@ -402,72 +419,88 @@ class AppStore {
   }
 
   importState(data) {
-    if (!data || typeof data !== 'object') throw new Error('Geçersiz dosya verisi');
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Geçersiz dosya verisi');
     const currentApiKey = this._state.settings?.apiKey || '';
-    const cleanFriends = (data.friends || []).filter(f => !f.isBot);
+    const cleanFriends = Array.isArray(data.friends) ? data.friends.filter(f => f && typeof f === 'object' && !f.isBot) : [];
 
-    // Akıllı Birleştirme: Mevcut ve gelen veriler harmanlanır (hiçbir ilerleme kaybolmaz)
+    // Akıllı Birleştirme: Mevcut ve gelen veriler harmanlanır (prototype pollution ve sınır korumalı)
     const mergedUnits = { ...(this._state.units || {}) };
-    if (data.units && typeof data.units === 'object') {
+    if (data.units && typeof data.units === 'object' && !Array.isArray(data.units)) {
       for (const [uId, uVal] of Object.entries(data.units)) {
+        if (!isSafeObjectKey(uId) || !uVal || typeof uVal !== 'object') continue;
+        const safeBest = clampNonNegInt(uVal.best, 100);
+        const safeAttempts = Math.max(1, clampNonNegInt(uVal.attempts || 1, 10000));
+        const safeCorrect = clampNonNegInt(uVal.correct, 10000);
+        const safeTotal = Math.max(1, clampNonNegInt(uVal.total || 10, 10000));
         if (!mergedUnits[uId]) {
-          mergedUnits[uId] = uVal;
+          mergedUnits[uId] = { best: safeBest, done: !!uVal.done || safeBest >= 70, attempts: safeAttempts, correct: safeCorrect, total: safeTotal };
         } else {
           mergedUnits[uId] = {
             ...mergedUnits[uId],
-            best: Math.max(mergedUnits[uId].best || 0, uVal.best || 0),
-            done: mergedUnits[uId].done || uVal.done || ((uVal.best || 0) >= 70),
-            attempts: Math.max(mergedUnits[uId].attempts || 1, uVal.attempts || 1),
-            correct: Math.max(mergedUnits[uId].correct || 0, uVal.correct || 0),
-            total: Math.max(mergedUnits[uId].total || 10, uVal.total || 10)
+            best: Math.max(mergedUnits[uId].best || 0, safeBest),
+            done: mergedUnits[uId].done || !!uVal.done || safeBest >= 70,
+            attempts: Math.max(mergedUnits[uId].attempts || 1, safeAttempts),
+            correct: Math.max(mergedUnits[uId].correct || 0, safeCorrect),
+            total: Math.max(mergedUnits[uId].total || 10, safeTotal)
           };
         }
       }
     }
 
     const mergedWords = { ...(this._state.words || {}) };
-    if (data.words && typeof data.words === 'object') {
+    if (data.words && typeof data.words === 'object' && !Array.isArray(data.words)) {
       for (const [wKey, wVal] of Object.entries(data.words)) {
+        if (!isSafeObjectKey(wKey) || !wVal || typeof wVal !== 'object') continue;
+        const safeBox = Math.max(1, clampNonNegInt(wVal.box || 1, 10));
+        const safeRight = clampNonNegInt(wVal.right, 100000);
+        const safeWrong = clampNonNegInt(wVal.wrong, 100000);
         if (!mergedWords[wKey]) {
-          mergedWords[wKey] = wVal;
+          mergedWords[wKey] = { box: safeBox, due: clampNonNegInt(wVal.due, 9999999999999), right: safeRight, wrong: safeWrong };
         } else {
           mergedWords[wKey] = {
             ...mergedWords[wKey],
-            box: Math.max(mergedWords[wKey].box || 1, wVal.box || 1),
-            right: Math.max(mergedWords[wKey].right || 0, wVal.right || 0),
-            wrong: Math.max(mergedWords[wKey].wrong || 0, wVal.wrong || 0)
+            box: Math.max(mergedWords[wKey].box || 1, safeBox),
+            right: Math.max(mergedWords[wKey].right || 0, safeRight),
+            wrong: Math.max(mergedWords[wKey].wrong || 0, safeWrong)
           };
         }
       }
     }
 
     const mergedDaily = { ...(this._state.daily || {}) };
-    if (data.daily && typeof data.daily === 'object') {
+    if (data.daily && typeof data.daily === 'object' && !Array.isArray(data.daily)) {
       for (const [dKey, dVal] of Object.entries(data.daily)) {
-        mergedDaily[dKey] = Math.max(mergedDaily[dKey] || 0, dVal || 0);
+        if (!isSafeObjectKey(dKey)) continue;
+        mergedDaily[dKey] = Math.max(mergedDaily[dKey] || 0, clampNonNegInt(dVal, 100000));
       }
     }
 
-    const mergedXp = Math.max(this._state.xp || 0, data.xp || 0);
-    const incStreak = typeof normalizeStreak === 'function' ? normalizeStreak(data.streak) : (data.streak?.count || 0);
-    const myStreak = this._state.streak?.count || 0;
+    const mergedXp = Math.max(clampNonNegInt(this._state.xp, 1000000), clampNonNegInt(data.xp, 1000000));
+    const incStreak = clampNonNegInt(typeof normalizeStreak === 'function' ? normalizeStreak(data.streak) : (data.streak?.count || 0), 36500);
+    const myStreak = clampNonNegInt(this._state.streak?.count || 0, 36500);
     const finalStreakCount = Math.max(myStreak, incStreak);
-    const finalStreakLast = incStreak >= myStreak && data.streak?.last ? data.streak.last : this._state.streak?.last;
+    const finalStreakLast = incStreak >= myStreak && typeof data.streak?.last === 'string' ? data.streak.last.slice(0, 20) : this._state.streak?.last;
+
+    const safeUserId = (typeof data.userId === 'string' && SAFE_FIREBASE_ID_RE.test(data.userId)) ? data.userId : this._state.userId;
+    const safeName = (typeof data.name === 'string' && data.name.trim() && data.name.trim() !== 'Öğrenci')
+      ? data.name.trim().slice(0, 24)
+      : (this._state.name || 'Öğrenci');
+    const safeSettingsIn = (data.settings && typeof data.settings === 'object' && !Array.isArray(data.settings)) ? data.settings : {};
 
     this._state = {
       ...defaultState(),
       ...this._state,
-      ...data,
-      userId: (data.userId && data.userId !== 'Öğrenci') ? data.userId : this._state.userId,
-      name: (data.name && data.name !== 'Öğrenci') ? data.name : (this._state.name || 'Öğrenci'),
-      mascot: data.mascot || this._state.mascot || 'cat',
-      theme: data.theme || this._state.theme || 'nordic',
+      userId: safeUserId,
+      onboarded: !!(this._state.onboarded || data.onboarded),
+      name: safeName,
+      mascot: typeof data.mascot === 'string' ? data.mascot.slice(0, 24) : (this._state.mascot || 'cat'),
+      theme: typeof data.theme === 'string' ? data.theme.slice(0, 24) : (this._state.theme || 'nordic'),
       xp: mergedXp,
       streak: { count: finalStreakCount, last: finalStreakLast || todayStr() },
       daily: mergedDaily,
       units: mergedUnits,
       words: mergedWords,
-      unlockedUpTo: Math.max(this._state.unlockedUpTo || 0, data.unlockedUpTo || 0),
+      unlockedUpTo: Math.max(clampNonNegInt(this._state.unlockedUpTo, 500), clampNonNegInt(data.unlockedUpTo, 500)),
       a1BossPassed: !!(this._state.a1BossPassed || data.a1BossPassed),
       a2Unlocked: !!(this._state.a2Unlocked || data.a2Unlocked),
       a2BossPassed: !!(this._state.a2BossPassed || data.a2BossPassed),
@@ -475,11 +508,14 @@ class AppStore {
       b1BossPassed: !!(this._state.b1BossPassed || data.b1BossPassed),
       b2Unlocked: !!(this._state.b2Unlocked || data.b2Unlocked),
       b2BossPassed: !!(this._state.b2BossPassed || data.b2BossPassed),
-      auth: { ...defaultState().auth, ...(this._state.auth?.user ? this._state.auth : (data.auth || {})) },
+      auth: { ...defaultState().auth, ...(this._state.auth?.user ? this._state.auth : {}) },
       settings: {
         ...defaultState().settings,
-        ...(data.settings || {}),
-        apiKey: currentApiKey || data.settings?.apiKey || ''
+        ...(this._state.settings || {}),
+        rate: Number.isFinite(Number(safeSettingsIn.rate)) ? Math.max(0.5, Math.min(1.5, Number(safeSettingsIn.rate))) : (this._state.settings?.rate || 0.9),
+        sound: typeof safeSettingsIn.sound === 'boolean' ? safeSettingsIn.sound : (this._state.settings?.sound ?? true),
+        reviewLimit: Number.isFinite(Number(safeSettingsIn.reviewLimit)) ? Math.max(5, Math.min(100, Math.floor(Number(safeSettingsIn.reviewLimit)))) : (this._state.settings?.reviewLimit || 25),
+        apiKey: currentApiKey || (typeof safeSettingsIn.apiKey === 'string' ? safeSettingsIn.apiKey.trim() : '')
       },
       friends: cleanFriends.length > 0 ? cleanFriends : (this._state.friends || [])
     };
@@ -1167,68 +1203,78 @@ function mergeSyncCode(codeStr) {
     const data = JSON.parse(raw);
     if (!data || typeof data.xp !== 'number') throw new Error('Geçersiz eşitleme kodu.');
 
-    // 1. XP birleştirme: En yüksek değer kazanır
-    state.xp = Math.max(state.xp || 0, data.xp || 0);
+    // 1. XP birleştirme: En yüksek değer kazanır (sınır korumalı)
+    state.xp = Math.max(clampNonNegInt(state.xp, 1000000), clampNonNegInt(data.xp, 1000000));
 
     // 2. Seri birleştirme
-    const myStreak = normalizeStreak(currentStreak());
-    const incStreak = normalizeStreak(data.streak);
+    const myStreak = clampNonNegInt(normalizeStreak(currentStreak()), 36500);
+    const incStreak = clampNonNegInt(normalizeStreak(data.streak), 36500);
     if (incStreak > myStreak) {
       state.streak.count = incStreak;
       state.streak.last = todayStr();
     }
 
-    // 3. Ünite ilerlemelerini birleştir (hiçbir ünite kaybolmaz)
-    if (data.units && typeof data.units === 'object') {
+    // 3. Ünite ilerlemelerini birleştir (prototype pollution korumalı)
+    if (data.units && typeof data.units === 'object' && !Array.isArray(data.units)) {
       if (!state.units) state.units = {};
       for (const [uId, uVal] of Object.entries(data.units)) {
+        if (!isSafeObjectKey(uId) || !uVal || typeof uVal !== 'object') continue;
+        const safeBest = clampNonNegInt(uVal.best, 100);
+        const safeAttempts = Math.max(1, clampNonNegInt(uVal.attempts || 1, 10000));
+        const safeCorrect = clampNonNegInt(uVal.correct, 10000);
+        const safeTotal = Math.max(1, clampNonNegInt(uVal.total || 10, 10000));
         if (!state.units[uId]) {
-          state.units[uId] = uVal;
+          state.units[uId] = { best: safeBest, done: !!uVal.done || safeBest >= 70, attempts: safeAttempts, correct: safeCorrect, total: safeTotal };
         } else {
           state.units[uId] = {
             ...state.units[uId],
-            best: Math.max(state.units[uId].best || 0, uVal.best || 0),
-            done: state.units[uId].done || uVal.done || ((uVal.best || 0) >= 70),
-            attempts: Math.max(state.units[uId].attempts || 1, uVal.attempts || 1),
-            correct: Math.max(state.units[uId].correct || 0, uVal.correct || 0),
-            total: state.units[uId].total || uVal.total || 10
+            best: Math.max(state.units[uId].best || 0, safeBest),
+            done: state.units[uId].done || !!uVal.done || safeBest >= 70,
+            attempts: Math.max(state.units[uId].attempts || 1, safeAttempts),
+            correct: Math.max(state.units[uId].correct || 0, safeCorrect),
+            total: state.units[uId].total || safeTotal
           };
         }
       }
     }
 
     // 4. Kilitleri birleştir
-    state.unlockedUpTo = Math.max(state.unlockedUpTo || 0, data.unlockedUpTo || 0);
+    state.unlockedUpTo = Math.max(clampNonNegInt(state.unlockedUpTo, 500), clampNonNegInt(data.unlockedUpTo, 500));
     state.a1BossPassed = state.a1BossPassed || !!data.a1BossPassed;
 
     // 5. Kelimeleri birleştir (kutu seviyesi asla düşürülmez)
-    if (data.words && typeof data.words === 'object') {
+    if (data.words && typeof data.words === 'object' && !Array.isArray(data.words)) {
       if (!state.words) state.words = {};
       for (const [wKey, wVal] of Object.entries(data.words)) {
+        if (!isSafeObjectKey(wKey) || !wVal || typeof wVal !== 'object') continue;
+        const safeBox = Math.max(1, clampNonNegInt(wVal.box || 1, 10));
+        const safeRight = clampNonNegInt(wVal.right, 100000);
+        const safeWrong = clampNonNegInt(wVal.wrong, 100000);
         if (!state.words[wKey]) {
-          state.words[wKey] = wVal;
+          state.words[wKey] = { box: safeBox, due: clampNonNegInt(wVal.due, 9999999999999), right: safeRight, wrong: safeWrong };
         } else {
           state.words[wKey] = {
             ...state.words[wKey],
-            box: Math.max(state.words[wKey].box || 1, wVal.box || 1),
-            right: Math.max(state.words[wKey].right || 0, wVal.right || 0),
-            wrong: Math.max(state.words[wKey].wrong || 0, wVal.wrong || 0)
+            box: Math.max(state.words[wKey].box || 1, safeBox),
+            right: Math.max(state.words[wKey].right || 0, safeRight),
+            wrong: Math.max(state.words[wKey].wrong || 0, safeWrong)
           };
         }
       }
     }
 
     // 6. Günlük skorları birleştir
-    if (data.daily && typeof data.daily === 'object') {
+    if (data.daily && typeof data.daily === 'object' && !Array.isArray(data.daily)) {
       if (!state.daily) state.daily = {};
       for (const [dKey, dVal] of Object.entries(data.daily)) {
-        state.daily[dKey] = Math.max(state.daily[dKey] || 0, dVal || 0);
+        if (!isSafeObjectKey(dKey)) continue;
+        state.daily[dKey] = Math.max(state.daily[dKey] || 0, clampNonNegInt(dVal, 100000));
       }
     }
 
     // 7. İsim ve yoldaşı güncelle (eğer gelen veri doluysa)
-    if (data.name && data.name !== 'Öğrenci') {
-      state.name = data.name;
+    if (typeof data.name === 'string' && data.name.trim() && data.name.trim() !== 'Öğrenci') {
+      state.name = data.name.trim().slice(0, 24);
     }
 
     // Tamamlanmış ünitelerin kelimelerini de senkronize et
@@ -1326,7 +1372,7 @@ async function createCloudLeague() {
 
 async function joinCloudLeague(roomId) {
   const id = (roomId || '').trim();
-  if (!id) throw new Error('Geçersiz lig kodu.');
+  if (!isValidLeagueRoomId(id)) throw new Error('Geçersiz lig kodu. Sadece harf, rakam, "_" ve "-" içerebilir.');
   const me = normalizeLeagueMember(myLeagueProfile(), true);
   const db = getFirebaseDatabase();
 
@@ -1351,7 +1397,7 @@ let pendingSyncAgain = false;
 let syncRetryCount = 0;
 
 async function syncCloudLeague() {
-  if (!state.leagueRoomId) return null;
+  if (!isValidLeagueRoomId(state.leagueRoomId)) return null;
   if (isSyncInProgress) {
     pendingSyncAgain = true;
     return getLeaderboardList();
@@ -1447,7 +1493,7 @@ async function syncCloudLeague() {
 }
 
 async function leaveCloudLeague() {
-  if (state.leagueRoomId) {
+  if (isValidLeagueRoomId(state.leagueRoomId)) {
     const db = getFirebaseDatabase();
     if (db) {
       try {

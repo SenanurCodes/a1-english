@@ -756,6 +756,59 @@ test('11. User-Flow: Landing hero aksiyonu ve Dil Mantığı simülatör örnek 
 });
 
 /* ============================================================
+   12. Güvenlik Sıkılaştırma: Path Traversal, Prototype Pollution, Account Deletion
+   ============================================================ */
+test('12. Güvenlik: Lig oda kodu doğrulaması, import/sync sınırları ve hesap silme uyarısı', async () => {
+  const { run, runAsync } = createEnv();
+
+  // 12.1 Geçersiz / path traversal içeren lig oda kodları reddedilmeli
+  let roomErr = null;
+  try {
+    await runAsync('joinCloudLeague("../users")');
+  } catch (e) {
+    roomErr = e.message;
+  }
+  ok(roomErr && roomErr.includes('Geçersiz lig kodu'), 'Path traversal lig kodu reddedilmeli');
+
+  let badCharErr = null;
+  try {
+    await runAsync('joinCloudLeague("room_abc$#/")');
+  } catch (e) {
+    badCharErr = e.message;
+  }
+  ok(badCharErr && badCharErr.includes('Geçersiz lig kodu'), 'Özel karakterli lig kodu reddedilmeli');
+
+  // 12.2 importState: prototype pollution ve sınır dışı XP koruması
+  run(`
+    const malicious = JSON.parse('{"xp": -500, "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "units": {"__proto__": {"polluted": true}, "u1": {"best": 999}}, "daily": {"constructor": 50}}');
+    store.importState(malicious);
+  `);
+  const st = run('state');
+  ok(!({}).polluted, 'Object.prototype kirlenmemeli');
+  eq(st.xp, 0, 'Negatif XP 0 olarak sınırlandırılmalı');
+  ok(st.name.length <= 24, 'İsim 24 karakterle sınırlandırılmalı');
+  eq(st.units.u1.best, 100, 'Ünite skoru 100 ile sınırlandırılmalı');
+
+  // 12.3 deleteCurrentAccount: Firebase requires-recent-login hatasını yutmamalı
+  let delCode = null;
+  try {
+    await runAsync(`
+      authService.auth = {
+        currentUser: {
+          uid: 'uid_test_1',
+          delete: async () => { const e = new Error('Recent login required'); e.code = 'auth/requires-recent-login'; throw e; }
+        },
+        signOut: async () => {}
+      };
+      return authService.deleteCurrentAccount();
+    `);
+  } catch (e) {
+    delCode = e.code || e.message;
+  }
+  ok(String(delCode).includes('requires-recent-login') || String(delCode).includes('tekrar giriş'), 'requires-recent-login hatası kullanıcıya iletilmeli');
+});
+
+/* ============================================================
    Test Çalıştırıcı (Runner)
    ============================================================ */
 (async () => {

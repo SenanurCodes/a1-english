@@ -3530,6 +3530,10 @@ function screenSettings() {
           await authService.deleteCurrentAccount();
         }
       } catch (err) {
+        if (err && err.code === 'auth/requires-recent-login') {
+          toast('⚠️ Güvenlik gereği hesabınızı silmek için lütfen çıkış yapıp tekrar giriş yapın.');
+          return;
+        }
         console.warn('Auth deletion error:', err);
       }
       resetState();

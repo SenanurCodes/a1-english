@@ -350,13 +350,42 @@ class AuthService {
   // Hesabı & Verileri Kalıcı Olarak Sil (Google Play & KVKK / GDPR Uyumlu)
   async deleteCurrentAccount() {
     const user = this.auth?.currentUser;
+    const authUid = user?.uid || this.store?.state?.auth?.user?.uid;
+
+    // 1. Bulut veritabanı (RTDB) aktifse kullanıcının bulut verilerini ve lig kaydını temizle
+    try {
+      if (typeof getFirebaseDatabase === 'function') {
+        const db = getFirebaseDatabase();
+        if (db) {
+          if (authUid && /^[a-zA-Z0-9_-]{3,128}$/.test(authUid)) {
+            await db.ref('users/' + authUid).remove().catch(() => {});
+          }
+          const roomId = this.store?.state?.leagueRoomId;
+          const userId = this.store?.state?.userId;
+          if (roomId && userId && typeof isValidLeagueRoomId === 'function' && isValidLeagueRoomId(roomId)) {
+            await db.ref('leagues/' + roomId + '/members/' + userId).remove().catch(() => {});
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Cloud data cleanup warning:', e);
+    }
+
+    // 2. Firebase Auth hesabını sil
     if (user && typeof user.delete === 'function') {
       try {
         await user.delete();
       } catch (e) {
+        if (e && e.code === 'auth/requires-recent-login') {
+          const err = new Error('Güvenlik gereği hesabınızı silmek için lütfen çıkış yapıp tekrar giriş yapın.');
+          err.code = 'auth/requires-recent-login';
+          throw err;
+        }
         console.warn('Firebase user deletion warning:', e);
       }
     }
+
+    // 3. Yerel hesap kaydını sil
     const currentEmail = this.store?.state?.auth?.user?.email;
     if (currentEmail) {
       const accs = this._getLocalAccounts();
