@@ -7,35 +7,26 @@ let pendingAILesson = null;
 const NAV_DESKTOP = [
   ['home', icon('home'), 'Ana Sayfa'],
   ['learn', icon('map'), 'Öğren'],
-  ['locomotive', '🚂', 'Lokomotif'],
-  ['trap-hunter', '💣', 'Tuzak Avcısı'],
-  ['survival', '🗺️', 'Hayatta Kalma'],
-  ['logic', icon('lightbulb'), 'Dil Mantığı'],
-  ['leaderboard', icon('trophy'), 'Rekabet'],
-  ['review', icon('repeat'), 'Tekrar'],
-  ['cards', icon('cards'), 'Kartlar'],
-  ['ai', icon('bot'), 'AI Öğretmen'],
-  ['progress', icon('chart'), 'İlerleme'],
+  ['games', '🎮', 'Oyunlar'],
+  ['cards', icon('cards'), 'Kartlar & Tekrar'],
+  ['progress', icon('chart'), 'İlerleme & Rekabet'],
   ['settings', icon('settings'), 'Ayarlar']
 ];
 
 const NAV_MOBILE = [
   ['home', icon('home'), 'Ana Sayfa'],
   ['learn', icon('map'), 'Öğren'],
-  ['logic', icon('lightbulb'), 'Mantık'],
+  ['games', '🎮', 'Oyunlar'],
   ['cards', icon('cards'), 'Kartlar'],
   ['more', icon('more'), 'Menü']
 ];
 
 const MORE_LINKS = [
-  { id: 'locomotive', icon: '🚂', title: 'Cümle Lokomotifi', desc: 'SVO vagon kenetleme ve cümle mühendisliği yapbozu' },
-  { id: 'trap-hunter', icon: '💣', title: 'Tuzak Avcısı (Arcade)', desc: '60 saniyede Türk düşünce tuzaklarını imha et' },
-  { id: 'survival', icon: '🗺️', title: 'Hayatta Kalma Haritası', desc: 'Pasaport, kafe ve sokak senaryolarında canlı AI pratiği' },
-  { id: 'leaderboard', icon: icon('trophy'), title: 'Rekabet & Liderlik', desc: 'Arkadaşlarınla yarış ve skorunu paylaş' },
-  { id: 'ai', icon: icon('bot'), title: 'AI Öğretmen', desc: 'Google Gemini ile seviye analizi ve pratik' },
   { id: 'review', icon: icon('repeat'), title: 'Akıllı Tekrar', desc: 'Aralıklı tekrar sistemi ve hata havuzu' },
+  { id: 'leaderboard', icon: icon('trophy'), title: 'Rekabet & Liderlik', desc: 'Arkadaşlarınla yarış ve skorunu paylaş' },
   { id: 'progress', icon: icon('chart'), title: 'İlerleme Grafiği', desc: 'Haftalık XP ve ünite başarı tablosu' },
-  { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, ses hızı ve Gemini API anahtarı' },
+  { id: 'ai', icon: icon('bot'), title: 'AI Öğretmen (İsteğe Bağlı)', desc: 'Kendi ücretsiz Gemini anahtarınla sohbet pratiği' },
+  { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, maskot, tema ve ses hızı' },
   { id: 'privacy', icon: '📄', title: 'Gizlilik Politikası', desc: 'Google Play & KVKK / GDPR Uyumlu Bildirim', external: 'privacy.html' }
 ];
 
@@ -252,10 +243,14 @@ function router() {
   if (state.onboarded && r && r !== 'settings' && r !== 'auth' && r !== 'onboarding') {
     try { localStorage.setItem('patilingo_last_route', r); } catch (_) {}
   }
-  renderNav(r === 'grammar' ? 'learn' : r);
+  const navActive = r === 'grammar' ? 'learn'
+    : (['locomotive', 'trap-hunter', 'survival', 'logic'].includes(r) ? 'games'
+      : (r === 'review' ? 'cards'
+        : (r === 'leaderboard' ? 'progress' : r)));
+  renderNav(navActive);
   window.scrollTo(0, 0);
   const screens = {
-    home: screenHome, learn: screenLearn, logic: screenLogic, leaderboard: screenLeaderboard, review: screenReview, cards: screenCards, ai: screenAI,
+    home: screenHome, learn: screenLearn, games: screenGames, logic: screenLogic, leaderboard: screenLeaderboard, review: screenReview, cards: screenCards, ai: screenAI,
     progress: screenProgress, settings: screenSettings, grammar: screenGrammar, lesson: screenLesson,
     placement: screenPlacement, 'ai-lesson': screenAILesson, 'boss-a1': screenA1Boss, 'boss-a2': screenA2Boss, 'boss-b1': screenB1Boss, 'boss-b2': screenB2Boss,
     auth: () => { screenHome(); openAuthModal(); },
@@ -327,27 +322,20 @@ function screenOnboarding() {
 
   view().innerHTML = `
     <div class="onboard-isolated-wrap">
-      <!-- Landing Hero Section & Primary Hero Start Action CTA -->
-      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:14px 16px 20px;max-width:540px;width:100%;box-sizing:border-box;">
+      <!-- Sade Karşılama Başlığı -->
+      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:10px 16px 12px;max-width:540px;width:100%;box-sizing:border-box;">
         <div class="onboard-hero-bubble">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
-        <h1 class="onboard-brand-title rainbow-text" style="font-size:2.4rem;margin:6px 0 4px;">PatiLingo</h1>
-        <p class="onboard-tagline lead" style="margin-bottom:14px;">Oyunlaştırılmış & AI Destekli İngilizce Öğrenme Platformu 🎈</p>
-        <div id="landingCtaRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0 8px;">
-          <button class="btn btn-big btn-primary hero-action-btn" id="landingHeroStartBtn" style="min-width:210px;font-size:1.15rem;font-weight:800;border-radius:16px;box-shadow:0 6px 0 var(--primary-d, #3b5bdb);">
-            🚀 Öğrenmeye Başla
+        <h1 class="onboard-brand-title rainbow-text" style="font-size:2.3rem;margin:6px 0 4px;">PatiLingo</h1>
+        <p class="onboard-tagline lead" style="margin-bottom:10px;">Günde 5 dakikada eğlenerek İngilizce öğren 🐾</p>
+        <div id="landingCtaRow" style="display:flex;justify-content:center;margin:6px 0 0;">
+          <button class="btn btn-primary hero-action-btn" id="landingHeroStartBtn" style="font-size:0.95rem;font-weight:800;border-radius:14px;padding:10px 20px;">
+            👇 Profilini Oluştur ve Başla
           </button>
-          <a class="btn btn-big btn-ghost" id="landingPlacementBtn" href="#/placement" style="font-weight:700;border-radius:16px;">📝 Seviye Testi</a>
         </div>
       </div>
 
-      <!-- Kişiselleştirme & Kurulum Kartı (Personalization Setup Card) -->
+      <!-- Sade Kurulum Kartı -->
       <div class="onboard-isolated-card card onboard-card" id="onboardSetupCard">
-        <div class="onboard-brand-header">
-          <div class="onboard-hero-bubble" style="font-size:2.4rem;margin-bottom:6px;">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
-          <h2 style="margin:0 0 4px;font-size:1.35rem;font-weight:800;">Profilini & Yoldaşını Ayarla</h2>
-          <p class="onboard-tagline" style="margin:0;font-size:0.88rem;">Sana özel yoldaşın ve renklerinle maceraya adım at!</p>
-        </div>
-
         <div class="onboard-field-group">
           <label class="lbl">Sana nasıl hitap edelim?</label>
           <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${state.name !== 'Öğrenci' ? esc(state.name) : ''}" />
@@ -367,9 +355,9 @@ function screenOnboarding() {
           </div>
         </div>
 
-        <div class="onboard-field-group">
-          <label class="lbl">🎨 Renk Paletini Seç</label>
-          <div class="theme-grid">
+        <details class="onboard-field-group" style="margin-bottom:12px;">
+          <summary class="lbl" style="cursor:pointer;user-select:none;padding:6px 0;">🎨 Renk temasını değiştir <span class="muted small" style="font-weight:500;">(isteğe bağlı)</span></summary>
+          <div class="theme-grid" style="margin-top:8px;">
             ${PALETTES.map(p => `
               <div class="theme-card ${p.id === selectedTheme ? 'active' : ''}" data-t="${p.id}">
                 <div class="theme-head">
@@ -384,17 +372,16 @@ function screenOnboarding() {
               </div>
             `).join('')}
           </div>
-        </div>
+        </details>
 
-        <!-- İzole Aksiyon Butonları -->
+        <!-- 2 Net Ana Başlama Butonu -->
         <div class="onboard-primary-actions">
-          <button class="btn btn-big btn-primary" id="zeroBtn">🚀 Hemen Başla</button>
-          <button class="btn btn-big btn-secondary" id="placeBtn">📝 Seviye Testiyle Başla</button>
+          <button class="btn btn-big btn-primary" id="zeroBtn">🚀 Sıfırdan Başla</button>
+          <button class="btn btn-big btn-secondary" id="placeBtn">📝 Seviye Testiyle Başla (15 Soru)</button>
         </div>
 
-        <div class="onboard-auth-actions">
-          <button class="btn btn-ghost" id="onboardAuthBtn">🔐 Google ile Giriş Yap</button>
-          <button class="btn btn-ghost" id="onboardGuestBtn">👤 Misafir Olarak Dene</button>
+        <div class="onboard-auth-actions" style="justify-content:center;margin-top:6px;">
+          <button class="btn btn-ghost sm" id="onboardAuthBtn">🔑 Zaten hesabın var mı? Giriş Yap</button>
         </div>
       </div>
     </div>`;
@@ -472,7 +459,7 @@ function screenOnboarding() {
 
   $('#placeBtn').onclick = () => go('place');
   $('#zeroBtn').onclick = () => go('zero');
-  $('#onboardGuestBtn').onclick = () => go('guest');
+  if ($('#onboardGuestBtn')) $('#onboardGuestBtn').onclick = () => go('guest');
   $('#onboardAuthBtn').onclick = () => openAuthModal();
   $('#nameIn').onkeydown = e => { if (e.key === 'Enter') go('zero'); };
 }
@@ -938,6 +925,80 @@ function openMascotSelectModal() {
   });
 }
 
+function screenGames() {
+  const gamesList = [
+    {
+      href: '#/locomotive',
+      icon: '🚂',
+      title: 'Cümle Lokomotifi',
+      badge: 'Cümle Kurma',
+      desc: 'İngilizce Özne–Fiil–Nesne (SVO) vagonlarını doğru sırayla kenetleyerek cümle kur.',
+      color: '#4F46E5'
+    },
+    {
+      href: '#/trap-hunter',
+      icon: '💣',
+      title: 'Tuzak Avcısı',
+      badge: '60 sn Arcade',
+      desc: 'Türkçe düşünmekten kaynaklanan klasik İngilizce tuzaklarını süre dolmadan imha et.',
+      color: '#EF4444'
+    },
+    {
+      href: '#/survival',
+      icon: '🗺️',
+      title: 'Hayatta Kalma Haritası',
+      badge: 'Gerçek Hayat',
+      desc: 'Havalimanı, kafe, otel ve sokak senaryolarında gerçek İngilizce diyalog pratiği yap.',
+      color: '#10B981'
+    },
+    {
+      href: '#/logic',
+      icon: '💡',
+      title: 'Dil Mantığı Simülatörü',
+      badge: 'Görsel Rehber',
+      desc: 'Türkçe ve İngilizce cümle dizilimi arasındaki temel farkı etkileşimli örneklerle gör.',
+      color: '#F59E0B'
+    }
+  ];
+
+  view().innerHTML = `
+    <div class="page">
+      <header class="page-head">
+        <div>
+          <h1>🎮 Oyunlar &amp; Pratik Merkezi</h1>
+          <p class="muted">Eğlenerek pratik yap, öğrendiklerini kalıcı hale getir.</p>
+        </div>
+      </header>
+
+      <div class="grid-2" style="gap:14px;">
+        ${gamesList.map(g => `
+          <a href="${g.href}" class="card" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:10px;border-left:4px solid ${g.color};transition:transform 0.15s ease;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <span style="font-size:2rem;">${g.icon}</span>
+              <span class="badge" style="background:color-mix(in srgb, ${g.color} 14%, transparent);color:${g.color};font-weight:800;">${g.badge}</span>
+            </div>
+            <div>
+              <h3 style="margin:0 0 4px;">${g.title}</h3>
+              <p class="muted small" style="margin:0;line-height:1.45;">${g.desc}</p>
+            </div>
+            <div style="margin-top:auto;padding-top:6px;font-weight:800;font-size:0.88rem;color:${g.color};">Oyna →</div>
+          </a>
+        `).join('')}
+      </div>
+
+      <div class="card" style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.5rem;">🤖</span>
+          <div>
+            <b>AI Öğretmen <span class="muted small" style="font-weight:600;">(İsteğe Bağlı)</span></b>
+            <p class="muted small" style="margin:2px 0 0;">Kendi ücretsiz Gemini anahtarınla kişiye özel sohbet ve analiz.</p>
+          </div>
+        </div>
+        <a href="#/ai" class="btn btn-secondary sm">Aç →</a>
+      </div>
+    </div>`;
+}
+
 function screenHome() {
   const lvl = levelInfo();
   const xl = xpLevel();
@@ -965,7 +1026,7 @@ function screenHome() {
           <span>⚠️</span>
           <span><b>Misafir Modundasınız:</b> İlerlemenizi kaybetmemek için giriş yapın.</span>
         </div>
-        <a href="#/settings" class="btn btn-secondary sm gwb-btn">Giriş Yap</a>
+        <button type="button" id="homeGuestAuthBtn" class="btn btn-secondary sm gwb-btn">Giriş Yap</button>
       </div>` : ''}
 
       <!-- 1. Üst Başlık (Minimalist & Sakin) -->
@@ -1013,11 +1074,11 @@ function screenHome() {
 
       <!-- 3. HIZLI ERİŞİM ŞERİDİ (3 Kompakt Şık Kart) -->
       <div class="home-quick-grid">
-        <a href="#/locomotive" class="card home-quick-card" title="Cümle Lokomotifi">
-          <span class="hqc-icon">🚂</span>
+        <a href="#/games" class="card home-quick-card" title="Oyunlar ve Pratik Merkezi">
+          <span class="hqc-icon">🎮</span>
           <div class="hqc-info">
-            <b>Cümle Lokomotifi</b>
-            <span class="muted small">Vagon Yapbozu</span>
+            <b>Oyunlar</b>
+            <span class="muted small">Lokomotif &amp; Tuzak Avcısı</span>
           </div>
         </a>
 
@@ -1029,11 +1090,11 @@ function screenHome() {
           </div>
         </a>
 
-        <a href="#/ai" class="card home-quick-card" id="dashAiCard" title="Yapay Zeka Sunny ile Sohbet">
-          <span class="hqc-icon">🤖</span>
+        <a href="#/cards" class="card home-quick-card" id="dashCardsCard" title="Kelime Kartları">
+          <span class="hqc-icon">🃏</span>
           <div class="hqc-info">
-            <b>Sunny AI</b>
-            <span class="muted small">Konuşma pratiği</span>
+            <b>Kelime Kartları</b>
+            <span class="muted small">Çevir, dinle, öğren</span>
           </div>
         </a>
       </div>
@@ -1053,6 +1114,11 @@ function screenHome() {
         </div>
       </div>
     </div>`;
+
+  // Misafir şeridindeki Giriş Yap butonu doğrudan giriş penceresini açsın
+  if ($('#homeGuestAuthBtn')) {
+    $('#homeGuestAuthBtn').onclick = () => openAuthModal();
+  }
 
   // Günün kelimesi sesli telaffuz
   document.querySelectorAll('.home-wotd-clean [data-say]').forEach(b => { b.onclick = () => speak(b.dataset.say, 'en'); });
@@ -2614,11 +2680,12 @@ function screenCards(id) {
 
     view().innerHTML = `
       <div class="page">
-        <header class="page-head">
+        <header class="page-head" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <div>
             <h1>🃏 Kelime Kartları</h1>
             <p class="muted">${isA2Unlocked ? 'Bir konu seç, kartları çevir, dinle ve aralıklı tekrarla kalıcı öğren.' : 'A1 Temel Seviye · 15 Konu · Kartları çevir ve dinleyerek öğren.'}</p>
           </div>
+          <a href="#/review" class="btn btn-secondary sm">🔄 Akıllı Tekrar</a>
         </header>
 
         <!-- Seviye Filtre Hapları (Sadece A2 açıldığında görünür) -->
@@ -2765,7 +2832,7 @@ function screenProgress() {
 
   view().innerHTML = `
     <div class="page">
-      <header class="page-head" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><h1>📊 İlerlemen & Öğrenme Analizi</h1><p class="muted">${lvl.label} · ${lvl.desc}</p></div><a class="btn btn-ghost" id="progressPlacementBtn" href="#/placement">📝 Seviye Testi</a></header>
+      <header class="page-head" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><h1>📊 İlerlemen &amp; Öğrenme Analizi</h1><p class="muted">${lvl.label} · ${lvl.desc}</p></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><a class="btn btn-secondary sm" href="#/leaderboard">🏆 Rekabet &amp; Liderlik</a><a class="btn btn-ghost sm" id="progressPlacementBtn" href="#/placement">📝 Seviye Testi</a></div></header>
 
       <div class="grid-4">
         <div class="stat-card grad-1"><div class="sc-icon">🌿</div><div class="sc-val">${currentStreak()}</div><div class="sc-lbl">gün ritim</div></div>
@@ -2915,29 +2982,31 @@ function screenAI() {
     const curModel = state?.settings?.model || 'gemini-2.0-flash';
     view().innerHTML = `
       <div class="page">
-        <header class="page-head"><div><h1>🤖 AI Öğretmen</h1><p class="muted">Google Gemini ile çalışır, ücretsizdir.</p></div></header>
+        <header class="page-head"><div><h1>🤖 AI Öğretmen <span class="badge" style="font-size:0.72rem;vertical-align:middle;">İsteğe Bağlı</span></h1><p class="muted">Kendi ücretsiz Google Gemini anahtarınla yapay zeka sohbeti ve kişisel analiz.</p></div></header>
+        <div class="card" style="background:color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff));border:1px solid var(--line);margin-bottom:14px;">
+          <p style="margin:0;font-size:0.9rem;line-height:1.5;">💡 <b>Kurulum zorunlu değil:</b> API anahtarı eklemesen de tüm dersler, kelime kartları, seviye testi ve oyunlar <b>%100 ücretsiz ve tam çalışır.</b> İstersen aşağıdan ücretsiz Gemini anahtarını bağlayıp ekstra yapay zeka sohbetini de açabilirsin.</p>
+        </div>
         <div class="card setup-card">
-          <h2>Yapay zekayı 2 dakikada etkinleştir ✨</h2>
+          <h2>Ücretsiz Gemini Anahtarını Bağla ✨</h2>
           <ol class="steps">
             <li><a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> adresine git ve Google hesabınla giriş yap.</li>
             <li><b>"Create API key"</b> (API anahtarı oluştur) butonuna tıkla.</li>
-            <li>Oluşan anahtarı kopyala ve aşağıya yapıştır.</li>
+            <li>Oluşan <code>AIza...</code> ile başlayan anahtarı kopyalayıp aşağıya yapıştır.</li>
           </ol>
           <label class="lbl" style="font-weight:700;margin-bottom:6px;display:block;">Google Gemini API Anahtarı:</label>
           <div class="type-row" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
             <input id="keyIn" class="text-input" placeholder="AIzaSy..." value="" autocomplete="off" style="flex:1;min-width:200px;" aria-label="Gemini API Anahtarı" />
-            <button class="btn btn-primary" id="saveKey">Kaydet ve Test Et</button>
+            <button class="btn btn-primary" id="saveKey">Kaydet ve Etkinleştir</button>
           </div>
-          <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <label class="muted small" for="setupModelIn" style="font-weight:700;">Model:</label>
-            <input id="setupModelIn" class="text-input" value="${esc(curModel)}" list="setupModels" style="max-width:220px;padding:6px 10px;font-size:0.85rem;" aria-label="Gemini Modeli" />
-            <datalist id="setupModels"><option value="gemini-2.0-flash"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash-lite"><option value="gemini-1.5-pro"></datalist>
-          </div>
-          <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-            <span class="muted small">Mevcut bir anahtarı test etmek veya düzenlemek için:</span>
-            <button class="btn btn-ghost sm" id="seedExistingKeyBtn" aria-label="Mevcut Anahtarla Başla (Test Önkoşulu)">🔑 Örnek Anahtar Yükle (Düzenleme Modu)</button>
-          </div>
-          <p class="muted small" style="margin-top:10px;">🔒 Anahtarın sadece tarayıcında saklanır.</p>
+          <details style="margin-top:12px;">
+            <summary class="muted small" style="cursor:pointer;font-weight:700;">⚙️ Gelişmiş: Model seçimi (${esc(curModel)})</summary>
+            <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <label class="muted small" for="setupModelIn" style="font-weight:700;">Model:</label>
+              <input id="setupModelIn" class="text-input" value="${esc(curModel)}" list="setupModels" style="max-width:220px;padding:6px 10px;font-size:0.85rem;" aria-label="Gemini Modeli" />
+              <datalist id="setupModels"><option value="gemini-2.0-flash"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash-lite"><option value="gemini-1.5-pro"></datalist>
+            </div>
+          </details>
+          <p class="muted small" style="margin-top:12px;">🔒 Anahtarın sadece kendi cihazında saklanır, sunucularımıza gönderilmez.</p>
         </div>
       </div>`;
 
