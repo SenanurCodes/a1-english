@@ -2527,7 +2527,7 @@ body.onboarding-mode .shimeji-restore-btn {
   transform: translateX(-50%) translateY(6px) scale(0.96);
   width: 288px;
   max-width: calc(100vw - 32px);
-  background: color-mix(in srgb, var(--card, #151c2c) 96%, #0f172a);
+  background: var(--card-bg, #151c2c);
   color: var(--text, #f8fafc);
   border: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 42%, rgba(255, 255, 255, 0.12));
   border-radius: 18px;
@@ -2556,7 +2556,7 @@ body.onboarding-mode .shimeji-restore-btn {
   left: 50%;
   width: 13px;
   height: 13px;
-  background: color-mix(in srgb, var(--card, #151c2c) 96%, #0f172a);
+  background: var(--card-bg, #151c2c);
   border-right: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 42%, rgba(255, 255, 255, 0.12));
   border-bottom: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 42%, rgba(255, 255, 255, 0.12));
   transform: translateX(-50%) rotate(45deg);
@@ -4243,4 +4243,142 @@ b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; 
 }
 .shimeji-hide-btn {
   z-index: 10;
+}
+
+
+/* ============================================================
+   v2.9.55 — Koyu Tema Logo Kontrastı & Gerçekçi Maskot Cilası
+   ============================================================ */
+
+/* 1. Koyu temada PatiLingo başlığı net ve parlak görünsün */
+[data-mode="dark"] .mh-title,
+[data-mode="dark"] .logo-text {
+  background: linear-gradient(90deg, #FFFFFF 0%, #E0E7FF 55%, #FDE68A 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.35));
+}
+
+/* 2. Maskotun altındaki kalıcı isim/yıldız rozetini kaldır (temiz silüet; ad beslerken/balonda zaten görünür) */
+.shimeji-legend-badge {
+  display: none !important;
+}
+
+/* 3. Gerçekçi zemin gölgesi & yaylı doğal fizik (tüm maskot SVG'leri için geçerli) */
+.shimeji-pet::before {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68%;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0) 72%);
+  pointer-events: none;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  z-index: 0;
+}
+.shimeji-pet.dragging::before {
+  opacity: 0.15;
+  transform: translateX(-50%) scale(0.65);
+}
+.shimeji-pet.state-jump::before,
+.shimeji-pet.state-dance::before {
+  transform: translateX(-50%) scale(0.78);
+  opacity: 0.28;
+}
+
+.shimeji-sprite-wrap {
+  position: relative;
+  z-index: 1;
+}
+.shimeji-sprite-wrap svg {
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+/* Tüm maskotlar (sincap, kedi, panda, köpek, baykuş) için gerçekçi yaylı hareketler */
+.shimeji-pet.state-idle .shimeji-sprite-wrap svg {
+  animation: shimejiRealBreathe 2.8s infinite ease-in-out;
+}
+.shimeji-pet.state-walk .shimeji-sprite-wrap svg {
+  animation: shimejiRealWalk 0.46s infinite ease-in-out;
+}
+.shimeji-pet.state-dance .shimeji-sprite-wrap svg {
+  animation: shimejiRealDance 0.62s infinite cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.shimeji-pet.state-jump .shimeji-sprite-wrap svg {
+  animation: shimejiRealJump 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.shimeji-pet.state-sad .shimeji-sprite-wrap svg {
+  animation: shimejiRealSad 1.3s infinite ease-in-out;
+}
+
+@keyframes shimejiRealBreathe {
+  0%, 100% { transform: scaleY(1) scaleX(1) translateY(0); }
+  50% { transform: scaleY(1.04) scaleX(0.97) translateY(-1px); }
+}
+@keyframes shimejiRealWalk {
+  0%, 100% { transform: translateY(0) rotate(0deg) scaleY(1); }
+  25% { transform: translateY(-4px) rotate(-3deg) scaleY(1.04) scaleX(0.97); }
+  50% { transform: translateY(0) rotate(0deg) scaleY(0.96) scaleX(1.03); }
+  75% { transform: translateY(-4px) rotate(3deg) scaleY(1.04) scaleX(0.97); }
+}
+@keyframes shimejiRealDance {
+  0%, 100% { transform: translateY(0) scaleY(0.92) scaleX(1.07) rotate(0deg); }
+  30% { transform: translateY(-10px) scaleY(1.08) scaleX(0.94) rotate(-6deg); }
+  55% { transform: translateY(-2px) scaleY(0.95) scaleX(1.05) rotate(0deg); }
+  80% { transform: translateY(-10px) scaleY(1.08) scaleX(0.94) rotate(6deg); }
+}
+@keyframes shimejiRealJump {
+  0% { transform: translateY(0) scaleY(0.88) scaleX(1.1); }
+  35% { transform: translateY(-16px) scaleY(1.1) scaleX(0.92); }
+  75% { transform: translateY(0) scaleY(0.92) scaleX(1.06); }
+  100% { transform: translateY(0) scaleY(1) scaleX(1); }
+}
+@keyframes shimejiRealSad {
+  0%, 100% { transform: translateY(1px) scaleY(0.95) scaleX(1.03) rotate(-1.5deg); }
+  50% { transform: translateY(3px) scaleY(0.92) scaleX(1.05) rotate(1.5deg); }
+}
+
+/* 4. Koyu temada maskot ve baloncuk kusursuz bütünleşsin (beyaz elmas kuyruk yok!) */
+[data-mode="dark"] .shimeji-pet {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.55));
+}
+[data-mode="dark"] .shimeji-bubble {
+  background: var(--card-bg, #161b22) !important;
+  color: var(--text, #f8fafc) !important;
+  border: 1px solid color-mix(in srgb, var(--primary, #7c3aed) 45%, rgba(255, 255, 255, 0.14)) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.62) !important;
+}
+[data-mode="dark"] .shimeji-bubble-tail {
+  background: var(--card-bg, #161b22) !important;
+  border-right-color: color-mix(in srgb, var(--primary, #7c3aed) 45%, rgba(255, 255, 255, 0.14)) !important;
+  border-bottom-color: color-mix(in srgb, var(--primary, #7c3aed) 45%, rgba(255, 255, 255, 0.14)) !important;
+}
+
+/* 5. Balon ve duygu ikonu (emote) hizalaması — asla çakışmasın */
+.shimeji-bubble.visible ~ .shimeji-emote-fx {
+  opacity: 0 !important;
+}
+.shimeji-emote-fx {
+  top: -22px;
+  font-size: 0.95rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+@media (max-width: 768px) {
+  .shimeji-bubble {
+    bottom: 62px !important;
+  }
+  .shimeji-pet.near-top .shimeji-bubble {
+    bottom: auto !important;
+    top: 60px !important;
+  }
+  .shimeji-emote-fx {
+    top: -18px;
+    font-size: 0.85rem;
+  }
 }

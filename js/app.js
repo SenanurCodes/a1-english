@@ -4614,7 +4614,7 @@ function initShimejiCompanion() {
 
     if (!alreadyShownToday) {
       const welcomeTimer = setTimeout(() => {
-        if (mode !== 'sleep' && !window.currentActiveLessonQuestion) {
+        if (mode !== 'sleep' && !window.currentActiveLessonQuestion && !location.hash.startsWith('#/settings')) {
           try { localStorage.setItem(AUTO_BUBBLE_KEY, todayKey); } catch (_) {}
           showBubble(null, null, 8000);
           setMode('jump', 18);
