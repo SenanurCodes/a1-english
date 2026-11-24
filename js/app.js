@@ -4084,9 +4084,15 @@ function initShimejiCompanion() {
       <button type="button" id="shimejiHideBtn" class="shimeji-hide-btn" aria-label="Maskotu gizle" title="Maskotu gizle">✕</button>
       <div id="shimejiLegendBadge" class="shimeji-legend-badge" tabindex="0" data-tooltip="${esc(starTooltipText(sq))}" title="${esc(starTooltipText(sq))}" aria-label="${esc(starTooltipText(sq))}">${starsText(sq.stage)} ${esc(mascotService.getActive().name)}</div>
     </div>
+    <div id="shimejiDropClose" class="shimeji-drop-close" aria-hidden="true">
+      <div class="sdc-circle">✕</div>
+      <span class="sdc-label">Gizle</span>
+    </div>
   `;
 
   const petEl = $('#shimejiPet');
+  const dropCloseEl = $('#shimejiDropClose');
+  let isOverDropClose = false;
   const emoteEl = $('#shimejiEmoteFx');
   const badgeEl = $('#shimejiLegendBadge');
   const bubbleEl = $('#shimejiBubble');
@@ -4477,6 +4483,7 @@ function initShimejiCompanion() {
       if (!dragMoved) {
         dragMoved = true;
         setMode('dragging', 999);
+        if (dropCloseEl) dropCloseEl.classList.add('visible');
       }
       const minW = getSafeMinX();
       const maxW = getSafeMaxX();
@@ -4486,12 +4493,41 @@ function initShimejiCompanion() {
       petEl.style.left = `${Math.round(posX)}px`;
       petEl.style.bottom = `${Math.round(posY)}px`;
       syncViewportEdgeClasses();
+
+      // Sürükleyip gizleme hedef alanı (alt-orta ✕ çemberi) kontrolü
+      if (dropCloseEl) {
+        const rect = dropCloseEl.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dist = Math.hypot(clientX - cx, clientY - cy);
+        const nowOver = dist <= 62;
+        if (nowOver !== isOverDropClose) {
+          isOverDropClose = nowOver;
+          dropCloseEl.classList.toggle('hover', nowOver);
+          if (nowOver && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+            try { navigator.vibrate(14); } catch (_) {}
+          }
+        }
+      }
     }
   };
 
   const handleDragEnd = () => {
     if (!isDragging) return;
     isDragging = false;
+    const shouldHide = dragMoved && isOverDropClose;
+    isOverDropClose = false;
+    if (dropCloseEl) {
+      dropCloseEl.classList.remove('visible', 'hover');
+    }
+    if (shouldHide) {
+      dragMoved = false;
+      state.settings.shimeji = false;
+      saveState();
+      applyShimejiVisibility();
+      toast('Maskot gizlendi. Geri getirmek için köşedeki 🐾 butonuna dokun.');
+      return;
+    }
     if (dragMoved) {
       dragMoved = false;
       const winH = window.innerHeight || 600;
