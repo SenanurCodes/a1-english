@@ -3765,7 +3765,7 @@ function openAuthModal() {
     <div id="tabContentLogin" class="flex flex-col gap-2">
       <div>
         <label class="lbl">Adın / Takma Adın</label>
-        <input type="text" id="modalNameIn" class="text-input" value="${esc(state.name !== 'Öğrenci' ? state.name : '')}" placeholder="Örn: Sena, Kenan" />
+        <input type="text" id="modalNameIn" class="text-input" value="${esc(state.name !== 'Öğrenci' ? state.name : '')}" placeholder="Adını veya takma adını yaz..." />
       </div>
       <div>
         <label class="lbl">E-posta</label>
