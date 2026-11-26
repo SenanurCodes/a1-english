@@ -226,6 +226,7 @@ test('3. Soru üreticileri: buildUnitLesson, buildPlacementTest, buildA1BossTest
    ============================================================ */
 test('4. Rotalar hatasız render oluyor (review ve progress dahil)', () => {
   const { window, run } = createEnv();
+  run('state.onboarded = true; state.name = "TestOgrenci";');
 
   const coreRoutes = [
     'home', 'learn', 'logic', 'leaderboard', 'review', 'cards/u1',
@@ -407,6 +408,7 @@ test('5. ai.js (fetch mock): 200, 429, 403, 404 fallback, NO_KEY, json temizleme
   // 5.8 AI Öğretmen Anahtar Kurulumu, Yenileme Sonrası Kalıcılık ve Mevcut Anahtarı Güncelleme (Replace)
   {
     const { window, run } = createEnv();
+    run('state.onboarded = true; state.name = "TestOgrenci";');
     window.location.hash = '#/ai';
     window.router();
 
@@ -675,6 +677,7 @@ test('10. Oyun Modları: Lokomotif SVO yapbozu, Tuzak Avcısı arcade ve Hayatta
   }
 
   // D. Ekranların Render Doğrulaması
+  run('state.onboarded = true; state.name = "TestOgrenci";');
   window.location.hash = '#/locomotive';
   window.router();
   const locoHtml = window.document.getElementById('view').innerHTML;
@@ -806,6 +809,71 @@ test('12. Güvenlik: Lig oda kodu doğrulaması, import/sync sınırları ve hes
     delCode = e.code || e.message;
   }
   ok(String(delCode).includes('requires-recent-login') || String(delCode).includes('tekrar giriş'), 'requires-recent-login hatası kullanıcıya iletilmeli');
+});
+
+/* ============================================================
+   13. Sıkı Giriş & 2 Aşamalı Karşılama Kapısı (Misafir Sızıntısı Koruması)
+   ============================================================ */
+test('13. Giriş Kapısı: 2 aşamalı karşılama, boş alan engeli, misafir sızıntısı ve eski kayıt temizliği', async () => {
+  // 13.1 Eski sürümden kalan hatalı misafir kaydı (onboarded:true, name:'Öğrenci', xp:0) otomatik sıfırlanmalı
+  {
+    const { window, run } = createEnv({
+      localStorage: {
+        a1english_v1: JSON.stringify({ onboarded: true, name: 'Öğrenci', xp: 0, units: {}, auth: { isGuest: true } })
+      }
+    });
+    window.location.hash = '#/home';
+    window.router();
+    eq(run('state.onboarded'), false, 'Hatalı eski Öğrenci misafir kaydı otomatik onboarded=false yapılmalı');
+    const hero = window.document.getElementById('landingHeroSection');
+    const setup = window.document.getElementById('onboardSetupCard');
+    ok(hero && hero.style.display !== 'none', 'Adım 1 (Giriş/Misafir seçimi) görünür olmalı');
+    ok(setup && setup.style.display === 'none', 'Adım 2 (Profil/Başla) ilk açılışta gizli olmalı');
+  }
+
+  // 13.2 onboarded=false iken #/home, #/progress, #/placement doğrudan açılamamalı
+  {
+    const { window, run } = createEnv();
+    for (const blocked of ['home', 'progress', 'learn', 'placement']) {
+      window.location.hash = '#/' + blocked;
+      window.router();
+      ok(window.document.getElementById('landingHeroSection'), blocked + ' rotası onboarding olmadan engellenmeli');
+    }
+
+    // 13.3 Giriş modalı boş alan doğrulaması + Misafir Modunda Kal butonu çalışma alanına atmamalı
+    await new Promise(r => setTimeout(r, 20));
+    window.document.getElementById('onboardAuthBtn').click();
+    const modalErr = window.document.getElementById('modalAuthError');
+    await window.document.getElementById('modalEmailLoginBtn').onclick();
+    ok(modalErr && modalErr.style.display === 'block', 'Boş e-posta ile Giriş Yap kırmızı hata göstermeli');
+    await window.document.getElementById('modalEmailRegBtn').onclick();
+    ok(modalErr && modalErr.style.display === 'block', 'Boş ad/e-posta ile Kayıt Ol kırmızı hata göstermeli');
+
+    window.document.getElementById('modalGuestBtn').click();
+    eq(run('state.onboarded'), false, 'Misafir Modunda Kal onboarded=true yapmamalı');
+    const setup = window.document.getElementById('onboardSetupCard');
+    ok(setup && setup.style.display !== 'none', 'Misafir Modunda Kal Adım 2 profil ekranını açmalı');
+
+    // 13.4 Adım 2'de boş isimle Sıfırdan Başla ve Seviye Testi engellenmeli
+    const nameIn = window.document.getElementById('nameIn');
+    const nameErr = window.document.getElementById('onboardNameError');
+    nameIn.value = '';
+    window.document.getElementById('zeroBtn').click();
+    eq(run('state.onboarded'), false, 'Boş isimle Sıfırdan Başla içeri almamalı');
+    ok(nameErr && nameErr.style.display === 'block', 'Boş isimde kırmızı uyarı kutusu çıkmalı');
+
+    nameIn.value = '   ';
+    window.document.getElementById('placeBtn').click();
+    eq(run('state.onboarded'), false, 'Boşluk isimle Seviye Testi başlamamalı');
+
+    // 13.5 Geçerli isimle Seviye Testi açılmalı ve Fındık gizli kalmalı
+    nameIn.value = 'Deneme';
+    window.document.getElementById('placeBtn').click();
+    window.router();
+    eq(window.location.hash, '#/placement', 'Geçerli isimle Seviye Testi başlamalı');
+    const shRoot = window.document.getElementById('shimeji-root');
+    ok(!shRoot || shRoot.style.display === 'none', 'Seviye Testi sırasında maskot gizli olmalı');
+  }
 });
 
 /* ============================================================

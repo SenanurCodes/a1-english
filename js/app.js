@@ -198,6 +198,18 @@ function router() {
   const [rawRoute, param] = location.hash.replace(/^#\/?/, '').split('/');
   let route = rawRoute ? rawRoute.split('?')[0] : '';
 
+  // Önceki sürümden kalan boş isimli/0 XP'li hatalı misafir kaydını otomatik temizle
+  const isLegacyBrokenGuest = state.onboarded
+    && (!state.auth || state.auth.isGuest)
+    && (!state.name || state.name === 'Öğrenci')
+    && (!state.xp || state.xp === 0)
+    && Object.keys(state.units || {}).length === 0
+    && !state.placement;
+  if (isLegacyBrokenGuest) {
+    state.onboarded = false;
+    saveState();
+  }
+
   // Soğuk başlangıçta yönlendirme
   if (!window.__patilingoAppStarted) {
     window.__patilingoAppStarted = true;
@@ -215,8 +227,13 @@ function router() {
     }
   }
 
-  if (!state.onboarded && (!route || route === 'onboarding')) {
+  // Sıkı giriş/karşılama kapısı: onboarded değilse gizlilik veya profili doldurulmuş seviye testi dışındaki TÜM rotaları giriş ekranına yönlendir
+  const allowPlacementPreOnboard = route === 'placement' && Boolean((state.name || '').trim()) && state.name !== 'Öğrenci';
+  if (!state.onboarded && route !== 'privacy' && !allowPlacementPreOnboard) {
     if (roomParam) state.pendingLeagueRoom = roomParam;
+    if (route && route !== 'onboarding') {
+      try { history.replaceState(null, '', location.pathname + '#/onboarding'); } catch (_) {}
+    }
     return screenOnboarding();
   }
 
@@ -309,7 +326,7 @@ initAndroidBackNavigation();
 /* ============================================================
    Karşılama & Kişiselleştirme (Onboarding v2.0)
    ============================================================ */
-function screenOnboarding() {
+function screenOnboarding(initialStep = 1) {
   document.body.classList.remove('focus-mode');
   document.body.classList.add('onboarding-mode');
   const shRoot = $('#shimeji-root');
@@ -318,32 +335,43 @@ function screenOnboarding() {
   let selectedMascot = state.mascot || 'squirrel';
   let selectedTheme = state.theme || 'nordic';
 
+  const isSignedIn = Boolean(state.auth && !state.auth.isGuest && state.auth.user);
+  const prefillName = (state.name && state.name !== 'Öğrenci')
+    ? state.name
+    : (isSignedIn && state.auth.user.displayName ? state.auth.user.displayName : '');
+  const showStep2Now = initialStep === 2 || isSignedIn;
+
   view().innerHTML = `
     <div class="onboard-isolated-wrap">
-      <!-- Adım 1: Giriş veya Misafir Seçimi -->
-      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:10px 16px 14px;max-width:540px;width:100%;box-sizing:border-box;">
-        <div class="onboard-hero-bubble">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾'}</div>
+      <!-- Adım 1: Önce Giriş Yap / Kayıt Ol veya Misafir Seçimi -->
+      <div class="landing-hero card onboard-card" id="landingHeroSection" style="display:${showStep2Now ? 'none' : 'block'};text-align:center;padding:24px 20px;max-width:480px;width:100%;box-sizing:border-box;">
+        <div class="onboard-hero-bubble" style="margin:0 auto 8px;">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾'}</div>
         <h1 class="onboard-brand-title rainbow-text" style="font-size:2.2rem;margin:6px 0 4px;">PatiLingo</h1>
-        <p class="onboard-tagline lead" style="margin-bottom:12px;">Günde 5 dakikada eğlenerek İngilizce öğren 🐾</p>
-        <div id="landingCtaRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px 0 0;">
-          <button class="btn btn-primary hero-action-btn" id="onboardAuthBtn" style="font-size:0.95rem;font-weight:800;border-radius:14px;padding:11px 18px;">
+        <p class="onboard-tagline lead" style="margin-bottom:6px;">Günde 5 dakikada eğlenerek İngilizce öğren 🐾</p>
+        <p class="muted small" style="margin-bottom:18px;">Başlamak için hesabına giriş yap ya da misafir olarak devam et.</p>
+        <div id="landingCtaRow" style="display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto;">
+          <button class="btn btn-primary btn-big hero-action-btn" id="onboardAuthBtn" style="width:100%;justify-content:center;font-size:1rem;font-weight:800;border-radius:14px;padding:13px 18px;">
             🔐 Giriş Yap / Kayıt Ol
           </button>
-          <button class="btn btn-secondary hero-action-btn" id="landingHeroStartBtn" style="font-size:0.95rem;font-weight:800;border-radius:14px;padding:11px 18px;">
+          <button class="btn btn-secondary btn-big hero-action-btn" id="landingHeroStartBtn" style="width:100%;justify-content:center;font-size:0.98rem;font-weight:800;border-radius:14px;padding:13px 18px;">
             👤 Misafir Olarak Devam Et
           </button>
         </div>
       </div>
 
-      <!-- Adım 2: Profil, Yoldaş ve Başlama Yolu -->
-      <div class="onboard-isolated-card card onboard-card" id="onboardSetupCard">
+      <!-- Adım 2: Profil, Yoldaş ve Başlama Yolu (Adım 1 seçildikten sonra açılır) -->
+      <div class="onboard-isolated-card card onboard-card" id="onboardSetupCard" style="display:${showStep2Now ? 'block' : 'none'};">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">
+          ${!isSignedIn ? '<button type="button" class="btn btn-secondary sm" id="onboardBackStep1Btn" style="font-size:0.8rem;padding:6px 10px;">← Giriş Seçimine Dön</button>' : '<span class="pill" style="font-size:0.78rem;background:rgba(16,185,129,0.14);color:#10b981;font-weight:700;">🟢 Hesabına giriş yapıldı</span>'}
+          <span class="muted small" style="font-weight:700;">Adım 2 / 2</span>
+        </div>
         <div style="text-align:center;margin-bottom:12px;">
-          <b style="font-size:1.05rem;">2. Adım · Adını ve Yoldaşını Seç</b>
-          <p class="muted small" style="margin:2px 0 0;">Önce profilini belirle, sonra sıfırdan başla ya da seviye testine gir.</p>
+          <b style="font-size:1.08rem;">Adını ve Yoldaşını Seç</b>
+          <p class="muted small" style="margin:2px 0 0;">Profilini belirle, sonra sıfırdan başla ya da 15 soruluk seviye testine gir.</p>
         </div>
         <div class="onboard-field-group">
-          <label class="lbl">Sana nasıl hitap edelim?</label>
-          <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${state.name !== 'Öğrenci' ? esc(state.name) : ''}" />
+          <label class="lbl">Sana nasıl hitap edelim? <span style="color:#ef4444;">*</span></label>
+          <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${esc(prefillName)}" />
           <div id="onboardNameError" style="display:none;color:#ef4444;font-size:0.84rem;font-weight:700;background:rgba(239,68,68,0.12);padding:8px 12px;border-radius:10px;border-left:3px solid #ef4444;margin-top:6px;"></div>
         </div>
 
@@ -385,21 +413,30 @@ function screenOnboarding() {
           <button class="btn btn-big btn-primary" id="zeroBtn">🚀 Sıfırdan Başla</button>
           <button class="btn btn-big btn-secondary" id="placeBtn">📝 Seviye Testiyle Başla (15 Soru)</button>
         </div>
-
-
       </div>
     </div>`;
 
-  // Landing Hero Start CTA - scroll to setup form and focus name
+  const showStep = step => {
+    const hero = $('#landingHeroSection');
+    const setup = $('#onboardSetupCard');
+    if (hero) hero.style.display = step === 1 ? 'block' : 'none';
+    if (setup) setup.style.display = step === 2 ? 'block' : 'none';
+    if (step === 2) {
+      $('#nameIn')?.focus();
+    }
+  };
+  window.__patilingoShowOnboardStep = showStep;
+
+  // Adım 1 -> Misafir Olarak Devam Et -> Adım 2'yi aç
   const landingHeroBtn = $('#landingHeroStartBtn');
   if (landingHeroBtn) {
-    landingHeroBtn.onclick = () => {
-      const setupCard = $('#onboardSetupCard');
-      if (setupCard) {
-        setupCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        $('#nameIn')?.focus();
-      }
-    };
+    landingHeroBtn.onclick = () => showStep(2);
+  }
+
+  // Adım 2 -> Geri Dön -> Adım 1
+  const backStep1Btn = $('#onboardBackStep1Btn');
+  if (backStep1Btn) {
+    backStep1Btn.onclick = () => showStep(1);
   }
 
   // Yoldaş seçimi
@@ -485,7 +522,6 @@ function screenOnboarding() {
 
   $('#placeBtn').onclick = () => go('place');
   $('#zeroBtn').onclick = () => go('zero');
-  if ($('#onboardGuestBtn')) $('#onboardGuestBtn').onclick = () => go('guest');
   $('#onboardAuthBtn').onclick = () => openAuthModal();
   $('#nameIn').onkeydown = e => { if (e.key === 'Enter') go('zero'); };
 }
@@ -3883,10 +3919,18 @@ function openAuthModal() {
   };
 
   $('#modalGuestBtn').onclick = () => {
-    authService.continueAsGuest(state.name || 'Öğrenci');
     closeModal();
+    if (!state.onboarded) {
+      if (typeof window.__patilingoShowOnboardStep === 'function') {
+        window.__patilingoShowOnboardStep(2);
+      } else {
+        screenOnboarding(2);
+      }
+      toast('Devam etmek için adını ve yoldaşını seç 🐾');
+      return;
+    }
+    authService.continueAsGuest(state.name || 'Öğrenci');
     toast('Misafir modunda devam ediliyor.');
-    location.hash = '#/progress';
     router();
   };
 
@@ -3916,9 +3960,15 @@ function openAuthModal() {
     try {
       const u = await authService.signInWithGoogle();
       if (!u) return;
+      if (u && u.displayName && (!state.name || state.name === 'Öğrenci')) state.name = u.displayName;
+      saveState();
       toast(`Hoş geldin, ${u.displayName || u.email}! 🎉`);
       closeModal();
-      router();
+      if (!state.onboarded) {
+        screenOnboarding(2);
+      } else {
+        router();
+      }
     } catch (err) {
       showModalError(err.message);
     }
@@ -3934,9 +3984,15 @@ function openAuthModal() {
     if (!pass) return showModalError('Lütfen şifreni gir.', '#modalPassIn');
     try {
       const u = await authService.registerWithEmail(email, pass, name);
+      if (u && u.displayName) state.name = u.displayName;
+      saveState();
       toast(`🎉 Tebrikler! Hesabın oluşturuldu. Hoş geldin, ${u.displayName}!`);
       closeModal();
-      router();
+      if (!state.onboarded) {
+        screenOnboarding(2);
+      } else {
+        router();
+      }
     } catch (err) {
       showModalError(err.message, '#modalEmailIn');
     }
@@ -3950,9 +4006,15 @@ function openAuthModal() {
     if (!pass) return showModalError('Lütfen şifreni gir.', '#modalPassIn');
     try {
       const u = await authService.signInWithEmail(email, pass);
+      if (u && u.displayName && (!state.name || state.name === 'Öğrenci')) state.name = u.displayName;
+      saveState();
       toast(`Giriş yapıldı: ${u.displayName || u.email} ✅`);
       closeModal();
-      router();
+      if (!state.onboarded) {
+        screenOnboarding(2);
+      } else {
+        router();
+      }
     } catch (err) {
       showModalError(err.message, '#modalEmailIn');
     }
