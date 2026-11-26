@@ -3062,6 +3062,14 @@ function screenAI() {
 
       ${noticeHtml}
 
+      ${(!getApiKey() && typeof getAIProxyUrl === 'function' && getAIProxyUrl()) ? `
+      <div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+        <span class="badge ai-status-pill" style="margin:0;">
+          <span class="ai-pulse-dot"></span>
+          Sunny AI Hazır · Otomatik Bağlı
+        </span>
+        <span class="muted small">${typeof isProUser === 'function' && isProUser() ? '👑 Sınırsız Pro' : `Ücretsiz: günde ${typeof getAiQuotaStatus === 'function' ? getAiQuotaStatus().remaining + '/' + getAiQuotaStatus().limit : '5/5'} mesaj`}</span>
+      </div>` : `
       <!-- AI Anahtar Yönetimi & Durum Kartı (Test ve Anahtar Güncelleme Desteği) -->
       <div class="card ai-status-card">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
@@ -3087,7 +3095,7 @@ function screenAI() {
           </div>
           <p class="muted small" style="margin-top:6px;">Yeni anahtarı girip kaydederek güncelleyebilirsin.</p>
         </div>
-      </div>
+      </div>`}
 
       <div class="tabs">
         <button class="tab ${aiTab === 'analyze' ? 'active' : ''}" data-t="analyze">🎯 Seviye Analizi</button>

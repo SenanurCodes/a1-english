@@ -129,7 +129,7 @@ function openProUpgradeModal(reasonText = '') {
           <div class="muted small">İstediğin zaman iptal et</div>
         </div>
         <div class="pro-plan-card selected" data-plan="yearly">
-          <span class="pro-plan-tag">%45 İNDİRİM · 7 GÜN ÜCRETSİZ</span>
+          <span class="pro-plan-tag">%45 İNDİRİM</span>
           <div class="muted small" style="font-weight:700;">Yıllık Paket</div>
           <div style="font-size:1.25rem;font-weight:900;margin:4px 0;">₺599,99</div>
           <div class="muted small">Aylık sadece ₺49,99'a gelir</div>
@@ -137,10 +137,10 @@ function openProUpgradeModal(reasonText = '') {
       </div>
 
       <button type="button" class="btn btn-primary" id="confirmProPurchaseBtn" style="width:100%;padding:13px 18px;font-size:1rem;background:linear-gradient(135deg,#F59E0B,#EC4899);border:none;color:#fff;">
-        👑 7 Gün Ücretsiz Dene (Beta Önizleme)
+        👑 7 Gün Ücretsiz Dene
       </button>
       <button type="button" class="btn btn-ghost sm" id="cancelProModalBtn" style="width:100%;margin-top:8px;">
-        Şimdilik Ücretsiz Devam Et (Günde ${quota.limit} AI Mesajı)
+        Ücretsiz Devam Et (Günde ${quota.limit} Mesaj)
       </button>
     </div>
   `);
@@ -166,7 +166,16 @@ function openProUpgradeModal(reasonText = '') {
 
 function getApiKey() {
   const fromState = state?.settings?.apiKey;
-  if (typeof fromState === 'string' && fromState.trim()) return fromState.trim();
+  if (typeof fromState === 'string' && fromState.trim()) {
+    const clean = fromState.trim();
+    const isLocal = typeof window !== 'undefined' && (window.location?.hostname === 'localhost' || window.location?.hostname === '127.0.0.1');
+    if (!isLocal && clean === 'AIzaSyInitialTestKey_987654321') {
+      state.settings.apiKey = '';
+      if (typeof saveState === 'function') saveState();
+      return '';
+    }
+    return clean;
+  }
   if (typeof window !== 'undefined') {
     if (window.GEMINI_API_KEY && typeof window.GEMINI_API_KEY === 'string' && window.GEMINI_API_KEY.trim()) {
       return window.GEMINI_API_KEY.trim();
