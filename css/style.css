@@ -4570,3 +4570,8 @@ b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; 
   font-size: 0.9rem !important;
   padding: 12px 14px !important;
 }
+
+/* v2.9.62 — Ders/Test sonu Devam butonu mobil alt menünün arkasında kalmasın */
+.lesson-end {
+  padding-bottom: 104px !important;
+}

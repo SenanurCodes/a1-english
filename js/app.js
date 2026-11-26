@@ -312,26 +312,35 @@ initAndroidBackNavigation();
 function screenOnboarding() {
   document.body.classList.remove('focus-mode');
   document.body.classList.add('onboarding-mode');
+  const shRoot = $('#shimeji-root');
+  if (shRoot) shRoot.style.display = 'none';
   renderNav('');
   let selectedMascot = state.mascot || 'squirrel';
   let selectedTheme = state.theme || 'nordic';
 
   view().innerHTML = `
     <div class="onboard-isolated-wrap">
-      <!-- Sade Karşılama Başlığı -->
-      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:10px 16px 12px;max-width:540px;width:100%;box-sizing:border-box;">
-        <div class="onboard-hero-bubble">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐿️'}</div>
-        <h1 class="onboard-brand-title rainbow-text" style="font-size:2.3rem;margin:6px 0 4px;">PatiLingo</h1>
-        <p class="onboard-tagline lead" style="margin-bottom:10px;">Günde 5 dakikada eğlenerek İngilizce öğren 🐾</p>
-        <div id="landingCtaRow" style="display:flex;justify-content:center;margin:6px 0 0;">
-          <button class="btn btn-primary hero-action-btn" id="landingHeroStartBtn" style="font-size:0.95rem;font-weight:800;border-radius:14px;padding:10px 20px;">
-            👇 Profilini Oluştur ve Başla
+      <!-- Adım 1: Giriş veya Misafir Seçimi -->
+      <div class="landing-hero" id="landingHeroSection" style="text-align:center;padding:10px 16px 14px;max-width:540px;width:100%;box-sizing:border-box;">
+        <div class="onboard-hero-bubble">${(MASCOT_BY_ID && MASCOT_BY_ID[selectedMascot]) ? MASCOT_BY_ID[selectedMascot].icon : '🐾'}</div>
+        <h1 class="onboard-brand-title rainbow-text" style="font-size:2.2rem;margin:6px 0 4px;">PatiLingo</h1>
+        <p class="onboard-tagline lead" style="margin-bottom:12px;">Günde 5 dakikada eğlenerek İngilizce öğren 🐾</p>
+        <div id="landingCtaRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px 0 0;">
+          <button class="btn btn-primary hero-action-btn" id="onboardAuthBtn" style="font-size:0.95rem;font-weight:800;border-radius:14px;padding:11px 18px;">
+            🔐 Giriş Yap / Kayıt Ol
+          </button>
+          <button class="btn btn-secondary hero-action-btn" id="landingHeroStartBtn" style="font-size:0.95rem;font-weight:800;border-radius:14px;padding:11px 18px;">
+            👤 Misafir Olarak Devam Et
           </button>
         </div>
       </div>
 
-      <!-- Sade Kurulum Kartı -->
+      <!-- Adım 2: Profil, Yoldaş ve Başlama Yolu -->
       <div class="onboard-isolated-card card onboard-card" id="onboardSetupCard">
+        <div style="text-align:center;margin-bottom:12px;">
+          <b style="font-size:1.05rem;">2. Adım · Adını ve Yoldaşını Seç</b>
+          <p class="muted small" style="margin:2px 0 0;">Önce profilini belirle, sonra sıfırdan başla ya da seviye testine gir.</p>
+        </div>
         <div class="onboard-field-group">
           <label class="lbl">Sana nasıl hitap edelim?</label>
           <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${state.name !== 'Öğrenci' ? esc(state.name) : ''}" />
@@ -376,9 +385,7 @@ function screenOnboarding() {
           <button class="btn btn-big btn-secondary" id="placeBtn">📝 Seviye Testiyle Başla (15 Soru)</button>
         </div>
 
-        <div class="onboard-auth-actions" style="justify-content:center;margin-top:6px;">
-          <button class="btn btn-ghost sm" id="onboardAuthBtn">🔑 Zaten hesabın var mı? Giriş Yap</button>
-        </div>
+
       </div>
     </div>`;
 
@@ -463,33 +470,38 @@ function screenOnboarding() {
    Seviye testi
    ============================================================ */
 function screenPlacement() {
+  const shRoot = $('#shimeji-root');
+  if (shRoot) shRoot.style.display = 'none';
   runLesson({
     title: '📝 Seviye Belirleme Testi',
     questions: buildPlacementTest(),
     isExam: true,
     color: '#CC5DE8',
-    exitTo: state.onboarded ? '#/home' : '#/',
-    onFinish: (results) => {
-      let correct = 0, maxUnlocked = 0;
-      results.forEach((r) => {
-        if (r.ok) {
-          correct++;
-          const uIdx = (r.q && typeof r.q.unitIndex === 'number') ? r.q.unitIndex : 0;
-          maxUnlocked = Math.max(maxUnlocked, uIdx);
-        }
-      });
-      const unlockTo = correct <= 2 ? 0 : Math.min(maxUnlocked, UNITS.length - 1);
+    exitTo: state.onboarded ? '#/home' : '#/onboarding',
+    onFinish: (results, { correct, total, pct }) => {
+      // Şansla tek bir ileri soruyu bilmek tüm müfredatı açmasın: genel başarı oranına göre adil yerleştirme
+      let unlockTo = 0;
+      if (pct >= 85) {
+        unlockTo = Math.min(40, UNITS.length - 1);
+      } else if (pct >= 70) {
+        unlockTo = Math.min(20, UNITS.length - 1);
+      } else if (pct >= 55) {
+        unlockTo = Math.min(8, UNITS.length - 1);
+      } else {
+        unlockTo = 0;
+      }
       state.unlockedUpTo = Math.max(state.unlockedUpTo, unlockTo);
       state.onboarded = true;
-      state.placement = { at: Date.now(), score: correct, reach: unlockTo, total: results.length };
+      state.placement = { at: Date.now(), score: correct, pct, reach: unlockTo, total };
+      saveState();
       const xp = correct * 10;
       addXP(xp);
       const opened = state.unlockedUpTo + 1;
       return {
         xp, exitTo: '#/learn',
         message: opened > 1
-          ? `Tebrikler! Seviyen başarıyla belirlendi ve ilk <b>${opened}</b> ünite senin için açıldı. <b>${esc(UNITS[state.unlockedUpTo].title)}</b> ünitesinden devam edebilirsin.`
-          : 'Temelden sağlam başlamak en iyisi! Hadi ilk üniteyle maceraya başla 🚀'
+          ? `Tebrikler! %<b>${pct}</b> başarıyla seviyen belirlendi ve ilk <b>${opened}</b> ünite açıldı. <b>${esc(UNITS[state.unlockedUpTo].title)}</b> ünitesinden devam edebilirsin.`
+          : `%<b>${pct}</b> puanla temelden sağlam başlamak en doğrusu! Hadi 1. üniteyle maceraya başla 🚀`
       };
     }
   });
@@ -3930,7 +3942,8 @@ let shimejiController = null;
 /* Maskot gizliyken ekranda kalan küçük "geri getir" butonu */
 function syncShimejiRestoreBtn() {
   let btn = $('#shimejiRestoreBtn');
-  const isHidden = !!(state.settings && state.settings.shimeji === false);
+  const curH = (typeof location !== 'undefined' && location.hash) || '';
+  const isHidden = Boolean(state.onboarded && !curH.startsWith('#/onboarding') && !curH.startsWith('#/placement') && state.settings && state.settings.shimeji === false);
   if (!btn) {
     btn = document.createElement('button');
     btn.type = 'button';
@@ -3950,12 +3963,21 @@ function syncShimejiRestoreBtn() {
   btn.classList.toggle('visible', isHidden);
 }
 
+function shouldShowShimeji() {
+  if (!state.onboarded) return false;
+  if (state.settings && state.settings.shimeji === false) return false;
+  const h = (typeof location !== 'undefined' && location.hash) || '';
+  if (h.startsWith('#/onboarding') || h.startsWith('#/placement')) return false;
+  return true;
+}
+
 function applyShimejiVisibility() {
   const root = $('#shimeji-root');
   if (!root) return;
   const isEnabled = !state.settings || state.settings.shimeji !== false;
-  root.style.display = isEnabled ? '' : 'none';
-  if (isEnabled && !shimejiController) {
+  const visibleNow = shouldShowShimeji();
+  root.style.display = visibleNow ? '' : 'none';
+  if (visibleNow && !shimejiController) {
     initShimejiCompanion();
   }
   syncShimejiRestoreBtn();
@@ -3967,7 +3989,7 @@ function initShimejiCompanion() {
   const root = $('#shimeji-root');
   if (!root) return;
 
-  if (state.settings && state.settings.shimeji === false) {
+  if (!shouldShowShimeji()) {
     root.style.display = 'none';
     syncShimejiRestoreBtn();
     return;
