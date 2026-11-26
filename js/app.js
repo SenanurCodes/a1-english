@@ -344,6 +344,7 @@ function screenOnboarding() {
         <div class="onboard-field-group">
           <label class="lbl">Sana nasıl hitap edelim?</label>
           <input id="nameIn" class="text-input" placeholder="Adını veya takma adını yaz..." maxlength="24" value="${state.name !== 'Öğrenci' ? esc(state.name) : ''}" />
+          <div id="onboardNameError" style="display:none;color:#ef4444;font-size:0.84rem;font-weight:700;background:rgba(239,68,68,0.12);padding:8px 12px;border-radius:10px;border-left:3px solid #ef4444;margin-top:6px;"></div>
         </div>
 
         <div class="onboard-field-group">
@@ -427,9 +428,31 @@ function screenOnboarding() {
     };
   });
 
+  const clearOnboardNameError = () => {
+    const err = $('#onboardNameError');
+    if (err) err.style.display = 'none';
+    if ($('#nameIn')) $('#nameIn').classList.remove('error');
+  };
+  if ($('#nameIn')) $('#nameIn').oninput = clearOnboardNameError;
+
   const go = to => {
-    const name = $('#nameIn')?.value?.trim() || 'Öğrenci';
-    state.name = name;
+    clearOnboardNameError();
+    const rawName = ($('#nameIn')?.value || '').trim();
+    if (!rawName) {
+      const err = $('#onboardNameError');
+      if (err) {
+        err.innerHTML = '⚠️ <b>Lütfen başlamadan önce adını veya takma adını yaz!</b>';
+        err.style.display = 'block';
+      }
+      if ($('#nameIn')) {
+        $('#nameIn').classList.add('error');
+        $('#nameIn').focus();
+        $('#nameIn').scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+      }
+      toast('⚠️ Lütfen adını veya takma adını yaz!');
+      return;
+    }
+    state.name = rawName;
     state.mascot = selectedMascot;
     store.setMascot(selectedMascot);
     store.setTheme(selectedTheme);
@@ -3883,8 +3906,9 @@ function openAuthModal() {
   const clearModalError = () => {
     const errBox = $('#modalAuthError');
     if (errBox) errBox.style.display = 'none';
-    $('#modalEmailIn, #modalPassIn, #modalNameIn').forEach(el => el.classList.remove('error'));
+    $$('#modalEmailIn, #modalPassIn, #modalNameIn').forEach(el => el.classList.remove('error'));
   };
+  if ($('#modalNameIn')) $('#modalNameIn').oninput = clearModalError;
   if ($('#modalEmailIn')) $('#modalEmailIn').oninput = clearModalError;
   if ($('#modalPassIn')) $('#modalPassIn').oninput = clearModalError;
 
@@ -3902,9 +3926,10 @@ function openAuthModal() {
 
   $('#modalEmailRegBtn').onclick = async () => {
     clearModalError();
+    const name = $('#modalNameIn').value.trim();
     const email = $('#modalEmailIn').value.trim();
     const pass = $('#modalPassIn').value.trim();
-    const name = $('#modalNameIn').value.trim() || state.name;
+    if (!name) return showModalError('Lütfen adını veya takma adını gir.', '#modalNameIn');
     if (!email) return showModalError('Lütfen e-posta adresini gir.', '#modalEmailIn');
     if (!pass) return showModalError('Lütfen şifreni gir.', '#modalPassIn');
     try {
