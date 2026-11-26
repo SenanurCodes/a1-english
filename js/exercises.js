@@ -217,14 +217,48 @@ function getUnitLogicBanner(title = '') {
   };
 }
 
-function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onFinish, retry, isExam: isExamProp }) {
+function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onFinish, retry, isExam: isExamProp, bossGate = null }) {
   const view = $('#view');
   document.body.classList.add('focus-mode');
   let idx = 0;
   const results = [];
-  const isExam = Boolean(isExamProp || (title && (title.includes('Test') || title.includes('Boss') || title.includes('Sınav') || title.includes('Seviye'))));
-  const activeMascot = (typeof mascotService !== 'undefined') ? mascotService.getActive() : { name: 'Yoldaş', icon: '🐾' };
+  const isExam = Boolean(isExamProp || bossGate || (title && (title.includes('Test') || title.includes('Boss') || title.includes('Sınav') || title.includes('Seviye'))));
+  const activeMascot = (typeof mascotService !== 'undefined') ? mascotService.getActive() : { id: 'squirrel', name: 'Yoldaş', icon: '🐾', itemIcon: '🌰' };
+  const energyIconMap = { squirrel: '🌰', cat: '🐟', panda: '🎋', dog: '🦴', owl: '🪶' };
+  const bossEnergyIcon = energyIconMap[activeMascot.id] || activeMascot.itemIcon || '🐾';
+  const bossMaxEnergy = bossGate?.maxEnergy || 3;
+  const bossTotalSeals = bossGate?.sealsTotal || 5;
+  const bossCorrectPerSeal = bossGate?.correctPerSeal || 2;
+  let bossEnergy = bossMaxEnergy;
+  let bossCorrectCount = 0;
+  let bossStreak = 0;
   const logicInfo = getUnitLogicBanner(title);
+
+  const renderBossHudHtml = () => {
+    if (!bossGate) return '';
+    const sealsBroken = Math.min(bossTotalSeals, Math.floor(bossCorrectCount / bossCorrectPerSeal));
+    const energyHtml = Array.from({ length: bossMaxEnergy }, (_, i) =>
+      `<span class="bg-energy ${i < bossEnergy ? 'alive' : 'spent'}" aria-hidden="true">${bossEnergyIcon}</span>`
+    ).join('');
+    const sealsHtml = Array.from({ length: bossTotalSeals }, (_, i) =>
+      `<span class="bg-seal ${i < sealsBroken ? 'open' : 'locked'}" aria-hidden="true">${i < sealsBroken ? '🔓' : '🔒'}</span>`
+    ).join('');
+    return `
+      <div class="boss-gate-hud" id="bossGateHud">
+        ${bossGate.subtitle ? `<div class="bgh-sub">${esc(bossGate.subtitle)}</div>` : ''}
+        <div class="bgh-row">
+          <div class="bgh-group" title="${esc(activeMascot.name || 'Yoldaş')} Enerjisi (3 üst üste doğru = +1 enerji)">
+            <span class="bgh-lbl">${esc(activeMascot.icon || '🐾')} Enerji</span>
+            <div class="bgh-icons">${energyHtml}</div>
+          </div>
+          ${bossStreak > 0 && bossEnergy < bossMaxEnergy ? `<span class="bgh-combo">🔥 ${bossStreak}/3</span>` : ''}
+          <div class="bgh-group" title="Dünya Kapısı Mühürleri">
+            <span class="bgh-lbl">Kapı (${sealsBroken}/${bossTotalSeals})</span>
+            <div class="bgh-icons">${sealsHtml}</div>
+          </div>
+        </div>
+      </div>`;
+  };
 
   view.innerHTML = `
     <div class="lesson" style="--accent:${color}">
@@ -234,6 +268,7 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         <div class="lesson-count" id="lcount"></div>
       </div>
       <div class="lesson-title">${esc(title)}</div>
+      ${bossGate ? `<div id="bossGateHudWrap">${renderBossHudHtml()}</div>` : ''}
       ${!isExam ? `
       <div class="lesson-squirrel-bar" id="lessonSquirrelHelper" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;margin-bottom:12px;border-radius:12px;background:color-mix(in srgb, var(--primary, #4F46E5) 8%, var(--card-bg, #fff));border:1px dashed var(--border, #e2e8f0);flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:8px;font-size:0.86rem;">
@@ -328,21 +363,45 @@ function runLesson({ title, questions, color = '#5C7CFA', exitTo = '#/home', onF
         </div>
         <button class="btn btn-big ${ok ? 'btn-green' : 'btn-red'}" id="nextBtn">Devam →</button>
       </div>`;
-    const next = () => { idx++; idx < questions.length ? show() : end(); };
+    if (bossGate) {
+      if (ok || skipped) {
+        bossCorrectCount++;
+        bossStreak++;
+        if (bossStreak >= 3 && bossEnergy < bossMaxEnergy) {
+          bossEnergy++;
+          bossStreak = 0;
+          if (typeof toast === 'function') toast(`✨ 3 Kombo! +1 ${bossEnergyIcon} Yoldaş enerjisi geri kazanıldı!`);
+        }
+      } else {
+        bossStreak = 0;
+        bossEnergy = Math.max(0, bossEnergy - 1);
+      }
+      const hudWrap = $('#bossGateHudWrap');
+      if (hudWrap) hudWrap.innerHTML = renderBossHudHtml();
+    }
+    const sealsBrokenNow = bossGate ? Math.min(bossTotalSeals, Math.floor(bossCorrectCount / bossCorrectPerSeal)) : 0;
+    const bossGateWon = Boolean(bossGate && sealsBrokenNow >= bossTotalSeals);
+    const bossEnergyOut = Boolean(bossGate && bossEnergy <= 0 && !bossGateWon);
+    const next = () => {
+      if (bossGateWon) return end({ bossWon: true, sealsBroken: sealsBrokenNow, energyLeft: bossEnergy });
+      if (bossEnergyOut) return end({ bossWon: false, energyDepleted: true, sealsBroken: sealsBrokenNow, energyLeft: 0 });
+      idx++;
+      idx < questions.length ? show() : end({ bossWon: sealsBrokenNow >= bossTotalSeals, sealsBroken: sealsBrokenNow, energyLeft: bossEnergy });
+    };
     $('#nextBtn').onclick = next;
     $('#nextBtn').focus();
     lessonKeyHandler = e => { if (e.key === 'Enter') { e.preventDefault(); next(); } };
   }
 
-  function end() {
+  function end(bossOutcome = {}) {
     lessonKeyHandler = null;
     saveState();
     const correct = results.filter(r => r.ok).length;
-    const totalCount = results.length;
+    const totalCount = Math.max(1, results.length);
     const pct = Math.round((correct / totalCount) * 100);
-    const out = onFinish ? onFinish(results, { correct, total: totalCount, pct }) || {} : {};
+    const out = onFinish ? onFinish(results, { correct, total: totalCount, pct, ...bossOutcome }) || {} : {};
     const xp = out.xp ?? 0;
-    if (pct >= 70) { sfx.win(); confetti(); }
+    if (bossOutcome.bossWon || (!bossOutcome.energyDepleted && pct >= 70)) { sfx.win(); confetti(); }
     const wrong = results.filter(r => !r.ok && !r.skipped && r.q.kind !== 'match');
     $('#view').innerHTML = `
       <div class="lesson-end" style="--accent:${color}">

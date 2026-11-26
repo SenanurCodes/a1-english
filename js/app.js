@@ -2249,18 +2249,20 @@ function screenLearn() {
    ============================================================ */
 function screenA1Boss() {
   const start = () => runLesson({
-    title: '👑 A1 Seviye Final Sınavı',
+    title: '✈️ A1 Dünya Kapısı: Londra\'ya İlk Adım',
     questions: buildA1BossTest(),
     color: '#FCC419',
     exitTo: '#/learn',
+    isExam: true,
+    bossGate: { subtitle: '5 kapı mührünü kır ve A2 Dünyasını aç! (3 kombo = +1 enerji)', sealsTotal: 5, correctPerSeal: 2, maxEnergy: 3 },
     retry: start,
-    onFinish: (results, { correct, total, pct }) => {
-      if (pct >= 75) {
+    onFinish: (results, { correct, total, pct, bossWon, energyDepleted, sealsBroken = 0 }) => {
+      if (bossWon || (!energyDepleted && pct >= 75)) {
         store.passA1Boss();
         return {
           xp: 200,
           exitTo: '#/learn',
-          message: `🎉 <b>TEBRİKLER! %${pct} Başarı ile A1 Seviyesini Tamamladın!</b><br>+200 XP Kazandın ve 🚀 <b>A2 Dünyası'nın kilidini açtın!</b>`
+          message: `🔓 <b>5 MÜHÜR KIRILDI! A1 Dünya Kapısını Açtın!</b><br>+200 XP Kazandın ve 🚀 <b>A2 Dünyası</b> artık senin!`
         };
       } else {
         const earnedXP = correct * 5;
@@ -2268,7 +2270,9 @@ function screenA1Boss() {
         return {
           xp: earnedXP,
           exitTo: '#/learn',
-          message: `Final sınavında %${pct} aldın (${correct}/${total}). Kilidi açmak için en az <b>%75</b> alman gerekiyor. Biraz tekrar yapıp tekrar dene! 💪`
+          message: energyDepleted
+            ? `Yoldaşının enerjisi tükendi (${sealsBroken}/5 mühür açıldı). Kısa bir nefes alıp mühürleri tekrar zorla! 💪`
+            : `${sealsBroken}/5 mühür açıldı (${correct}/${total}). 5 mührü kırıp kapıyı açmak için tekrar dene! 💪`
         };
       }
     }
@@ -2277,22 +2281,24 @@ function screenA1Boss() {
 }
 
 /* ============================================================
-   A2 Seviye Final Sınavı (A2 Boss Test)
+   A2 Dünya Kapısı Finali (5 Mühür + Yoldaş Enerjisi)
    ============================================================ */
 function screenA2Boss() {
   const start = () => runLesson({
-    title: '👑 A2 Seviye Final Sınavı',
+    title: '🏨 A2 Dünya Kapısı: Şehirde 1 Gün',
     questions: buildA2BossTest(),
     color: '#339AF0',
     exitTo: '#/learn',
+    isExam: true,
+    bossGate: { subtitle: '5 kapı mührünü kır ve B1 Dünyasına geç! (3 kombo = +1 enerji)', sealsTotal: 5, correctPerSeal: 2, maxEnergy: 3 },
     retry: start,
-    onFinish: (results, { correct, total, pct }) => {
-      if (pct >= 75) {
+    onFinish: (results, { correct, total, pct, bossWon, energyDepleted, sealsBroken = 0 }) => {
+      if (bossWon || (!energyDepleted && pct >= 75)) {
         store.passA2Boss();
         return {
           xp: 300,
           exitTo: '#/learn',
-          message: `🎉 <b>EFSANEVİ BAŞARI! %${pct} ile A2 Seviyesini Tamamladın!</b><br>+300 XP Kazandın ve 👑 <b>A2 İngilizce Ustalık Rozeti</b> aldın!`
+          message: `🔓 <b>5 MÜHÜR KIRILDI! A2 Dünya Kapısını Açtın!</b><br>+300 XP Kazandın ve 👑 <b>A2 Ustalık Rozeti</b> + B1 Dünyası açıldı!`
         };
       } else {
         const earnedXP = correct * 5;
@@ -2300,7 +2306,9 @@ function screenA2Boss() {
         return {
           xp: earnedXP,
           exitTo: '#/learn',
-          message: `A2 Final sınavında %${pct} aldın (${correct}/${total}). Başarı için en az <b>%75</b> gerekiyor. A2 ünitelerini tekrar edip tekrar dene! 💪`
+          message: energyDepleted
+            ? `Yoldaşının enerjisi tükendi (${sealsBroken}/5 mühür açıldı). Tekrar deneyip kapıyı açabilirsin! 💪`
+            : `${sealsBroken}/5 mühür açıldı (${correct}/${total}). 5 mührü tamamlayıp B1'e geçmek için tekrar dene! 💪`
         };
       }
     }
@@ -2309,22 +2317,24 @@ function screenA2Boss() {
 }
 
 /* ============================================================
-   B1 Seviye Final Sınavı (B1 Boss Test)
+   B1 Dünya Kapısı Finali (5 Mühür + Yoldaş Enerjisi)
    ============================================================ */
 function screenB1Boss() {
   const start = () => runLesson({
-    title: '⚡ B1 Seviye Final Sınavı',
+    title: '💼 B1 Dünya Kapısı: Uluslararası Mülakat',
     questions: buildB1BossTest(),
     color: '#fab005',
     exitTo: '#/learn',
+    isExam: true,
+    bossGate: { subtitle: '5 kapı mührünü kır ve B2 Zirvesine yüksel! (3 kombo = +1 enerji)', sealsTotal: 5, correctPerSeal: 2, maxEnergy: 3 },
     retry: start,
-    onFinish: (results, { correct, total, pct }) => {
-      if (pct >= 75) {
+    onFinish: (results, { correct, total, pct, bossWon, energyDepleted, sealsBroken = 0 }) => {
+      if (bossWon || (!energyDepleted && pct >= 75)) {
         store.passB1Boss();
         return {
           xp: 400,
           exitTo: '#/learn',
-          message: `🎉 <b>OLAĞANÜSTÜ BAŞARI! %${pct} ile B1 Seviyesini Tamamladın!</b><br>+400 XP Kazandın ve ⚡ <b>B1 Bağımsız İletişim Rozeti</b> aldın!`
+          message: `🔓 <b>5 MÜHÜR KIRILDI! B1 Dünya Kapısını Açtın!</b><br>+400 XP Kazandın ve ⚡ <b>B1 İletişim Rozeti</b> + B2 Dünyası açıldı!`
         };
       } else {
         const earnedXP = correct * 5;
@@ -2332,7 +2342,9 @@ function screenB1Boss() {
         return {
           xp: earnedXP,
           exitTo: '#/learn',
-          message: `B1 Final sınavında %${pct} aldın (${correct}/${total}). Başarı için en az <b>%75</b> gerekiyor. Biraz tekrar yapıp tekrar dene! 💪`
+          message: energyDepleted
+            ? `Yoldaşının enerjisi tükendi (${sealsBroken}/5 mühür açıldı). Tekrar deneyip kapıyı açabilirsin! 💪`
+            : `${sealsBroken}/5 mühür açıldı (${correct}/${total}). 5 mührü kırıp B2'ye geçmek için tekrar dene! 💪`
         };
       }
     }
@@ -2341,22 +2353,24 @@ function screenB1Boss() {
 }
 
 /* ============================================================
-   B2 Seviye Büyük Final Sınavı (B2 Boss Test)
+   B2 Zirve Kapısı Büyük Finali (5 Mühür + Yoldaş Enerjisi)
    ============================================================ */
 function screenB2Boss() {
   const start = () => runLesson({
-    title: '👑 B2 Seviye Büyük Finali',
+    title: '🎤 B2 Zirve Kapısı: Büyük Sahne',
     questions: buildB2BossTest(),
     color: '#7950f2',
     exitTo: '#/learn',
+    isExam: true,
+    bossGate: { subtitle: 'Son 5 mührü kır ve PatiLingo Ustalık Tacını kazan!', sealsTotal: 5, correctPerSeal: 2, maxEnergy: 3 },
     retry: start,
-    onFinish: (results, { correct, total, pct }) => {
-      if (pct >= 75) {
+    onFinish: (results, { correct, total, pct, bossWon, energyDepleted, sealsBroken = 0 }) => {
+      if (bossWon || (!energyDepleted && pct >= 75)) {
         store.passB2Boss();
         return {
           xp: 500,
           exitTo: '#/learn',
-          message: `🏆 <b>ZİRVEDESİN! %${pct} ile B2 İleri Düzey Yetkinliği Tamamladın!</b><br>+500 XP Kazandın ve 👑 <b>B2 Üst Düzey Ustalık Tacı</b> kazandın!`
+          message: `🏆 <b>ZİRVEDESİN! 5 Mühür Kırıldı ve B2 Büyük Finalini Tamamladın!</b><br>+500 XP Kazandın ve 👑 <b>B2 Üst Düzey Ustalık Tacı</b> senin!`
         };
       } else {
         const earnedXP = correct * 5;
@@ -2364,7 +2378,9 @@ function screenB2Boss() {
         return {
           xp: earnedXP,
           exitTo: '#/learn',
-          message: `B2 Final sınavında %${pct} aldın (${correct}/${total}). Başarı için en az <b>%75</b> gerekiyor. Nüansları gözden geçirip tekrar dene! 💪`
+          message: energyDepleted
+            ? `Yoldaşının enerjisi tükendi (${sealsBroken}/5 mühür açıldı). Nüansları gözden geçirip tekrar dene! 💪`
+            : `${sealsBroken}/5 mühür açıldı (${correct}/${total}). 5 mührü tamamlayıp tacı kazanmak için tekrar dene! 💪`
         };
       }
     }

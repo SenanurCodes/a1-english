@@ -4479,3 +4479,70 @@ b.chapter-status-label.status-locked { color: var(--muted, #868e96) !important; 
 .shimeji-drop-close.hover .sdc-label {
   background: #ef4444;
 }
+
+
+/* ============================================================
+   v2.9.58 — 5 Mühürlü Dünya Kapısı & Maskot Enerjisi HUD
+   ============================================================ */
+.boss-gate-hud {
+  background: color-mix(in srgb, var(--accent, var(--primary)) 10%, var(--card-bg, #fff));
+  border: 1.5px solid color-mix(in srgb, var(--accent, var(--primary)) 35%, var(--line));
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+.bgh-sub {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.bgh-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bgh-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bgh-lbl {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.bgh-icons {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.bg-energy,
+.bg-seal {
+  font-size: 1.08rem;
+  line-height: 1;
+  transition: transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+}
+.bg-energy.spent {
+  opacity: 0.2;
+  filter: grayscale(1);
+  transform: scale(0.85);
+}
+.bg-seal.locked {
+  opacity: 0.4;
+}
+.bg-seal.open {
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.55));
+}
+.bgh-combo {
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(245, 158, 11, 0.16);
+  color: #D97706;
+}
