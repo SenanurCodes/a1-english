@@ -178,12 +178,18 @@ function getApiKey() {
   return '';
 }
 
-// Cloudflare Worker AI Proxy adresi (yayınlandıktan sonra buraya yapıştırılır; API anahtarı sunucuda gizli kalır)
+// Vercel / Cloudflare AI Proxy adresi (API anahtarı sunucu kasasında gizli kalır)
 const AI_PROXY_URL = '';
 
 function getAIProxyUrl() {
-  if (typeof window !== 'undefined' && typeof window.PATILINGO_AI_PROXY_URL === 'string' && window.PATILINGO_AI_PROXY_URL.trim()) {
-    return window.PATILINGO_AI_PROXY_URL.trim();
+  if (typeof window !== 'undefined') {
+    if (typeof window.PATILINGO_AI_PROXY_URL === 'string' && window.PATILINGO_AI_PROXY_URL.trim()) {
+      return window.PATILINGO_AI_PROXY_URL.trim();
+    }
+    const host = (window.location && window.location.hostname) || '';
+    if (host && host !== 'localhost' && host !== '127.0.0.1' && !host.endsWith('.github.io')) {
+      return '/api/ai';
+    }
   }
   return AI_PROXY_URL.trim();
 }

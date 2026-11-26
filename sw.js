@@ -4,7 +4,7 @@
    index.html'deki ?v= parametrelerini ve aşağıdaki listeyi birlikte günceller.
    ============================================================ */
 
-const APP_VERSION = '2.9.58';
+const APP_VERSION = '2.9.59';
 const CACHE_NAME = 'patilingo-cache-v' + APP_VERSION;
 
 const PRECACHE_ASSETS = [
@@ -17,18 +17,18 @@ const PRECACHE_ASSETS = [
   'icons/icon-512.png',
   'icons/icon-512-maskable.png',
   'icons/favicon.png',
-  'css/style.css?v=2.9.58',
-  'js/theme-init.js?v=2.9.58',
-  'js/data.js?v=2.9.58',
-  'js/logic.js?v=2.9.58',
-  'js/storage.js?v=2.9.58',
-  'js/firebase.js?v=2.9.58',
-  'js/icons.js?v=2.9.58',
-  'js/utils.js?v=2.9.58',
-  'js/ai.js?v=2.9.58',
-  'js/exercises.js?v=2.9.58',
-  'js/games.js?v=2.9.58',
-  'js/app.js?v=2.9.58'
+  'css/style.css?v=2.9.59',
+  'js/theme-init.js?v=2.9.59',
+  'js/data.js?v=2.9.59',
+  'js/logic.js?v=2.9.59',
+  'js/storage.js?v=2.9.59',
+  'js/firebase.js?v=2.9.59',
+  'js/icons.js?v=2.9.59',
+  'js/utils.js?v=2.9.59',
+  'js/ai.js?v=2.9.59',
+  'js/exercises.js?v=2.9.59',
+  'js/games.js?v=2.9.59',
+  'js/app.js?v=2.9.59'
 ];
 
 // Install: Core dosyaları önbelleğe al ve beklemeden anında aktif et
