@@ -25,7 +25,7 @@ const MORE_LINKS = [
   { id: 'review', icon: icon('repeat'), title: 'Akıllı Tekrar', desc: 'Aralıklı tekrar sistemi ve hata havuzu' },
   { id: 'leaderboard', icon: icon('trophy'), title: 'Rekabet & Liderlik', desc: 'Arkadaşlarınla yarış ve skorunu paylaş' },
   { id: 'progress', icon: icon('chart'), title: 'İlerleme Grafiği', desc: 'Haftalık XP ve ünite başarı tablosu' },
-  { id: 'ai', icon: icon('bot'), title: 'AI Öğretmen (İsteğe Bağlı)', desc: 'Kendi ücretsiz Gemini anahtarınla sohbet pratiği' },
+  { id: 'ai', icon: icon('bot'), title: 'Sunny AI Öğretmen', desc: 'Yapay zeka ile İngilizce sohbet ve seviye analizi' },
   { id: 'settings', icon: icon('settings'), title: 'Ayarlar', desc: 'Profil, maskot, tema ve ses hızı' }
 ];
 
@@ -986,8 +986,8 @@ function screenGames() {
         <div style="display:flex;align-items:center;gap:10px;">
           <span style="font-size:1.5rem;">🤖</span>
           <div>
-            <b>AI Öğretmen <span class="muted small" style="font-weight:600;">(İsteğe Bağlı)</span></b>
-            <p class="muted small" style="margin:2px 0 0;">Kendi ücretsiz Gemini anahtarınla kişiye özel sohbet ve analiz.</p>
+            <b>Sunny AI Öğretmen</b>
+            <p class="muted small" style="margin:2px 0 0;">Yapay zeka ile kişiye özel İngilizce sohbet ve seviye analizi.</p>
           </div>
         </div>
         <a href="#/ai" class="btn btn-secondary sm">Aç →</a>
@@ -3446,19 +3446,30 @@ function screenSettings() {
         </div>
       </div>
 
-      <!-- Gemini AI Yapay Zeka -->
+      <!-- Sunny AI Öğretmen (Otomatik Sunucu Bağlantılı) -->
       <div class="card">
-        <h3>🤖 Yapay Zeka (Gemini)</h3>
-        <p class="muted small">Ücretsiz anahtar: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a></p>
-        <label class="lbl">API Anahtarı</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input id="setKey" class="text-input" type="text" value="${esc(s.apiKey || '')}" placeholder="AIza..." autocomplete="off" style="flex:1;" aria-label="Gemini API Anahtarı" />
-          <button class="btn btn-secondary sm" id="updateKeySettingsBtn">Kaydet</button>
+        <h3>🤖 Sunny AI Öğretmen</h3>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;background:color-mix(in srgb, var(--primary) 8%, var(--card-bg, #fff));border-radius:12px;border:1px solid var(--line);margin-top:8px;">
+          <div>
+            <b style="font-size:0.92rem;">🟢 Otomatik Bağlı &amp; Hazır</b>
+            <p class="muted small" style="margin:2px 0 0;">API anahtarı gerekmez. ${typeof isProUser === 'function' && isProUser() ? 'Pro ile sınırsız sohbet aktif.' : 'Her gün 5 ücretsiz AI mesajı dahil!'}</p>
+          </div>
+          <a href="#/ai" class="btn btn-primary sm" style="text-decoration:none;">💬 AI'yı Aç →</a>
         </div>
-        <label class="lbl">Model</label>
-        <input id="setModel" class="text-input" value="${esc(s.model)}" list="models" />
-        <datalist id="models"><option value="gemini-2.0-flash"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash-lite"><option value="gemini-1.5-pro"></datalist>
-        <div class="row-gap"><button class="btn btn-secondary sm" id="testBtn">🔌 Bağlantıyı Test Et</button><span id="testOut" class="muted"></span></div>
+        <details style="margin-top:10px;">
+          <summary class="muted small" style="cursor:pointer;font-weight:700;">⚙️ Gelişmiş (İsteğe bağlı özel API anahtarı)</summary>
+          <div style="margin-top:8px;">
+            <label class="lbl">Özel API Anahtarı</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="setKey" class="text-input" type="text" value="${esc(s.apiKey || '')}" placeholder="İsteğe bağlı (AIza...)" autocomplete="off" style="flex:1;" aria-label="Gemini API Anahtarı" />
+              <button class="btn btn-secondary sm" id="updateKeySettingsBtn">Kaydet</button>
+            </div>
+            <label class="lbl">Model</label>
+            <input id="setModel" class="text-input" value="${esc(s.model)}" list="models" />
+            <datalist id="models"><option value="gemini-2.0-flash"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash-lite"><option value="gemini-1.5-pro"></datalist>
+            <div class="row-gap" style="margin-top:8px;"><button class="btn btn-secondary sm" id="testBtn">🔌 Bağlantıyı Test Et</button><span id="testOut" class="muted"></span></div>
+          </div>
+        </details>
       </div>
 
       <!-- Ses Ayarları -->
